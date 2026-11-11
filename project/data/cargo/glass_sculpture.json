@@ -1,0 +1,1 @@
+{"id": "glass_sculpture", "name": "Glass Sculpture", "kind": "freight", "weight": "standard", "traits": ["fragile"], "shape": [[0, 0], [0, 1], [1, 1]]}

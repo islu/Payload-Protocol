@@ -1,0 +1,1 @@
+{"id": "coolant_tank", "name": "Coolant Tank", "kind": "freight", "weight": "standard", "traits": ["fluid"], "shape": [[0, 0], [0, 1]]}

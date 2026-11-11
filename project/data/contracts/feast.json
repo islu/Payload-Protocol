@@ -1,0 +1,1 @@
+{"id": "feast", "sectors": [3], "client_name": "Moon Dairy Co-op", "freight": ["space_cheese", "space_cheese", "frozen_squid"], "pay": 16, "bonus": {"type": "not_next_to", "pay": 10, "trait": "volatile"}}

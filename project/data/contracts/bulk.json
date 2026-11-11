@@ -1,0 +1,1 @@
+{"id": "bulk", "sectors": [3], "client_name": "Dockside Supply", "freight": ["cargo_crate", "cargo_crate", "cargo_crate", "steel_ingot", "steel_ingot"], "pay": 9, "bonus": {"type": "zone", "pay": 12, "zone": {"side": "bottom", "size": 3}}}

@@ -1,0 +1,1 @@
+{"id": "gallery", "sectors": [2, 3], "client_name": "Luma Gallery", "freight": ["glass_sculpture", "crystal_vase", "crystal_vase"], "pay": 12, "bonus": {"type": "zone", "pay": 10, "zone": {"side": "left", "size": 2}}}

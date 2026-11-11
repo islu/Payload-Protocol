@@ -1,0 +1,50 @@
+---
+name: game-rules
+description: Conventions of the Payload Protocol rules layer (project/rules) and its tests (project/tests) - the file map, Defs constants, the Run actions and error texts, the event log of a warp, determinism, the view, and how to write a rule test with the fixture. Use when you write or change rules, the view, GameState actions, or rule tests.
+---
+
+# The Rules Layer (GDScript)
+
+## 1. Hard Rules
+
+- `project/rules` has all game rules and all game state. Its classes extend `RefCounted` or have static functions only.
+- Do not use `Node`, scenes, `FileAccess`, `DirAccess`, `Input`, or the screen in `project/rules`.
+- Use `int` for all game values. Do not use floats. Convert JSON numbers with `int()` when you read data.
+- Use the `RandomNumberGenerator` of the `Run` (`rng` for content, `line_rng` for the pilot). Do not use `randi()` or `randf()`. A shift step uses no random numbers.
+- Use the constants of `Defs`. Do not compare with a literal string.
+- An action returns `""` when it works, or an error text for the player. A failed action changes nothing. Make each error text a constant that ends in `_TEXT`: the i18n tool collects them.
+- Give the spec section in the doc comment of each class and each public function: `## Rotates a cargo in the hold in its place (SPEC Section 8.2).`
+
+## 2. File Map
+
+| File | Content |
+| --- | --- |
+| `defs.gd` | `Defs`: the fixed strings (kinds, weights, traits, directions, phases, reactions, pieces, bonuses, sides, axes, links, line events) and `Defs.delta()` |
+| `shapes.gd` | `Shapes`: rotation, size, cells at a place, connected, JSON and view forms |
+| `cargo_def.gd`, `cargo.gd` | `CargoDef` (data) and `Cargo` (one cargo in a run): `cells()`, `has()`, `weight()`, `Cargo.next_to()` |
+| `contract_template.gd`, `contract.gd` | Contract data, the zone of a bonus, and an offered contract |
+| `catalog.gd` | `Catalog.from_data()`: reads the parsed JSON and checks it (content.md). `errors` has the problems |
+| `run.gd` | `Run`: the state, the phases, placement, clamps, contracts, the shop, the hazard, the dock at the warp, the pilot lines |
+| `shift.gd` | `Shift.step()`: power, slide, hits, reactions, blast area, shields. It returns the event log of the step |
+| `arrival.gd` | `Arrival.arrive()`: spoil, delivery, bonus, breach, the report, the line event |
+| `run_view.gd` | `RunView.view()`: the plain data that the UI reads |
+| `packing.gd` | `Packing.packs()`: the offers of a station fit in an empty hold |
+
+`scenes/common/game_state.gd` (the autoload `GameState`) and `scenes/common/data_files.gd` (`DataFiles`) are the only places that read files and own a `Run`.
+
+## 3. Add a Rule
+
+1. Add the data field and its check in `Catalog` (`_check_*`).
+2. Add the rule in the file of its topic. A new reaction goes in `Shift._react()` and `Shift._apply()`, with a `Defs.REACT_*` constant.
+3. Add each value that the screen needs to `RunView`. The UI must not calculate it.
+4. Add the action to `GameState` (one line with `_act`) and to the text player (`_act` and `ACTIONS` in `project/tools/play.gd`).
+
+## 4. Tests
+
+- A test file is `project/tests/rules/test_<topic>.gd`. It extends `RuleTest`. Each method that starts with `test_` runs on a new instance, so methods do not share state.
+- `RuleTest` gives a `Run` on the fixture catalog (`fixture.gd`), at a station, with an empty hold. Helpers: `put(def, x, y, rot)`, `on_dock(def)`, `accept([template ids])`, `shift([dirs])`, `warp_with([dirs])`, `gone(cargo)`, `reaction_kinds(logs)`, `hits_of(step, id)`.
+- Use `check(ok, what)` and `eq(got, want, what)`. Give the spec section in `what`.
+- Write a comment that tells the board of each setup: where each cargo goes, and why.
+- Use the fixture data for rules. Use the real data only in `test_data.gd`.
+- A second run in one method: `var tr := RuleTest.new()`, then add `failures.append_array(tr.failures)` at the end.
+- Run one file: `devbox run -- task test -- <part of the file name>`.

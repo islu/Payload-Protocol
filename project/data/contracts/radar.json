@@ -1,0 +1,1 @@
+{"id": "radar", "sectors": [2], "client_name": "Deep Watch Array", "freight": ["radar_dish"], "pay": 22, "bonus": {"type": "zone", "pay": 8, "zone": {"side": "top", "size": 2}}}

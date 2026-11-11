@@ -1,0 +1,87 @@
+version: "3"
+
+vars:
+  GODOT: '{{.GODOT | default "godot"}}'
+  PROJECT_PATH: project
+  # gdtoolkit in nixpkgs is 3.x (Godot 3 only), so run the 4.x release from PyPI with uvx
+  GDTOOLKIT: uvx --from gdtoolkit==4.5.0
+
+tasks:
+  default:
+    cmds:
+      - task: run
+
+  import:
+    desc: Let Godot import the project (headless). Run once after a clone, and after you add a class_name.
+    cmds:
+      - "{{.GODOT}} --headless --path {{.PROJECT_PATH}} --import"
+
+  run:
+    desc: Run the game
+    deps: [import]
+    cmds:
+      - "{{.GODOT}} --path {{.PROJECT_PATH}}"
+
+  editor:
+    desc: Open the Godot editor
+    cmds:
+      - "{{.GODOT}} --path {{.PROJECT_PATH}} --editor"
+
+  test:
+    desc: "Run the rule tests (tests/rules). Filter by file: task test -- slide"
+    deps: [import]
+    cmds:
+      # Godot exits with 0 after a script error in some cases, so fail on the error text too.
+      - |
+        out=$({{.GODOT}} --headless --path {{.PROJECT_PATH}} -s res://tests/run_tests.gd -- {{.CLI_ARGS}} 2>&1) && status=0 || status=$?
+        echo "$out" | grep -v -e '^Godot Engine' -e '^$'
+        if [ $status -ne 0 ]; then exit $status; fi
+        if echo "$out" | grep -q -e "SCRIPT ERROR" -e "Parse Error"; then exit 1; fi
+
+  play:
+    desc: "The text player of the playtest skill. Run it with no command for the commands: task play -- help"
+    cmds:
+      - "{{.GODOT}} --headless --path {{.PROJECT_PATH}} -s res://tools/play.gd -- {{.CLI_ARGS}} 2>&1 | grep -v -e '^Godot Engine' -e '^$'"
+
+  smoke:
+    desc: Run the game headless for a few frames. Fails on a SCRIPT ERROR.
+    deps: [import]
+    cmds:
+      - |
+        out=$({{.GODOT}} --headless --path {{.PROJECT_PATH}} --quit-after 5 2>&1)
+        echo "$out"
+        if echo "$out" | grep -q -e "SCRIPT ERROR" -e "Parse Error" -e "ERROR:"; then exit 1; fi
+
+  fmt:
+    desc: Format the GDScript code
+    cmds:
+      - "{{.GDTOOLKIT}} gdformat {{.PROJECT_PATH}}"
+
+  lint:
+    desc: Lint the GDScript code, and check the format
+    cmds:
+      - "{{.GDTOOLKIT}} gdformat --check {{.PROJECT_PATH}}"
+      - "{{.GDTOOLKIT}} gdlint {{.PROJECT_PATH}}"
+
+  check:
+    desc: Run lint, the tests, and smoke
+    cmds:
+      - task: lint
+      - task: test
+      - task: smoke
+
+  check:quiet:
+    desc: Run all checks, and print only the failures. The full output goes to .task/check.log.
+    silent: true
+    cmds:
+      - |
+        mkdir -p .task
+        log=.task/check.log
+        if task check > "$log" 2>&1; then
+          echo "check: all passed (full output: $log)"
+        else
+          status=$?
+          grep -E -- 'FAIL|SCRIPT ERROR|Parse Error|ERROR:|\.gd:[0-9]+:|would reformat|Error:|failure' "$log" | head -80
+          echo "check: failed with status $status (full output: $log)"
+          exit $status
+        fi

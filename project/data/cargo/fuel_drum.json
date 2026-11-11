@@ -1,0 +1,1 @@
+{"id": "fuel_drum", "name": "Fuel Drum", "kind": "freight", "weight": "standard", "traits": ["fluid", "volatile"], "shape": [[0, 0]]}

@@ -1,0 +1,1 @@
+{"id": "plasma_crate", "sectors": [2, 3], "client_name": "Bright Spark Mining", "freight": ["plasma_cell", "plasma_cell", "cargo_crate"], "pay": 9, "bonus": {"type": "all_intact", "pay": 8}}
