@@ -106,6 +106,7 @@ static func _hits(run: Run, direction: String, dist: Dictionary, out: Dictionary
 	for c in run.hold_cargo():
 		var d: int = dist.get(c.id, 0)
 		if d < 1:
+			_jolt(run, c, delta, out, forces)
 			continue
 		var force := run.cat.weight_value(c.weight()) * d
 		var wall: Array = []
@@ -122,7 +123,14 @@ static func _hits(run: Run, direction: String, dist: Dictionary, out: Dictionary
 		if not wall.is_empty():
 			var f := 0 if c.has(Defs.TRAIT_CUSHION) else force
 			out["hits"].append(
-				{"cargo": c.id, "other": 0, "wall": true, "force": f, "contact": wall}
+				{
+					"cargo": c.id,
+					"other": 0,
+					"wall": true,
+					"jolt": false,
+					"force": f,
+					"contact": wall
+				}
 			)
 			_take(forces, c.id, f)
 		var ids := others.keys()
@@ -131,11 +139,35 @@ static func _hits(run: Run, direction: String, dist: Dictionary, out: Dictionary
 			var cushion: bool = c.has(Defs.TRAIT_CUSHION) or run.cargo[id].has(Defs.TRAIT_CUSHION)
 			var f := 0 if cushion else force
 			out["hits"].append(
-				{"cargo": c.id, "other": id, "wall": false, "force": f, "contact": others[id]}
+				{
+					"cargo": c.id,
+					"other": id,
+					"wall": false,
+					"jolt": false,
+					"force": f,
+					"contact": others[id]
+				}
 			)
 			_take(forces, c.id, f)
 			_take(forces, id, f)
 	return forces
+
+
+## Gives the wall jolt to a cargo that did not slide and is next to the front wall:
+## a hit with a force of its weight value (SPEC Section 10.4). It does not go to the
+## cargo behind it.
+static func _jolt(run: Run, c: Cargo, delta: Vector2i, out: Dictionary, forces: Dictionary) -> void:
+	var contact: Array = []
+	for cell in c.cells():
+		if not run.inside(cell + delta):
+			contact.append(_cell(cell))
+	if contact.is_empty():
+		return
+	var f := 0 if c.has(Defs.TRAIT_CUSHION) else run.cat.weight_value(c.weight())
+	out["hits"].append(
+		{"cargo": c.id, "other": 0, "wall": true, "jolt": true, "force": f, "contact": contact}
+	)
+	_take(forces, c.id, f)
 
 
 static func _take(forces: Dictionary, id: int, force: int) -> void:

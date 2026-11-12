@@ -89,6 +89,8 @@ Use these terms in the spec, the code, the data, and the text of the game. Do no
 | **slide** | The movement of cargo in a shift step. |
 | **hit** | What happens when cargo stops after a slide (Section 10.3). |
 | **force** | The strength of a hit (Section 10.3). |
+| **front wall** | The wall in the direction of a shift step (Section 10.4). |
+| **wall jolt** | The hit that a cargo at the front wall takes when it does not slide (Section 10.4). |
 | **next to** | Two cargo are next to each other when a cell of one shares an edge with a cell of the other. Diagonal cells are not next to each other. |
 | **credits** | The money of the player. |
 | **contract** | An order to carry freight to the next station for pay (Section 15). |

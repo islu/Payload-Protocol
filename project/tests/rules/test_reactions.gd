@@ -75,10 +75,12 @@ func test_blast_removes_scrap() -> void:
 
 
 func test_chain_of_explosions() -> void:
-	# a slides to (0,0) with force 3. b slides to (0,1) with force 1. c is at (0,2) and does not move.
+	# a slides to (0,0) with force 3. b slides to (0,1) with force 1. c is at (1,2) behind the
+	# heavy box at (0,2): it does not move and is not at the front wall, so it takes no hit.
 	var a := put("bomb", 3, 0)
 	var b := put("bomb", 1, 1)
-	var c := put("bigbomb", 0, 2)
+	put("heavy", 0, 2)
+	var c := put("bigbomb", 1, 2)
 	var logs := shift([Defs.DIR_LEFT])
 	check(
 		gone(a) and gone(b),

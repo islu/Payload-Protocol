@@ -40,6 +40,11 @@ This file keeps each problem that is found and not fixed yet. Each item is in on
   To decide             Options: (a) keep it; (b) a bonus pays only when no piece of its contract is scrap, spoiled, or lost.
 - **[UX · Tests] The text player log** (found 2026-11-12, by /playtest seed 2026). A hit line does not say if it caused a reaction. A Thruster stop has no line. Each cargo has a letter and an ID.
 
+- **[Balance · Data] The free clamp and the tolls after the wall jolt** (found 2026-11-12, by /playtest round 2). Round 2 (before the wall jolt) found: the free clamp comes back each jump and fills the last gap of a tight pack; zero-risk income was about 140 for each jump, so the tolls 70 / 180 / 350 were easy. The agents suggest tolls of about 120 / 350 / 650, and 1 free clamp for each sector.
+  Waiting on a trigger  Waits for: a playtest with the wall jolt (SPEC Section 10.4).
+                        Fix then: set the tolls from the income that the playtest measures.
+- **[UX · Scenes] Small issues from round 2** (found 2026-11-12, by /playtest round 2). The station does not mark a fork step that a Sensor shows. The end screen of the text player still shows "toll 350 after 1 jump(s)". The text player does not show the Reinforce hull price.
+
 ## To Do
 
 - **[Build · Build] The web export** (found 2026-11-12, by Claude). The export templates of Godot 4.7.2 are not installed. Install them, add the web preset with no thread support, and check a build in a browser on Day 4.

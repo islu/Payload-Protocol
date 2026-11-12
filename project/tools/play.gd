@@ -388,6 +388,14 @@ func _render_warp(run: Run) -> void:
 			fork = " (fork: %s)" % " or ".join(step["options"]).to_upper()
 		_say("-- Shift step %d: %s%s" % [i, step["direction"].to_upper(), fork])
 		for h: Dictionary in step["hits"]:
+			if h.get("jolt", false):
+				_say(
+					(
+						"  %s is jolted at the front wall with force %d"
+						% [_letter(h["cargo"]), h["force"]]
+					)
+				)
+				continue
 			var target := "the wall" if h["wall"] else _letter(h["other"])
 			_say("  %s hits %s with force %d" % [_letter(h["cargo"]), target, h["force"]])
 		for r: Dictionary in step["reactions"]:

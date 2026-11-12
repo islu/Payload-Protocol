@@ -20,7 +20,7 @@ const PAGE_2_TEXT := """[b]The warp[/b]
 The hazard panel shows each shift step of the next jump, in order.
 In each step, all cargo slides in that direction until a wall or a stopped cargo blocks it.
 Force = weight × cells that it slid. Light {light}, standard {standard}, heavy {heavy}.
-A cargo that does not slide makes no hit.
+A cargo that does not slide makes no hit, but a cargo at the front wall takes a jolt: force = its weight.
 From sector 2, the last step is a fork: one of two directions. You see which one only at the warp."""
 const PAGE_3_TEXT := """[b]Traits and reactions[/b]
 

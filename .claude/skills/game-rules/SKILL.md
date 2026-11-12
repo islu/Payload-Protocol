@@ -26,7 +26,7 @@ description: Conventions of the Payload Protocol rules layer (project/rules) and
 | `contract_template.gd`, `contract.gd` | Contract data, the zone of a bonus, and an offered contract |
 | `catalog.gd` | `Catalog.from_data()`: reads the parsed JSON and checks it (content.md). `errors` has the problems |
 | `run.gd` | `Run`: the state, the phases, placement (`ROTATE_KICKS`), clamps, contracts, the shop, the mass (`cargo_mass`, `hold_mass`, `max_mass`, `fuel_fee`, `reinforce_hull`), the hazard with its fork step (`fork_options`), the dock at the warp, the pilot lines |
-| `shift.gd` | `Shift.step()`: power, slide, hits, reactions, blast area, shields. It returns the event log of the step |
+| `shift.gd` | `Shift.step()`: power, slide, hits (with the wall jolt of SPEC Section 10.4: a hit with `jolt: true`), reactions, blast area, shields. It returns the event log of the step |
 | `arrival.gd` | `Arrival.arrive()`: spoil, delivery, bonus, breach, the report, the line event |
 | `run_view.gd` | `RunView.view()`: the plain data that the UI reads. `hazard()` hides the direction of a fork step unless a Sensor is in the hold. |
 

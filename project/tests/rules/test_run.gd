@@ -90,10 +90,10 @@ func test_zone_bonus() -> void:
 
 func test_not_next_to_bonus() -> void:
 	var k := accept(["k_chips"])[0]
-	# All cargo is in row 0, so nothing slides up. The chips are at (0,0) and (1,0).
+	# A warp with no shift step: only the bonus rule counts. The chips are at (0,0) and (1,0).
 	load_row(k, 0)
 	put("tank", 4, 0)
-	warp_with([Defs.DIR_UP])
+	warp_with([])
 	eq(
 		run.credits,
 		40 + 10 + 4,
@@ -105,7 +105,7 @@ func test_not_next_to_bonus_fails() -> void:
 	var k := accept(["k_chips"])[0]
 	load_row(k, 0)
 	put("tank", 2, 0)
-	warp_with([Defs.DIR_UP])
+	warp_with([])
 	eq(run.credits, 40 + 10, "not_next_to does not pay next to the trait (SPEC Section 15.3)")
 
 

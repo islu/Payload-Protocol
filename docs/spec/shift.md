@@ -44,9 +44,19 @@ This file is part of the [game specification](../spec.md). The section numbers a
 - When other cargo stops it, it makes one hit on each cargo that blocks it. The cargo and each cargo that blocks it take the hit. All of them take the same force.
 - A cargo that a wall and other cargo stop together makes a hit on the wall and a hit on each cargo.
 - If the cargo or a cargo that blocks it has the Cushion trait, the force of that hit is 0 for both.
-- A cargo with a distance of 0 makes no hit. It can still take a hit from a cargo that stops on it.
+- A cargo with a distance of 0 makes no hit. It can still take a hit from a cargo that stops on it, and a wall jolt (Section 10.4).
 - A cargo can take more than one hit in a shift step. Each hit checks the break limits alone. The forces do not add.
 - The screen shows the force of each hit (Section 21.2).
+
+### 10.4 Wall Jolt
+
+- The **front wall** of a shift step is the wall in the direction of the step.
+- After the slide, each cargo with a distance of 0 and a cell next to the front wall takes a **wall jolt**: a hit with a force equal to its weight value.
+  - Example: in a step to the right, a standard Fragile cargo at the right wall that did not slide takes a hit with a force of 2, and breaks.
+- A clamped cargo takes the wall jolt too.
+- A Cushion cargo takes the wall jolt with a force of 0.
+- A cargo that slid into the front wall takes its hit of Section 10.3, and no wall jolt.
+- The wall jolt does not go to the cargo behind the cargo at the wall.
 
 ## 11. Reactions
 

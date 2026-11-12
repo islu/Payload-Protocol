@@ -105,9 +105,15 @@ func test_blocker_takes_the_same_force() -> void:
 
 
 func test_no_distance_no_hit() -> void:
-	var c := put("vase", 0, 0)
+	# The box at (0,0) is at the front wall. The vase at (1,0) is behind it.
+	put("box", 0, 0)
+	var c := put("vase", 1, 0)
 	var s: Dictionary = shift([Defs.DIR_LEFT])[0]
-	check(s["hits"].is_empty(), "a cargo with a distance of 0 makes no hit (SPEC Section 10.3)")
+	eq(
+		hits_of(s, c.id),
+		[],
+		"a cargo with a distance of 0 away from the front wall makes no hit (SPEC Section 10.3)"
+	)
 	eq(c.kind, Defs.KIND_FREIGHT, "the vase is intact (SPEC Section 10.3)")
 
 
@@ -157,3 +163,58 @@ func test_one_hit_for_each_blocker() -> void:
 	eq(hits.size(), 2, "a cargo with two blockers takes one hit from each (SPEC Section 10.3)")
 	eq([hits[0]["other"], hits[1]["other"]], [a.id, b.id], "the hits are in the order of the IDs")
 	eq(hits[0]["force"], 4, "force 2 x 2 (SPEC Section 10.3)")
+
+
+func test_wall_jolt() -> void:
+	# The glass (standard, Fragile) is at the right wall and cannot slide right.
+	var glass := put("glass", 5, 2)
+	var s: Dictionary = shift([Defs.DIR_RIGHT])[0]
+	var hits := hits_of(s, glass.id)
+	eq(
+		hits.size(),
+		1,
+		"a cargo at the front wall that does not slide takes a wall jolt (SPEC Section 10.4)"
+	)
+	if hits.size() == 1:
+		check(
+			hits[0]["wall"] and hits[0]["jolt"], "the jolt is a hit of the wall (SPEC Section 10.4)"
+		)
+		eq(hits[0]["force"], 2, "its force is the weight value (SPEC Section 10.4)")
+	eq(
+		glass.kind,
+		Defs.KIND_SCRAP,
+		"a standard Fragile cargo breaks from the jolt (SPEC Section 10.4)"
+	)
+
+
+func test_wall_jolt_limits() -> void:
+	# Light Fragile at the wall: force 1, no break. A box behind it: no jolt.
+	var vase := put("vase", 5, 0)
+	var box := put("box", 4, 0)
+	var s: Dictionary = shift([Defs.DIR_RIGHT])[0]
+	eq(vase.kind, Defs.KIND_FREIGHT, "a light Fragile cargo holds at force 1 (SPEC Section 10.4)")
+	eq(hits_of(s, box.id), [], "the jolt does not go to the cargo behind (SPEC Section 10.4)")
+
+
+func test_wall_jolt_clamp_and_cushion() -> void:
+	var glass := put("glass", 2, 5)
+	run.clamp_cargo(glass.id)
+	var foam := put("foam", 0, 5)
+	var s: Dictionary = shift([Defs.DIR_DOWN])[0]
+	eq(glass.kind, Defs.KIND_SCRAP, "a clamped cargo takes the wall jolt too (SPEC Section 10.4)")
+	eq(
+		hits_of(s, foam.id)[0]["force"] if hits_of(s, foam.id).size() > 0 else -1,
+		0,
+		"a Cushion takes the jolt with force 0 (SPEC Section 10.4)"
+	)
+
+
+func test_no_jolt_after_a_slide() -> void:
+	var c := put("glass", 4, 0)
+	var s: Dictionary = shift([Defs.DIR_RIGHT])[0]
+	var hits := hits_of(s, c.id)
+	eq(hits.size(), 1, "a cargo that slid into the wall takes one hit (SPEC Section 10.4)")
+	check(
+		hits.size() == 1 and not hits[0].get("jolt", false),
+		"that hit is not a jolt (SPEC Section 10.4)"
+	)
