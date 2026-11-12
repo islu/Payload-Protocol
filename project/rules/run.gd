@@ -301,6 +301,25 @@ func dock_cargo(id: int) -> String:
 	return ""
 
 
+## Puts each cargo on the dock into the hold, in the order of the dock: in the first
+## place where it fits, row by row from (0, 0), in its rotation now and then in the next
+## rotations. A cargo that does not fit stays on the dock (SPEC Section 8.1).
+func load_all() -> String:
+	if phase != Defs.PHASE_STATION:
+		return NOT_AT_STATION_TEXT
+	for id in dock.duplicate():
+		var c: Cargo = cargo[id]
+		var placed := false
+		for turn in 4:
+			var rot := (c.rot + turn) % 4
+			for y in rows:
+				for x in columns:
+					if not placed and fits(c, Vector2i(x, y), rot):
+						place_cargo(id, Vector2i(x, y), rot)
+						placed = true
+	return ""
+
+
 ## Rotates a cargo in the hold in its place. If the new shape does not fit, the
 ## cargo goes to the first place 1 cell away where it fits (SPEC Section 8.2).
 func rotate_cargo(id: int) -> String:

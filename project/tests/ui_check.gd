@@ -173,6 +173,44 @@ func _check_overlays(main: Control) -> void:
 	_check(not get_tree().paused, "Resume ends the pause (SPEC Section 20.7)")
 
 
+## Places a cargo from the dock by clicks, and checks that the next dock cargo is
+## picked up at once (SPEC Section 8.2).
+func _check_chain(station: StationScreen) -> void:
+	var run: Dictionary = GameState.view()["run"]
+	if run["dock"].size() < 2:
+		return
+	var first: int = run["dock"][0]
+	station._begin_cargo_drag(first, Vector2.ZERO)
+	var release := InputEventMouseButton.new()
+	release.button_index = MOUSE_BUTTON_LEFT
+	station._input(release)
+	var hold := station._hold
+	for y in run["hold"]["rows"]:
+		for x in run["hold"]["columns"]:
+			if not station._drag.get("id", -1) == first:
+				continue
+			if GameState.can_place(first, x, y, station._drag["rot"]):
+				var at := (
+					hold.global_position
+					+ hold.grid_origin()
+					+ (Vector2(x, y) + Vector2(0.2, 0.2)) * HoldView.CELL
+				)
+				station._drop_at(at)
+	var placed: Array = GameState.view()["run"]["cargo"].filter(
+		func(c: Dictionary) -> bool: return c["id"] == first
+	)
+	_check(placed[0]["in_hold"], "a click drops the cargo in the hold (SPEC Section 8.2)")
+	_check(
+		(
+			not station._drag.is_empty()
+			and station._drag["held"]
+			and station._drag["id"] == run["dock"][1]
+		),
+		"the next dock cargo is picked up (SPEC Section 8.2)"
+	)
+	station._end_drag()
+
+
 ## Picks up a cargo with a click, rotates it with R, and drops it with a click (SPEC Section 8.2).
 func _check_pick_up(station: StationScreen, id: int) -> void:
 	station._begin_cargo_drag(id, Vector2.ZERO)
@@ -214,6 +252,8 @@ func _play_station(state: Node, station: StationScreen) -> void:
 		if mass + add <= run["mass"]["limit"]:
 			state.accept_contract(k["index"])
 			mass += add
+	await get_tree().process_frame
+	_check_chain(station)
 	await get_tree().process_frame
 	run = state.view()["run"]
 	for c: Dictionary in run["cargo"]:

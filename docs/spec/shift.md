@@ -112,6 +112,8 @@ A **link** is a rule between two cargo that are next to each other.
 - At the station, a line connects each two cargo that have a link now: a Cooler and a Perishable cargo, and a Battery and a Shield.
 - A Perishable cargo with no Cooler next to it shows a warning icon.
 - A Shield with no power shows a "no power" icon.
+- The hold marks the front wall of the first shift step of the next jump (Section 10.4) with a line.
+- Each cargo at that wall shows a warning icon when its wall jolt would make it react (Section 11). The station shows this for the first step only: the places in the next steps depend on the slides.
 
 ## 13. Clamps
 

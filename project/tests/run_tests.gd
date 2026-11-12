@@ -10,6 +10,8 @@ func _initialize() -> void:
 	var args := OS.get_cmdline_user_args()
 	if not args.is_empty():
 		filter = args[0]
+	var errors := ErrorCounter.new()
+	OS.add_logger(errors)
 	var total := 0
 	var failed := 0
 	var files := Array(DirAccess.get_files_at(DIR))
@@ -32,10 +34,14 @@ func _initialize() -> void:
 				continue
 			total += 1
 			var test: TestCase = script.new()
+			var before := errors.count
 			test.call(name)
+			if errors.count > before:
+				test.failures.append("a script error stopped the test (see the error above)")
 			if not test.failures.is_empty():
 				failed += 1
 				for f in test.failures:
 					printerr("FAIL %s::%s: %s" % [file, name, f])
+	OS.remove_logger(errors)
 	print("tests: %d passed, %d failed" % [total - failed, failed])
 	quit(1 if failed > 0 or total == 0 else 0)

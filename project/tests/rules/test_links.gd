@@ -178,3 +178,30 @@ func test_preview_links() -> void:
 		[],
 		"no preview for a drop that is not valid"
 	)
+
+
+func test_jolt_risk_view() -> void:
+	# The first step is RIGHT. The glass (standard Fragile) and the vase (light Fragile) are at
+	# the right wall. A glass away from the wall has no risk.
+	run.hazard = PackedStringArray([Defs.DIR_RIGHT, Defs.DIR_UP])
+	run.fork_options = PackedStringArray()
+	var glass := put("glass", 5, 0)
+	var vase := put("vase", 5, 2)
+	var away := put("glass", 2, 4)
+	var v := RunView.view(run)
+	eq(
+		v["front_wall"],
+		Defs.DIR_RIGHT,
+		"the view has the front wall of the first step (SPEC Section 12.3)"
+	)
+	var risk := {}
+	for c: Dictionary in v["cargo"]:
+		risk[c["id"]] = c["jolt_risk"]
+	check(risk[glass.id], "a cargo that the jolt would break shows a warning (SPEC Section 12.3)")
+	check(
+		not risk[vase.id],
+		"a cargo that the jolt would not break shows no warning (SPEC Section 12.3)"
+	)
+	check(
+		not risk[away.id], "a cargo away from the front wall shows no warning (SPEC Section 12.3)"
+	)

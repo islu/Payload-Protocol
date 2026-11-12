@@ -68,6 +68,10 @@ func place_cargo(id: int, x: int, y: int, rot: int) -> String:
 	return _act(func() -> String: return run.place_cargo(id, Vector2i(x, y), rot))
 
 
+func load_all() -> String:
+	return _act(func() -> String: return run.load_all())
+
+
 func dock_cargo(id: int) -> String:
 	return _act(func() -> String: return run.dock_cargo(id))
 

@@ -79,6 +79,7 @@ A cargo can have more than one trait.
 - The dock is an area at the left of the station screen. It has cargo that is not in the hold.
 - The dock has no size limit. The dock shows its cargo in a list.
 - New freight and new kit go to the dock first.
+- The **Load all** button puts each cargo on the dock into the hold, in the order of the dock. Each cargo goes to the first place where it fits: the cells are tried row by row from (0, 0), first in its rotation now, then in the next rotations. A cargo that does not fit stays on the dock.
 
 ### 8.2 Move and Rotate
 
@@ -87,6 +88,7 @@ A cargo can have more than one trait.
   - **Drag:** press the left mouse button on the cargo, move the mouse, and release the button.
   - **Pick up:** click the cargo. It follows the mouse. Click again to drop it.
 - A click is a press and a release less than 8 pixels apart.
+- After the player drops a picked-up cargo from the dock into the hold, the next cargo on the dock is picked up. Thus the player can place a full contract with clicks. Esc puts the held cargo back and ends it. A drag does not pick up the next cargo.
 - While the player holds a cargo, a right click or the R key rotates it. Esc puts it back in its last place.
 - A right click on a cargo in the hold rotates it in its place. If the new shape does not fit there, the game tries the places 1 cell away, in this order: left, right, up, down, then up-left, up-right, down-left, down-right. The cargo goes to the first place where it fits.
 - If no place fits, the cargo does not change, and the game plays the deny sound.

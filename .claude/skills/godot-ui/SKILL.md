@@ -38,6 +38,9 @@ description: Conventions of the Payload Protocol scenes and UI (project/scenes) 
 
 - `StationScreen` owns the drag: `_drag` is `{kind, id, rot, grab, press, held}`. `_input()` follows the mouse, and rotates with a right click or R.
 - Two ways to move (SPEC Section 8.2): a release after a drag drops the cargo. A release closer than `CLICK_DISTANCE` to the press is a click: `held` becomes true, and the next press drops it. `_ignore_release` eats the release of that press.
+- After a click drop of a cargo from the dock (`from_dock` and `held`), `_pick_next()` picks up the next dock cargo (SPEC Section 8.2). Use `_drop_at(position)` in a check: the headless mouse does not move.
+- "Load all" calls `GameState.load_all()`. The scene does not search for places.
+- `HoldView` draws the front wall of the first step (`front_wall` of the view) and a jolt icon on each cargo with `jolt_risk` (SPEC Section 12.3).
 - A rotation in place that does not fit moves the cargo 1 cell (`Run.ROTATE_KICKS`). The scene only calls `GameState.rotate_cargo()`.
 - Do not bend the screen in a shader. The mouse must point at the cell that the player sees (SPEC Section 4.2).
 - A drop goes to the first target under the mouse: the sell area, the dock, or the hold. A drop anywhere else does nothing.

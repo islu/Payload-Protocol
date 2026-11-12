@@ -23,6 +23,8 @@ var marked: Array = []
 var preview: Dictionary = {}
 ## The ID of the cargo that the player drags. It shows faded in its old place.
 var dragging := -1
+## The front wall of the first shift step, or "" (SPEC Section 12.3).
+var front_wall := ""
 ## The offset of each cargo from its cell, in cells, by ID. The warp tweens it to 0.
 var offsets: Dictionary = {}
 ## The fade of each cargo, by ID (1 is opaque). The arrival fades out delivered freight.
@@ -40,6 +42,7 @@ func set_view(run: Dictionary) -> void:
 	rows = run["hold"]["rows"]
 	cargo = run["cargo"]
 	links = run["links"]
+	front_wall = run.get("front_wall", "")
 	custom_minimum_size = Vector2(run["hold"]["max_columns"], run["hold"]["max_rows"]) * CELL
 	queue_redraw()
 
@@ -146,8 +149,10 @@ func _draw() -> void:
 			var off: Vector2 = offsets.get(c["id"], Vector2.ZERO)
 			var at := o + (Vector2(c["x"], c["y"]) + off) * CELL
 			CargoDraw.draw(self, c, c["shape"], at, CELL, alpha)
-			if c["no_cooler"] or c["no_power"]:
+			if c.get("no_cooler", false) or c.get("no_power", false):
 				_draw_warning(at + _first_cell_offset(c))
+			if c.get("jolt_risk", false):
+				_draw_jolt(at + _first_cell_offset(c))
 	for id: int in marked:
 		var c := _cargo(id)
 		if not c.is_empty() and c["in_hold"]:
@@ -164,6 +169,7 @@ func _draw() -> void:
 					false,
 					3.0
 				)
+	_draw_front_wall(o)
 	_draw_links(o)
 	if not preview.is_empty():
 		_draw_preview_links(o)
@@ -214,6 +220,43 @@ func _center(c: Dictionary) -> Vector2:
 	for s: Dictionary in c["shape"]:
 		sum += Vector2(c["x"] + s["x"], c["y"] + s["y"]) + Vector2(0.5, 0.5)
 	return sum / c["shape"].size() * CELL
+
+
+## Draws the front wall of the first shift step as a dashed line with arrows (SPEC Section 12.3).
+func _draw_front_wall(o: Vector2) -> void:
+	if front_wall == "":
+		return
+	var w := columns * CELL
+	var h := rows * CELL
+	var a := o
+	var b := o
+	match front_wall:
+		Defs.DIR_LEFT:
+			b = o + Vector2(0, h)
+		Defs.DIR_RIGHT:
+			a = o + Vector2(w, 0)
+			b = o + Vector2(w, h)
+		Defs.DIR_UP:
+			b = o + Vector2(w, 0)
+		Defs.DIR_DOWN:
+			a = o + Vector2(0, h)
+			b = o + Vector2(w, h)
+	var out := Vector2(Defs.delta(front_wall)) * 10.0
+	draw_dashed_line(a + out, b + out, Palette.WARN, 4.0, 14.0)
+	for k in 3:
+		var p := a.lerp(b, (k + 1) / 4.0) + out * 2.0
+		var d := Vector2(Defs.delta(front_wall)) * 10.0
+		var side := Vector2(-d.y, d.x)
+		draw_colored_polygon(
+			PackedVector2Array([p + d, p - d * 0.3 + side, p - d * 0.3 - side]), Palette.WARN
+		)
+
+
+## Draws the jolt warning on a cargo: the wall jolt would make it react (SPEC Section 12.3).
+func _draw_jolt(top_left: Vector2) -> void:
+	var p := top_left + Vector2(CELL * 0.72, CELL * 0.62)
+	draw_circle(p, 12.0, Palette.BAD)
+	CargoDraw.draw_icon(self, Defs.TRAIT_ELECTRONIC, p, 14.0, Palette.BACKGROUND)
 
 
 func _draw_warning(top_left: Vector2) -> void:

@@ -488,6 +488,10 @@ msgstr "或"
 msgid "Mass {mass}"
 msgstr "載重 {mass}"
 
+#: project/scenes/station/station_screen.gd
+msgid "Load all"
+msgstr "全部裝入"
+
 #: project/scenes/warp/warp_screen.gd
 msgid "Shift {n}: {arrow} {direction}"
 msgstr "位移 {n}：{arrow} {direction}"

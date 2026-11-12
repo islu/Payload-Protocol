@@ -27,6 +27,7 @@ const ACTIONS := {
 	"buyclamp": "buyclamp",
 	"upgrade": "upgrade column|row",
 	"reinforce": "reinforce (adds to the mass limit)",
+	"loadall": "loadall (puts each dock cargo in the first place that fits)",
 	"sell": "sell <kit>",
 	"clear": "clear <scrap>",
 	"warp": "warp",
@@ -139,6 +140,8 @@ func _act(run: Run, parts: Array) -> String:
 			return run.buy_clamp()
 		"reinforce":
 			return run.reinforce_hull()
+		"loadall":
+			return run.load_all()
 		"upgrade":
 			return run.upgrade_hold(parts[1] if parts.size() > 1 else "")
 		"sell":
@@ -235,6 +238,13 @@ func _render_station(run: Run, v: Dictionary) -> void:
 		else:
 			dirs.append(str(step["known"]).to_upper())
 	_say("Hazard of the next jump: " + " then ".join(dirs))
+	if v["front_wall"] != "":
+		_say(
+			(
+				"Front wall of step 1: %s (cargo there takes a jolt of its weight)"
+				% v["front_wall"].to_upper()
+			)
+		)
 	_render_hold(run, v)
 	_say("Dock:" + ("" if not v["dock"].is_empty() else " (empty)"))
 	for c: Dictionary in v["cargo"]:
@@ -340,6 +350,8 @@ func _cargo_line(c: Dictionary) -> String:
 		tags.append("NO COOLER")
 	if c["no_power"]:
 		tags.append("NO POWER")
+	if c.get("jolt_risk", false):
+		tags.append("JOLT RISK at the front wall")
 	var where := " at (%d,%d) rot %d" % [c["x"], c["y"], c["rot"]] if c["in_hold"] else ""
 	return (
 		"%s id %d %s [%s %s%s]%s %s"

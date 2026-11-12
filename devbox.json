@@ -1,11 +1,12 @@
 {
   "packages": [
     "go-task@3.53.1",
-    "uv@0.12.5"
+    "uv@0.12.5",
+    "coreutils@9.11"
   ],
   "env": {
-    "DEVBOX_SHELL_ENABLED": "1",
-    "UV_CACHE_DIR": "$PWD/.local/uv/cache",
+    "DEVBOX_SHELL_ENABLED":  "1",
+    "UV_CACHE_DIR":          "$PWD/.local/uv/cache",
     "UV_PYTHON_INSTALL_DIR": "$PWD/.local/uv/python"
   }
 }

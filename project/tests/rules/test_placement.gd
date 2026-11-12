@@ -172,3 +172,55 @@ func test_clamp_on_scrap() -> void:
 	var c := put("box", 0, 0)
 	c.kind = Defs.KIND_SCRAP
 	eq(run.clamp_cargo(c.id), "", "a clamp can go on scrap (SPEC Section 13)")
+
+
+func test_load_all() -> void:
+	# The bar fits at (0,0). The box goes to the next free cell: (2,0).
+	var bar := on_dock("bar")
+	var box := on_dock("box")
+	eq(run.load_all(), "", "Load all works (SPEC Section 8.1)")
+	eq(
+		[bar.in_hold, bar.pos],
+		[true, Vector2i(0, 0)],
+		"the first cargo goes to the first place (SPEC Section 8.1)"
+	)
+	eq(
+		[box.in_hold, box.pos],
+		[true, Vector2i(2, 0)],
+		"the next cargo goes to the next free place (SPEC Section 8.1)"
+	)
+	check(run.dock.is_empty(), "the dock is empty (SPEC Section 8.1)")
+
+
+func test_load_all_full() -> void:
+	# Each cell of the hold is full except (5,5). The bar does not fit; the box does.
+	for y in run.rows:
+		for x in run.columns:
+			if Vector2i(x, y) != Vector2i(5, 5):
+				put("light", x, y)
+	var bar := on_dock("bar")
+	var box := on_dock("box")
+	run.load_all()
+	check(
+		not bar.in_hold and bar.id in run.dock,
+		"a cargo that does not fit stays on the dock (SPEC Section 8.1)"
+	)
+	eq(
+		[box.in_hold, box.pos],
+		[true, Vector2i(5, 5)],
+		"a cargo after it still goes in (SPEC Section 8.1)"
+	)
+
+
+func test_load_all_rotates() -> void:
+	# Only column 5 is free. The bar fits there upright.
+	for y in run.rows:
+		for x in 5:
+			put("light", x, y)
+	var bar := on_dock("bar")
+	run.load_all()
+	eq(
+		[bar.in_hold, bar.rot, bar.pos],
+		[true, 1, Vector2i(5, 0)],
+		"Load all tries the next rotations (SPEC Section 8.1)"
+	)

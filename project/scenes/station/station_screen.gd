@@ -46,6 +46,7 @@ const REINFORCE_TEXT := "Reinforce hull +{amount} ({price} cr)"
 const OR_TEXT := "or"
 const CONTRACT_MASS_TEXT := "Mass {mass}"
 const TIP_MASS_TEXT := "Mass {mass}"
+const LOAD_ALL_TEXT := "Load all"
 const SIDE_WIDTH := 470.0
 ## A press and a release closer than this are a click: a pick up (SPEC Section 8.2).
 const CLICK_DISTANCE := 8.0
@@ -129,7 +130,11 @@ func _build() -> void:
 	left.custom_minimum_size.x = SIDE_WIDTH
 	left.add_theme_constant_override("separation", 10)
 	body.add_child(left)
-	_label(left, DOCK_TEXT, 22, Palette.ACCENT)
+	var dock_head := HBoxContainer.new()
+	left.add_child(dock_head)
+	var dock_title := _label(dock_head, DOCK_TEXT, 22, Palette.ACCENT)
+	dock_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_button(dock_head, tr(LOAD_ALL_TEXT), func() -> void: _act(GameState.load_all(), "clack"))
 	_dock_panel = _panel(left)
 	_dock_panel.custom_minimum_size.y = 200
 	_dock_flow = HFlowContainer.new()
@@ -564,6 +569,7 @@ func _begin_cargo_drag(id: int, grab: Vector2) -> void:
 		"grab": grab,
 		"press": get_global_mouse_position(),
 		"held": false,
+		"from_dock": not c["in_hold"],
 	}
 	_hold.dragging = id
 	_drag_layer.start(c, c["rotations"][c["rot"]], grab)
@@ -657,7 +663,11 @@ func _update_drag() -> void:
 
 
 func _drop() -> void:
-	var mouse := get_global_mouse_position()
+	_drop_at(get_global_mouse_position())
+
+
+## Drops the held cargo or clamp at a global position (SPEC Sections 8.2 and 13).
+func _drop_at(mouse: Vector2) -> void:
 	var drag := _drag
 	_end_drag()
 	if drag["kind"] == "clamp":
@@ -678,8 +688,21 @@ func _drop() -> void:
 			_act(GameState.dock_cargo(id))
 	elif _hold.is_over(mouse):
 		var origin := _hold.snap_origin(mouse, drag["grab"])
-		_act(GameState.place_cargo(id, origin.x, origin.y, drag["rot"]), "clack")
+		var err := GameState.place_cargo(id, origin.x, origin.y, drag["rot"])
+		_act(err, "clack")
+		# A picked-up cargo from the dock: pick up the next one (SPEC Section 8.2).
+		if err == "" and drag["held"] and drag["from_dock"]:
+			_pick_next()
 	# A drop anywhere else leaves the cargo in its last place (SPEC Section 8.3).
+
+
+## Picks up the next cargo on the dock after a placement by clicks (SPEC Section 8.2).
+func _pick_next() -> void:
+	var dock: Array = GameState.view()["run"]["dock"]
+	if dock.is_empty():
+		return
+	_begin_cargo_drag(dock[0], Vector2.ZERO)
+	_drag["held"] = true
 
 
 func _end_drag() -> void:

@@ -18,6 +18,27 @@ static func terms(cat: Catalog) -> Array:
 ## Returns the names of the words of the rules: {kinds, weights, directions}, each a
 ## map from the ID to the name (SPEC Section 4.4). It also has the weight value of each
 ## weight (weight_values) and the break limit of each trait (limits), for the rules text.
+## Returns the IDs of the cargo at the front wall of the first shift step that would
+## react to its wall jolt, as a set (SPEC Sections 10.4 and 12.3).
+static func jolt_risks(run: Run) -> Dictionary:
+	var out := {}
+	if run.hazard.is_empty():
+		return out
+	var delta := Defs.delta(run.hazard[0])
+	for c in run.hold_cargo():
+		var at_wall := false
+		for cell in c.cells():
+			if not run.inside(cell + delta):
+				at_wall = true
+		if not at_wall:
+			continue
+		var f := 0 if c.has(Defs.TRAIT_CUSHION) else run.cat.weight_value(c.weight())
+		for t in Defs.LIMIT_TRAITS:
+			if c.has(t) and f >= run.cat.break_limit(t):
+				out[c.id] = true
+	return out
+
+
 ## Returns the hazard of the next jump: each step is {directions, fork, known}.
 ## A step that is not a fork has one direction, and known is that direction. A fork
 ## step has two directions. Its known is "" unless a Sensor is in the hold (SPEC Section 18).
@@ -85,6 +106,7 @@ static func view(run: Run) -> Dictionary:
 		"contracts": [],
 		"shop": {},
 		"hazard": hazard(run),
+		"front_wall": run.hazard[0] if not run.hazard.is_empty() else "",
 		"mass":
 		{
 			"hold": run.hold_mass(),
@@ -102,8 +124,11 @@ static func view(run: Run) -> Dictionary:
 	ids.sort()
 	var powered := Shift.power_check(run)
 	var hold := run.hold_cargo()
+	var risky := jolt_risks(run)
 	for id: int in ids:
-		v["cargo"].append(_cargo(run, run.cargo[id], hold, powered))
+		var cv := _cargo(run, run.cargo[id], hold, powered)
+		cv["jolt_risk"] = risky.has(id)
+		v["cargo"].append(cv)
 	for i in run.contracts.size():
 		v["contracts"].append(_contract(run, i, run.contracts[i]))
 	var offers := []

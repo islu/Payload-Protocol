@@ -455,6 +455,10 @@ msgstr ""
 msgid "Mass {mass}"
 msgstr ""
 
+#: project/scenes/station/station_screen.gd
+msgid "Load all"
+msgstr ""
+
 #: project/scenes/warp/warp_screen.gd
 msgid "Shift {n}: {arrow} {direction}"
 msgstr ""
