@@ -74,3 +74,11 @@ static func to_view(shape: Array[Vector2i]) -> Array:
 	for c in shape:
 		out.append({"x": c.x, "y": c.y})
 	return out
+
+
+## Returns the shape in each of the 4 rotations, for the view (SPEC Section 8.2).
+static func rotations_view(shape: Array[Vector2i]) -> Array:
+	var out := []
+	for rot in 4:
+		out.append(to_view(rotate(shape, rot)))
+	return out

@@ -26,11 +26,19 @@ description: Conventions of the Payload Protocol scenes and UI (project/scenes) 
 
 | Folder | Content |
 | --- | --- |
-| `scenes/main/` | The main scene. It switches the screens. |
-| `scenes/common/` | `GameState` (autoload), `DataFiles`, shared helpers |
-| `scenes/<screen>/` | One folder for each screen of SPEC Section 20: `title`, `station`, `warp`, `arrival`, `toll`, `end` |
+| `scenes/main/` | `main.gd`: it shows the screen of the phase. `phase_panel.gd`: the simple arrival, toll, and end panel until those screens exist. |
+| `scenes/common/` | `GameState` (autoload), `DataFiles`, `Palette` (all colors), `GameText` (`{key, args}` text), `CargoDraw` (draws a cargo), `CargoChip` (a cargo in a list) |
+| `scenes/station/` | `StationScreen` (the layout, the drag, the drops, the tooltip), `HoldView` (the grid, the cargo, the links, the preview), `DragLayer`, `ClampChip` |
+| `scenes/<screen>/` | One folder for each other screen of SPEC Section 20: `title`, `warp`, `arrival`, `toll`, `end` |
 
-## 4. Checks
+## 4. The Drag
 
+- `StationScreen` owns the drag: `_drag` is `{kind, id, rot, grab}`. `_input()` follows the mouse, rotates with a right click or R, and drops on release.
+- A drop goes to the first target under the mouse: the sell area, the dock, or the hold. A drop anywhere else does nothing.
+- The shape of each rotation comes from `rotations` in the cargo view. Do not rotate a shape in a scene.
+
+## 5. Checks
+
+- `task test:ui` (`tests/ui_check.tscn`) plays a full run through the screens and calls the station functions (tooltip, marks, drag, warp). Add a call there for each new screen function. It is a scene, so that the autoload `GameState` exists.
 - `task smoke` runs the main scene for 5 frames and fails on an error.
 - Do not launch the game with a window or take screenshots to verify a change.

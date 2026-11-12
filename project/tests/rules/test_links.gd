@@ -146,3 +146,35 @@ func test_link_view() -> void:
 		["cheese", "shield"],
 		"the lone cheese and the lone shield show a warning (SPEC Section 12.3)"
 	)
+
+
+func test_view_has_each_rotation() -> void:
+	put("ell", 0, 0, 1)
+	var c: Dictionary = RunView.view(run)["cargo"][0]
+	eq(c["rotations"].size(), 4, "the view has the shape in each rotation (SPEC Section 8.2)")
+	eq(
+		c["rotations"][1],
+		c["shape"],
+		"the shape now is the shape of its rotation (SPEC Section 8.2)"
+	)
+
+
+func test_preview_links() -> void:
+	put("cooler", 0, 0)
+	var cheese := on_dock("cheese")
+	var links := RunView.preview_links(run, cheese.id, Vector2i(1, 0), 0)
+	eq(links.size(), 1, "a drag shows the link that the cargo would make (SPEC Section 8.3)")
+	eq(
+		RunView.preview_links(run, cheese.id, Vector2i(3, 3), 0),
+		[],
+		"no link away from the Cooler (SPEC Section 8.3)"
+	)
+	check(
+		not cheese.in_hold and cheese.id in run.dock,
+		"a preview does not move the cargo (SPEC Section 8.3)"
+	)
+	eq(
+		RunView.preview_links(run, cheese.id, Vector2i(0, 0), 0),
+		[],
+		"no preview for a drop that is not valid"
+	)

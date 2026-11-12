@@ -38,6 +38,16 @@ tasks:
         if [ $status -ne 0 ]; then exit $status; fi
         if echo "$out" | grep -q -e "SCRIPT ERROR" -e "Parse Error"; then exit 1; fi
 
+  test:ui:
+    desc: Play a full run through the screens, headless. Fails on a SCRIPT ERROR.
+    deps: [import]
+    cmds:
+      - |
+        out=$({{.GODOT}} --headless --path {{.PROJECT_PATH}} res://tests/ui_check.tscn 2>&1) && status=0 || status=$?
+        echo "$out" | grep -v -e '^Godot Engine' -e '^$'
+        if [ $status -ne 0 ]; then exit $status; fi
+        if echo "$out" | grep -q -e "SCRIPT ERROR" -e "Parse Error"; then exit 1; fi
+
   play:
     desc: "The text player of the playtest skill. Run it with no command for the commands: task play -- help"
     cmds:
@@ -52,6 +62,18 @@ tasks:
         echo "$out"
         if echo "$out" | grep -q -e "SCRIPT ERROR" -e "Parse Error" -e "ERROR:"; then exit 1; fi
 
+  export:web:
+    desc: Export the web build to build/web (needs the export templates of Godot 4.7.2)
+    deps: [import]
+    cmds:
+      - mkdir -p build/web
+      - "{{.GODOT}} --headless --path {{.PROJECT_PATH}} --export-release Web ../build/web/index.html"
+
+  serve:web:
+    desc: Serve build/web at http://localhost:8060 to check the web build in a browser
+    cmds:
+      - uv run --no-project python -m http.server 8060 --directory build/web
+
   fmt:
     desc: Format the GDScript code
     cmds:
@@ -64,10 +86,11 @@ tasks:
       - "{{.GDTOOLKIT}} gdlint {{.PROJECT_PATH}}"
 
   check:
-    desc: Run lint, the tests, and smoke
+    desc: Run lint, the rule tests, the UI check, and smoke
     cmds:
       - task: lint
       - task: test
+      - task: test:ui
       - task: smoke
 
   check:quiet:

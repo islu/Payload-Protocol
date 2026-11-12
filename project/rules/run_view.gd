@@ -15,6 +15,18 @@ static func terms(cat: Catalog) -> Array:
 	return out
 
 
+## Returns the names of the words of the rules: {kinds, weights, directions}, each a
+## map from the ID to the name (SPEC Section 4.4).
+static func names(cat: Catalog) -> Dictionary:
+	var out := {}
+	var groups := {"kinds": Defs.KINDS, "weights": Defs.WEIGHTS, "directions": Defs.DIRECTIONS}
+	for group: String in groups:
+		out[group] = {}
+		for id: String in groups[group]:
+			out[group][id] = cat.term_name(group, id)
+	return out
+
+
 static func text(key: String, args: Dictionary = {}) -> Dictionary:
 	return {"key": key, "args": args}
 
@@ -74,6 +86,7 @@ static func view(run: Run) -> Dictionary:
 					"price": d.price,
 					"bought": run.shop[i]["bought"],
 					"weight": d.weight,
+					"weight_value": cat.weight_value(d.weight),
 					"traits": Array(d.traits),
 					"shape": Shapes.to_view(d.shape),
 				}
@@ -87,6 +100,8 @@ static func view(run: Run) -> Dictionary:
 		"upgrade_price": run.upgrade_price(),
 		"can_column": run.can_upgrade(Defs.AXIS_COLUMN),
 		"can_row": run.can_upgrade(Defs.AXIS_ROW),
+		"breach_fee": cat.price("breach_fee"),
+		"scrap_cell": cat.price("scrap_cell"),
 	}
 	if run.phase == Defs.PHASE_TOLL:
 		v["toll_gate"] = {
@@ -113,6 +128,8 @@ static func _cargo(run: Run, c: Cargo, hold: Array[Cargo], powered: Dictionary) 
 		"weight_value": run.cat.weight_value(c.weight()),
 		"traits": [] if c.kind == Defs.KIND_SCRAP else Array(c.def.traits),
 		"shape": Shapes.to_view(c.shape()),
+		# The shape in each rotation, so that a drag can rotate it (SPEC Section 8.2).
+		"rotations": Shapes.rotations_view(c.def.shape),
 		"rot": c.rot,
 		"x": c.pos.x,
 		"y": c.pos.y,
@@ -146,6 +163,27 @@ static func links(run: Run) -> Array:
 	return out
 
 
+## Returns the links that a cargo would make at a place in the hold: the links
+## with that cargo only (SPEC Section 8.3). It returns [] when the drop is not valid.
+## It puts the cargo at the place, reads the links, and puts it back.
+static func preview_links(run: Run, id: int, pos: Vector2i, rot: int) -> Array:
+	if not run.can_place(id, pos, rot):
+		return []
+	var c: Cargo = run.cargo[id]
+	var old := [c.pos, c.rot, c.in_hold]
+	c.pos = pos
+	c.rot = rot
+	c.in_hold = true
+	var out := []
+	for l: Dictionary in links(run):
+		if l["from"] == id or l["to"] == id:
+			out.append(l)
+	c.pos = old[0]
+	c.rot = old[1]
+	c.in_hold = old[2]
+	return out
+
+
 static func _contract(run: Run, i: int, k: Contract) -> Dictionary:
 	var t := k.template
 	var freight := []
@@ -158,6 +196,7 @@ static func _contract(run: Run, i: int, k: Contract) -> Dictionary:
 					"def_id": d.id,
 					"name": d.name,
 					"weight": d.weight,
+					"weight_value": run.cat.weight_value(d.weight),
 					"traits": Array(d.traits),
 					"shape": Shapes.to_view(d.shape),
 				}

@@ -25,13 +25,14 @@ func is_loaded() -> bool:
 	return catalog != null and catalog.errors.is_empty()
 
 
-## Returns the visible game state: {version, terms, run}. run is {} with no run.
+## Returns the visible game state: {version, terms, names, run}. run is {} with no run.
 func view() -> Dictionary:
 	if not is_loaded():
-		return {"version": VERSION, "terms": [], "run": {}}
+		return {"version": VERSION, "terms": [], "names": {}, "run": {}}
 	return {
 		"version": VERSION,
 		"terms": RunView.terms(catalog),
+		"names": RunView.names(catalog),
 		"run": RunView.view(run) if run != null else {},
 	}
 
@@ -56,6 +57,11 @@ func abandon_run() -> void:
 ## Reports whether a drop of a cargo at a place is valid (SPEC Section 8.3).
 func can_place(id: int, x: int, y: int, rot: int) -> bool:
 	return run != null and run.can_place(id, Vector2i(x, y), rot)
+
+
+## Returns the links that a drop of a cargo at a place would make (SPEC Section 8.3).
+func preview_links(id: int, x: int, y: int, rot: int) -> Array:
+	return RunView.preview_links(run, id, Vector2i(x, y), rot) if run != null else []
 
 
 func place_cargo(id: int, x: int, y: int, rot: int) -> String:

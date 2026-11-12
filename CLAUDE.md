@@ -2,7 +2,7 @@
 
 Payload Protocol is a single-player puzzle game about cargo in the hold of a spaceship. The player packs freight into a grid. Each warp shifts the hold: cargo slides, hits, breaks, explodes, and leaks (SPEC Section 1).
 
-**Status:** The rules of Sections 5 to 19 are in the code, with tests and a text player. The screens (Section 20) and the feedback (Section 21) are not made yet. The main scene is a placeholder.
+**Status:** The rules of Sections 5 to 19 are in the code, with tests and a text player. The station screen (Section 20.2) is in the code. The arrival, the toll gate, and the run end use a simple `PhasePanel`. The feedback (Section 21), the sounds, and the zh-TW text are not made yet.
 
 [docs/spec.md](docs/spec.md) is the source of truth for game design. If the code and the spec do not agree, ask the user. Do not change the spec without approval. [docs/content.md](docs/content.md) has the content design rules. [docs/plan.md](docs/plan.md) has the plan and the milestones.
 
@@ -55,11 +55,14 @@ task import       # Import the project headless. Run after a clone, and after yo
 task run          # Run the game
 task editor       # Open the Godot editor
 task test         # Run the rule tests. Filter by file: task test -- slide
+task test:ui      # Play a full run through the screens, headless
+task export:web   # Export the web build to build/web
+task serve:web    # Serve build/web at http://localhost:8060
 task play -- help # The text player: one command in each call (the playtest skill)
 task smoke        # Run the game headless for 5 frames. Fails on an error.
 task fmt          # Format the GDScript code
 task lint         # Lint the GDScript code, and check the format
-task check        # Run lint, test, and smoke
+task check        # Run lint, test, test:ui, and smoke
 task check:quiet  # Run task check. Print only the failures. The full output is in .task/check.log.
 ```
 
@@ -69,7 +72,7 @@ task check:quiet  # Run task check. Print only the failures. The full output is 
 project/rules/        # The game rules: pure GDScript classes. Run is the state and the actions.
 project/scenes/       # Scenes and scripts by feature. common/game_state.gd is the autoload GameState.
 project/data/         # Game content (JSON): rules.json, terms.json, cargo/, contracts/, lines/
-project/tests/        # run_tests.gd, TestCase, and the rule tests in tests/rules/test_*.gd
+project/tests/        # run_tests.gd, TestCase, the rule tests in tests/rules/test_*.gd, and ui_check.tscn
 project/tools/        # play.gd, the text player
 project/locale/       # The .po file for each language
 project/art/          # Font, theme, and optional art
