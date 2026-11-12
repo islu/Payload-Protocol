@@ -5,7 +5,7 @@ This file records each art, font, and sound file that the project did not make. 
 - Record the source at the original creator or vendor, not at a repost.
 - Do not record "free" or "royalty-free" as a license. Find the license name.
 - Keep the attribution when you rename, convert, crop, or pack a file.
-- Files that a tool of the project makes need no row.
+- Files that a tool of the project makes need no row. The placeholder sounds in `project/audio/sfx` come from `tools/sfx/make_sfx.py`.
 
 | File | Source | License | Attribution | Changes | Added |
 | --- | --- | --- | --- | --- | --- |

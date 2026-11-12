@@ -2,8 +2,6 @@ class_name CargoDraw
 ## Draws a cargo shape with its color, its trait marks, its weight, and its clamp
 ## (SPEC Section 4.2). The hold, the dock, the contracts, and the drag use it.
 
-const FONT_SIZE := 13
-
 
 ## Draws a cargo at a place. shape is a list of {x, y}. origin is the upper left
 ## of the cell (0, 0). alpha fades the cargo.
@@ -30,23 +28,16 @@ static func draw(
 		_draw_cracks(canvas, cells, origin, cell, color)
 	var first := _first_cell(cells)
 	var top_left := origin + Vector2(first) * cell
-	if cell < 30.0:
+	if cell < 18.0:
 		return
-	var font := ThemeDB.fallback_font
-	var y := top_left.y + gap + FONT_SIZE + 2
+	# One icon for each trait, in a row at the top of the first cell (SPEC Section 4.2).
+	var icon := clampf(cell * 0.26, 10.0, 22.0)
+	var x := top_left.x + gap + 4 + icon / 2
 	for t: String in cargo.get("traits", []):
 		var mark_color: Color = Palette.TRAIT_COLORS.get(t, Palette.TEXT)
 		mark_color.a *= alpha
-		canvas.draw_string(
-			font,
-			Vector2(top_left.x + gap + 4, y),
-			Palette.TRAIT_MARKS.get(t, t),
-			HORIZONTAL_ALIGNMENT_LEFT,
-			-1,
-			FONT_SIZE,
-			mark_color
-		)
-		y += FONT_SIZE + 1
+		draw_icon(canvas, t, Vector2(x, top_left.y + gap + 4 + icon / 2), icon, mark_color)
+		x += icon + 4
 	# The weight: one dot for each weight value (SPEC Section 6.1).
 	var dots: int = cargo.get("weight_value", 0)
 	for i in dots:
@@ -54,6 +45,119 @@ static func draw(
 		canvas.draw_circle(p, 3.0, Color(Palette.TEXT, alpha))
 	if cargo.get("clamped", false):
 		canvas.draw_rect(clamp_rect(top_left, cell), Color(Palette.CLAMP, alpha))
+
+
+## Draws the icon of a trait in a square of a size at a center.
+static func draw_icon(
+	canvas: CanvasItem, trait_id: String, at: Vector2, size: float, color: Color
+) -> void:
+	var h := size / 2.0
+	match trait_id:
+		Defs.TRAIT_FRAGILE:  # A glass: a cup on a stem
+			canvas.draw_polyline(
+				PackedVector2Array(
+					[
+						at + Vector2(-h * 0.7, -h),
+						at + Vector2(-h * 0.4, 0),
+						at + Vector2(h * 0.4, 0),
+						at + Vector2(h * 0.7, -h)
+					]
+				),
+				color,
+				2.0
+			)
+			canvas.draw_line(at, at + Vector2(0, h * 0.8), color, 2.0)
+			canvas.draw_line(at + Vector2(-h * 0.5, h), at + Vector2(h * 0.5, h), color, 2.0)
+		Defs.TRAIT_VOLATILE:  # A burst: a star with 8 points
+			var points := PackedVector2Array()
+			for i in 16:
+				var r := h if i % 2 == 0 else h * 0.45
+				points.append(at + Vector2.from_angle(i * TAU / 16 - PI / 2) * r)
+			canvas.draw_colored_polygon(points, color)
+		Defs.TRAIT_FLUID:  # A drop
+			canvas.draw_circle(at + Vector2(0, h * 0.25), h * 0.6, color)
+			canvas.draw_colored_polygon(
+				PackedVector2Array(
+					[at + Vector2(0, -h), at + Vector2(h * 0.55, 0), at + Vector2(-h * 0.55, 0)]
+				),
+				color
+			)
+		Defs.TRAIT_ELECTRONIC:  # A bolt
+			canvas.draw_colored_polygon(
+				PackedVector2Array(
+					[
+						at + Vector2(h * 0.2, -h),
+						at + Vector2(-h * 0.6, h * 0.15),
+						at + Vector2(-h * 0.05, h * 0.15),
+						at + Vector2(-h * 0.2, h),
+						at + Vector2(h * 0.6, -h * 0.15),
+						at + Vector2(h * 0.05, -h * 0.15)
+					]
+				),
+				color
+			)
+		Defs.TRAIT_PERISHABLE:  # A leaf
+			canvas.draw_colored_polygon(
+				PackedVector2Array(
+					[
+						at + Vector2(-h, h),
+						at + Vector2(-h * 0.6, -h * 0.4),
+						at + Vector2(h, -h),
+						at + Vector2(h * 0.4, h * 0.6)
+					]
+				),
+				color
+			)
+		Defs.TRAIT_THRUSTER:  # Two chevrons
+			for dx in [-h * 0.5, h * 0.3]:
+				canvas.draw_polyline(
+					PackedVector2Array(
+						[
+							at + Vector2(dx - h * 0.3, -h * 0.8),
+							at + Vector2(dx + h * 0.3, 0),
+							at + Vector2(dx - h * 0.3, h * 0.8)
+						]
+					),
+					color,
+					2.5
+				)
+		Defs.TRAIT_CUSHION:  # Two waves
+			for dy in [-h * 0.35, h * 0.35]:
+				var wave := PackedVector2Array()
+				for i in 7:
+					wave.append(
+						at + Vector2(-h + i * h / 3.0, dy + (h * 0.25 if i % 2 == 0 else -h * 0.25))
+					)
+				canvas.draw_polyline(wave, color, 2.0)
+		Defs.TRAIT_COOLER:  # A snowflake
+			for i in 3:
+				var d := Vector2.from_angle(i * PI / 3) * h
+				canvas.draw_line(at - d, at + d, color, 2.0)
+		Defs.TRAIT_BATTERY:  # A battery
+			canvas.draw_rect(
+				Rect2(at + Vector2(-h * 0.8, -h * 0.5), Vector2(h * 1.4, h)), color, false, 2.0
+			)
+			canvas.draw_rect(
+				Rect2(at + Vector2(h * 0.6, -h * 0.2), Vector2(h * 0.3, h * 0.4)), color
+			)
+			canvas.draw_rect(
+				Rect2(at + Vector2(-h * 0.6, -h * 0.3), Vector2(h * 0.6, h * 0.6)), color
+			)
+		Defs.TRAIT_SHIELD:  # A shield
+			canvas.draw_colored_polygon(
+				PackedVector2Array(
+					[
+						at + Vector2(-h * 0.8, -h),
+						at + Vector2(h * 0.8, -h),
+						at + Vector2(h * 0.8, 0),
+						at + Vector2(0, h),
+						at + Vector2(-h * 0.8, 0)
+					]
+				),
+				color
+			)
+		_:
+			canvas.draw_circle(at, h * 0.5, color)
 
 
 ## The rect of the clamp mark of a cargo: a click on it takes the clamp off (SPEC Section 13).

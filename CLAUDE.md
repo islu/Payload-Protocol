@@ -2,7 +2,7 @@
 
 Payload Protocol is a single-player puzzle game about cargo in the hold of a spaceship. The player packs freight into a grid. Each warp shifts the hold: cargo slides, hits, breaks, explodes, and leaks (SPEC Section 1).
 
-**Status:** The rules of Sections 5 to 19 are in the code, with tests and a text player. All screens of Section 20 are in the code: the title, the station, the warp with the arrival report, the toll gate and the run end (`PhasePanel`), the pause menu, the settings, and How to Play (text only). The drawn effects of Section 21 are in the code. The sound files, the CRT filter, the hints, and the zh-TW text are not made yet.
+**Status:** The rules of Sections 5 to 19 are in the code, with tests and a text player. All screens of Section 20 are in the code: the title, the station, the warp with the arrival report, the toll gate and the run end (`PhasePanel`), the pause menu, the settings, and How to Play (text only). The effects of Section 21, the placeholder sounds, the CRT filter, the trait icons, and the zh-TW text are in the code. The hints (Section 23.3), the pictures of How to Play, and music are not made yet.
 
 [docs/spec.md](docs/spec.md) is the source of truth for game design. If the code and the spec do not agree, ask the user. Do not change the spec without approval. [docs/content.md](docs/content.md) has the content design rules. [docs/plan.md](docs/plan.md) has the plan and the milestones.
 
@@ -60,6 +60,8 @@ task export:web   # Export the web build to build/web
 task serve:web    # Serve build/web at http://localhost:8060
 task play -- help # The text player: one command in each call (the playtest skill)
 task smoke        # Run the game headless for 5 frames. Fails on an error.
+task i18n         # Collect the text for translation into project/locale/
+task sfx          # Make the placeholder sounds in project/audio/sfx
 task fmt          # Format the GDScript code
 task lint         # Lint the GDScript code, and check the format
 task check        # Run lint, test, test:ui, and smoke
@@ -74,7 +76,9 @@ project/scenes/       # Scenes and scripts by feature. common/game_state.gd is t
 project/data/         # Game content (JSON): rules.json, terms.json, cargo/, contracts/, lines/
 project/tests/        # run_tests.gd, TestCase, the rule tests in tests/rules/test_*.gd, and ui_check.tscn
 project/tools/        # play.gd, the text player
-project/locale/       # The .po file for each language
+project/locale/       # messages.pot (made by task i18n) and the .po file for each language
+project/audio/sfx/    # The sounds. tools/sfx/make_sfx.py makes the placeholders.
+tools/                # i18n/i18n.py and sfx/make_sfx.py (Python through uv)
 project/art/          # Font, theme, and optional art
 docs/                 # spec.md (index) and spec/ (the spec by topic), content.md, plan.md, BACKLOG.md, assets.md
 docs/notes/           # Notes that are not in git (the first draft)
@@ -90,7 +94,7 @@ docs/notes/           # Notes that are not in git (the first draft)
 - All content is JSON in `project/data/`. New content must not need a code change. Do not hard-code balance values.
 - Use one file for each definition. The `id` is snake_case and is the same as the file name.
 - Put text for the player in data only in `name`, `text`, and keys that end in `_name`.
-- Translate all text for the player.
+- Translate all text for the player. After you change text, run `task i18n` and translate each new entry of `project/locale/zh_TW.po`. `task lint` fails when an entry has no translation.
 
 ## Key Prohibitions
 

@@ -12,17 +12,21 @@ const QUIT_TEXT := "Quit"
 var _screen: Control
 var _screen_kind := ""
 var _overlays: CanvasLayer
+var _crt: ColorRect
 
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
-	Settings.apply()
-	_fit_window_to_screen()
 	_overlays = CanvasLayer.new()
 	_overlays.layer = 10
 	add_child(_overlays)
+	_add_crt()
 	GameState.state_changed.connect(_update)
 	_update()
+	# Change the window last. On macOS, a change of the window mode runs frames
+	# (and _process) before it returns, so each node must exist first.
+	Settings.apply()
+	_fit_window_to_screen()
 
 
 func _update() -> void:
@@ -47,6 +51,24 @@ func _update() -> void:
 	_screen.process_mode = Node.PROCESS_MODE_PAUSABLE
 	add_child(_screen)
 	move_child(_screen, 0)
+
+
+## Adds the CRT filter above all screens and overlays (SPEC Section 4.2).
+func _add_crt() -> void:
+	var layer := CanvasLayer.new()
+	layer.layer = 20
+	add_child(layer)
+	_crt = ColorRect.new()
+	_crt.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_crt.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var material := ShaderMaterial.new()
+	material.shader = load("res://scenes/common/crt.gdshader")
+	_crt.material = material
+	layer.add_child(_crt)
+
+
+func _process(_delta: float) -> void:
+	_crt.visible = Settings.get_value("crt")
 
 
 ## Returns the screen now. The UI check uses it.

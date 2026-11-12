@@ -42,4 +42,3 @@ This file keeps each problem that is found and not fixed yet. Each item is in on
 ## To Do
 
 - **[Build · Build] The web export** (found 2026-11-12, by Claude). The export templates of Godot 4.7.2 are not installed. Install them, add the web preset with no thread support, and check a build in a browser on Day 4.
-- **[Test · Tests] The i18n tool** (found 2026-11-12, by Claude). Regalia had a Go tool for the translation files. This project has no Go. Write `task i18n` as a script (Python through `uv`): collect `tr()` calls, scene text, the `*_TEXT` constants of the rules, and the text keys of the data. Day 6.

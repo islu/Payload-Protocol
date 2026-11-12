@@ -74,6 +74,16 @@ tasks:
     cmds:
       - uv run --no-project python -m http.server 8060 --directory build/web
 
+  sfx:
+    desc: Make the placeholder sounds in project/audio/sfx (synthesized, no license needed)
+    cmds:
+      - uv run --no-project python tools/sfx/make_sfx.py project/audio/sfx
+
+  i18n:
+    desc: Collect the text for translation into project/locale (messages.pot and each .po file)
+    cmds:
+      - uv run --no-project python tools/i18n/i18n.py
+
   fmt:
     desc: Format the GDScript code
     cmds:
@@ -84,6 +94,7 @@ tasks:
     cmds:
       - "{{.GDTOOLKIT}} gdformat --check {{.PROJECT_PATH}}"
       - "{{.GDTOOLKIT}} gdlint {{.PROJECT_PATH}}"
+      - uv run --no-project python tools/i18n/i18n.py --check
 
   check:
     desc: Run lint, the rule tests, the UI check, and smoke

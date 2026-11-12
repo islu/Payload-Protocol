@@ -53,13 +53,46 @@ func test_rotate_in_place() -> void:
 	var c := put("bar", 0, 0)
 	eq(run.rotate_cargo(c.id), "", "a rotation in place that fits works (SPEC Section 8.2)")
 	eq(c.rot, 1, "the cargo turns (SPEC Section 8.2)")
+	eq(c.pos, Vector2i(0, 0), "a rotation that fits does not move the cargo (SPEC Section 8.2)")
+
+
+func test_rotate_kicks() -> void:
+	# The bar at (2,5) is on the bottom row. Upright at (2,5), its second cell is outside.
+	# Left (1,5) and right (3,5) are outside too. Up (2,4) fits.
 	var d := put("bar", 2, 5)
+	eq(run.rotate_cargo(d.id), "", "a rotation that does not fit moves 1 cell (SPEC Section 8.2)")
 	eq(
-		run.rotate_cargo(d.id),
-		Run.NO_FIT_TEXT,
-		"a rotation that does not fit fails (SPEC Section 8.2)"
+		[d.rot, d.pos],
+		[1, Vector2i(2, 4)],
+		"the cargo goes to the first place that fits (SPEC Section 8.2)"
 	)
-	eq(d.rot, 0, "a rotation that does not fit changes nothing (SPEC Section 8.2)")
+
+
+func test_rotate_kick_order() -> void:
+	# The bar at (4,0) turns upright: (4,0) (4,1). The box at (4,1) blocks it.
+	# Left (3,0) and right (5,0) both fit. Left comes first.
+	var bar := put("bar", 4, 0)
+	put("box", 4, 1)
+	eq(run.rotate_cargo(bar.id), "", "the rotation moves the cargo (SPEC Section 8.2)")
+	eq(bar.pos, Vector2i(3, 0), "left comes before right (SPEC Section 8.2)")
+
+
+func test_rotate_kick_fails() -> void:
+	# The bar at (0,5) turns upright and its second cell is outside. Up (0,4) and
+	# up-right (1,4) have boxes. Each other place is outside the hold.
+	var bar := put("bar", 0, 5)
+	put("box", 0, 4)
+	put("box", 1, 4)
+	eq(
+		run.rotate_cargo(bar.id),
+		Run.NO_FIT_TEXT,
+		"no place fits: the rotation fails (SPEC Section 8.2)"
+	)
+	eq(
+		[bar.rot, bar.pos],
+		[0, Vector2i(0, 5)],
+		"a rotation that fails changes nothing (SPEC Section 8.2)"
+	)
 
 
 func test_scrap_stays_in_the_hold() -> void:

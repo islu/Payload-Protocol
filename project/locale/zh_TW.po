@@ -1,4 +1,964 @@
+# Payload Protocol translation
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: zh_TW\n"
+
+#: project/rules/run.gd
+msgid "You can do that only at a station."
+msgstr "只有在太空站才能這麼做。"
+
+#: project/rules/run.gd
+msgid "There is no such cargo."
+msgstr "沒有這個貨物。"
+
+#: project/rules/run.gd
+msgid "The cargo does not fit there."
+msgstr "貨物放不進那裡。"
+
+#: project/rules/run.gd
+msgid "Scrap cannot go on the dock."
+msgstr "廢鐵不能放回碼頭。"
+
+#: project/rules/run.gd
+msgid "That cargo is not in the hold."
+msgstr "那個貨物不在貨艙裡。"
+
+#: project/rules/run.gd
+msgid "You have no free clamp."
+msgstr "沒有空閒的卡榫。"
+
+#: project/rules/run.gd
+msgid "That cargo has a clamp already."
+msgstr "那個貨物已經上了卡榫。"
+
+#: project/rules/run.gd
+msgid "That cargo has no clamp."
+msgstr "那個貨物沒有卡榫。"
+
+#: project/rules/run.gd
+msgid "The rotation is not valid."
+msgstr "旋轉方向無效。"
+
+#: project/rules/run.gd
+msgid "There is no such contract."
+msgstr "沒有這張合約。"
+
+#: project/rules/run.gd
+msgid "That contract is accepted already."
+msgstr "這張合約已經接下了。"
+
+#: project/rules/run.gd
+msgid "That contract is not accepted."
+msgstr "這張合約還沒接下。"
+
+#: project/rules/run.gd
+msgid "There is no such offer."
+msgstr "沒有這項商品。"
+
+#: project/rules/run.gd
+msgid "That offer is sold already."
+msgstr "這項商品已經賣出了。"
+
+#: project/rules/run.gd
+msgid "You do not have enough credits."
+msgstr "信用點不夠。"
+
+#: project/rules/run.gd
+msgid "You cannot buy while your credits are below 0."
+msgstr "信用點低於 0 時不能購買。"
+
+#: project/rules/run.gd
+msgid "You have the most clamps already."
+msgstr "卡榫已經達到上限。"
+
+#: project/rules/run.gd
+msgid "The hold cannot grow more that way."
+msgstr "貨艙不能再往那個方向擴充。"
+
+#: project/rules/run.gd
+msgid "Select a column or a row."
+msgstr "請選擇加一欄或加一列。"
+
+#: project/rules/run.gd
+msgid "You can sell only kit."
+msgstr "只能賣出裝備。"
+
+#: project/rules/run.gd
+msgid "That cargo is not scrap."
+msgstr "那個貨物不是廢鐵。"
+
+#: project/rules/run.gd
+msgid "The ship has not arrived yet."
+msgstr "飛船還沒抵達。"
+
+#: project/rules/run.gd
+msgid "You are not at a toll gate."
+msgstr "目前不在收費站。"
+
+#: project/scenes/common/game_state.gd
+msgid "The game data did not load."
+msgstr "遊戲資料載入失敗。"
+
+#: project/scenes/common/game_state.gd
+msgid "No run is in progress."
+msgstr "目前沒有進行中的航程。"
+
+#: project/scenes/main/how_to_play.gd
+#: project/scenes/main/main.gd
+#: project/scenes/main/pause_menu.gd
+msgid "How to Play"
+msgstr "遊戲說明"
+
+#: project/scenes/main/how_to_play.gd
+msgid "{n} / {total}"
+msgstr "{n} / {total}"
+
+#: project/scenes/main/how_to_play.gd
+msgid "Next"
+msgstr "下一頁"
+
+#: project/scenes/main/how_to_play.gd
+#: project/scenes/main/settings_panel.gd
+msgid "Back"
+msgstr "返回"
+
+#: project/scenes/main/how_to_play.gd
+msgid "Close"
+msgstr "關閉"
+
+#: project/scenes/main/how_to_play.gd
+msgid ""
+"[b]Contracts and the hold[/b]\n"
+"\n"
+"Accept contracts at the station. Their freight goes to the dock.\n"
+"Drag each cargo into the hold, or click it to pick it up and click again to drop it.\n"
+"A green preview fits, a red one does not.\n"
+"Right click or press R to rotate a cargo. A rotation that does not fit moves the cargo 1 cell."
+msgstr ""
+"[b]合約與貨艙[/b]\n"
+"\n"
+"在太空站接下合約，貨物會送到碼頭。\n"
+"把每個貨物拖進貨艙，或點一下拿起、再點一下放下。\n"
+"綠色預覽代表放得下，紅色代表放不下。\n"
+"按右鍵或 R 旋轉貨物。轉不過去時，貨物會自動挪 1 格。"
+
+#: project/scenes/main/how_to_play.gd
+msgid ""
+"[b]The warp[/b]\n"
+"\n"
+"The hazard panel shows each shift step of the next jump, in order.\n"
+"In each step, all cargo slides in that direction until a wall or a stopped cargo blocks it.\n"
+"Force = weight × cells that it slid. Light {light}, standard {standard}, heavy {heavy}.\n"
+"A cargo that does not slide makes no hit."
+msgstr ""
+"[b]超光速跳躍[/b]\n"
+"\n"
+"危險預報會依序列出下一次跳躍的每一段位移。\n"
+"每一段位移中，所有貨物都會往那個方向滑動，直到撞上艙壁或已經停下的貨物。\n"
+"撞擊力 = 重量 × 滑動格數。輕 {light}、中 {standard}、重 {heavy}。\n"
+"沒有滑動的貨物不會產生撞擊。"
+
+#: project/scenes/main/how_to_play.gd
+msgid ""
+"[b]Traits and reactions[/b]\n"
+"\n"
+"Fragile breaks at force {fragile}. Volatile explodes at force {volatile} and breaks the cargo around it.\n"
+"Fluid leaks at force {fluid} and shorts each Electronic cargo next to it.\n"
+"Broken cargo becomes scrap. Scrap stays in the hold and takes space."
+msgstr ""
+"[b]特性與反應[/b]\n"
+"\n"
+"易碎品在撞擊力 {fragile} 時碎裂。爆裂物在撞擊力 {volatile} 時爆炸，炸壞周圍的貨物。\n"
+"流體在撞擊力 {fluid} 時外漏，讓相鄰的電子貨物短路。\n"
+"壞掉的貨物會變成廢鐵。廢鐵留在貨艙裡佔空間。"
+
+#: project/scenes/main/how_to_play.gd
+msgid ""
+"[b]Links, clamps, the shop, and tolls[/b]\n"
+"\n"
+"Perishable cargo needs a Cooler next to it at the arrival.\n"
+"A Shield next to a Battery protects the cargo next to it from one reaction.\n"
+"A clamp stops a cargo from sliding. Buy kit, clamps, and a bigger hold in the shop.\n"
+"Pay the toll at the end of each sector, or the run ends."
+msgstr ""
+"[b]連結、卡榫、商店與通行費[/b]\n"
+"\n"
+"生鮮貨物抵達時必須緊鄰冷藏機。\n"
+"緊鄰電池的護盾，能替相鄰的貨物擋下一次反應。\n"
+"卡榫能固定貨物不滑動。在商店購買裝備、卡榫，或擴充貨艙。\n"
+"每個星區結束時要付通行費，付不出來航程就結束。"
+
+#: project/scenes/main/main.gd
+msgid "PAYLOAD PROTOCOL"
+msgstr "酬載協議"
+
+#: project/scenes/main/main.gd
+#: project/scenes/main/phase_panel.gd
+msgid "New Run"
+msgstr "開始航程"
+
+#: project/scenes/main/main.gd
+#: project/scenes/main/pause_menu.gd
+#: project/scenes/main/settings_panel.gd
+msgid "Settings"
+msgstr "設定"
+
+#: project/scenes/main/main.gd
+msgid "Quit"
+msgstr "離開"
+
+#: project/scenes/main/pause_menu.gd
+msgid "Paused"
+msgstr "暫停"
+
+#: project/scenes/main/pause_menu.gd
+msgid "Resume"
+msgstr "繼續"
+
+#: project/scenes/main/pause_menu.gd
+msgid "Abandon Run"
+msgstr "放棄航程"
+
+#: project/scenes/main/pause_menu.gd
+msgid "Abandon this run? Its progress is lost."
+msgstr "要放棄這趟航程嗎？目前的進度會消失。"
+
+#: project/scenes/main/phase_panel.gd
+#: project/scenes/warp/warp_screen.gd
+msgid "Continue"
+msgstr "繼續"
+
+#: project/scenes/main/phase_panel.gd
+msgid "Toll gate"
+msgstr "收費站"
+
+#: project/scenes/main/phase_panel.gd
+msgid "Toll {toll} · credits {credits} · after {after}"
+msgstr "通行費 {toll} · 信用點 {credits} · 付款後 {after}"
+
+#: project/scenes/main/phase_panel.gd
+msgid "Pay"
+msgstr "付款"
+
+#: project/scenes/main/phase_panel.gd
+msgid "You cannot pay the toll."
+msgstr "付不出通行費。"
+
+#: project/scenes/main/phase_panel.gd
+msgid "Route complete!"
+msgstr "航程完成！"
+
+#: project/scenes/main/phase_panel.gd
+msgid "Run over."
+msgstr "航程結束。"
+
+#: project/scenes/main/phase_panel.gd
+msgid "Score {score} · delivered {delivered} · scrap {scrapped} · explosions {explosions} · seed {seed}"
+msgstr "分數 {score} · 交貨 {delivered} · 廢鐵 {scrapped} · 爆炸 {explosions} · 種子 {seed}"
+
+#: project/scenes/main/phase_panel.gd
+msgid "Title"
+msgstr "標題畫面"
+
+#: project/scenes/main/settings_panel.gd
+msgid "Music volume"
+msgstr "音樂音量"
+
+#: project/scenes/main/settings_panel.gd
+msgid "Sound volume"
+msgstr "音效音量"
+
+#: project/scenes/main/settings_panel.gd
+msgid "CRT filter"
+msgstr "CRT 濾鏡"
+
+#: project/scenes/main/settings_panel.gd
+msgid "Screen shake"
+msgstr "畫面震動"
+
+#: project/scenes/main/settings_panel.gd
+msgid "Warp speed 2×"
+msgstr "跳躍動畫 2 倍速"
+
+#: project/scenes/main/settings_panel.gd
+msgid "Fullscreen"
+msgstr "全螢幕"
+
+#: project/scenes/main/settings_panel.gd
+msgid "Hints"
+msgstr "提示"
+
+#: project/scenes/main/settings_panel.gd
+msgid "Language"
+msgstr "語言"
+
+#: project/scenes/station/station_screen.gd
+msgid "Dock"
+msgstr "碼頭"
+
+#: project/scenes/station/station_screen.gd
+msgid "Contracts"
+msgstr "合約"
+
+#: project/scenes/station/station_screen.gd
+msgid "Shop"
+msgstr "商店"
+
+#: project/scenes/station/station_screen.gd
+msgid "Clamps"
+msgstr "卡榫"
+
+#: project/scenes/station/station_screen.gd
+msgid "Next jump:"
+msgstr "下一次跳躍："
+
+#: project/scenes/station/station_screen.gd
+msgid "Accept"
+msgstr "接下"
+
+#: project/scenes/station/station_screen.gd
+msgid "Cancel"
+msgstr "取消"
+
+#: project/scenes/station/station_screen.gd
+msgid "Buy"
+msgstr "購買"
+
+#: project/scenes/station/station_screen.gd
+msgid "Sold"
+msgstr "已售出"
+
+#: project/scenes/station/station_screen.gd
+msgid "Reroll ({price} cr)"
+msgstr "刷新商品（{price} 點）"
+
+#: project/scenes/station/station_screen.gd
+msgid "Buy a clamp ({price} cr)"
+msgstr "購買卡榫（{price} 點）"
+
+#: project/scenes/station/station_screen.gd
+msgid "Add a column ({price} cr)"
+msgstr "加一欄（{price} 點）"
+
+#: project/scenes/station/station_screen.gd
+msgid "Add a row ({price} cr)"
+msgstr "加一列（{price} 點）"
+
+#: project/scenes/station/station_screen.gd
+msgid ""
+"Drop kit here to sell it.\n"
+"Drop scrap here to clear it ({price} cr for each cell)."
+msgstr ""
+"把裝備拖到這裡賣出。\n"
+"把廢鐵拖到這裡清除（每格 {price} 點）。"
+
+#: project/scenes/station/station_screen.gd
+msgid "WARP"
+msgstr "跳躍"
+
+#: project/scenes/station/station_screen.gd
+msgid "Sector {sector}/{sectors} · Jump {jump}/{jumps}"
+msgstr "星區 {sector}/{sectors} · 跳躍 {jump}/{jumps}"
+
+#: project/scenes/station/station_screen.gd
+msgid "Credits: {credits}"
+msgstr "信用點：{credits}"
+
+#: project/scenes/station/station_screen.gd
+msgid "Toll {toll} after {jumps} jump(s)"
+msgstr "再 {jumps} 次跳躍後付通行費 {toll}"
+
+#: project/scenes/station/station_screen.gd
+msgid "{free} of {total} free. Drag a clamp onto a cargo. Click a clamp to take it off."
+msgstr "空閒 {free} / {total}。把卡榫拖到貨物上固定，點卡榫可以拆下。"
+
+#: project/scenes/station/station_screen.gd
+msgid "Pay {pay} each"
+msgstr "每件 {pay} 點"
+
+#: project/scenes/station/station_screen.gd
+msgid "Bonus +{pay}: {text}"
+msgstr "獎金 +{pay}：{text}"
+
+#: project/scenes/station/station_screen.gd
+msgid "Empty. Accept a contract or buy kit."
+msgstr "空的。接下合約或購買裝備。"
+
+#: project/scenes/station/station_screen.gd
+msgid "Cargo on the dock"
+msgstr "碼頭上還有貨物"
+
+#: project/scenes/station/station_screen.gd
+msgid ""
+"Cargo on the dock stays at the station.\n"
+"Each freight on the dock pays a breach fee of {fee} credits.\n"
+"Each kit on the dock is sold at half price.\n"
+"Warp now?"
+msgstr ""
+"碼頭上的貨物會留在太空站。\n"
+"留下的每件合約貨物要付 {fee} 點違約金。\n"
+"留下的裝備會以半價賣出。\n"
+"確定要跳躍嗎？"
+
+#: project/scenes/station/station_screen.gd
+msgid "Drag cargo, or click to pick it up and click to drop it. Right click or R rotates it."
+msgstr "拖曳貨物，或點一下拿起、再點一下放下。右鍵或 R 旋轉。"
+
+#: project/scenes/station/station_screen.gd
+msgid "{kind} · {weight} (weight {value})"
+msgstr "{kind} · {weight}（重量 {value}）"
+
+#: project/scenes/station/station_screen.gd
+msgid "Pays {pay} at the arrival"
+msgstr "抵達時付 {pay} 點"
+
+#: project/scenes/station/station_screen.gd
+msgid "Sells for {price}"
+msgstr "賣價 {price} 點"
+
+#: project/scenes/station/station_screen.gd
+msgid "Clear for {price}"
+msgstr "清除費 {price} 點"
+
+#: project/scenes/station/station_screen.gd
+msgid "No Cooler next to it: it spoils at the arrival."
+msgstr "旁邊沒有冷藏機：抵達時會腐爛。"
+
+#: project/scenes/station/station_screen.gd
+msgid "No Battery next to it: no power."
+msgstr "旁邊沒有電池：沒有電力。"
+
+#: project/scenes/warp/warp_screen.gd
+msgid "Shift {n}: {arrow} {direction}"
+msgstr "位移 {n}：{arrow} {direction}"
+
+#: project/scenes/warp/warp_screen.gd
+msgid "Arrival"
+msgstr "抵達"
+
+#: project/scenes/warp/warp_screen.gd
+msgid "Total: {total} credits"
+msgstr "合計：{total} 點"
+
+#: project/scenes/warp/warp_screen.gd
+msgid "Kit sold from the dock: +{credits}"
+msgstr "碼頭上的裝備已賣出：+{credits}"
+
+#: project/scenes/warp/warp_screen.gd
+msgid "Click or press Space to speed up."
+msgstr "點擊或按空白鍵加速。"
+
+#: project/scenes/warp/warp_screen.gd
+msgid "Bonus +{bonus}"
+msgstr "獎金 +{bonus}"
+
+#: project/scenes/warp/warp_screen.gd
+msgid "Bonus missed"
+msgstr "沒拿到獎金"
+
+#: project/scenes/warp/warp_screen.gd
+msgid "Breach -{breach}"
+msgstr "違約金 -{breach}"
+
+#: project/scenes/warp/warp_screen.gd
+msgid "delivered"
+msgstr "已交貨"
+
+#: project/scenes/warp/warp_screen.gd
+msgid "scrap"
+msgstr "變成廢鐵"
+
+#: project/scenes/warp/warp_screen.gd
+msgid "spoiled"
+msgstr "腐爛"
+
+#: project/scenes/warp/warp_screen.gd
+msgid "lost"
+msgstr "炸毀"
+
+#: project/scenes/warp/warp_screen.gd
+msgid "breached"
+msgstr "違約"
+
+#: project/data/cargo/battery_pack.json
+msgid "Battery Pack"
+msgstr "電池組"
+
+#: project/data/cargo/cargo_crate.json
+msgid "Cargo Crate"
+msgstr "貨箱"
+
+#: project/data/cargo/circuit_boards.json
+msgid "Circuit Boards"
+msgstr "電路板"
+
+#: project/data/cargo/coolant_tank.json
+msgid "Coolant Tank"
+msgstr "冷卻液罐"
+
+#: project/data/cargo/cooler_unit.json
+msgid "Cooler Unit"
+msgstr "冷藏機"
+
+#: project/data/cargo/courier_drone.json
+msgid "Courier Drone"
+msgstr "快遞無人機"
+
+#: project/data/cargo/crystal_vase.json
+msgid "Crystal Vase"
+msgstr "水晶花瓶"
+
+#: project/data/cargo/foam_pad.json
+msgid "Foam Pad"
+msgstr "緩衝泡棉"
+
+#: project/data/cargo/frozen_squid.json
+msgid "Frozen Squid"
+msgstr "冷凍魷魚"
+
+#: project/data/cargo/fuel_drum.json
+msgid "Fuel Drum"
+msgstr "燃料桶"
+
+#: project/data/cargo/glass_sculpture.json
+msgid "Glass Sculpture"
+msgstr "玻璃雕塑"
+
+#: project/data/cargo/inertia_anchor.json
+msgid "Inertia Anchor"
+msgstr "慣性錨"
+
+#: project/data/cargo/mail_bundle.json
+msgid "Mail Bundle"
+msgstr "郵件包"
+
+#: project/data/cargo/plasma_cell.json
+msgid "Plasma Cell"
+msgstr "電漿電池"
+
+#: project/data/cargo/radar_dish.json
+msgid "Radar Dish"
+msgstr "雷達天線"
+
+#: project/data/cargo/reactor_core.json
+msgid "Reactor Core"
+msgstr "反應爐核心"
+
+#: project/data/cargo/shield_generator.json
+msgid "Shield Generator"
+msgstr "護盾產生器"
+
+#: project/data/cargo/space_cheese.json
+msgid "Space Cheese"
+msgstr "太空起司"
+
+#: project/data/cargo/steel_ingot.json
+msgid "Steel Ingot"
+msgstr "鋼錠"
+
+#: project/data/contracts/boards.json
+#: project/data/contracts/mixed_tech.json
+msgid "Kessler Electronics"
+msgstr "凱斯勒電子"
+
+#: project/data/contracts/bulk.json
+#: project/data/contracts/crate_haul.json
+msgid "Dockside Supply"
+msgstr "碼頭補給"
+
+#: project/data/contracts/cheese.json
+#: project/data/contracts/feast.json
+msgid "Moon Dairy Co-op"
+msgstr "月球乳業合作社"
+
+#: project/data/contracts/coolant.json
+#: project/data/contracts/lab.json
+msgid "Frostline Labs"
+msgstr "霜線實驗室"
+
+#: project/data/contracts/drone_swarm.json
+#: project/data/contracts/drones.json
+msgid "Swift Courier"
+msgstr "疾風快遞"
+
+#: project/data/contracts/fine_glass.json
+#: project/data/contracts/gallery.json
+msgid "Luma Gallery"
+msgstr "流明畫廊"
+
+#: project/data/contracts/fuel.json
+#: project/data/contracts/fuel_depot.json
+msgid "Redline Fuel"
+msgstr "紅線燃料"
+
+#: project/data/contracts/heavy_glass.json
+#: project/data/contracts/heavy_metal.json
+msgid "Ironworks Guild"
+msgstr "鐵工公會"
+
+#: project/data/contracts/mail_run.json
+msgid "Orbital Post"
+msgstr "軌道郵政"
+
+#: project/data/contracts/plasma_crate.json
+#: project/data/contracts/plasma_small.json
+msgid "Bright Spark Mining"
+msgstr "火花礦業"
+
+#: project/data/contracts/radar.json
+#: project/data/contracts/radar_pair.json
+msgid "Deep Watch Array"
+msgstr "深空監測站"
+
+#: project/data/contracts/reactor.json
+msgid "Helix Power"
+msgstr "螺旋能源"
+
+#: project/data/contracts/sculpture.json
+msgid "Museum of Nowhere"
+msgstr "無處博物館"
+
+#: project/data/contracts/squid.json
+msgid "Neptune Seafood"
+msgstr "海王星海產"
+
+#: project/data/lines/all_intact.json
+msgid "Everything arrived in one piece. I am as surprised as you are."
+msgstr "全部完好送達。我跟你一樣驚訝。"
+
+#: project/data/lines/all_intact.json
+msgid "Zero damage. Write it down. It will not happen again."
+msgstr "零損傷。記下來，不會有第二次了。"
+
+#: project/data/lines/all_intact.json
+msgid "A perfect delivery. The clients will think we cheated."
+msgstr "完美交貨。客戶會以為我們作弊。"
+
+#: project/data/lines/all_intact.json
+msgid "Not a scratch. I will take most of the credit."
+msgstr "一點刮痕都沒有。功勞大部分算我的。"
+
+#: project/data/lines/break.json
+msgid "Something broke. I heard it. I chose not to look."
+msgstr "有東西碎了。我聽到了，但我選擇不看。"
+
+#: project/data/lines/break.json
+msgid "We are now in the gravel business, apparently."
+msgstr "看來我們現在改做碎石生意了。"
+
+#: project/data/lines/break.json
+msgid "That was fragile. It is now very fragile. In many pieces."
+msgstr "它原本很易碎。現在非常易碎，碎成很多片。"
+
+#: project/data/lines/break.json
+msgid "Good news: the box is lighter. Bad news: it is the shards."
+msgstr "好消息：箱子變輕了。壞消息：裡面只剩碎片。"
+
+#: project/data/lines/chain.json
+msgid "That was a chain reaction. Very pretty. Very expensive."
+msgstr "剛剛是連鎖反應。很漂亮，也很貴。"
+
+#: project/data/lines/chain.json
+msgid "Explosion, then explosion, then me, screaming quietly."
+msgstr "爆炸，接著爆炸，接著是我在安靜地尖叫。"
+
+#: project/data/lines/chain.json
+msgid "I counted the blasts. Then I stopped counting. Then I cried in binary."
+msgstr "我數了爆炸次數。後來不數了。再後來我用二進位哭了。"
+
+#: project/data/lines/chain.json
+msgid "Fireworks! Nobody ordered fireworks. We delivered them anyway."
+msgstr "煙火！沒人訂煙火，但我們還是送到了。"
+
+#: project/data/lines/empty.json
+msgid "We flew with nothing. Very safe. Very poor."
+msgstr "我們空著飛。很安全，也很窮。"
+
+#: project/data/lines/empty.json
+msgid "An empty hold. Zero risk, zero pay. Bold strategy."
+msgstr "貨艙空空。零風險，零收入。大膽的策略。"
+
+#: project/data/lines/empty.json
+msgid "I enjoyed that quiet jump. The bank did not."
+msgstr "我很享受這趟安靜的跳躍。銀行不這麼想。"
+
+#: project/data/lines/empty.json
+msgid "No cargo, no damage, no credits. Perfect balance."
+msgstr "沒貨、沒損傷、沒收入。完美的平衡。"
+
+#: project/data/lines/explosion.json
+msgid "One explosion. Small. Mostly. Please stop the fire."
+msgstr "一次爆炸。小小的，大致上。請把火滅掉。"
+
+#: project/data/lines/explosion.json
+msgid "We had a Volatile event. The Volatile won."
+msgstr "剛剛發生了爆裂物事件。爆裂物贏了。"
+
+#: project/data/lines/explosion.json
+msgid "The hold is a little roomier now. You are welcome, I guess."
+msgstr "貨艙現在寬敞一點了。不客氣，大概吧。"
+
+#: project/data/lines/explosion.json
+msgid "Boom. I logged it as 'unscheduled cargo release'."
+msgstr "轟。我把它記成「非預定貨物釋放」。"
+
+#: project/data/lines/hazard.json
+msgid "Turbulence ahead. I suggest you pack like you mean it."
+msgstr "前方有亂流。建議你認真打包。"
+
+#: project/data/lines/hazard.json
+msgid "Gravity storm on the route. Your cargo will dance. Badly."
+msgstr "航線上有重力風暴。你的貨會跳舞，跳得很爛。"
+
+#: project/data/lines/hazard.json
+msgid "Asteroid field. I will dodge. Your boxes will not."
+msgstr "小行星帶。我會閃開，你的箱子不會。"
+
+#: project/data/lines/hazard.json
+msgid "The jump is rough today. As every day. Pack tight."
+msgstr "今天的跳躍很顛簸。跟每天一樣。塞緊一點。"
+
+#: project/data/lines/hazard.json
+msgid "Navigation says: hold on. Cargo says nothing. Cargo never listens."
+msgstr "導航說：抓穩。貨物什麼都沒說。貨物從來不聽話。"
+
+#: project/data/lines/leak.json
+msgid "Something leaked. Something else sparked. Do not lick the floor."
+msgstr "有東西漏了，又有東西冒火花。不要舔地板。"
+
+#: project/data/lines/leak.json
+msgid "The coolant is out. The electronics are also out. Permanently."
+msgstr "冷卻液沒了。電子零件也沒了，永遠的。"
+
+#: project/data/lines/leak.json
+msgid "Fluid plus circuits. A classic recipe for scrap."
+msgstr "液體加電路，經典的廢鐵食譜。"
+
+#: project/data/lines/leak.json
+msgid "We have a leak. I recommend boots. And new circuits."
+msgstr "漏水了。建議穿雨鞋，再換新電路。"
+
+#: project/data/lines/lose.json
+msgid "No credits for the toll. We live here now."
+msgstr "付不出通行費。我們以後就住這裡了。"
+
+#: project/data/lines/lose.json
+msgid "The gate stays closed. So does our business."
+msgstr "閘門不開。我們的生意也關門了。"
+
+#: project/data/lines/lose.json
+msgid "Out of credits. I will start selling your chair."
+msgstr "沒錢了。我要開始賣你的椅子了。"
+
+#: project/data/lines/lose.json
+msgid "Run over. Next time, maybe fewer explosions."
+msgstr "航程結束。下次也許少炸一點。"
+
+#: project/data/lines/spoil.json
+msgid "The food went bad. The smell is now a crew member."
+msgstr "食物壞了。那股味道現在是船員了。"
+
+#: project/data/lines/spoil.json
+msgid "Cold chain broken. So is my will to breathe."
+msgstr "冷藏鏈斷了。我呼吸的意願也斷了。"
+
+#: project/data/lines/spoil.json
+msgid "Something in the hold is growing. It is not the profit."
+msgstr "貨艙裡有東西在長大。不是利潤。"
+
+#: project/data/lines/spoil.json
+msgid "A Cooler would have helped. A nose plug would help now."
+msgstr "有冷藏機就好了。現在有鼻塞也好。"
+
+#: project/data/lines/toll.json
+msgid "Toll gate. The sector wants its credits. All of them, if it can."
+msgstr "收費站。星區要收錢，能收多少就收多少。"
+
+#: project/data/lines/toll.json
+msgid "Pay up, or we sleep out here with the space dust."
+msgstr "付錢，不然我們就跟太空塵埃一起睡外面。"
+
+#: project/data/lines/toll.json
+msgid "Toll time. Please tell me we have the credits."
+msgstr "繳費時間。拜託告訴我錢夠。"
+
+#: project/data/lines/toll.json
+msgid "The gate is open. Our wallet is about to be too."
+msgstr "閘門開了。我們的錢包也快被打開了。"
+
+#: project/data/lines/win.json
+msgid "We made it. All three sectors. I am framing this log."
+msgstr "我們辦到了，三個星區全部通過。我要把這份紀錄裱框。"
+
+#: project/data/lines/win.json
+msgid "Final toll paid. You are a real freight pilot now. Almost."
+msgstr "最後的通行費付清了。你現在是真正的貨運駕駛了。差不多啦。"
+
+#: project/data/lines/win.json
+msgid "Route complete. The cargo survived. Mostly. Good work."
+msgstr "航程完成。貨物活下來了，大部分。幹得好。"
+
+#: project/data/lines/win.json
+msgid "We won. I will tell the other ships. They will not believe me."
+msgstr "我們贏了。我會告訴其他飛船，它們不會相信的。"
+
+#: project/data/terms.json
+msgid "All Intact"
+msgstr "全部完好"
+
+#: project/data/terms.json
+msgid "Deliver each piece."
+msgstr "每件貨物都要送達。"
+
+#: project/data/terms.json
+msgid "Keep Apart"
+msgstr "保持距離"
+
+#: project/data/terms.json
+msgid "No piece arrives next to {trait} cargo."
+msgstr "抵達時沒有任何一件緊鄰{trait}貨物。"
+
+#: project/data/terms.json
+msgid "Zone"
+msgstr "指定區域"
+
+#: project/data/terms.json
+msgid "Each piece arrives in the {size} lines at the {side}."
+msgstr "每件貨物抵達時都在{side} {size} 排之內。"
+
+#: project/data/terms.json
+msgid "Down"
+msgstr "下"
+
+#: project/data/terms.json
+msgid "Left"
+msgstr "左"
+
+#: project/data/terms.json
+msgid "Right"
+msgstr "右"
+
+#: project/data/terms.json
+msgid "Up"
+msgstr "上"
+
+#: project/data/terms.json
+msgid "Freight"
+msgstr "貨物"
+
+#: project/data/terms.json
+msgid "Kit"
+msgstr "裝備"
+
+#: project/data/terms.json
+msgid "Scrap"
+msgstr "廢鐵"
+
+#: project/data/terms.json
+msgid "bottom"
+msgstr "最下方"
+
+#: project/data/terms.json
+msgid "left"
+msgstr "最左邊"
+
+#: project/data/terms.json
+msgid "right"
+msgstr "最右邊"
+
+#: project/data/terms.json
+msgid "top"
+msgstr "最上方"
+
+#: project/data/terms.json
+msgid "Battery"
+msgstr "電池"
+
+#: project/data/terms.json
+msgid "Powers each Shield next to it."
+msgstr "為相鄰的護盾供電。"
+
+#: project/data/terms.json
+msgid "Cooler"
+msgstr "冷藏"
+
+#: project/data/terms.json
+msgid "Keeps each Perishable cargo next to it fresh."
+msgstr "讓相鄰的生鮮貨物保持新鮮。"
+
+#: project/data/terms.json
+msgid "Cushion"
+msgstr "緩衝"
+
+#: project/data/terms.json
+msgid "Each hit on it or by it has a force of 0."
+msgstr "撞到它或被它撞到時，撞擊力為 0。"
+
+#: project/data/terms.json
+msgid "Electronic"
+msgstr "電子"
+
+#: project/data/terms.json
+msgid "Shorts when a Fluid cargo next to it leaks."
+msgstr "相鄰的流體外漏時會短路。"
+
+#: project/data/terms.json
+msgid "Fluid"
+msgstr "流體"
+
+#: project/data/terms.json
+msgid "Leaks at a hit with a force of {limit} or more. The leak shorts each Electronic cargo next to it."
+msgstr "受到撞擊力 {limit} 以上的撞擊時外漏，讓相鄰的電子貨物短路。"
+
+#: project/data/terms.json
+msgid "Fragile"
+msgstr "易碎"
+
+#: project/data/terms.json
+msgid "Breaks at a hit with a force of {limit} or more."
+msgstr "受到撞擊力 {limit} 以上的撞擊時碎裂。"
+
+#: project/data/terms.json
+msgid "Perishable"
+msgstr "生鮮"
+
+#: project/data/terms.json
+msgid "Spoils at the arrival if it is not next to a Cooler."
+msgstr "抵達時如果沒有緊鄰冷藏機就會腐爛。"
+
+#: project/data/terms.json
+msgid "Shield"
+msgstr "護盾"
+
+#: project/data/terms.json
+msgid "With power, it protects each cargo next to it from one reaction in each jump."
+msgstr "有電力時，每次跳躍能替相鄰的貨物擋下一次反應。"
+
+#: project/data/terms.json
+msgid "Thruster"
+msgstr "推進器"
+
+#: project/data/terms.json
+msgid "Slides 1 cell at most in each shift step."
+msgstr "每段位移最多只滑動 1 格。"
+
+#: project/data/terms.json
+msgid "Volatile"
+msgstr "爆裂物"
+
+#: project/data/terms.json
+msgid "Explodes at a hit with a force of {limit} or more. The explosion breaks the cargo around it."
+msgstr "受到撞擊力 {limit} 以上的撞擊時爆炸，炸壞周圍的貨物。"
+
+#: project/data/terms.json
+msgid "Heavy"
+msgstr "重"
+
+#: project/data/terms.json
+msgid "Light"
+msgstr "輕"
+
+#: project/data/terms.json
+msgid "Standard"
+msgstr "中"

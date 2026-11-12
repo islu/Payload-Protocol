@@ -16,20 +16,26 @@ const DEFAULTS := {
 }
 const LOCALES: PackedStringArray = ["en", "zh_TW"]
 
+## The settings in memory. The file is read one time.
+static var _config: ConfigFile = null
+
 
 ## Returns a setting, or its default when the file or the key is missing.
 static func get_value(key: String) -> Variant:
-	var config := ConfigFile.new()
-	config.load(PATH)  # A missing file is not an error.
-	return config.get_value(SECTION, key, DEFAULTS.get(key))
+	return _load().get_value(SECTION, key, DEFAULTS.get(key))
+
+
+static func _load() -> ConfigFile:
+	if _config == null:
+		_config = ConfigFile.new()
+		_config.load(PATH)  # A missing file is not an error.
+	return _config
 
 
 ## Saves a setting, keeps the other settings, and applies it.
 static func set_value(key: String, value: Variant) -> void:
-	var config := ConfigFile.new()
-	config.load(PATH)
-	config.set_value(SECTION, key, value)
-	config.save(PATH)
+	_load().set_value(SECTION, key, value)
+	_config.save(PATH)
 	apply()
 
 

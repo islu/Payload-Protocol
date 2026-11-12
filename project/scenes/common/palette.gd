@@ -32,20 +32,6 @@ const TRAIT_COLORS := {
 	"shield": Color("3cffc8"),
 }
 
-## The short mark of each trait. Art can replace it later (SPEC Section 4.2).
-const TRAIT_MARKS := {
-	"fragile": "FRG",
-	"volatile": "VOL",
-	"fluid": "FLU",
-	"electronic": "ELC",
-	"perishable": "PER",
-	"thruster": "THR",
-	"cushion": "CSH",
-	"cooler": "COL",
-	"battery": "BAT",
-	"shield": "SHD",
-}
-
 
 ## Returns the body color of a cargo view: its first trait, or plain, or scrap.
 static func cargo_color(cargo: Dictionary) -> Color:

@@ -30,6 +30,20 @@ const NOT_SCRAP_TEXT := "That cargo is not scrap."
 const NOT_ARRIVED_TEXT := "The ship has not arrived yet."
 const NOT_AT_TOLL_TEXT := "You are not at a toll gate."
 
+## The places that a rotation in place tries, in order, when the new shape does not
+## fit: left, right, up, down, then the diagonals (SPEC Section 8.2).
+const ROTATE_KICKS: Array[Vector2i] = [
+	Vector2i(0, 0),
+	Vector2i(-1, 0),
+	Vector2i(1, 0),
+	Vector2i(0, -1),
+	Vector2i(0, 1),
+	Vector2i(-1, -1),
+	Vector2i(1, -1),
+	Vector2i(-1, 1),
+	Vector2i(1, 1),
+]
+
 var cat: Catalog
 var rng := RandomNumberGenerator.new()
 var line_rng := RandomNumberGenerator.new()
@@ -270,7 +284,8 @@ func dock_cargo(id: int) -> String:
 	return ""
 
 
-## Rotates a cargo in the hold in its place (SPEC Section 8.2).
+## Rotates a cargo in the hold in its place. If the new shape does not fit, the
+## cargo goes to the first place 1 cell away where it fits (SPEC Section 8.2).
 func rotate_cargo(id: int) -> String:
 	var err := _station_cargo_error(id)
 	if err != "":
@@ -279,10 +294,12 @@ func rotate_cargo(id: int) -> String:
 	if not c.in_hold:
 		return NOT_IN_HOLD_TEXT
 	var rot := (c.rot + 1) % 4
-	if not fits(c, c.pos, rot):
-		return NO_FIT_TEXT
-	c.rot = rot
-	return ""
+	for kick in ROTATE_KICKS:
+		if fits(c, c.pos + kick, rot):
+			c.pos += kick
+			c.rot = rot
+			return ""
+	return NO_FIT_TEXT
 
 
 ## Returns the clamps that are not on a cargo (SPEC Section 13).

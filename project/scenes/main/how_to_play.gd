@@ -12,8 +12,9 @@ const CLOSE_TEXT := "Close"
 const PAGE_1_TEXT := """[b]Contracts and the hold[/b]
 
 Accept contracts at the station. Their freight goes to the dock.
-Drag each cargo into the hold. A green preview fits, a red one does not.
-Right click or press R to rotate a cargo."""
+Drag each cargo into the hold, or click it to pick it up and click again to drop it.
+A green preview fits, a red one does not.
+Right click or press R to rotate a cargo. A rotation that does not fit moves the cargo 1 cell."""
 const PAGE_2_TEXT := """[b]The warp[/b]
 
 The hazard panel shows each shift step of the next jump, in order.

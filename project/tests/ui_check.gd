@@ -18,10 +18,25 @@ func _check(ok: bool, what: String) -> void:
 
 
 func _run() -> void:
-	get_tree().create_timer(60.0).timeout.connect(func() -> void: get_tree().quit(2))
-	var main: Control = load("res://scenes/main/main.tscn").instantiate()
-	add_child(main)
-	await get_tree().process_frame
+	get_tree().create_timer(120.0).timeout.connect(func() -> void: get_tree().quit(2))
+	for sound in Sound.NAMES:
+		_check(Sound.exists(sound), "the sound %s has a file (SPEC Section 4.3)" % sound)
+	# Play in each language, so that a translation with a bad placeholder fails here.
+	for locale in Settings.LOCALES:
+		TranslationServer.set_locale(locale)
+		var main: Control = load("res://scenes/main/main.tscn").instantiate()
+		add_child(main)
+		# Main applies the saved language. Use the language of this pass.
+		TranslationServer.set_locale(locale)
+		await get_tree().process_frame
+		await _play_run(main)
+		main.queue_free()
+		await get_tree().process_frame
+	print("ui_check: %s" % ("passed" if _failures == 0 else "%d failed" % _failures))
+	get_tree().quit(1 if _failures > 0 else 0)
+
+
+func _play_run(main: Control) -> void:
 	var state: Node = GameState
 	var new_run: Button = main.screen().find_child("NewRunButton", true, false)
 	_check(new_run != null, "the title shows first (SPEC Section 20.1)")
@@ -57,8 +72,6 @@ func _run() -> void:
 	)
 	state.abandon_run()
 	await get_tree().process_frame
-	print("ui_check: %s" % ("passed" if _failures == 0 else "%d failed" % _failures))
-	get_tree().quit(1 if _failures > 0 else 0)
 
 
 ## Plays the warp fast, and checks that the report shows at the end (SPEC Sections 20.3 and 20.4).
@@ -94,6 +107,35 @@ func _check_overlays(main: Control) -> void:
 	_check(not get_tree().paused, "Resume ends the pause (SPEC Section 20.7)")
 
 
+## Picks up a cargo with a click, rotates it with R, and drops it with a click (SPEC Section 8.2).
+func _check_pick_up(station: StationScreen, id: int) -> void:
+	station._begin_cargo_drag(id, Vector2.ZERO)
+	var release := InputEventMouseButton.new()
+	release.button_index = MOUSE_BUTTON_LEFT
+	release.pressed = false
+	station._input(release)
+	_check(
+		not station._drag.is_empty() and station._drag["held"],
+		"a click picks up a cargo (SPEC Section 8.2)"
+	)
+	var rot: int = station._drag["rot"]
+	var r := InputEventKey.new()
+	r.keycode = KEY_R
+	r.pressed = true
+	station._input(r)
+	_check(station._drag["rot"] == (rot + 1) % 4, "R rotates a picked-up cargo (SPEC Section 8.2)")
+	var press := InputEventMouseButton.new()
+	press.button_index = MOUSE_BUTTON_LEFT
+	press.pressed = true
+	station._input(press)
+	_check(station._drag.is_empty(), "the next click drops it (SPEC Section 8.2)")
+	station._input(release)
+	_check(
+		not station._ignore_release,
+		"the release of the drop click does nothing more (SPEC Section 8.2)"
+	)
+
+
 ## Accepts the contracts, packs the freight, uses the tooltip and the marks, and warps.
 func _play_station(state: Node, station: StationScreen) -> void:
 	var run: Dictionary = state.view()["run"]
@@ -116,6 +158,7 @@ func _play_station(state: Node, station: StationScreen) -> void:
 	station._hide_tip()
 	run = state.view()["run"]
 	if not run["cargo"].is_empty():
+		_check_pick_up(station, run["cargo"][0]["id"])
 		var c: Dictionary = run["cargo"][0]
 		station._begin_cargo_drag(c["id"], Vector2.ZERO)
 		station._rotate_drag()

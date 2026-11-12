@@ -82,9 +82,13 @@ A cargo can have more than one trait.
 ### 8.2 Move and Rotate
 
 - The player moves cargo only at a station. The warp and the arrival do not let the player move cargo.
-- Drag a cargo with the left mouse button. The player can move a cargo from the dock to the hold, from the hold to the dock, and inside the hold.
-- During a drag, a right click or the R key rotates the cargo.
-- A right click on a cargo in the hold rotates it in its place. If the new shape does not fit, the cargo does not change, and the game plays the deny sound.
+- The player can move a cargo from the dock to the hold, from the hold to the dock, and inside the hold. The player moves a cargo in one of two ways:
+  - **Drag:** press the left mouse button on the cargo, move the mouse, and release the button.
+  - **Pick up:** click the cargo. It follows the mouse. Click again to drop it.
+- A click is a press and a release less than 8 pixels apart.
+- While the player holds a cargo, a right click or the R key rotates it. Esc puts it back in its last place.
+- A right click on a cargo in the hold rotates it in its place. If the new shape does not fit there, the game tries the places 1 cell away, in this order: left, right, up, down, then up-left, up-right, down-left, down-right. The cargo goes to the first place where it fits.
+- If no place fits, the cargo does not change, and the game plays the deny sound.
 - A move is free. The player can move cargo any number of times.
 - A clamped cargo can move. Its clamp moves with it.
 
