@@ -1,1 +1,8 @@
-{"id": "radar_dish", "name": "Radar Dish", "kind": "freight", "weight": "standard", "traits": ["fragile", "electronic"], "shape": [[0, 0], [1, 0], [0, 1], [1, 1]]}
+{
+	"id": "radar_dish",
+	"name": "Radar Dish",
+	"kind": "freight",
+	"weight": "standard",
+	"traits": ["fragile", "electronic"],
+	"shape": [[0, 0], [1, 0], [0, 1], [1, 1]]
+}

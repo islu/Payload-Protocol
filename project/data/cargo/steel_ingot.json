@@ -1,1 +1,8 @@
-{"id": "steel_ingot", "name": "Steel Ingot", "kind": "freight", "weight": "heavy", "traits": [], "shape": [[0, 0], [1, 0]]}
+{
+	"id": "steel_ingot",
+	"name": "Steel Ingot",
+	"kind": "freight",
+	"weight": "heavy",
+	"traits": [],
+	"shape": [[0, 0], [1, 0]]
+}

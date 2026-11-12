@@ -1,127 +1,88 @@
 {
-  "start": {
-    "credits": 40,
-    "clamps": 1,
-    "hold": {
-      "columns": 6,
-      "rows": 6
-    }
-  },
-  "hold_max": {
-    "columns": 8,
-    "rows": 8
-  },
-  "weights": {
-    "light": 1,
-    "standard": 2,
-    "heavy": 3
-  },
-  "break_limits": {
-    "fragile": 2,
-    "volatile": 3,
-    "fluid": 2
-  },
-  "offers": {
-    "contracts": 4,
-    "kit": 3
-  },
-  "prices": {
-    "reroll_first": 2,
-    "reroll_step": 2,
-    "clamp": 8,
-    "clamp_max": 4,
-    "upgrade_first": 15,
-    "upgrade_step": 10,
-    "scrap_cell": 2,
-    "breach_fee": 5,
-    "sell_divisor": 2,
-    "reinforce_first": 12,
-    "reinforce_step": 8
-  },
-  "sectors": [
-    {
-      "toll": 70,
-      "hazard_steps": [
-        [
-          1,
-          1
-        ],
-        [
-          2,
-          2
-        ],
-        [
-          2,
-          2
-        ]
-      ],
-      "kit_pool": [
-        "foam_pad",
-        "cooler_unit",
-        "battery_pack",
-        "shield_generator",
-        "inertia_anchor",
-        "sensor_array"
-      ]
-    },
-    {
-      "toll": 180,
-      "hazard_steps": [
-        [
-          2,
-          2
-        ],
-        [
-          2,
-          2
-        ],
-        [
-          2,
-          2
-        ]
-      ],
-      "kit_pool": [
-        "foam_pad",
-        "cooler_unit",
-        "battery_pack",
-        "shield_generator",
-        "inertia_anchor",
-        "sensor_array"
-      ],
-      "fork": true
-    },
-    {
-      "toll": 350,
-      "hazard_steps": [
-        [
-          2,
-          3
-        ],
-        [
-          2,
-          3
-        ],
-        [
-          2,
-          3
-        ]
-      ],
-      "kit_pool": [
-        "foam_pad",
-        "cooler_unit",
-        "battery_pack",
-        "shield_generator",
-        "inertia_anchor",
-        "sensor_array"
-      ],
-      "fork": true
-    }
-  ],
-  "mass": {
-    "limit": 24,
-    "over_percent": 25,
-    "fuel_fee": 2,
-    "reinforce": 6,
-    "offer_percent": 130
-  }
+	"start": {
+		"credits": 40,
+		"clamps": 1,
+		"hold": {
+			"columns": 6,
+			"rows": 6
+		}
+	},
+	"hold_max": {
+		"columns": 8,
+		"rows": 8
+	},
+	"weights": {
+		"light": 1,
+		"standard": 2,
+		"heavy": 3
+	},
+	"break_limits": {
+		"fragile": 2,
+		"volatile": 3,
+		"fluid": 2
+	},
+	"offers": {
+		"contracts": 4,
+		"kit": 3
+	},
+	"prices": {
+		"reroll_first": 2,
+		"reroll_step": 2,
+		"clamp": 8,
+		"clamp_max": 4,
+		"upgrade_first": 15,
+		"upgrade_step": 10,
+		"scrap_cell": 2,
+		"breach_fee": 5,
+		"sell_divisor": 2,
+		"reinforce_first": 12,
+		"reinforce_step": 8
+	},
+	"sectors": [
+		{
+			"toll": 70,
+			"hazard_steps": [[1, 1], [2, 2], [2, 2]],
+			"kit_pool": [
+				"foam_pad",
+				"cooler_unit",
+				"battery_pack",
+				"shield_generator",
+				"inertia_anchor",
+				"sensor_array"
+			]
+		},
+		{
+			"toll": 180,
+			"hazard_steps": [[2, 2], [2, 2], [2, 2]],
+			"kit_pool": [
+				"foam_pad",
+				"cooler_unit",
+				"battery_pack",
+				"shield_generator",
+				"inertia_anchor",
+				"sensor_array"
+			],
+			"fork": true
+		},
+		{
+			"toll": 350,
+			"hazard_steps": [[2, 3], [2, 3], [2, 3]],
+			"kit_pool": [
+				"foam_pad",
+				"cooler_unit",
+				"battery_pack",
+				"shield_generator",
+				"inertia_anchor",
+				"sensor_array"
+			],
+			"fork": true
+		}
+	],
+	"mass": {
+		"limit": 24,
+		"over_percent": 25,
+		"fuel_fee": 2,
+		"reinforce": 6,
+		"offer_percent": 130
+	}
 }

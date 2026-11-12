@@ -1,1 +1,8 @@
-{"id": "mail_bundle", "name": "Mail Bundle", "kind": "freight", "weight": "light", "traits": [], "shape": [[0, 0]]}
+{
+	"id": "mail_bundle",
+	"name": "Mail Bundle",
+	"kind": "freight",
+	"weight": "light",
+	"traits": [],
+	"shape": [[0, 0]]
+}

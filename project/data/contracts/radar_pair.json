@@ -1,1 +1,11 @@
-{"id": "radar_pair", "sectors": [3], "client_name": "Deep Watch Array", "freight": ["radar_dish", "radar_dish"], "pay": 24, "bonus": {"type": "all_intact", "pay": 15}}
+{
+	"id": "radar_pair",
+	"sectors": [3],
+	"client_name": "Deep Watch Array",
+	"freight": ["radar_dish", "radar_dish"],
+	"pay": 24,
+	"bonus": {
+		"type": "all_intact",
+		"pay": 15
+	}
+}

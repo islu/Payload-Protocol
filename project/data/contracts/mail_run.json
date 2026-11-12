@@ -1,1 +1,14 @@
-{"id": "mail_run", "sectors": [1], "client_name": "Orbital Post", "freight": ["mail_bundle", "mail_bundle", "mail_bundle", "mail_bundle", "mail_bundle", "mail_bundle"], "pay": 3}
+{
+	"id": "mail_run",
+	"sectors": [1],
+	"client_name": "Orbital Post",
+	"freight": [
+		"mail_bundle",
+		"mail_bundle",
+		"mail_bundle",
+		"mail_bundle",
+		"mail_bundle",
+		"mail_bundle"
+	],
+	"pay": 3
+}

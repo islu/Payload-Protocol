@@ -1,1 +1,8 @@
-{"id": "circuit_boards", "name": "Circuit Boards", "kind": "freight", "weight": "light", "traits": ["electronic"], "shape": [[0, 0], [1, 0]]}
+{
+	"id": "circuit_boards",
+	"name": "Circuit Boards",
+	"kind": "freight",
+	"weight": "light",
+	"traits": ["electronic"],
+	"shape": [[0, 0], [1, 0]]
+}

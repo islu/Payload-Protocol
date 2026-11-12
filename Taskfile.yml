@@ -85,14 +85,16 @@ tasks:
       - uv run --no-project python tools/i18n/i18n.py
 
   fmt:
-    desc: Format the GDScript code
+    desc: Format the GDScript code and the JSON data
     cmds:
       - "{{.GDTOOLKIT}} gdformat {{.PROJECT_PATH}}"
+      - uv run --no-project python tools/fmt_json/fmt_json.py
 
   lint:
     desc: Lint the GDScript code, and check the format
     cmds:
       - "{{.GDTOOLKIT}} gdformat --check {{.PROJECT_PATH}}"
+      - uv run --no-project python tools/fmt_json/fmt_json.py --check
       - "{{.GDTOOLKIT}} gdlint {{.PROJECT_PATH}}"
       - uv run --no-project python tools/i18n/i18n.py --check
 

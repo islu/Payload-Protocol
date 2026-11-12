@@ -1,1 +1,9 @@
-{"id": "battery_pack", "name": "Battery Pack", "kind": "kit", "weight": "standard", "traits": ["battery", "electronic"], "shape": [[0, 0]], "price": 7}
+{
+	"id": "battery_pack",
+	"name": "Battery Pack",
+	"kind": "kit",
+	"weight": "standard",
+	"traits": ["battery", "electronic"],
+	"shape": [[0, 0]],
+	"price": 7
+}

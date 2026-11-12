@@ -1,20 +1,20 @@
 {
-  "id": "hazard",
-  "lines": [
-    {
-      "text": "Turbulence ahead. I suggest you pack like you mean it."
-    },
-    {
-      "text": "Gravity storm on the route. Your cargo will dance. Badly."
-    },
-    {
-      "text": "Asteroid field. I will dodge. Your boxes will not."
-    },
-    {
-      "text": "The jump is rough today. As every day. Pack tight."
-    },
-    {
-      "text": "Navigation says: hold on. Cargo says nothing. Cargo never listens."
-    }
-  ]
+	"id": "hazard",
+	"lines": [
+		{
+			"text": "Turbulence ahead. I suggest you pack like you mean it."
+		},
+		{
+			"text": "Gravity storm on the route. Your cargo will dance. Badly."
+		},
+		{
+			"text": "Asteroid field. I will dodge. Your boxes will not."
+		},
+		{
+			"text": "The jump is rough today. As every day. Pack tight."
+		},
+		{
+			"text": "Navigation says: hold on. Cargo says nothing. Cargo never listens."
+		}
+	]
 }

@@ -1,17 +1,17 @@
 {
-  "id": "win",
-  "lines": [
-    {
-      "text": "We made it. All three sectors. I am framing this log."
-    },
-    {
-      "text": "Final toll paid. You are a real freight pilot now. Almost."
-    },
-    {
-      "text": "Route complete. The cargo survived. Mostly. Good work."
-    },
-    {
-      "text": "We won. I will tell the other ships. They will not believe me."
-    }
-  ]
+	"id": "win",
+	"lines": [
+		{
+			"text": "We made it. All three sectors. I am framing this log."
+		},
+		{
+			"text": "Final toll paid. You are a real freight pilot now. Almost."
+		},
+		{
+			"text": "Route complete. The cargo survived. Mostly. Good work."
+		},
+		{
+			"text": "We won. I will tell the other ships. They will not believe me."
+		}
+	]
 }

@@ -1,17 +1,17 @@
 {
-  "id": "explosion",
-  "lines": [
-    {
-      "text": "One explosion. Small. Mostly. Please stop the fire."
-    },
-    {
-      "text": "We had a Volatile event. The Volatile won."
-    },
-    {
-      "text": "The hold is a little roomier now. You are welcome, I guess."
-    },
-    {
-      "text": "Boom. I logged it as 'unscheduled cargo release'."
-    }
-  ]
+	"id": "explosion",
+	"lines": [
+		{
+			"text": "One explosion. Small. Mostly. Please stop the fire."
+		},
+		{
+			"text": "We had a Volatile event. The Volatile won."
+		},
+		{
+			"text": "The hold is a little roomier now. You are welcome, I guess."
+		},
+		{
+			"text": "Boom. I logged it as 'unscheduled cargo release'."
+		}
+	]
 }

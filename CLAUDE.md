@@ -41,7 +41,7 @@ Load the skill for the work before you start. The skills have the detailed rules
 | Engine | Godot 4.7, 2D, GL Compatibility renderer |
 | Language | GDScript only. The game must run in a browser (SPEC Section 4.1). |
 | Toolchain versions | devbox (go-task, uv) |
-| Lint and format | gdtoolkit 4 through `uvx` (`gdlintrc`) |
+| Lint and format | gdtoolkit 4 through `uvx` (`gdlintrc`). JSON: `tools/fmt_json/fmt_json.py` |
 | Godot binary | System `godot`, not in devbox. Set `GODOT=...` to use a different binary. |
 
 The Godot project is in `project/`. The repository root is not a Godot project.
@@ -62,7 +62,7 @@ task play -- help # The text player: one command in each call (the playtest skil
 task smoke        # Run the game headless for 5 frames. Fails on an error.
 task i18n         # Collect the text for translation into project/locale/
 task sfx          # Make the placeholder sounds in project/audio/sfx
-task fmt          # Format the GDScript code
+task fmt          # Format the GDScript code and the JSON data (tab indentation)
 task lint         # Lint the GDScript code, and check the format
 task check        # Run lint, test, test:ui, and smoke
 task check:quiet  # Run task check. Print only the failures. The full output is in .task/check.log.
@@ -78,7 +78,7 @@ project/tests/        # run_tests.gd, TestCase, the rule tests in tests/rules/te
 project/tools/        # play.gd, the text player
 project/locale/       # messages.pot (made by task i18n) and the .po file for each language
 project/audio/sfx/    # The sounds. tools/sfx/make_sfx.py makes the placeholders.
-tools/                # i18n/i18n.py and sfx/make_sfx.py (Python through uv)
+tools/                # i18n/i18n.py, sfx/make_sfx.py, and fmt_json/fmt_json.py (Python through uv)
 project/art/          # Font, theme, and optional art
 docs/                 # spec.md (index) and spec/ (the spec by topic), content.md, plan.md, BACKLOG.md, assets.md
 docs/notes/           # Notes that are not in git (the first draft)

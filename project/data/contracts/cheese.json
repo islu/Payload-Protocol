@@ -1,1 +1,7 @@
-{"id": "cheese", "sectors": [2, 3], "client_name": "Moon Dairy Co-op", "freight": ["space_cheese", "space_cheese", "space_cheese", "space_cheese"], "pay": 9}
+{
+	"id": "cheese",
+	"sectors": [2, 3],
+	"client_name": "Moon Dairy Co-op",
+	"freight": ["space_cheese", "space_cheese", "space_cheese", "space_cheese"],
+	"pay": 9
+}

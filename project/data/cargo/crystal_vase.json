@@ -1,1 +1,8 @@
-{"id": "crystal_vase", "name": "Crystal Vase", "kind": "freight", "weight": "light", "traits": ["fragile"], "shape": [[0, 0]]}
+{
+	"id": "crystal_vase",
+	"name": "Crystal Vase",
+	"kind": "freight",
+	"weight": "light",
+	"traits": ["fragile"],
+	"shape": [[0, 0]]
+}

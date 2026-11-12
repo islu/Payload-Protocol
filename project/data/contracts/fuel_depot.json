@@ -1,1 +1,11 @@
-{"id": "fuel_depot", "sectors": [3], "client_name": "Redline Fuel", "freight": ["fuel_drum", "fuel_drum", "fuel_drum", "plasma_cell"], "pay": 14, "bonus": {"type": "all_intact", "pay": 15}}
+{
+	"id": "fuel_depot",
+	"sectors": [3],
+	"client_name": "Redline Fuel",
+	"freight": ["fuel_drum", "fuel_drum", "fuel_drum", "plasma_cell"],
+	"pay": 14,
+	"bonus": {
+		"type": "all_intact",
+		"pay": 15
+	}
+}

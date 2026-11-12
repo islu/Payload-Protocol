@@ -1,1 +1,17 @@
-{"id": "lab", "sectors": [3], "client_name": "Frostline Labs", "freight": ["coolant_tank", "coolant_tank", "circuit_boards", "circuit_boards", "crystal_vase"], "pay": 11, "bonus": {"type": "all_intact", "pay": 20}}
+{
+	"id": "lab",
+	"sectors": [3],
+	"client_name": "Frostline Labs",
+	"freight": [
+		"coolant_tank",
+		"coolant_tank",
+		"circuit_boards",
+		"circuit_boards",
+		"crystal_vase"
+	],
+	"pay": 11,
+	"bonus": {
+		"type": "all_intact",
+		"pay": 20
+	}
+}
