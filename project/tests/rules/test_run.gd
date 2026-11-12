@@ -152,6 +152,18 @@ func test_lost_freight() -> void:
 	eq(run.credits, 40, "lost freight does not pay (SPEC Section 16)")
 
 
+func test_warp_log_has_the_hold_before() -> void:
+	var c := put("box", 2, 2)
+	warp_with([Defs.DIR_LEFT])
+	var before: Array = run.last_warp["before"]
+	eq(before.size(), 1, "the log has each cargo of the hold before the warp (SPEC Section 20.3)")
+	eq(
+		[before[0]["id"], before[0]["x"], before[0]["y"]],
+		[c.id, 2, 2],
+		"at its place before the slide"
+	)
+
+
 func test_kit_stays() -> void:
 	put("foam", 0, 0)
 	warp_with([Defs.DIR_DOWN])

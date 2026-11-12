@@ -23,6 +23,10 @@ var marked: Array = []
 var preview: Dictionary = {}
 ## The ID of the cargo that the player drags. It shows faded in its old place.
 var dragging := -1
+## The offset of each cargo from its cell, in cells, by ID. The warp tweens it to 0.
+var offsets: Dictionary = {}
+## The fade of each cargo, by ID (1 is opaque). The arrival fades out delivered freight.
+var fades: Dictionary = {}
 
 var _hover := -1
 
@@ -138,10 +142,12 @@ func _draw() -> void:
 		draw_rect(Rect2(o + Vector2(z["x"], z["y"]) * CELL, Vector2(CELL, CELL)), Palette.ZONE)
 	for c: Dictionary in cargo:
 		if c["in_hold"]:
-			var alpha := 0.3 if c["id"] == dragging else 1.0
-			CargoDraw.draw(self, c, c["shape"], o + Vector2(c["x"], c["y"]) * CELL, CELL, alpha)
+			var alpha: float = 0.3 if c["id"] == dragging else fades.get(c["id"], 1.0)
+			var off: Vector2 = offsets.get(c["id"], Vector2.ZERO)
+			var at := o + (Vector2(c["x"], c["y"]) + off) * CELL
+			CargoDraw.draw(self, c, c["shape"], at, CELL, alpha)
 			if c["no_cooler"] or c["no_power"]:
-				_draw_warning(o + Vector2(c["x"], c["y"]) * CELL + _first_cell_offset(c))
+				_draw_warning(at + _first_cell_offset(c))
 	for id: int in marked:
 		var c := _cargo(id)
 		if not c.is_empty() and c["in_hold"]:
@@ -228,5 +234,11 @@ func _draw_warning(top_left: Vector2) -> void:
 
 
 func _process(_delta: float) -> void:
-	if not links.is_empty():
+	if not links.is_empty() or not offsets.is_empty():
 		queue_redraw()
+
+
+## Returns the center of a cargo in local coordinates, with its offset.
+func cargo_center(c: Dictionary) -> Vector2:
+	var off: Vector2 = offsets.get(c["id"], Vector2.ZERO)
+	return grid_origin() + _center(c) + off * CELL

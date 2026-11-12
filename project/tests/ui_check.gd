@@ -34,6 +34,7 @@ func _run() -> void:
 	)
 	state.new_run(11)
 	await get_tree().process_frame
+	await _check_overlays(main)
 	_check(main.screen() is StationScreen, "a new run opens the station (SPEC Section 20.2)")
 	var station: StationScreen = main.screen()
 	var jumps := 0
@@ -45,9 +46,7 @@ func _run() -> void:
 				station = main.screen()
 				await _play_station(state, station)
 			Defs.PHASE_ARRIVAL:
-				_check(
-					main.screen() is PhasePanel, "the arrival shows the report (SPEC Section 20.4)"
-				)
+				await _play_warp(main)
 				state.continue_run()
 			Defs.PHASE_TOLL:
 				state.pay_toll()
@@ -60,6 +59,39 @@ func _run() -> void:
 	await get_tree().process_frame
 	print("ui_check: %s" % ("passed" if _failures == 0 else "%d failed" % _failures))
 	get_tree().quit(1 if _failures > 0 else 0)
+
+
+## Plays the warp fast, and checks that the report shows at the end (SPEC Sections 20.3 and 20.4).
+func _play_warp(main: Control) -> void:
+	await get_tree().process_frame
+	var warp: WarpScreen = main.screen()
+	_check(warp is WarpScreen, "the warp plays after the Warp button (SPEC Section 20.3)")
+	warp.speed_up()
+	warp.speed = 200.0
+	var frames := 0
+	while not warp.finished and frames < 2000:
+		frames += 1
+		await get_tree().process_frame
+	_check(
+		warp.finished and warp._report.visible,
+		"the arrival report shows after the warp (SPEC Section 20.4)"
+	)
+
+
+## Opens and closes the pause menu, the settings, and How to Play (SPEC Sections 20.7 and 23).
+func _check_overlays(main: Control) -> void:
+	var pause: Overlay = main.open_overlay(PauseMenu.new())
+	await get_tree().process_frame
+	_check(get_tree().paused, "the pause menu pauses the game (SPEC Section 20.7)")
+	pause.add_child(SettingsPanel.new())
+	var help := HowToPlay.new()
+	pause.add_child(help)
+	await get_tree().process_frame
+	for i in 4:
+		help._show(i)
+	pause.close()
+	await get_tree().process_frame
+	_check(not get_tree().paused, "Resume ends the pause (SPEC Section 20.7)")
 
 
 ## Accepts the contracts, packs the freight, uses the tooltip and the marks, and warps.

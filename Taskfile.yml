@@ -46,7 +46,7 @@ tasks:
         out=$({{.GODOT}} --headless --path {{.PROJECT_PATH}} res://tests/ui_check.tscn 2>&1) && status=0 || status=$?
         echo "$out" | grep -v -e '^Godot Engine' -e '^$'
         if [ $status -ne 0 ]; then exit $status; fi
-        if echo "$out" | grep -q -e "SCRIPT ERROR" -e "Parse Error"; then exit 1; fi
+        if echo "$out" | grep -q -e "SCRIPT ERROR" -e "Parse Error" -e "ERROR:"; then exit 1; fi
 
   play:
     desc: "The text player of the playtest skill. Run it with no command for the commands: task play -- help"

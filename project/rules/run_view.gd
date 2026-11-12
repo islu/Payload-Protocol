@@ -16,7 +16,8 @@ static func terms(cat: Catalog) -> Array:
 
 
 ## Returns the names of the words of the rules: {kinds, weights, directions}, each a
-## map from the ID to the name (SPEC Section 4.4).
+## map from the ID to the name (SPEC Section 4.4). It also has the weight value of each
+## weight (weight_values) and the break limit of each trait (limits), for the rules text.
 static func names(cat: Catalog) -> Dictionary:
 	var out := {}
 	var groups := {"kinds": Defs.KINDS, "weights": Defs.WEIGHTS, "directions": Defs.DIRECTIONS}
@@ -24,6 +25,12 @@ static func names(cat: Catalog) -> Dictionary:
 		out[group] = {}
 		for id: String in groups[group]:
 			out[group][id] = cat.term_name(group, id)
+	out["weight_values"] = {}
+	for w in Defs.WEIGHTS:
+		out["weight_values"][w] = cat.weight_value(w)
+	out["limits"] = {}
+	for t in Defs.LIMIT_TRAITS:
+		out["limits"][t] = cat.break_limit(t)
 	return out
 
 
@@ -116,6 +123,16 @@ static func view(run: Run) -> Dictionary:
 			"won": run.won, "score": run.score(), "seed": v["seed"], "stats": run.stats.duplicate()
 		}
 	return v
+
+
+## Returns the view of each cargo in the hold, in the order of the IDs.
+static func hold_views(run: Run) -> Array:
+	var out := []
+	var powered := Shift.power_check(run)
+	var hold := run.hold_cargo()
+	for c in hold:
+		out.append(_cargo(run, c, hold, powered))
+	return out
 
 
 static func _cargo(run: Run, c: Cargo, hold: Array[Cargo], powered: Dictionary) -> Dictionary:

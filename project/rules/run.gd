@@ -102,8 +102,10 @@ func _open_station() -> void:
 func warp() -> String:
 	if phase != Defs.PHASE_STATION:
 		return NOT_AT_STATION_TEXT
-	var warp_log := {"sold": [], "sold_credits": 0, "steps": []}
+	var warp_log := {"sold": [], "sold_credits": 0, "before": [], "steps": []}
 	_leave_dock(warp_log)
+	# The hold before the first shift step, so that the UI can play the log (SPEC Section 20.3).
+	warp_log["before"] = RunView.hold_views(self)
 	charges = {}
 	for c in hold_cargo():
 		if c.has(Defs.TRAIT_SHIELD):

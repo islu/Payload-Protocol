@@ -1,10 +1,7 @@
 class_name PhasePanel
 extends Control
-## A simple panel for the arrival, the toll gate, and the run end (SPEC Sections
-## 20.4 to 20.6). Day 5 replaces it with the screens of each phase.
+## The toll gate and the run end (SPEC Sections 19.2, 20.5, and 20.6).
 
-const ARRIVAL_TEXT := "Arrival"
-const TOTAL_TEXT := "Total: {total} credits"
 const CONTINUE_TEXT := "Continue"
 const TOLL_TITLE_TEXT := "Toll gate"
 const TOLL_BODY_TEXT := "Toll {toll} · credits {credits} · after {after}"
@@ -16,9 +13,6 @@ const LOSS_TEXT := "Run over."
 const END_BODY_TEXT := "Score {score} · delivered {delivered} · scrap {scrapped} · explosions {explosions} · seed {seed}"
 const NEW_RUN_TEXT := "New Run"
 const TITLE_BUTTON_TEXT := "Title"
-const BONUS_TEXT := "bonus +{bonus}"
-const BONUS_MISSED_TEXT := "bonus missed"
-const BREACH_TEXT := "breach -{breach}"
 
 var _body: RichTextLabel
 var _buttons: HBoxContainer
@@ -63,29 +57,6 @@ func refresh() -> void:
 		b.queue_free()
 	var lines := PackedStringArray()
 	match run["phase"]:
-		Defs.PHASE_ARRIVAL:
-			_heading.text = tr(ARRIVAL_TEXT)
-			var a: Dictionary = run["arrival"]
-			for k: Dictionary in a["contracts"]:
-				var pieces := PackedStringArray()
-				for p: Dictionary in k["pieces"]:
-					pieces.append("%s (%s)" % [tr(p["name"]), tr(p["state"])])
-				var extra := ""
-				if k["has_bonus"]:
-					extra = (
-						" · "
-						+ (tr(BONUS_TEXT).format(k) if k["bonus_met"] else tr(BONUS_MISSED_TEXT))
-					)
-				if k["breach"] > 0:
-					extra += " · " + tr(BREACH_TEXT).format(k)
-				lines.append(
-					(
-						"[b]%s[/b]: %s · +%d%s"
-						% [tr(k["client_name"]), ", ".join(pieces), k["pay"], extra]
-					)
-				)
-			lines.append(tr(TOTAL_TEXT).format(a))
-			_add_button(CONTINUE_TEXT, func() -> void: GameState.continue_run())
 		Defs.PHASE_TOLL:
 			_heading.text = tr(TOLL_TITLE_TEXT)
 			var t: Dictionary = run["toll_gate"]

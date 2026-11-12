@@ -26,10 +26,10 @@ description: Conventions of the Payload Protocol scenes and UI (project/scenes) 
 
 | Folder | Content |
 | --- | --- |
-| `scenes/main/` | `main.gd`: it shows the screen of the phase. `phase_panel.gd`: the simple arrival, toll, and end panel until those screens exist. |
-| `scenes/common/` | `GameState` (autoload), `DataFiles`, `Palette` (all colors), `GameText` (`{key, args}` text), `CargoDraw` (draws a cargo), `CargoChip` (a cargo in a list) |
+| `scenes/main/` | `main.gd`: the title, the screen of each phase, and Esc for the pause. `PhasePanel`: the toll gate and the run end. `Overlay` (the base of a panel on top), `PauseMenu`, `SettingsPanel`, `HowToPlay` |
+| `scenes/common/` | `GameState` (autoload), `DataFiles`, `Settings` (`user://settings.cfg`), `Sound` (plays `audio/sfx/<name>`), `Palette` (all colors), `GameText` (`{key, args}` text), `CargoDraw` (draws a cargo), `CargoChip` (a cargo in a list), `Starfield` |
+| `scenes/warp/` | `WarpScreen` (plays the event log, then the arrival report), `FxLayer` (the drawn effects of Section 21) |
 | `scenes/station/` | `StationScreen` (the layout, the drag, the drops, the tooltip), `HoldView` (the grid, the cargo, the links, the preview), `DragLayer`, `ClampChip` |
-| `scenes/<screen>/` | One folder for each other screen of SPEC Section 20: `title`, `warp`, `arrival`, `toll`, `end` |
 
 ## 4. The Drag
 
@@ -37,7 +37,14 @@ description: Conventions of the Payload Protocol scenes and UI (project/scenes) 
 - A drop goes to the first target under the mouse: the sell area, the dock, or the hold. A drop anywhere else does nothing.
 - The shape of each rotation comes from `rotations` in the cargo view. Do not rotate a shape in a scene.
 
-## 5. Checks
+## 5. The Warp
+
+- `WarpScreen` copies `warp.before` and changes the copy with each slide and reaction of the log. It calculates no result.
+- Wait with `_wait(seconds)`. It divides by `speed`, and it stops during the pause menu. Do not use a timer that runs during the pause.
+- Call `Sound.play(self, "<name>")` for each event of Section 21. A missing file plays nothing. The names now: `alarm`, `rumble`, `soft_hit`, `metal_hit`, `glass_break`, `splash`, `buzz`, `explosion`, `shield`, `squelch`, `coin`.
+- The shake reads the setting `shake` (SPEC Section 23.1).
+
+## 6. Checks
 
 - `task test:ui` (`tests/ui_check.tscn`) plays a full run through the screens and calls the station functions (tooltip, marks, drag, warp). Add a call there for each new screen function. It is a scene, so that the autoload `GameState` exists.
 - `task smoke` runs the main scene for 5 frames and fails on an error.

@@ -2,7 +2,7 @@
 
 Payload Protocol is a single-player puzzle game about cargo in the hold of a spaceship. The player packs freight into a grid. Each warp shifts the hold: cargo slides, hits, breaks, explodes, and leaks (SPEC Section 1).
 
-**Status:** The rules of Sections 5 to 19 are in the code, with tests and a text player. The station screen (Section 20.2) is in the code. The arrival, the toll gate, and the run end use a simple `PhasePanel`. The feedback (Section 21), the sounds, and the zh-TW text are not made yet.
+**Status:** The rules of Sections 5 to 19 are in the code, with tests and a text player. All screens of Section 20 are in the code: the title, the station, the warp with the arrival report, the toll gate and the run end (`PhasePanel`), the pause menu, the settings, and How to Play (text only). The drawn effects of Section 21 are in the code. The sound files, the CRT filter, the hints, and the zh-TW text are not made yet.
 
 [docs/spec.md](docs/spec.md) is the source of truth for game design. If the code and the spec do not agree, ask the user. Do not change the spec without approval. [docs/content.md](docs/content.md) has the content design rules. [docs/plan.md](docs/plan.md) has the plan and the milestones.
 
