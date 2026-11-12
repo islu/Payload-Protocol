@@ -14,8 +14,8 @@ Payload Protocol is a single-player puzzle game about cargo in the hold of a spa
 
 ### 1.1 Design Pillars
 
-- **The player can read each shift before the warp.** The station shows each direction of the next warp, in order. A shift has no random parts. The same hold and the same directions always give the same result.
-- **Space is always tight.** Freight leaves at each station, but scrap stays. Kit stays too. The player must decide what to keep.
+- **The player can read each risk before the warp.** The station shows each shift step of the next warp, in order. In sector 1, each step is known. From sector 2, the last step is a fork: one of two directions that the station shows (Section 18). A shift has no other random parts. The same hold and the same directions always give the same result.
+- **Space is always tight.** The contracts of a station have more mass than the ship can carry, so the player selects (Section 25). Freight leaves at each station, but scrap stays. Kit stays too. The player must decide what to keep.
 - **A disaster is a show.** A break, a chain of explosions, or a leak has strong feedback and a line from the pilot. A loss must be funny, not only a loss.
 - **A run is short.** A run takes about 20 to 30 minutes.
 
@@ -81,6 +81,10 @@ Use these terms in the spec, the code, the data, and the text of the game. Do no
 | **jump** | One travel from a station to the next station. |
 | **sector** | A group of 3 jumps that ends with a toll. |
 | **hazard** | The list of shift steps of a jump (Section 18). |
+| **fork step** | A shift step with two possible directions. The warp shows which one happens (Section 18). |
+| **mass** | The load of a cargo: its weight value multiplied by its cells (Section 25). |
+| **mass limit** | The mass that the ship can carry with no fuel fee (Section 25). |
+| **fuel fee** | The credits that the player pays at the warp for each point of mass over the mass limit (Section 25). |
 | **shift step** | One direction of a hazard. All cargo slides in that direction (Section 10). |
 | **slide** | The movement of cargo in a shift step. |
 | **hit** | What happens when cargo stops after a slide (Section 10.3). |

@@ -95,6 +95,10 @@ msgstr ""
 msgid "You are not at a toll gate."
 msgstr ""
 
+#: project/rules/run.gd
+msgid "The hold is too heavy to warp. Take cargo out, or reinforce the hull."
+msgstr ""
+
 #: project/scenes/common/game_state.gd
 msgid "The game data did not load."
 msgstr ""
@@ -143,7 +147,8 @@ msgid ""
 "The hazard panel shows each shift step of the next jump, in order.\n"
 "In each step, all cargo slides in that direction until a wall or a stopped cargo blocks it.\n"
 "Force = weight × cells that it slid. Light {light}, standard {standard}, heavy {heavy}.\n"
-"A cargo that does not slide makes no hit."
+"A cargo that does not slide makes no hit.\n"
+"From sector 2, the last step is a fork: one of two directions. You see which one only at the warp."
 msgstr ""
 
 #: project/scenes/main/how_to_play.gd
@@ -162,6 +167,8 @@ msgid ""
 "Perishable cargo needs a Cooler next to it at the arrival.\n"
 "A Shield next to a Battery protects the cargo next to it from one reaction.\n"
 "A clamp stops a cargo from sliding. Buy kit, clamps, and a bigger hold in the shop.\n"
+"Mass = weight × cells. Over the mass limit, the warp costs a fuel fee. Reinforce the hull to carry more.\n"
+"A Sensor in the hold shows the direction of the fork step.\n"
 "Pay the toll at the end of each sector, or the run ends."
 msgstr ""
 
@@ -267,6 +274,30 @@ msgstr ""
 
 #: project/scenes/main/settings_panel.gd
 msgid "Language"
+msgstr ""
+
+#: project/scenes/main/tutorial_picture.gd
+msgid "{weight} × {cells} = {force}"
+msgstr ""
+
+#: project/scenes/station/hints.gd
+msgid "Accept a contract on the left. Its freight goes to the dock."
+msgstr ""
+
+#: project/scenes/station/hints.gd
+msgid "Drag a cargo from the dock into the hold. Or click it, then click a cell."
+msgstr ""
+
+#: project/scenes/station/hints.gd
+msgid "Right click a cargo in the hold to rotate it. While you hold one, press R."
+msgstr ""
+
+#: project/scenes/station/hints.gd
+msgid "Read the hazard at the top: each step slides all cargo that way. Fragile cargo breaks at a strong hit."
+msgstr ""
+
+#: project/scenes/station/hints.gd
+msgid "When the hold is ready, press WARP."
 msgstr ""
 
 #: project/scenes/station/station_screen.gd
@@ -399,8 +430,41 @@ msgstr ""
 msgid "No Battery next to it: no power."
 msgstr ""
 
+#: project/scenes/station/station_screen.gd
+msgid "Mass {hold}/{limit}"
+msgstr ""
+
+#: project/scenes/station/station_screen.gd
+msgid "Fuel fee {fee}"
+msgstr ""
+
+#: project/scenes/station/station_screen.gd
+msgid "Too heavy: {max} at most"
+msgstr ""
+
+#: project/scenes/station/station_screen.gd
+msgid "Reinforce hull +{amount} ({price} cr)"
+msgstr ""
+
+#: project/scenes/station/station_screen.gd
+#: project/scenes/warp/warp_screen.gd
+msgid "or"
+msgstr ""
+
+#: project/scenes/station/station_screen.gd
+msgid "Mass {mass}"
+msgstr ""
+
 #: project/scenes/warp/warp_screen.gd
 msgid "Shift {n}: {arrow} {direction}"
+msgstr ""
+
+#: project/scenes/warp/warp_screen.gd
+msgid "Shift {n}: {options} ...?"
+msgstr ""
+
+#: project/scenes/warp/warp_screen.gd
+msgid "Fuel fee: -{fee}"
 msgstr ""
 
 #: project/scenes/warp/warp_screen.gd
@@ -513,6 +577,10 @@ msgstr ""
 
 #: project/data/cargo/reactor_core.json
 msgid "Reactor Core"
+msgstr ""
+
+#: project/data/cargo/sensor_array.json
+msgid "Sensor Array"
 msgstr ""
 
 #: project/data/cargo/shield_generator.json
@@ -895,6 +963,14 @@ msgstr ""
 
 #: project/data/terms.json
 msgid "Spoils at the arrival if it is not next to a Cooler."
+msgstr ""
+
+#: project/data/terms.json
+msgid "Sensor"
+msgstr ""
+
+#: project/data/terms.json
+msgid "At the station, it shows the direction of the fork step."
 msgstr ""
 
 #: project/data/terms.json

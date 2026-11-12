@@ -29,6 +29,7 @@ const CANNOT_SELL_TEXT := "You can sell only kit."
 const NOT_SCRAP_TEXT := "That cargo is not scrap."
 const NOT_ARRIVED_TEXT := "The ship has not arrived yet."
 const NOT_AT_TOLL_TEXT := "You are not at a toll gate."
+const OVERWEIGHT_TEXT := "The hold is too heavy to warp. Take cargo out, or reinforce the hull."
 
 ## The places that a rotation in place tries, in order, when the new shape does not
 ## fit: left, right, up, down, then the diagonals (SPEC Section 8.2).
@@ -66,7 +67,14 @@ var contracts: Array[Contract] = []
 var shop: Array[Dictionary] = []
 var rerolls: int = 0
 var upgrades: int = 0
+## The direction of each shift step of the next jump. The last one can be a fork step.
 var hazard: PackedStringArray = []
+## The two directions of the fork step, or empty (SPEC Section 18). The station shows them.
+## The direction that happens is the last of hazard. The station does not show it.
+var fork_options: PackedStringArray = []
+## The mass that the ship can carry with no fuel fee (SPEC Section 25).
+var mass_limit: int
+var reinforces: int = 0
 
 var last_warp: Dictionary = {}
 var last_arrival: Dictionary = {}
@@ -91,6 +99,7 @@ func _init(catalog: Catalog, run_seed: int) -> void:
 	line_rng.seed = run_seed ^ 0x5DEECE66D
 	credits = cat.start_credits
 	clamps = cat.start_clamps
+	mass_limit = cat.mass_limit
 	columns = cat.start_columns
 	rows = cat.start_rows
 	_open_station()
@@ -116,16 +125,24 @@ func _open_station() -> void:
 func warp() -> String:
 	if phase != Defs.PHASE_STATION:
 		return NOT_AT_STATION_TEXT
-	var warp_log := {"sold": [], "sold_credits": 0, "before": [], "steps": []}
+	if hold_mass() > max_mass():
+		return OVERWEIGHT_TEXT
+	var warp_log := {"sold": [], "sold_credits": 0, "fuel_fee": 0, "before": [], "steps": []}
 	_leave_dock(warp_log)
+	# The fuel fee comes first (SPEC Sections 9 and 25). The credits can go below 0.
+	warp_log["fuel_fee"] = fuel_fee()
+	credits -= warp_log["fuel_fee"]
 	# The hold before the first shift step, so that the UI can play the log (SPEC Section 20.3).
 	warp_log["before"] = RunView.hold_views(self)
 	charges = {}
 	for c in hold_cargo():
 		if c.has(Defs.TRAIT_SHIELD):
 			charges[c.id] = 1
-	for d in hazard:
-		warp_log["steps"].append(Shift.step(self, d))
+	for i in hazard.size():
+		var step := Shift.step(self, hazard[i])
+		if i == hazard.size() - 1 and not fork_options.is_empty():
+			step["options"] = Array(fork_options)
+		warp_log["steps"].append(step)
 	last_warp = warp_log
 	Arrival.arrive(self)
 	return ""
@@ -400,7 +417,7 @@ func _offer_contracts() -> void:
 	var picked: Array = []
 	for attempt in 20:
 		picked = pick_n(rng, pool, n)
-		if attempt == 19 or _fits_empty(picked):
+		if attempt == 19 or _offer_mass(picked) * 100 >= mass_limit * cat.offer_mass_percent:
 			break
 	contracts.clear()
 	for t: ContractTemplate in picked:
@@ -408,12 +425,61 @@ func _offer_contracts() -> void:
 		contracts.append(Contract.new(_next_contract, t))
 
 
-func _fits_empty(templates: Array) -> bool:
-	var shapes: Array = []
+## Returns the mass of all freight of the templates (content.md).
+func _offer_mass(templates: Array) -> int:
+	var total := 0
 	for t: ContractTemplate in templates:
 		for id in t.freight:
-			shapes.append(cat.cargo[id].shape)
-	return Packing.packs(shapes, columns, rows, 20000)
+			total += def_mass(cat.cargo[id])
+	return total
+
+
+# --- Mass (SPEC Section 25) ---
+
+
+## Returns the mass of a definition: its weight value multiplied by its cells.
+func def_mass(def: CargoDef) -> int:
+	return cat.weight_value(def.weight) * def.shape.size()
+
+
+## Returns the mass of a cargo now. Scrap is light (SPEC Section 25).
+func cargo_mass(c: Cargo) -> int:
+	return cat.weight_value(c.weight()) * c.def.shape.size()
+
+
+## Returns the mass of the cargo in the hold. The dock does not count.
+func hold_mass() -> int:
+	var total := 0
+	for c in hold_cargo():
+		total += cargo_mass(c)
+	return total
+
+
+## Returns the most mass that the ship can warp with: the limit plus over_percent, rounded down.
+func max_mass() -> int:
+	return mass_limit * (100 + cat.over_percent) / 100
+
+
+## Returns the fuel fee of a warp now: for each point of mass over the limit.
+func fuel_fee() -> int:
+	return maxi(0, hold_mass() - mass_limit) * cat.fuel_fee
+
+
+## Returns the price of the next Reinforce hull (SPEC Section 17.2).
+func reinforce_price() -> int:
+	return cat.price("reinforce_first") + cat.price("reinforce_step") * reinforces
+
+
+## Adds to the mass limit (SPEC Section 17.2).
+func reinforce_hull() -> String:
+	if phase != Defs.PHASE_STATION:
+		return NOT_AT_STATION_TEXT
+	var err := _pay(reinforce_price())
+	if err != "":
+		return err
+	reinforces += 1
+	mass_limit += cat.reinforce_amount
+	return ""
 
 
 # --- Shop (SPEC Section 17) ---
@@ -559,16 +625,30 @@ func clear_scrap(id: int) -> String:
 
 ## Selects the shift steps of the next jump (SPEC Section 18). Two steps next
 ## to each other have different directions.
+## In a sector with fork steps, the last step is a fork step (SPEC Section 18): two
+## directions that are not the step before it and not opposite to each other. The
+## seed selects the direction that happens now.
 func _make_hazard() -> PackedStringArray:
-	var span: Vector2i = cat.sectors[sector - 1]["hazard_steps"][jump - 1]
+	var s: Dictionary = cat.sectors[sector - 1]
+	var span: Vector2i = s["hazard_steps"][jump - 1]
 	var n := rng.randi_range(span.x, span.y)
 	var steps: PackedStringArray = []
-	for _i in n:
+	fork_options = PackedStringArray()
+	for i in n:
 		var choices: PackedStringArray = []
 		for d in Defs.DIRECTIONS:
 			if steps.is_empty() or steps[-1] != d:
 				choices.append(d)
-		steps.append(choices[rng.randi_range(0, choices.size() - 1)])
+		if i == n - 1 and s["fork"]:
+			var pairs: Array = []
+			for a in choices.size():
+				for b in range(a + 1, choices.size()):
+					if Defs.delta(choices[a]) != -Defs.delta(choices[b]):
+						pairs.append(PackedStringArray([choices[a], choices[b]]))
+			fork_options = pairs[rng.randi_range(0, pairs.size() - 1)]
+			steps.append(fork_options[rng.randi_range(0, 1)])
+		else:
+			steps.append(choices[rng.randi_range(0, choices.size() - 1)])
 	return steps
 
 

@@ -7,7 +7,7 @@ This file is part of the [game specification](../spec.md). The section numbers a
 - **Phase environments** (the second design of the first draft): each jump goes into an environment, for example a radiation zone or a low-power zone. The environment changes the values of traits.
 - **Tilt and rotation steps:** a shift step that turns the whole hold, or a diagonal slide.
 - **Contracts for more than one jump:** freight that stays in the hold for 2 or 3 jumps for more pay.
-- **Hidden steps:** a hazard with a step that shows "?". A Sensor kit shows it.
+- **Hidden steps:** a step that shows "?" (any of three directions). The fork step of Section 18 is the first part of this idea.
 - **A save of the run** between jumps.
 - **Unlocks between runs:** new kit, new clients, and ship types with a different hold shape.
 - **A daily seed** and a score list.

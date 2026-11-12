@@ -29,10 +29,10 @@ description: Conventions of the Payload Protocol scenes and UI (project/scenes) 
 
 | Folder | Content |
 | --- | --- |
-| `scenes/main/` | `main.gd`: the title, the screen of each phase, and Esc for the pause. `PhasePanel`: the toll gate and the run end. `Overlay` (the base of a panel on top), `PauseMenu`, `SettingsPanel`, `HowToPlay` |
+| `scenes/main/` | `main.gd`: the title, the screen of each phase, and Esc for the pause. `PhasePanel`: the toll gate and the run end. `Overlay` (the base of a panel on top), `PauseMenu`, `SettingsPanel`, `HowToPlay`, `TutorialPicture` (the picture of each How to Play page) |
 | `scenes/common/` | `GameState` (autoload), `DataFiles`, `Settings` (`user://settings.cfg`), `Sound` (plays `audio/sfx/<name>`), `Palette` (all colors), `GameText` (`{key, args}` text), `CargoDraw` (draws a cargo), `CargoChip` (a cargo in a list), `Starfield` |
 | `scenes/warp/` | `WarpScreen` (plays the event log, then the arrival report), `FxLayer` (the drawn effects of Section 21) |
-| `scenes/station/` | `StationScreen` (the layout, the drag, the drops, the tooltip), `HoldView` (the grid, the cargo, the links, the preview), `DragLayer`, `ClampChip` |
+| `scenes/station/` | `StationScreen` (the layout, the drag, the drops, the tooltip), `HoldView` (the grid, the cargo, the links, the preview), `DragLayer`, `ClampChip`, `Hints` (the hints of the first runs, SPEC Section 23.3) |
 
 ## 4. The Drag
 
@@ -51,7 +51,13 @@ description: Conventions of the Payload Protocol scenes and UI (project/scenes) 
 - A sound from outside the project replaces the placeholder with the same name. Record it in `docs/assets.md`.
 - The shake reads the setting `shake` (SPEC Section 23.1).
 
-## 6. Checks
+## 6. Hints
+
+- `Hints.current(run)` returns the hint to show, from the view and the setting `hints_seen`. A hint that the view cannot show ends with `Hints.done(id)`.
+- Start a run with `start_run()` of `main.gd` (or `Hints.run_started()` first). It counts the runs, so that the hints turn off after the first runs.
+- The UI check saves `user://settings.cfg` and puts it back at the end. Do the same in each check that writes a setting.
+
+## 7. Checks
 
 - `task test:ui` (`tests/ui_check.tscn`) plays a full run through the screens and calls the station functions (tooltip, marks, drag, warp). Add a call there for each new screen function. It is a scene, so that the autoload `GameState` exists.
 - `task smoke` runs the main scene for 5 frames and fails on an error.

@@ -13,6 +13,9 @@ const DEFAULTS := {
 	"fullscreen": false,
 	"locale": "en",
 	"hints": true,
+	# The progress of the hints (SPEC Section 23.3).
+	"hints_seen": [],
+	"runs_started": 0,
 }
 const LOCALES: PackedStringArray = ["en", "zh_TW"]
 

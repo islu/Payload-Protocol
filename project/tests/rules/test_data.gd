@@ -5,27 +5,7 @@ extends TestCase
 func test_the_real_data_loads() -> void:
 	var cat := DataFiles.catalog()
 	eq(cat.errors, PackedStringArray(), "the data check finds no errors (content.md)")
-	eq(cat.cargo.size(), 19, "the first content has 14 freight and 5 kit (content.md)")
-
-
-func test_offers_fit_an_empty_hold() -> void:
-	var cat := DataFiles.catalog()
-	for run_seed in range(1, 41):
-		var r := Run.new(cat, run_seed)
-		for sector in [1, 2, 3]:
-			r.sector = sector
-			r._offer_contracts()
-			var shapes := []
-			for k in r.contracts:
-				for id in k.template.freight:
-					shapes.append(cat.cargo[id].shape)
-			check(
-				Packing.packs(shapes, r.columns, r.rows, 200000),
-				(
-					"the 3 offers of sector %d fit in an empty hold, seed %d (content.md)"
-					% [sector, run_seed]
-				)
-			)
+	eq(cat.cargo.size(), 20, "the first content has 14 freight and 6 kit (content.md)")
 
 
 ## A bot accepts each contract, packs the freight where it fits, and warps. The
@@ -49,8 +29,15 @@ func test_bot_runs_end() -> void:
 
 
 func _bot_station(r: Run) -> void:
+	# Take contracts while the mass stays under the limit (SPEC Section 25).
+	var mass := r.hold_mass()
 	for i in r.contracts.size():
-		r.accept_contract(i)
+		var add := 0
+		for id in r.contracts[i].template.freight:
+			add += r.def_mass(r.cat.cargo[id])
+		if mass + add <= r.mass_limit:
+			r.accept_contract(i)
+			mass += add
 	for id in r.dock.duplicate():
 		var placed := false
 		for y in r.rows:

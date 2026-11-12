@@ -8,7 +8,9 @@ This file is part of the [game specification](../spec.md). The section numbers a
 - If cargo is on the dock, a dialog asks the player to confirm. It shows what happens to that cargo (Section 15.4):
   - Freight on the dock stays at the station. Its contract pays a breach fee.
   - Kit on the dock is sold at the sell price (Section 17.3).
-- The hazard of the jump has 1 to 3 shift steps (Section 18). The warp plays them in order.
+- The warp does not start when the hold mass is more than the maximum (Section 25).
+- The warp takes the fuel fee first (Section 25).
+- The hazard of the jump has 1 to 3 shift steps (Section 18). The warp plays them in order. A fork step shows its direction when the warp reaches it.
 - After a shift step, each cargo stays where it stopped. The next shift step starts from there.
 - Each shift step has these parts, in this order:
   1. The power check (Section 12.2).

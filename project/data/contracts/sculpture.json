@@ -1,1 +1,1 @@
-{"id": "sculpture", "sectors": [1], "client_name": "Museum of Nowhere", "freight": ["glass_sculpture"], "pay": 14}
+{"id": "sculpture", "sectors": [1], "client_name": "Museum of Nowhere", "freight": ["glass_sculpture", "glass_sculpture"], "pay": 14}

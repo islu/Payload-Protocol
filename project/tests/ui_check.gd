@@ -4,6 +4,8 @@ extends Node
 ## autoloads exist as in the game.
 ## Run: godot --headless --path project res://tests/ui_check.tscn
 
+const MAIN_SCENE := preload("res://scenes/main/main.tscn")
+
 var _failures := 0
 
 
@@ -19,12 +21,17 @@ func _check(ok: bool, what: String) -> void:
 
 func _run() -> void:
 	get_tree().create_timer(120.0).timeout.connect(func() -> void: get_tree().quit(2))
+	# Keep the settings of the player: the check writes the hint progress.
+	var saved := FileAccess.get_file_as_string(Settings.PATH)
+	DirAccess.remove_absolute(Settings.PATH)
+	Settings._config = null
+	await _check_hints()
 	for sound in Sound.NAMES:
 		_check(Sound.exists(sound), "the sound %s has a file (SPEC Section 4.3)" % sound)
 	# Play in each language, so that a translation with a bad placeholder fails here.
 	for locale in Settings.LOCALES:
 		TranslationServer.set_locale(locale)
-		var main: Control = load("res://scenes/main/main.tscn").instantiate()
+		var main: Control = MAIN_SCENE.instantiate()
 		add_child(main)
 		# Main applies the saved language. Use the language of this pass.
 		TranslationServer.set_locale(locale)
@@ -32,6 +39,12 @@ func _run() -> void:
 		await _play_run(main)
 		main.queue_free()
 		await get_tree().process_frame
+	DirAccess.remove_absolute(Settings.PATH)
+	if saved != "":
+		var f := FileAccess.open(Settings.PATH, FileAccess.WRITE)
+		f.store_string(saved)
+		f.close()
+	Settings._config = null
 	print("ui_check: %s" % ("passed" if _failures == 0 else "%d failed" % _failures))
 	get_tree().quit(1 if _failures > 0 else 0)
 
@@ -71,6 +84,59 @@ func _play_run(main: Control) -> void:
 		"the run reaches its end (SPEC Section 19.2)"
 	)
 	state.abandon_run()
+	await get_tree().process_frame
+
+
+## The hints of the first run come in order, and each ends when the player does
+## its thing (SPEC Section 23.3).
+func _check_hints() -> void:
+	TranslationServer.set_locale("en")
+	var main: Control = MAIN_SCENE.instantiate()
+	add_child(main)
+	await get_tree().process_frame
+	main.start_run()
+	await get_tree().process_frame
+	var station: StationScreen = main.screen()
+	var text := func() -> String: return station._pilot_label.text
+	_check(
+		text.call().contains(Hints.text(Hints.ACCEPT)),
+		"the first hint is: accept a contract (SPEC Section 23.3)"
+	)
+	GameState.accept_contract(0)
+	await get_tree().process_frame
+	_check(text.call().contains(Hints.text(Hints.DRAG)), "then: drag a cargo (SPEC Section 23.3)")
+	var run: Dictionary = GameState.view()["run"]
+	var placed := false
+	for y in run["hold"]["rows"]:
+		for x in run["hold"]["columns"]:
+			if not placed and GameState.can_place(run["dock"][0], x, y, 0):
+				placed = GameState.place_cargo(run["dock"][0], x, y, 0) == ""
+	await get_tree().process_frame
+	_check(
+		text.call().contains(Hints.text(Hints.ROTATE)), "then: rotate a cargo (SPEC Section 23.3)"
+	)
+	Hints.done(Hints.ROTATE)
+	station.refresh()
+	_check(
+		text.call().contains(Hints.text(Hints.HAZARD)), "then: read the hazard (SPEC Section 23.3)"
+	)
+	Hints.done(Hints.HAZARD)
+	station.refresh()
+	_check(text.call().contains(Hints.text(Hints.WARP)), "then: warp (SPEC Section 23.3)")
+	Hints.done(Hints.WARP)
+	station.refresh()
+	_check(
+		text.call().begins_with("PIP: "),
+		"after the last hint, the pilot speaks its line (SPEC Section 22)"
+	)
+	for i in Hints.RUNS_WITH_HINTS:
+		Hints.run_started()
+	_check(
+		not Settings.get_value("hints"),
+		"the hints turn off after the first runs (SPEC Section 23.3)"
+	)
+	GameState.abandon_run()
+	main.queue_free()
 	await get_tree().process_frame
 
 
@@ -139,8 +205,15 @@ func _check_pick_up(station: StationScreen, id: int) -> void:
 ## Accepts the contracts, packs the freight, uses the tooltip and the marks, and warps.
 func _play_station(state: Node, station: StationScreen) -> void:
 	var run: Dictionary = state.view()["run"]
+	# Take contracts while the mass stays under the limit (SPEC Section 25).
+	var mass: int = run["mass"]["hold"]
 	for k: Dictionary in run["contracts"]:
-		state.accept_contract(k["index"])
+		var add := 0
+		for f: Dictionary in k["freight"]:
+			add += f["mass"]
+		if mass + add <= run["mass"]["limit"]:
+			state.accept_contract(k["index"])
+			mass += add
 	await get_tree().process_frame
 	run = state.view()["run"]
 	for c: Dictionary in run["cargo"]:

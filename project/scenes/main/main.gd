@@ -32,6 +32,8 @@ func _ready() -> void:
 func _update() -> void:
 	var run: Dictionary = GameState.view()["run"]
 	var kind := "title" if run.is_empty() else str(run["phase"])
+	if kind == Defs.PHASE_END and run["end"]["won"]:
+		Hints.run_won()
 	if kind == Defs.PHASE_TOLL or kind == Defs.PHASE_END:
 		kind = "gate"
 	if kind == _screen_kind:
@@ -69,6 +71,12 @@ func _add_crt() -> void:
 
 func _process(_delta: float) -> void:
 	_crt.visible = Settings.get_value("crt")
+
+
+## Starts a new run, and counts it for the hints (SPEC Section 23.3).
+static func start_run() -> void:
+	Hints.run_started()
+	GameState.new_run()
 
 
 ## Returns the screen now. The UI check uses it.
@@ -125,7 +133,7 @@ func _title() -> Control:
 	title.add_theme_color_override("font_color", Palette.ACCENT)
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	box.add_child(title)
-	var new_run := _title_button(box, NEW_RUN_TEXT, func() -> void: GameState.new_run())
+	var new_run := _title_button(box, NEW_RUN_TEXT, start_run)
 	new_run.name = "NewRunButton"
 	_title_button(box, HOW_TO_PLAY_TEXT, func() -> void: open_overlay(HowToPlay.new()))
 	_title_button(box, SETTINGS_TEXT, func() -> void: open_overlay(SettingsPanel.new()))

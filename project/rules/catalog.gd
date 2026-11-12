@@ -20,7 +20,15 @@ var break_limits: Dictionary = {}
 var offer_contracts: int
 var offer_kit: int
 var prices: Dictionary = {}
-## Each sector: {toll: int, hazard_steps: Array of Vector2i(min, max), kit_pool: PackedStringArray}.
+# The mass of SPEC Section 25
+var mass_limit: int
+var over_percent: int
+var fuel_fee: int
+var reinforce_amount: int
+## The offers of a station have this percent of the mass limit or more (content.md).
+var offer_mass_percent: int
+## Each sector: {toll: int, hazard_steps: Array of Vector2i(min, max), kit_pool: PackedStringArray,
+## fork: bool}. fork is true when the last step of each jump is a fork step (SPEC Section 18).
 var sectors: Array[Dictionary] = []
 
 ## terms.json: the words of the rules.
@@ -83,6 +91,12 @@ func _read_rules(r: Dictionary) -> void:
 	offer_kit = int(r.get("offers", {}).get("kit", 0))
 	for k: String in r.get("prices", {}):
 		prices[k] = int(r["prices"][k])
+	var mass: Dictionary = r.get("mass", {})
+	mass_limit = int(mass.get("limit", 0))
+	over_percent = int(mass.get("over_percent", 0))
+	fuel_fee = int(mass.get("fuel_fee", 0))
+	reinforce_amount = int(mass.get("reinforce", 0))
+	offer_mass_percent = int(mass.get("offer_percent", 0))
 	for s: Dictionary in r.get("sectors", []):
 		var steps: Array[Vector2i] = []
 		for span in s.get("hazard_steps", []):
@@ -90,7 +104,17 @@ func _read_rules(r: Dictionary) -> void:
 		var pool: PackedStringArray = []
 		for id in s.get("kit_pool", []):
 			pool.append(str(id))
-		sectors.append({"toll": int(s.get("toll", 0)), "hazard_steps": steps, "kit_pool": pool})
+		(
+			sectors
+			. append(
+				{
+					"toll": int(s.get("toll", 0)),
+					"hazard_steps": steps,
+					"kit_pool": pool,
+					"fork": bool(s.get("fork", false)),
+				}
+			)
+		)
 
 
 ## Returns the weight value of a weight class (SPEC Section 6.1).
@@ -157,6 +181,8 @@ func _check_rules() -> void:
 			_fail("rules: the trait %s needs a break limit" % t)
 	if price("sell_divisor") < 1:
 		_fail("rules: sell_divisor must be 1 or more")
+	if mass_limit < 1 or fuel_fee < 0 or reinforce_amount < 1 or over_percent < 0:
+		_fail("rules: the mass values are not valid")
 	if offer_contracts < 1 or offer_kit < 1:
 		_fail("rules: the offers must be 1 or more")
 	for i in sectors.size():

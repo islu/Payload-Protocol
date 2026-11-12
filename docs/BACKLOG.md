@@ -29,15 +29,16 @@ This file keeps each problem that is found and not fixed yet. Each item is in on
   - Section 12.2: a Shield also stops an explosion of a protected cargo. It does not stop the removal of scrap or a spoil.
   - Section 20.4: the piece state "lost" for freight that an explosion removed.
   To decide             Options: approve each rule, or change it.
-- **[Balance · Rules] Corner packing can make a jump safe** (found 2026-11-12, by Claude). With 1 or 2 known steps, the player can pack all cargo tight into the corner of the two directions. Then no cargo slides, and no hit happens. Example: seed 7, jump 1 (RIGHT): all freight at the right wall gave +33 credits with no risk.
-  To decide             Options: (a) keep it: the space limit and scrap make tight packing hard later; check in the playtest;
-                        (b) more opposite steps (LEFT then RIGHT) in sectors 2 and 3;
-                        (c) fixed walls or bumps inside the hold;
-                        (d) a hidden step in sector 3 (Section 24).
 - **[Spec · Rules] A forecast of the shift** (found 2026-11-11, by Claude). Section 1.1 says that the player can read each shift. The station does not show the result before the warp.
   To decide             Options: (a) no forecast: the player thinks (the first value); (b) a ghost of the first shift step only; (c) a forecast that costs credits. (b) and (c) make the puzzle easier and add a station view.
 - **[Balance · Data] The length of a run** (found 2026-11-11, by Claude). 3 sectors × 3 jumps is the first value. Check the time of one run in the first playtest. The target is 20 to 30 minutes.
 - **[Spec · Rules] Heavy cargo in an explosion** (found 2026-11-11, by Claude). Section 11.2 says that heavy cargo is not affected. A Reactor Core is heavy and Volatile: a different explosion does not break it, but it explodes in a chain. Check that this reads clearly in the first playtest.
+
+- **[Balance · Data] The numbers of mass, fork steps, and tolls** (found 2026-11-12, by /playtest seed 2026). The first values: mass limit 24, the maximum 125%, fuel fee 2, Reinforce hull +6 for 12 (+8), tolls 70 / 180 / 350. Check them in the next playtest: can the player pay each toll, and does each jump have a real choice?
+- **[Balance · Rules] Full rows of light cargo** (found 2026-11-12, by /game-design). With the mass limit, a player can still fill a few full rows (wall to wall) with light cargo. Those rows are safe for each direction. The light freight pays little, so it can be a fair choice. Check it in the next playtest.
+- **[Spec · Rules] A bonus with lost pieces** (found 2026-11-12, by /playtest seed 2026). `not_next_to` and `zone` pay when 1 piece arrives, even when the other pieces broke or spoiled (SPEC Section 15.3). The Gambler found it odd.
+  To decide             Options: (a) keep it; (b) a bonus pays only when no piece of its contract is scrap, spoiled, or lost.
+- **[UX · Tests] The text player log** (found 2026-11-12, by /playtest seed 2026). A hit line does not say if it caused a reaction. A Thruster stop has no line. Each cargo has a letter and an ID.
 
 ## To Do
 

@@ -96,6 +96,10 @@ msgstr "飛船還沒抵達。"
 msgid "You are not at a toll gate."
 msgstr "目前不在收費站。"
 
+#: project/rules/run.gd
+msgid "The hold is too heavy to warp. Take cargo out, or reinforce the hull."
+msgstr "貨艙太重，無法跳躍。請卸下貨物，或強化船體。"
+
 #: project/scenes/common/game_state.gd
 msgid "The game data did not load."
 msgstr "遊戲資料載入失敗。"
@@ -150,14 +154,16 @@ msgid ""
 "The hazard panel shows each shift step of the next jump, in order.\n"
 "In each step, all cargo slides in that direction until a wall or a stopped cargo blocks it.\n"
 "Force = weight × cells that it slid. Light {light}, standard {standard}, heavy {heavy}.\n"
-"A cargo that does not slide makes no hit."
+"A cargo that does not slide makes no hit.\n"
+"From sector 2, the last step is a fork: one of two directions. You see which one only at the warp."
 msgstr ""
 "[b]超光速跳躍[/b]\n"
 "\n"
 "危險預報會依序列出下一次跳躍的每一段位移。\n"
 "每一段位移中，所有貨物都會往那個方向滑動，直到撞上艙壁或已經停下的貨物。\n"
 "撞擊力 = 重量 × 滑動格數。輕 {light}、中 {standard}、重 {heavy}。\n"
-"沒有滑動的貨物不會產生撞擊。"
+"沒有滑動的貨物不會產生撞擊。\n"
+"從星區 2 開始，最後一段是二選一，跳躍時才知道是哪個方向。"
 
 #: project/scenes/main/how_to_play.gd
 msgid ""
@@ -180,6 +186,8 @@ msgid ""
 "Perishable cargo needs a Cooler next to it at the arrival.\n"
 "A Shield next to a Battery protects the cargo next to it from one reaction.\n"
 "A clamp stops a cargo from sliding. Buy kit, clamps, and a bigger hold in the shop.\n"
+"Mass = weight × cells. Over the mass limit, the warp costs a fuel fee. Reinforce the hull to carry more.\n"
+"A Sensor in the hold shows the direction of the fork step.\n"
 "Pay the toll at the end of each sector, or the run ends."
 msgstr ""
 "[b]連結、卡榫、商店與通行費[/b]\n"
@@ -187,6 +195,8 @@ msgstr ""
 "生鮮貨物抵達時必須緊鄰冷藏機。\n"
 "緊鄰電池的護盾，能替相鄰的貨物擋下一次反應。\n"
 "卡榫能固定貨物不滑動。在商店購買裝備、卡榫，或擴充貨艙。\n"
+"載重 = 重量 × 格數。超過載重上限，跳躍時要付燃料費。強化船體可以多載一些。\n"
+"貨艙裡放一台感測器，就能看出二選一位移的實際方向。\n"
 "每個星區結束時要付通行費，付不出來航程就結束。"
 
 #: project/scenes/main/main.gd
@@ -292,6 +302,30 @@ msgstr "提示"
 #: project/scenes/main/settings_panel.gd
 msgid "Language"
 msgstr "語言"
+
+#: project/scenes/main/tutorial_picture.gd
+msgid "{weight} × {cells} = {force}"
+msgstr "{weight} × {cells} = {force}"
+
+#: project/scenes/station/hints.gd
+msgid "Accept a contract on the left. Its freight goes to the dock."
+msgstr "在左邊接下一張合約，貨物會送到碼頭。"
+
+#: project/scenes/station/hints.gd
+msgid "Drag a cargo from the dock into the hold. Or click it, then click a cell."
+msgstr "把碼頭上的貨物拖進貨艙，或點一下貨物再點一個格子。"
+
+#: project/scenes/station/hints.gd
+msgid "Right click a cargo in the hold to rotate it. While you hold one, press R."
+msgstr "在貨艙裡對貨物按右鍵可以旋轉；拿著貨物時按 R。"
+
+#: project/scenes/station/hints.gd
+msgid "Read the hazard at the top: each step slides all cargo that way. Fragile cargo breaks at a strong hit."
+msgstr "看看上方的危險預報：每一段位移都會讓所有貨物往那個方向滑。易碎品被重撞就會碎。"
+
+#: project/scenes/station/hints.gd
+msgid "When the hold is ready, press WARP."
+msgstr "貨艙整理好了，就按「跳躍」。"
 
 #: project/scenes/station/station_screen.gd
 msgid "Dock"
@@ -429,9 +463,42 @@ msgstr "旁邊沒有冷藏機：抵達時會腐爛。"
 msgid "No Battery next to it: no power."
 msgstr "旁邊沒有電池：沒有電力。"
 
+#: project/scenes/station/station_screen.gd
+msgid "Mass {hold}/{limit}"
+msgstr "載重 {hold}/{limit}"
+
+#: project/scenes/station/station_screen.gd
+msgid "Fuel fee {fee}"
+msgstr "燃料費 {fee}"
+
+#: project/scenes/station/station_screen.gd
+msgid "Too heavy: {max} at most"
+msgstr "超重：最多 {max}"
+
+#: project/scenes/station/station_screen.gd
+msgid "Reinforce hull +{amount} ({price} cr)"
+msgstr "強化船體 +{amount}（{price} 點）"
+
+#: project/scenes/station/station_screen.gd
+#: project/scenes/warp/warp_screen.gd
+msgid "or"
+msgstr "或"
+
+#: project/scenes/station/station_screen.gd
+msgid "Mass {mass}"
+msgstr "載重 {mass}"
+
 #: project/scenes/warp/warp_screen.gd
 msgid "Shift {n}: {arrow} {direction}"
 msgstr "位移 {n}：{arrow} {direction}"
+
+#: project/scenes/warp/warp_screen.gd
+msgid "Shift {n}: {options} ...?"
+msgstr "位移 {n}：{options}……？"
+
+#: project/scenes/warp/warp_screen.gd
+msgid "Fuel fee: -{fee}"
+msgstr "燃料費：-{fee}"
 
 #: project/scenes/warp/warp_screen.gd
 msgid "Arrival"
@@ -544,6 +611,10 @@ msgstr "雷達天線"
 #: project/data/cargo/reactor_core.json
 msgid "Reactor Core"
 msgstr "反應爐核心"
+
+#: project/data/cargo/sensor_array.json
+msgid "Sensor Array"
+msgstr "感測陣列"
 
 #: project/data/cargo/shield_generator.json
 msgid "Shield Generator"
@@ -926,6 +997,14 @@ msgstr "生鮮"
 #: project/data/terms.json
 msgid "Spoils at the arrival if it is not next to a Cooler."
 msgstr "抵達時如果沒有緊鄰冷藏機就會腐爛。"
+
+#: project/data/terms.json
+msgid "Sensor"
+msgstr "感測器"
+
+#: project/data/terms.json
+msgid "At the station, it shows the direction of the fork step."
+msgstr "在太空站時，能看出二選一位移的實際方向。"
 
 #: project/data/terms.json
 msgid "Shield"

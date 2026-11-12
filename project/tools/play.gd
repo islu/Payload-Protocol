@@ -26,6 +26,7 @@ const ACTIONS := {
 	"reroll": "reroll",
 	"buyclamp": "buyclamp",
 	"upgrade": "upgrade column|row",
+	"reinforce": "reinforce (adds to the mass limit)",
 	"sell": "sell <kit>",
 	"clear": "clear <scrap>",
 	"warp": "warp",
@@ -136,6 +137,8 @@ func _act(run: Run, parts: Array) -> String:
 			return run.reroll()
 		"buyclamp":
 			return run.buy_clamp()
+		"reinforce":
+			return run.reinforce_hull()
 		"upgrade":
 			return run.upgrade_hold(parts[1] if parts.size() > 1 else "")
 		"sell":
@@ -186,6 +189,13 @@ func _render(run: Run) -> void:
 			]
 		)
 	)
+	var m: Dictionary = v["mass"]
+	var over := ""
+	if m["hold"] > m["max"]:
+		over = " · TOO HEAVY TO WARP (max %d)" % m["max"]
+	elif m["fee"] > 0:
+		over = " · fuel fee %d at the warp" % m["fee"]
+	_say("Mass %d/%d (max %d)%s" % [m["hold"], m["limit"], m["max"], over])
 	if v["line"] != "":
 		_say("PIP: " + v["line"])
 	match v["phase"]:
@@ -219,8 +229,11 @@ func _render(run: Run) -> void:
 
 func _render_station(run: Run, v: Dictionary) -> void:
 	var dirs := []
-	for d: String in v["hazard"]:
-		dirs.append(d.to_upper())
+	for step: Dictionary in v["hazard"]:
+		if step["fork"] and step["known"] == "":
+			dirs.append("(%s)" % " or ".join(step["directions"]).to_upper())
+		else:
+			dirs.append(str(step["known"]).to_upper())
 	_say("Hazard of the next jump: " + " then ".join(dirs))
 	_render_hold(run, v)
 	_say("Dock:" + ("" if not v["dock"].is_empty() else " (empty)"))
@@ -363,12 +376,17 @@ func _text(t: Dictionary) -> String:
 
 func _render_warp(run: Run) -> void:
 	var w := run.last_warp
+	if w.get("fuel_fee", 0) > 0:
+		_say("  fuel fee -%d" % w["fuel_fee"])
 	for s in w.get("sold", []):
 		_say("  sold %s from the dock for %d" % [s["name"], s["price"]])
 	var i := 0
 	for step: Dictionary in w["steps"]:
 		i += 1
-		_say("-- Shift step %d: %s" % [i, step["direction"].to_upper()])
+		var fork := ""
+		if step.has("options"):
+			fork = " (fork: %s)" % " or ".join(step["options"]).to_upper()
+		_say("-- Shift step %d: %s%s" % [i, step["direction"].to_upper(), fork])
 		for h: Dictionary in step["hits"]:
 			var target := "the wall" if h["wall"] else _letter(h["other"])
 			_say("  %s hits %s with force %d" % [_letter(h["cargo"]), target, h["force"]])

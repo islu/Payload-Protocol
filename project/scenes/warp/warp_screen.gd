@@ -8,6 +8,9 @@ extends Control
 signal playback_finished
 
 const STEP_TEXT := "Shift {n}: {arrow} {direction}"
+const FORK_TEXT := "Shift {n}: {options} ...?"
+const OR_TEXT := "or"
+const FUEL_TEXT := "Fuel fee: -{fee}"
 const ARRIVAL_TEXT := "Arrival"
 const TOTAL_TEXT := "Total: {total} credits"
 const SOLD_TEXT := "Kit sold from the dock: +{credits}"
@@ -178,10 +181,18 @@ func _sorted_ids() -> Array:
 func _play_step(n: int, step: Dictionary, run: Dictionary) -> void:
 	var d: String = step["direction"]
 	var name: String = _view["names"]["directions"].get(d, d)
+	_banner.modulate.a = 1.0
+	if step.has("options"):
+		# A fork step: show the two directions, then the one that happens (SPEC Section 20.3).
+		var names := PackedStringArray()
+		for o: String in step["options"]:
+			names.append(StationScreen.direction_text(o, _view))
+		_banner.text = tr(FORK_TEXT).format({"n": n, "options": (" %s " % tr(OR_TEXT)).join(names)})
+		Sound.play(self, "alarm")
+		await _wait(0.9)
 	_banner.text = tr(STEP_TEXT).format(
 		{"n": n, "arrow": ARROWS.get(d, "?"), "direction": tr(name)}
 	)
-	_banner.modulate.a = 1.0
 	Sound.play(self, "alarm")
 	await _wait(0.6)
 	_tilt(d)
@@ -372,6 +383,8 @@ func _report_lines(run: Dictionary) -> String:
 			lines.append("   " + tr(BREACH_TEXT).format(k))
 	if a.get("sold", 0) > 0:
 		lines.append(tr(SOLD_TEXT).format({"credits": a["sold"]}))
+	if run["warp"].get("fuel_fee", 0) > 0:
+		lines.append(tr(FUEL_TEXT).format({"fee": run["warp"]["fuel_fee"]}))
 	lines.append("")
 	lines.append("[b]%s[/b]" % tr(TOTAL_TEXT).format(a))
 	lines.append("")

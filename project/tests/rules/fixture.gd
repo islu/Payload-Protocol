@@ -2,7 +2,7 @@ class_name Fixture
 ## The fixture data of the rule tests. It goes through Catalog.from_data(), as
 ## the real data does. Use the real data only in test_data.gd.
 
-const KIT_POOL := ["foam", "cooler", "battery", "shield", "anchor"]
+const KIT_POOL := ["foam", "cooler", "battery", "shield", "anchor", "sensor"]
 
 
 static func catalog() -> Catalog:
@@ -45,6 +45,7 @@ static func data() -> Dictionary:
 	add.call("battery", "kit", "standard", ["battery", "electronic"], one, 7)
 	add.call("shield", "kit", "standard", ["shield"], one, 12)
 	add.call("anchor", "kit", "heavy", ["thruster"], one, 9)
+	add.call("sensor", "kit", "standard", ["sensor"], one, 14)
 	var contracts := {
 		"k_boxes":
 		{
@@ -124,12 +125,26 @@ static func data() -> Dictionary:
 				"scrap_cell": 2,
 				"breach_fee": 5,
 				"sell_divisor": 2,
+				"reinforce_first": 12,
+				"reinforce_step": 8,
 			},
+			"mass":
+			{"limit": 40, "over_percent": 25, "fuel_fee": 2, "reinforce": 8, "offer_percent": 130},
 			"sectors":
 			[
 				{"toll": 60, "hazard_steps": [[1, 1], [2, 2], [2, 2]], "kit_pool": KIT_POOL},
-				{"toll": 140, "hazard_steps": [[2, 2], [2, 2], [2, 2]], "kit_pool": KIT_POOL},
-				{"toll": 260, "hazard_steps": [[2, 3], [2, 3], [2, 3]], "kit_pool": KIT_POOL},
+				{
+					"toll": 140,
+					"hazard_steps": [[2, 2], [2, 2], [2, 2]],
+					"kit_pool": KIT_POOL,
+					"fork": true
+				},
+				{
+					"toll": 260,
+					"hazard_steps": [[2, 3], [2, 3], [2, 3]],
+					"kit_pool": KIT_POOL,
+					"fork": true
+				},
 			],
 		},
 		"terms": terms,

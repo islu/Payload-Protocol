@@ -10,7 +10,8 @@ description: Conventions of the Payload Protocol rules layer (project/rules) and
 - `project/rules` has all game rules and all game state. Its classes extend `RefCounted` or have static functions only.
 - Do not use `Node`, scenes, `FileAccess`, `DirAccess`, `Input`, or the screen in `project/rules`.
 - Use `int` for all game values. Do not use floats. Convert JSON numbers with `int()` when you read data.
-- Use the `RandomNumberGenerator` of the `Run` (`rng` for content, `line_rng` for the pilot). Do not use `randi()` or `randf()`. A shift step uses no random numbers.
+- Use the `RandomNumberGenerator` of the `Run` (`rng` for content, `line_rng` for the pilot). Do not use `randi()` or `randf()`. A shift step uses no random numbers. The direction of a fork step comes from `rng` when the station opens.
+- Do not put a hidden value in the view. The direction of a fork step is in the view only when a Sensor is in the hold (SPEC Section 18.1).
 - Use the constants of `Defs`. Do not compare with a literal string.
 - An action returns `""` when it works, or an error text for the player. A failed action changes nothing. Make each error text a constant that ends in `_TEXT`: the i18n tool collects them.
 - Give the spec section in the doc comment of each class and each public function: `## Rotates a cargo in the hold in its place (SPEC Section 8.2).`
@@ -24,11 +25,10 @@ description: Conventions of the Payload Protocol rules layer (project/rules) and
 | `cargo_def.gd`, `cargo.gd` | `CargoDef` (data) and `Cargo` (one cargo in a run): `cells()`, `has()`, `weight()`, `Cargo.next_to()` |
 | `contract_template.gd`, `contract.gd` | Contract data, the zone of a bonus, and an offered contract |
 | `catalog.gd` | `Catalog.from_data()`: reads the parsed JSON and checks it (content.md). `errors` has the problems |
-| `run.gd` | `Run`: the state, the phases, placement, clamps, contracts, the shop, the hazard, the dock at the warp, the pilot lines |
+| `run.gd` | `Run`: the state, the phases, placement (`ROTATE_KICKS`), clamps, contracts, the shop, the mass (`cargo_mass`, `hold_mass`, `max_mass`, `fuel_fee`, `reinforce_hull`), the hazard with its fork step (`fork_options`), the dock at the warp, the pilot lines |
 | `shift.gd` | `Shift.step()`: power, slide, hits, reactions, blast area, shields. It returns the event log of the step |
 | `arrival.gd` | `Arrival.arrive()`: spoil, delivery, bonus, breach, the report, the line event |
-| `run_view.gd` | `RunView.view()`: the plain data that the UI reads |
-| `packing.gd` | `Packing.packs()`: the offers of a station fit in an empty hold |
+| `run_view.gd` | `RunView.view()`: the plain data that the UI reads. `hazard()` hides the direction of a fork step unless a Sensor is in the hold. |
 
 `scenes/common/game_state.gd` (the autoload `GameState`) and `scenes/common/data_files.gd` (`DataFiles`) are the only places that read files and own a `Run`.
 

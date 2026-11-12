@@ -16,8 +16,8 @@ This file is part of the [game specification](../spec.md). The section numbers a
 
 ### 15.1 The Contract Board
 
-- At each station, the contract board offers 3 contracts.
-- The player can accept 0 to 3 contracts. When the player accepts a contract, its freight goes to the dock.
+- At each station, the contract board offers 4 contracts. Together they have more mass than the ship can carry, so the player cannot take all of them with no fuel fee (Section 25).
+- The player can accept 0 to 4 contracts. When the player accepts a contract, its freight goes to the dock.
 - The player can cancel an accepted contract before the warp. Then its freight leaves the hold and the dock, with no fee.
 - The seed and the sector select the contracts from the templates in `project/data/contracts/`.
 - The contracts of a later sector have more freight, more traits, and more pay.
@@ -74,7 +74,8 @@ The arrival has these steps, in this order:
 | Service | Rule | First price |
 | --- | --- | --- |
 | **Buy a clamp** | Adds 1 clamp. The maximum is 4 clamps. | 8 credits |
-| **Hold upgrade** | Adds one column at the right, or one row at the bottom (the player selects). The maximum is 8 columns and 8 rows. | 15 credits. Each upgrade costs 10 credits more than the last one. |
+| **Hold upgrade** | Adds one column at the right, or one row at the bottom (the player selects). The maximum is 8 columns and 8 rows. It does not change the mass limit. | 15 credits. Each upgrade costs 10 credits more than the last one. |
+| **Reinforce hull** | Adds 6 to the mass limit (Section 25). | 12 credits. Each one costs 8 credits more than the last one. |
 
 ### 17.3 Sell
 
@@ -100,10 +101,19 @@ The arrival has these steps, in this order:
 | Sector | Shift steps |
 | --- | --- |
 | 1 | 1 at the first jump, 2 at the second and third jumps |
-| 2 | 2 |
-| 3 | 2 or 3 |
+| 2 | 2. The second step is a fork step. |
+| 3 | 2 or 3. The last step is a fork step. |
 
 - Two shift steps next to each other in a hazard have different directions.
+- A **fork step** has two directions. The two directions are not the same as the step before it, and they are not opposite to each other. Thus one of them is always opposite to the step before it.
+  - Example: after LEFT, a fork step is UP or RIGHT, or DOWN or RIGHT.
+- The station shows a fork step as "UP or RIGHT". The seed selects the direction that happens when the station opens. The station does not show it.
+- Each direction of a fork step has the same chance.
+
+### 18.1 Sensor
+
+- When a Sensor that is not scrap is in the hold, the station shows the direction of the fork step that will happen.
+- When the player takes the Sensor out of the hold, the station shows the fork step as two directions again.
 - The pilot speaks a line about the hazard when the station opens (Section 22).
 
 ## 19. Tolls and the End of the Run
@@ -111,7 +121,7 @@ The arrival has these steps, in this order:
 ### 19.1 Tolls
 
 - After the arrival of the last jump of a sector, the toll gate takes the toll of that sector.
-- The tolls are 60, 140, and 260 credits.
+- The tolls are 70, 180, and 350 credits.
 - If the credits are less than the toll, the run ends in a loss.
 - If not, the game takes the toll, and the next sector starts at a new station.
 

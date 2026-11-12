@@ -2,7 +2,7 @@
 # gdlint: disable=max-line-length
 class_name HowToPlay
 extends Overlay
-## How to Play: 4 pages (SPEC Section 23.2). Day 7 adds a picture to each page.
+## How to Play: 4 pages, each with a picture (SPEC Section 23.2).
 
 const TITLE_TEXT := "How to Play"
 const PAGE_TEXT := "{n} / {total}"
@@ -20,7 +20,8 @@ const PAGE_2_TEXT := """[b]The warp[/b]
 The hazard panel shows each shift step of the next jump, in order.
 In each step, all cargo slides in that direction until a wall or a stopped cargo blocks it.
 Force = weight × cells that it slid. Light {light}, standard {standard}, heavy {heavy}.
-A cargo that does not slide makes no hit."""
+A cargo that does not slide makes no hit.
+From sector 2, the last step is a fork: one of two directions. You see which one only at the warp."""
 const PAGE_3_TEXT := """[b]Traits and reactions[/b]
 
 Fragile breaks at force {fragile}. Volatile explodes at force {volatile} and breaks the cargo around it.
@@ -31,10 +32,13 @@ const PAGE_4_TEXT := """[b]Links, clamps, the shop, and tolls[/b]
 Perishable cargo needs a Cooler next to it at the arrival.
 A Shield next to a Battery protects the cargo next to it from one reaction.
 A clamp stops a cargo from sliding. Buy kit, clamps, and a bigger hold in the shop.
+Mass = weight × cells. Over the mass limit, the warp costs a fuel fee. Reinforce the hull to carry more.
+A Sensor in the hold shows the direction of the fork step.
 Pay the toll at the end of each sector, or the run ends."""
 const PAGES: Array[String] = [PAGE_1_TEXT, PAGE_2_TEXT, PAGE_3_TEXT, PAGE_4_TEXT]
 
 var _page := 0
+var _picture: TutorialPicture
 var _text: RichTextLabel
 var _count: Label
 var _next: Button
@@ -44,6 +48,9 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	box.custom_minimum_size.x = 820
 	heading(TITLE_TEXT)
+	_picture = TutorialPicture.new()
+	_picture.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	box.add_child(_picture)
 	_text = RichTextLabel.new()
 	_text.bbcode_enabled = true
 	_text.fit_content = true
@@ -84,5 +91,6 @@ func _show(page: int) -> void:
 	var names: Dictionary = GameState.view()["names"]
 	var values: Dictionary = names.get("weight_values", {}).merged(names.get("limits", {}))
 	_text.text = tr(PAGES[_page]).format(values)
+	_picture.show_page(_page, names)
 	_count.text = tr(PAGE_TEXT).format({"n": _page + 1, "total": PAGES.size()})
 	_next.text = tr(CLOSE_TEXT if _page == PAGES.size() - 1 else NEXT_TEXT)

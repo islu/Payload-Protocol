@@ -30,10 +30,11 @@ Tell the user these limits in the report.
 
 ## 3. Play
 
-1. Each agent uses its own session file: `devbox run -- task play -- -s playtest/sessions/<persona>-<seed>.json new <seed>`.
-2. Each agent runs `task play -- -s <file> help` first, then plays with `do "<action>; <action>"` until the run ends.
-3. Use the same seed for each persona, so that the reports compare.
-4. Each agent writes a report: the result, the credits after each jump, 3 moments of confusion, the dominant play if any, and 3 suggestions.
+1. Each agent uses its own session file and its own folder for helper scripts: `playtest/sessions/<persona>-<seed>.json` and `playtest/tmp/<persona>/`. Tell each agent not to write anywhere else. Agents that run at the same time overwrite each other's files in a shared folder (found 2026-11-12).
+2. Run the text player directly, so that the quotes of `do` stay intact: `godot --headless --path project -s res://tools/play.gd -- -s <session file> <command>`.
+3. Each agent runs `help` first, then plays with `do "<action>; <action>"` until the run ends.
+4. Use the same seed for each persona, so that the reports compare.
+5. Each agent writes a report to `playtest/reports/<persona>-<seed>.md`: the result, the credits after each jump, 3 moments of confusion, the dominant play if any, and 3 suggestions.
 
 ## 4. Report
 

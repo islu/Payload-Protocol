@@ -67,6 +67,7 @@ A cargo can have more than one trait.
 | **Cooler** | Keeps each Perishable cargo next to it fresh. | 12.1 |
 | **Battery** | Powers each Shield next to it. | 12.2 |
 | **Shield** | When it has power, it protects each cargo next to it from one reaction in each jump. | 12.2 |
+| **Sensor** | At the station, it shows the direction of the fork step. | 18.1 |
 
 - A **break limit** is the force at which a trait reacts: Fragile 2, Volatile 3, Fluid 2. `rules.json` has the values.
 - A cargo with no Fragile, Volatile, or Fluid trait never breaks from a hit. It can break only from an explosion, a short, or a spoil.
@@ -105,3 +106,16 @@ A cargo can have more than one trait.
 
 - When the mouse is on a cargo, a tooltip shows its name, its kind, its weight, its traits with their rules, and the pay of its contract.
 - The tooltip shows each break limit as a number, for example "Fragile: breaks at force 2".
+
+## 25. Mass
+
+- Each cargo has a **mass**: its weight value (Section 6.1) multiplied by the number of its cells.
+  - Example: a Cargo Crate (standard, 2 cells) has a mass of 4. A Reactor Core (heavy, 4 cells) has a mass of 12.
+- Freight, kit, and scrap have mass. Scrap is light, so each cell of scrap has a mass of 1.
+- The **hold mass** is the sum of the mass of each cargo in the hold. Cargo on the dock does not count.
+- The ship has a **mass limit**. A run starts with a mass limit of 24. The **Reinforce hull** service adds to it (Section 17.2).
+- The hold mass can be more than the mass limit by 25% at most, rounded down. Example: with a mass limit of 24, the maximum is 30.
+- When the hold mass is more than the maximum, the Warp button does not work. The top bar shows the mass in red.
+- When the hold mass is more than the mass limit, the warp takes the **fuel fee**: 2 credits for each point of mass over the limit. The credits can go below 0 (Section 16).
+- The top bar shows the hold mass, the mass limit, and the fuel fee of the warp now.
+- The tooltip of a cargo shows its mass (Section 8.4).

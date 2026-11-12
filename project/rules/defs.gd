@@ -25,6 +25,7 @@ const TRAIT_CUSHION := "cushion"
 const TRAIT_COOLER := "cooler"
 const TRAIT_BATTERY := "battery"
 const TRAIT_SHIELD := "shield"
+const TRAIT_SENSOR := "sensor"
 const TRAITS: PackedStringArray = [
 	TRAIT_FRAGILE,
 	TRAIT_VOLATILE,
@@ -36,6 +37,7 @@ const TRAITS: PackedStringArray = [
 	TRAIT_COOLER,
 	TRAIT_BATTERY,
 	TRAIT_SHIELD,
+	TRAIT_SENSOR,
 ]
 ## The traits with a break limit (SPEC Section 7).
 const LIMIT_TRAITS: PackedStringArray = [TRAIT_FRAGILE, TRAIT_VOLATILE, TRAIT_FLUID]

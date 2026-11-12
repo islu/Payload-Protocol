@@ -39,6 +39,13 @@ const TIP_SELL_TEXT := "Sells for {price}"
 const TIP_CLEAR_TEXT := "Clear for {price}"
 const NO_COOLER_TEXT := "No Cooler next to it: it spoils at the arrival."
 const NO_POWER_TEXT := "No Battery next to it: no power."
+const MASS_TEXT := "Mass {hold}/{limit}"
+const FUEL_TEXT := "Fuel fee {fee}"
+const OVER_MAX_TEXT := "Too heavy: {max} at most"
+const REINFORCE_TEXT := "Reinforce hull +{amount} ({price} cr)"
+const OR_TEXT := "or"
+const CONTRACT_MASS_TEXT := "Mass {mass}"
+const TIP_MASS_TEXT := "Mass {mass}"
 const SIDE_WIDTH := 470.0
 ## A press and a release closer than this are a click: a pick up (SPEC Section 8.2).
 const CLICK_DISTANCE := 8.0
@@ -58,6 +65,7 @@ var _hold: HoldView
 var _top_label: Label
 var _credits_label: Label
 var _toll_label: Label
+var _mass_label: Label
 var _hazard_box: HBoxContainer
 var _dock_panel: PanelContainer
 var _dock_flow: HFlowContainer
@@ -106,6 +114,7 @@ func _build() -> void:
 	_top_label = _label(top, "", 26)
 	_credits_label = _label(top, "", 26, Palette.GOOD)
 	_toll_label = _label(top, "", 22, Palette.TEXT_DIM)
+	_mass_label = _label(top, "", 24, Palette.TEXT)
 
 	_hazard_box = HBoxContainer.new()
 	_hazard_box.add_theme_constant_override("separation", 16)
@@ -259,7 +268,8 @@ func refresh() -> void:
 	_top_label.text = tr(TOP_BAR_TEXT).format(_run)
 	_count_credits(_run["credits"])
 	_toll_label.text = tr(TOLL_TEXT).format({"toll": _run["toll"], "jumps": _run["jumps_to_toll"]})
-	_pilot_label.text = "PIP: " + tr(_run["line"])
+	_show_mass()
+	_show_pilot()
 	_hold.set_view(_run)
 	_refresh_hazard()
 	_refresh_dock()
@@ -267,6 +277,18 @@ func refresh() -> void:
 	_refresh_shop()
 	_refresh_clamps()
 	_update_marks()
+
+
+## Shows the hint of the first runs in the pilot box, or the line of the pilot (SPEC Section 23.3).
+func _show_pilot() -> void:
+	var hint := Hints.current(_run)
+	if hint == "":
+		_pilot_label.text = "PIP: " + tr(_run["line"])
+		_pilot_label.add_theme_color_override("font_color", Palette.ACCENT)
+	else:
+		_pilot_label.text = "PIP ▸ " + tr(Hints.text(hint))
+		_pilot_label.add_theme_color_override("font_color", Palette.WARN)
+	_hazard_box.modulate = Color(1.4, 1.4, 1.4) if hint == Hints.HAZARD else Color.WHITE
 
 
 func _count_credits(target: int) -> void:
@@ -284,17 +306,49 @@ func _set_credits(value: int) -> void:
 	_credits_label.text = tr(CREDITS_TEXT).format({"credits": value})
 
 
+## Shows the hold mass, the limit, and the fuel fee (SPEC Section 25). Over the limit
+## the text is yellow, and over the maximum it is red.
+func _show_mass() -> void:
+	var m: Dictionary = _run["mass"]
+	var parts := PackedStringArray([tr(MASS_TEXT).format(m)])
+	var color := Palette.TEXT
+	if m["hold"] > m["max"]:
+		parts.append(tr(OVER_MAX_TEXT).format(m))
+		color = Palette.BAD
+	elif m["fee"] > 0:
+		parts.append(tr(FUEL_TEXT).format(m))
+		color = Palette.WARN
+	_mass_label.text = " · ".join(parts)
+	_mass_label.add_theme_color_override("font_color", color)
+	_warp_button.disabled = m["hold"] > m["max"]
+
+
+## Shows each step of the hazard. A fork step shows its two directions, or the one
+## that happens when a Sensor is in the hold (SPEC Section 18).
 func _refresh_hazard() -> void:
 	_clear(_hazard_box)
 	_label(_hazard_box, NEXT_JUMP_TEXT, 24, Palette.WARN)
-	var arrows := {Defs.DIR_LEFT: "←", Defs.DIR_RIGHT: "→", Defs.DIR_UP: "↑", Defs.DIR_DOWN: "↓"}
 	var i := 0
-	for d: String in _run["hazard"]:
+	for step: Dictionary in _run["hazard"]:
 		if i > 0:
 			_label(_hazard_box, "›", 24, Palette.TEXT_DIM)
-		var name: String = _view["names"]["directions"].get(d, d)
-		_label(_hazard_box, "%d. %s %s" % [i + 1, arrows.get(d, "?"), tr(name)], 28, Palette.WARN)
+		var text := "%d. " % (i + 1)
+		if step["fork"] and step["known"] == "":
+			var names := PackedStringArray()
+			for d: String in step["directions"]:
+				names.append(direction_text(d, _view))
+			text += (" %s " % tr(OR_TEXT)).join(names)
+		else:
+			text += direction_text(step["known"], _view)
+		_label(_hazard_box, text, 28, Palette.BAD if step["fork"] else Palette.WARN)
 		i += 1
+
+
+## Returns the arrow and the name of a direction.
+static func direction_text(d: String, view: Dictionary) -> String:
+	var arrows := {Defs.DIR_LEFT: "←", Defs.DIR_RIGHT: "→", Defs.DIR_UP: "↑", Defs.DIR_DOWN: "↓"}
+	var name: String = view["names"]["directions"].get(d, d)
+	return "%s %s" % [arrows.get(d, "?"), TranslationServer.translate(name)]
 
 
 func _refresh_dock() -> void:
@@ -338,7 +392,11 @@ func _refresh_contracts() -> void:
 			chip.mouse_entered.connect(func() -> void: _show_tip(f))
 			chip.mouse_exited.connect(_hide_tip)
 			row.add_child(chip)
-		_label(box, tr(PAY_TEXT).format({"pay": k["pay"]}), 16)
+		var mass := 0
+		for f: Dictionary in k["freight"]:
+			mass += f["mass"]
+		var pay_line := tr(PAY_TEXT).format({"pay": k["pay"]})
+		_label(box, pay_line + " · " + tr(CONTRACT_MASS_TEXT).format({"mass": mass}), 16)
 		if not k["bonus"].is_empty():
 			var b: Dictionary = k["bonus"]
 			var bonus := _label(box, "", 15, Palette.WARN)
@@ -394,6 +452,11 @@ func _refresh_shop() -> void:
 		tr(ADD_ROW_TEXT).format({"price": s["upgrade_price"]}),
 		func() -> void: _act(GameState.upgrade_hold(Defs.AXIS_ROW), "coin"),
 		s["can_row"]
+	)
+	_button(
+		_shop_box,
+		tr(REINFORCE_TEXT).format({"amount": s["reinforce_amount"], "price": s["reinforce_price"]}),
+		func() -> void: _act(GameState.reinforce_hull(), "coin")
 	)
 	_sell_label.text = tr(SELL_AREA_TEXT).format({"price": s["scrap_cell"]})
 
@@ -465,6 +528,8 @@ func _show_toast(text: String) -> void:
 
 
 func _on_warp_pressed() -> void:
+	Hints.done(Hints.HAZARD)
+	Hints.done(Hints.WARP)
 	if not _run["dock"].is_empty():
 		_confirm.dialog_text = tr(CONFIRM_TEXT).format({"fee": _run["shop"]["breach_fee"]})
 		_confirm.popup_centered()
@@ -476,7 +541,10 @@ func _on_hold_pressed(id: int, grab: Vector2i, button: int) -> void:
 	if not _drag.is_empty():
 		return
 	if button == MOUSE_BUTTON_RIGHT:
-		_act(GameState.rotate_cargo(id), "clack")
+		var err := GameState.rotate_cargo(id)
+		_act(err, "clack")
+		if err == "":
+			Hints.done(Hints.ROTATE)
 	elif button == MOUSE_BUTTON_LEFT:
 		_begin_cargo_drag(id, Vector2(grab))
 
@@ -560,6 +628,8 @@ func _rotate_drag() -> void:
 		return
 	var c := _cargo(_drag["id"])
 	_drag["rot"] = (_drag["rot"] + 1) % 4
+	Hints.done(Hints.ROTATE)
+	_show_pilot()
 	_drag["grab"] = Vector2.ZERO
 	_drag_layer.start(c, c["rotations"][_drag["rot"]], Vector2.ZERO)
 	_update_drag()
@@ -662,6 +732,7 @@ func _show_tip(c: Dictionary) -> void:
 						% [color.to_html(false), tr(term["name"]), GameText.format(term["rule"])]
 					)
 				)
+	lines.append(tr(TIP_MASS_TEXT).format({"mass": c["mass"]}))
 	if c.get("pay", 0) > 0:
 		lines.append(tr(TIP_PAY_TEXT).format({"pay": c["pay"]}))
 	if c.get("sell_price", 0) > 0:

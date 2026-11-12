@@ -18,6 +18,25 @@ static func terms(cat: Catalog) -> Array:
 ## Returns the names of the words of the rules: {kinds, weights, directions}, each a
 ## map from the ID to the name (SPEC Section 4.4). It also has the weight value of each
 ## weight (weight_values) and the break limit of each trait (limits), for the rules text.
+## Returns the hazard of the next jump: each step is {directions, fork, known}.
+## A step that is not a fork has one direction, and known is that direction. A fork
+## step has two directions. Its known is "" unless a Sensor is in the hold (SPEC Section 18).
+static func hazard(run: Run) -> Array:
+	var out := []
+	var sensor := false
+	for c in run.hold_cargo():
+		if c.has(Defs.TRAIT_SENSOR):
+			sensor = true
+	for i in run.hazard.size():
+		var fork := i == run.hazard.size() - 1 and not run.fork_options.is_empty()
+		if fork:
+			var known: String = run.hazard[i] if sensor else ""
+			out.append({"directions": Array(run.fork_options), "fork": true, "known": known})
+		else:
+			out.append({"directions": [run.hazard[i]], "fork": false, "known": run.hazard[i]})
+	return out
+
+
 static func names(cat: Catalog) -> Dictionary:
 	var out := {}
 	var groups := {"kinds": Defs.KINDS, "weights": Defs.WEIGHTS, "directions": Defs.DIRECTIONS}
@@ -65,7 +84,14 @@ static func view(run: Run) -> Dictionary:
 		"links": links(run),
 		"contracts": [],
 		"shop": {},
-		"hazard": Array(run.hazard),
+		"hazard": hazard(run),
+		"mass":
+		{
+			"hold": run.hold_mass(),
+			"limit": run.mass_limit,
+			"max": run.max_mass(),
+			"fee": run.fuel_fee(),
+		},
 		"warp": run.last_warp,
 		"arrival": run.last_arrival,
 		"toll_gate": {},
@@ -94,6 +120,7 @@ static func view(run: Run) -> Dictionary:
 					"bought": run.shop[i]["bought"],
 					"weight": d.weight,
 					"weight_value": cat.weight_value(d.weight),
+					"mass": run.def_mass(d),
 					"traits": Array(d.traits),
 					"shape": Shapes.to_view(d.shape),
 				}
@@ -108,6 +135,8 @@ static func view(run: Run) -> Dictionary:
 		"can_column": run.can_upgrade(Defs.AXIS_COLUMN),
 		"can_row": run.can_upgrade(Defs.AXIS_ROW),
 		"breach_fee": cat.price("breach_fee"),
+		"reinforce_price": run.reinforce_price(),
+		"reinforce_amount": cat.reinforce_amount,
 		"scrap_cell": cat.price("scrap_cell"),
 	}
 	if run.phase == Defs.PHASE_TOLL:
@@ -143,6 +172,7 @@ static func _cargo(run: Run, c: Cargo, hold: Array[Cargo], powered: Dictionary) 
 		"kind": c.kind,
 		"weight": c.weight(),
 		"weight_value": run.cat.weight_value(c.weight()),
+		"mass": run.cargo_mass(c),
 		"traits": [] if c.kind == Defs.KIND_SCRAP else Array(c.def.traits),
 		"shape": Shapes.to_view(c.shape()),
 		# The shape in each rotation, so that a drag can rotate it (SPEC Section 8.2).
@@ -214,6 +244,7 @@ static func _contract(run: Run, i: int, k: Contract) -> Dictionary:
 					"name": d.name,
 					"weight": d.weight,
 					"weight_value": run.cat.weight_value(d.weight),
+					"mass": run.def_mass(d),
 					"traits": Array(d.traits),
 					"shape": Shapes.to_view(d.shape),
 				}

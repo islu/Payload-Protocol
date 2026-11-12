@@ -1,1 +1,1 @@
-{"id": "fine_glass", "sectors": [1, 2], "client_name": "Luma Gallery", "freight": ["crystal_vase", "crystal_vase"], "pay": 8, "bonus": {"type": "all_intact", "pay": 6}}
+{"id": "fine_glass", "sectors": [1, 2], "client_name": "Luma Gallery", "freight": ["crystal_vase", "crystal_vase", "crystal_vase", "glass_sculpture"], "pay": 8, "bonus": {"type": "all_intact", "pay": 6}}

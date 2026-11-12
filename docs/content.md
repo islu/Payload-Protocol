@@ -25,7 +25,7 @@ This file has the design rules of the game content. The data files in `project/d
 
 ## First Content (Version 1)
 
-The first content has 14 freight and 5 kit. The data files set the shapes and the values.
+The first content has 14 freight and 6 kit. The data files set the shapes and the values.
 
 ### Freight
 
@@ -55,14 +55,15 @@ The first content has 14 freight and 5 kit. The data files set the shapes and th
 | `battery_pack` | Battery Pack | standard | Battery, Electronic | 1 cell |
 | `shield_generator` | Shield Generator | standard | Shield | 2 cells, a line |
 | `inertia_anchor` | Inertia Anchor | heavy | Thruster | 1 cell |
+| `sensor_array` | Sensor Array | standard | Sensor | 1 cell |
 
 ## Contract Rules
 
-- A sector 1 contract has 1 to 3 pieces, and one trait at most.
-- A sector 2 contract has 2 to 4 pieces, and can mix two traits.
-- A sector 3 contract has 3 to 5 pieces. It can have Volatile and Fluid freight together.
+- A sector 1 contract has 1 to 6 pieces, and one trait at most.
+- A sector 2 contract has 2 to 5 pieces, and can mix two traits.
+- A sector 3 contract has 1 to 5 pieces. It can have Volatile and Fluid freight together.
 - Put Perishable freight only in the contracts of sectors 2 and 3. The player can buy a Cooler Unit in sector 1 first.
-- The 3 offers of a station must fit in the hold together when the hold is empty. They do not need to fit with the cargo that is in the hold.
+- The 4 offers of a station must have a total mass of 1.3 times the mass limit or more (SPEC Section 25). Then the player must select.
 
 ## Pilot Lines
 

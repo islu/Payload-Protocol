@@ -75,7 +75,7 @@ func refresh() -> void:
 			values["score"] = e["score"]
 			values["seed"] = e["seed"]
 			lines.append(tr(END_BODY_TEXT).format(values))
-			_add_button(NEW_RUN_TEXT, func() -> void: GameState.new_run())
+			_add_button(NEW_RUN_TEXT, _new_run)
 			_add_button(TITLE_BUTTON_TEXT, func() -> void: GameState.abandon_run())
 	lines.append("")
 	lines.append("PIP: " + tr(run["line"]))
@@ -88,3 +88,8 @@ func _add_button(text: String, action: Callable) -> void:
 	b.custom_minimum_size = Vector2(240, 60)
 	b.pressed.connect(action)
 	_buttons.add_child(b)
+
+
+func _new_run() -> void:
+	Hints.run_started()
+	GameState.new_run()

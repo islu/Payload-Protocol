@@ -104,6 +104,10 @@ func buy_clamp() -> String:
 	return _act(func() -> String: return run.buy_clamp())
 
 
+func reinforce_hull() -> String:
+	return _act(func() -> String: return run.reinforce_hull())
+
+
 func upgrade_hold(axis: String) -> String:
 	return _act(func() -> String: return run.upgrade_hold(axis))
 
