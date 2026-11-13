@@ -397,15 +397,28 @@ func _report_lines(run: Dictionary) -> String:
 	var lines := PackedStringArray()
 	for k: Dictionary in a["contracts"]:
 		lines.append("[b]%s[/b]  +%d" % [tr(k["client_name"]), k["pay"]])
+		# Pieces with the same name and state share one line with a count (SPEC Section 20.4).
+		var groups: Array[Dictionary] = []
 		for p: Dictionary in k["pieces"]:
-			var color: Color = Palette.GOOD if p["state"] == Defs.PIECE_DELIVERED else Palette.BAD
+			var found := false
+			for g in groups:
+				if g["name"] == p["name"] and g["state"] == p["state"]:
+					g["count"] += 1
+					found = true
+			if not found:
+				groups.append({"name": p["name"], "state": p["state"], "count": 1})
+		for g in groups:
+			var color: Color = Palette.GOOD if g["state"] == Defs.PIECE_DELIVERED else Palette.BAD
+			var piece: String = tr(g["name"])
+			if g["count"] > 1:
+				piece += " ×%d" % g["count"]
 			lines.append(
 				(
 					"   [color=#%s]%s: %s[/color]"
 					% [
 						color.to_html(false),
-						tr(p["name"]),
-						tr(PIECE_STATE_TEXT.get(p["state"], p["state"]))
+						piece,
+						tr(PIECE_STATE_TEXT.get(g["state"], g["state"]))
 					]
 				)
 			)

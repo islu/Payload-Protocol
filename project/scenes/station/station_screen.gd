@@ -115,10 +115,10 @@ func _build() -> void:
 	var top := HBoxContainer.new()
 	top.add_theme_constant_override("separation", 40)
 	root.add_child(top)
-	_top_label = _label(top, "", 26)
-	_credits_label = _label(top, "", 26, Palette.GOOD)
-	_toll_label = _label(top, "", 22, Palette.TEXT_DIM)
-	_mass_label = _label(top, "", 24, Palette.TEXT)
+	_top_label = _label(top, "", TextSize.HEADING)
+	_credits_label = _label(top, "", TextSize.HEADING, Palette.GOOD)
+	_toll_label = _label(top, "", TextSize.BODY, Palette.TEXT_DIM)
+	_mass_label = _label(top, "", TextSize.HEADING, Palette.TEXT)
 
 	var body := HBoxContainer.new()
 	body.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -131,7 +131,7 @@ func _build() -> void:
 	body.add_child(left)
 	var dock_head := HBoxContainer.new()
 	left.add_child(dock_head)
-	var dock_title := _label(dock_head, DOCK_TEXT, 22, Palette.ACCENT)
+	var dock_title := _label(dock_head, DOCK_TEXT, TextSize.HEADING, Palette.ACCENT)
 	dock_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_button(dock_head, tr(LOAD_ALL_TEXT), func() -> void: _act(GameState.load_all(), "clack"))
 	_dock_panel = _panel(left)
@@ -140,7 +140,7 @@ func _build() -> void:
 	_dock_flow.add_theme_constant_override("h_separation", 10)
 	_dock_flow.add_theme_constant_override("v_separation", 10)
 	_dock_panel.add_child(_dock_flow)
-	_label(left, CONTRACTS_TEXT, 22, Palette.ACCENT)
+	_label(left, CONTRACTS_TEXT, TextSize.HEADING, Palette.ACCENT)
 	var scroll := ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
@@ -150,7 +150,7 @@ func _build() -> void:
 	_contracts_box.add_theme_constant_override("separation", 10)
 	scroll.add_child(_contracts_box)
 	var pilot := _panel(left)
-	_pilot_label = _label(pilot, "", 19, Palette.ACCENT)
+	_pilot_label = _label(pilot, "", TextSize.BODY, Palette.ACCENT)
 	_pilot_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 
 	var center := VBoxContainer.new()
@@ -158,7 +158,7 @@ func _build() -> void:
 	center.add_theme_constant_override("separation", 8)
 	body.add_child(center)
 	# The hazard panel: one card for each shift step, above the hold (SPEC Section 20.2).
-	var next_jump := _label(center, NEXT_JUMP_TEXT, 20, Palette.WARN)
+	var next_jump := _label(center, NEXT_JUMP_TEXT, TextSize.BODY, Palette.WARN)
 	next_jump.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_hazard_box = HBoxContainer.new()
 	_hazard_box.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
@@ -170,26 +170,26 @@ func _build() -> void:
 	_hold.clamp_pressed.connect(func(id: int) -> void: _act(GameState.unclamp_cargo(id)))
 	_hold.cargo_hovered.connect(_on_hold_hovered)
 	center.add_child(_hold)
-	var hint := _label(center, HINT_TEXT, 16, Palette.TEXT_DIM)
+	var hint := _label(center, HINT_TEXT, TextSize.SMALL, Palette.TEXT_DIM)
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 
 	var right := VBoxContainer.new()
 	right.custom_minimum_size.x = SIDE_WIDTH
 	right.add_theme_constant_override("separation", 10)
 	body.add_child(right)
-	_label(right, SHOP_TEXT, 22, Palette.ACCENT)
+	_label(right, SHOP_TEXT, TextSize.HEADING, Palette.ACCENT)
 	_shop_box = VBoxContainer.new()
 	_shop_box.add_theme_constant_override("separation", 8)
 	right.add_child(_shop_box)
-	_label(right, CLAMPS_TEXT, 22, Palette.ACCENT)
+	_label(right, CLAMPS_TEXT, TextSize.HEADING, Palette.ACCENT)
 	_clamp_box = HBoxContainer.new()
 	_clamp_box.add_theme_constant_override("separation", 8)
 	right.add_child(_clamp_box)
-	_clamp_label = _label(right, "", 15, Palette.TEXT_DIM)
+	_clamp_label = _label(right, "", TextSize.SMALL, Palette.TEXT_DIM)
 	_clamp_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_sell_area = _panel(right)
 	_sell_area.custom_minimum_size.y = 110
-	_sell_label = _label(_sell_area, "", 16, Palette.TEXT_DIM)
+	_sell_label = _label(_sell_area, "", TextSize.SMALL, Palette.TEXT_DIM)
 	_sell_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_sell_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_sell_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
@@ -204,6 +204,7 @@ func _build() -> void:
 	right.add_child(_warp_button)
 
 	_confirm = ConfirmationDialog.new()
+	TextSize.apply_to_dialog(_confirm)
 	_confirm.title = tr(CONFIRM_TITLE_TEXT)
 	_confirm.confirmed.connect(func() -> void: _act(GameState.warp()))
 	add_child(_confirm)
@@ -224,12 +225,14 @@ func _build() -> void:
 	_tip_label.fit_content = true
 	_tip_label.custom_minimum_size.x = 360
 	_tip_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	for key in ["normal_font_size", "bold_font_size"]:
+		_tip_label.add_theme_font_size_override(key, TextSize.BODY)
 	_tip.add_child(_tip_label)
 	add_child(_tip)
 
 	_toast = Label.new()
 	_toast.add_theme_color_override("font_color", Palette.BAD)
-	_toast.add_theme_font_size_override("font_size", 22)
+	_toast.add_theme_font_size_override("font_size", TextSize.HEADING)
 	_toast.set_anchors_and_offsets_preset(Control.PRESET_CENTER_BOTTOM)
 	_toast.position.y -= 60
 	_toast.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -262,6 +265,7 @@ func _button(parent: Control, text: String, action: Callable, enabled := true) -
 	var b := Button.new()
 	b.text = text
 	b.disabled = not enabled
+	b.add_theme_font_size_override("font_size", TextSize.BUTTON)
 	b.pressed.connect(action)
 	parent.add_child(b)
 	return b
@@ -386,7 +390,7 @@ static func direction_name(d: String, view: Dictionary) -> String:
 func _refresh_dock() -> void:
 	_clear(_dock_flow)
 	if _run["dock"].is_empty():
-		_label(_dock_flow, EMPTY_DOCK_TEXT, 16, Palette.TEXT_DIM)
+		_label(_dock_flow, EMPTY_DOCK_TEXT, TextSize.SMALL, Palette.TEXT_DIM)
 	for c: Dictionary in _run["cargo"]:
 		if c["in_hold"]:
 			continue
@@ -407,7 +411,9 @@ func _refresh_contracts() -> void:
 		card.add_child(box)
 		var head := HBoxContainer.new()
 		box.add_child(head)
-		var client := _label(head, "", 19, Palette.ACCENT if k["accepted"] else Palette.TEXT)
+		var client := _label(
+			head, "", TextSize.BODY, Palette.ACCENT if k["accepted"] else Palette.TEXT
+		)
 		client.text = tr(k["client_name"])
 		client.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		var index: int = k["index"]
@@ -428,10 +434,12 @@ func _refresh_contracts() -> void:
 		for f: Dictionary in k["freight"]:
 			mass += f["mass"]
 		var pay_line := tr(PAY_TEXT).format({"pay": k["pay"]})
-		_label(box, pay_line + " · " + tr(CONTRACT_MASS_TEXT).format({"mass": mass}), 16)
+		_label(
+			box, pay_line + " · " + tr(CONTRACT_MASS_TEXT).format({"mass": mass}), TextSize.SMALL
+		)
 		if not k["bonus"].is_empty():
 			var b: Dictionary = k["bonus"]
-			var bonus := _label(box, "", 15, Palette.WARN)
+			var bonus := _label(box, "", TextSize.SMALL, Palette.WARN)
 			bonus.text = tr(BONUS_TEXT).format(
 				{"pay": b["pay"], "text": GameText.format(b["text"])}
 			)
@@ -452,7 +460,7 @@ func _refresh_shop() -> void:
 		chip.mouse_entered.connect(func() -> void: _show_tip(o))
 		chip.mouse_exited.connect(_hide_tip)
 		row.add_child(chip)
-		var name := _label(row, "", 18)
+		var name := _label(row, "", TextSize.BODY)
 		name.text = "%s\n%d cr" % [tr(o["name"]), o["price"]]
 		name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		var index: int = o["index"]

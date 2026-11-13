@@ -17,6 +17,7 @@ func _ready() -> void:
 	get_tree().paused = true
 	closed.connect(func() -> void: get_tree().paused = false)
 	_confirm = ConfirmationDialog.new()
+	TextSize.apply_to_dialog(_confirm)
 	_confirm.confirmed.connect(_abandon)
 	add_child(_confirm)
 	super()

@@ -177,6 +177,19 @@ func _play_warp(main: Control) -> void:
 	_check(
 		hits == 0 or warp._fx.played.has("hit"), "a hit plays the spark sheet (SPEC Section 21.2)"
 	)
+	var lines := warp._report_text.get_parsed_text().split("\n", false)
+	var seen := {}
+	var repeated := PackedStringArray()
+	for line in lines:
+		# A line with no indent starts a contract: the rule is for each contract.
+		if not line.begins_with(" "):
+			seen = {}
+		if seen.has(line):
+			repeated.append(line)
+		seen[line] = true
+	_check(
+		repeated.is_empty(), "the report has no repeated line: %s (SPEC Section 20.4)" % [repeated]
+	)
 	await get_tree().process_frame
 	if GameState.view()["run"]["arrival"]["total"] != 0:
 		var report := warp._report.get_global_rect()
@@ -215,7 +228,22 @@ func _check_overlays(main: Control) -> void:
 
 
 ## The hold fills the center, and the hazard panel is above it (SPEC Section 20.2).
+## The text has four sizes (SPEC Section 4.2).
 func _check_layout(station: StationScreen) -> void:
+	var sizes := [24, 18, 15, 20]
+	var wrong := PackedStringArray()
+	for n in station.find_children("*", "", true, false):
+		# Display text: the Warp button and the arrows of the hazard cards.
+		if n == station._warp_button or station._hazard_box.is_ancestor_of(n):
+			continue
+		var font_size := -1
+		if n is Label or n is Button:
+			font_size = n.get_theme_font_size("font_size")
+		elif n is RichTextLabel:
+			font_size = n.get_theme_font_size("normal_font_size")
+		if font_size != -1 and not font_size in sizes:
+			wrong.append("%s %d %s" % [n.get_class(), font_size, station.get_path_to(n)])
+	_check(wrong.is_empty(), "the station text has the four sizes: %s (SPEC Section 4.2)" % [wrong])
 	var hold := station._hold
 	_check(
 		hold.cell >= 100.0,
@@ -252,6 +280,11 @@ func _check_language(station: StationScreen) -> void:
 	pause.add_child(panel)
 	await get_tree().process_frame
 	var options: OptionButton = panel.find_children("*", "OptionButton", true, false)[0]
+	var toggle: CheckButton = panel.find_children("*", "CheckButton", true, false)[0]
+	_check(
+		toggle.get_theme_icon("unchecked").resource_path.ends_with("toggle_off.svg"),
+		"a switch that is off shows an outlined capsule (SPEC Section 23.1)"
+	)
 	var slider: HSlider = panel.find_children("*", "HSlider", true, false)[0]
 	var heading: Label = panel.box.get_child(0)
 	slider.value = slider.value - 5

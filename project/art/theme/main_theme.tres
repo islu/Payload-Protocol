@@ -1,6 +1,8 @@
-[gd_resource type="Theme" load_steps=17 format=3]
+[gd_resource type="Theme" load_steps=19 format=3]
 
 [ext_resource type="FontFile" path="res://art/fonts/jf-openhuninn-2.1.ttf" id="1_font"]
+[ext_resource type="Texture2D" path="res://art/theme/toggle_off.svg" id="2_off"]
+[ext_resource type="Texture2D" path="res://art/theme/toggle_on.svg" id="3_on"]
 
 [sub_resource type="StyleBoxFlat" id="button_normal"]
 corner_radius_top_left = 6
@@ -228,6 +230,10 @@ Button/styles/focus = SubResource("focus")
 Button/styles/hover = SubResource("button_hover")
 Button/styles/normal = SubResource("button_normal")
 Button/styles/pressed = SubResource("button_pressed")
+CheckButton/icons/checked = ExtResource("3_on")
+CheckButton/icons/unchecked = ExtResource("2_off")
+CheckButton/icons/checked_disabled = ExtResource("3_on")
+CheckButton/icons/unchecked_disabled = ExtResource("2_off")
 CheckButton/styles/normal = SubResource("empty")
 CheckButton/styles/hover = SubResource("empty")
 CheckButton/styles/pressed = SubResource("empty")

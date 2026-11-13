@@ -41,6 +41,7 @@ The station screen has these areas:
 ### 20.4 Arrival Report
 
 - The report shows each contract: its pieces (delivered, scrap, spoiled, lost, or breached), its pay, and its bonus. A lost piece is a piece that an explosion removed.
+- Pieces of a contract with the same name and the same state share one line with a count, for example "Mail Bundle ×6: delivered".
 - It shows the total credits that the jump gave.
 - The pilot speaks a line about the result.
 - A Continue button goes to the next station, or to the toll gate.
@@ -111,6 +112,7 @@ The station screen has these areas:
 
 - The settings are: music volume, sound volume, the CRT filter (on or off), the screen shake (on or off), the warp speed (1× or 2×), fullscreen (on or off), the language (English or 繁體中文), and hints (on or off).
 - The game keeps the settings in `user://settings.cfg`.
+- Each switch shows its state clearly: off is an outlined capsule, on is a filled capsule.
 - A change of a setting applies at once. When the player changes the language, all text on the screen changes at once, also in the open menus.
 
 ### 23.2 How to Play
