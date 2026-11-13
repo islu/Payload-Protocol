@@ -44,6 +44,7 @@ var _hold: HoldView
 var _fx: FxLayer
 var _banner: Label
 var _skip_label: Label
+var _report_head: Label
 var _report: PanelContainer
 var _report_text: RichTextLabel
 var _continue: Button
@@ -105,11 +106,11 @@ func _build_report() -> void:
 	var box := VBoxContainer.new()
 	box.add_theme_constant_override("separation", 16)
 	_report.add_child(box)
-	var head := Label.new()
-	head.text = tr(ARRIVAL_TEXT)
-	head.add_theme_font_size_override("font_size", 44)
-	head.add_theme_color_override("font_color", Palette.ACCENT)
-	box.add_child(head)
+	_report_head = Label.new()
+	_report_head.text = tr(ARRIVAL_TEXT)
+	_report_head.add_theme_font_size_override("font_size", 44)
+	_report_head.add_theme_color_override("font_color", Palette.ACCENT)
+	box.add_child(_report_head)
 	_report_text = RichTextLabel.new()
 	_report_text.bbcode_enabled = true
 	_report_text.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -122,6 +123,16 @@ func _build_report() -> void:
 	_continue.add_theme_font_size_override("font_size", 28)
 	_continue.pressed.connect(func() -> void: GameState.continue_run())
 	box.add_child(_continue)
+
+
+## Shows the text in the new language (SPEC Section 23.1). The banner of the step
+## changes at the next step.
+func retranslate() -> void:
+	_skip_label.text = tr(SKIP_TEXT)
+	_report_head.text = tr(ARRIVAL_TEXT)
+	_continue.text = tr(CONTINUE_TEXT)
+	if finished:
+		_report_text.text = _report_lines(_view["run"])
 
 
 func _unhandled_input(event: InputEvent) -> void:

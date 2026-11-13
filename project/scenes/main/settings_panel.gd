@@ -17,6 +17,10 @@ const LANGUAGE_NAMES := {"en": "English", "zh_TW": "繁體中文"}
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	super()
+
+
+func _build() -> void:
 	heading(SETTINGS_TEXT)
 	_slider(MUSIC_TEXT, "music_volume")
 	_slider(SOUND_TEXT, "sound_volume")

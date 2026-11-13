@@ -16,15 +16,19 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	get_tree().paused = true
 	closed.connect(func() -> void: get_tree().paused = false)
+	_confirm = ConfirmationDialog.new()
+	_confirm.confirmed.connect(_abandon)
+	add_child(_confirm)
+	super()
+
+
+func _build() -> void:
 	heading(PAUSED_TEXT)
 	button(RESUME_TEXT, close).grab_focus()
 	button(HOW_TO_PLAY_TEXT, func() -> void: add_child(HowToPlay.new()))
 	button(SETTINGS_TEXT, func() -> void: add_child(SettingsPanel.new()))
 	button(ABANDON_TEXT, func() -> void: _confirm.popup_centered())
-	_confirm = ConfirmationDialog.new()
 	_confirm.dialog_text = tr(ABANDON_CONFIRM_TEXT)
-	_confirm.confirmed.connect(_abandon)
-	add_child(_confirm)
 
 
 func _abandon() -> void:

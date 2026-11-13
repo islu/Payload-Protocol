@@ -110,6 +110,7 @@ The station screen has these areas:
 
 - The settings are: music volume, sound volume, the CRT filter (on or off), the screen shake (on or off), the warp speed (1× or 2×), fullscreen (on or off), the language (English or 繁體中文), and hints (on or off).
 - The game keeps the settings in `user://settings.cfg`.
+- A change of a setting applies at once. When the player changes the language, all text on the screen changes at once, also in the open menus.
 
 ### 23.2 How to Play
 

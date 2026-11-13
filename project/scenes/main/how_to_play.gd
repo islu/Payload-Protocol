@@ -47,6 +47,10 @@ var _next: Button
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	box.custom_minimum_size.x = 820
+	super()
+
+
+func _build() -> void:
 	heading(TITLE_TEXT)
 	_picture = TutorialPicture.new()
 	_picture.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
@@ -74,7 +78,8 @@ func _ready() -> void:
 	_next.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_next.pressed.connect(_on_next)
 	row.add_child(_next)
-	_show(0)
+	# A new language keeps the page (SPEC Section 23.1).
+	_show(_page)
 	_next.grab_focus()
 
 

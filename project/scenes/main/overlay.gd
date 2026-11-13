@@ -6,6 +6,8 @@ extends Control
 signal closed
 
 var box: VBoxContainer
+## The language of the text in the box.
+var _locale := ""
 
 
 func _init() -> void:
@@ -31,6 +33,35 @@ func _init() -> void:
 	box.add_theme_constant_override("separation", 16)
 	box.custom_minimum_size.x = 520
 	panel.add_child(box)
+
+
+func _ready() -> void:
+	_locale = TranslationServer.get_locale()
+	_build()
+
+
+## Adds the content to the box. Each overlay overrides it. It runs again when
+## the language changes (SPEC Section 23.1).
+func _build() -> void:
+	pass
+
+
+func _notification(what: int) -> void:
+	# The notification also comes when the node enters the tree, and when a
+	# setting that is not the language changes. Build again only for a new language.
+	if what != NOTIFICATION_TRANSLATION_CHANGED or _locale == "":
+		return
+	if TranslationServer.get_locale() == _locale:
+		return
+	_locale = TranslationServer.get_locale()
+	_rebuild.call_deferred()
+
+
+func _rebuild() -> void:
+	for child in box.get_children():
+		box.remove_child(child)
+		child.queue_free()
+	_build()
 
 
 func close() -> void:

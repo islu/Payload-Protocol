@@ -13,10 +13,13 @@ var _screen: Control
 var _screen_kind := ""
 var _overlays: CanvasLayer
 var _crt: ColorRect
+## The language of the text on the screen.
+var _locale := ""
 
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	_locale = TranslationServer.get_locale()
 	_overlays = CanvasLayer.new()
 	_overlays.layer = 10
 	add_child(_overlays)
@@ -53,6 +56,25 @@ func _update() -> void:
 	_screen.process_mode = Node.PROCESS_MODE_PAUSABLE
 	add_child(_screen)
 	move_child(_screen, 0)
+
+
+func _notification(what: int) -> void:
+	if what != NOTIFICATION_TRANSLATION_CHANGED or _locale == "":
+		return
+	if TranslationServer.get_locale() == _locale:
+		return
+	_locale = TranslationServer.get_locale()
+	_retranslate.call_deferred()
+
+
+## Shows the screen in the new language (SPEC Section 23.1). The warp plays on:
+## it changes its text in place, because a new warp screen plays the warp again.
+func _retranslate() -> void:
+	if _screen is WarpScreen:
+		_screen.retranslate()
+		return
+	_screen_kind = ""
+	_update()
 
 
 ## Adds the CRT filter above all screens and overlays (SPEC Section 4.2).

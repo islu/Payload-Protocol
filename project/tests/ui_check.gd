@@ -7,6 +7,7 @@ extends Node
 const MAIN_SCENE := preload("res://scenes/main/main.tscn")
 
 var _failures := 0
+var _language_checked := false
 
 
 func _ready() -> void:
@@ -173,6 +174,54 @@ func _check_overlays(main: Control) -> void:
 	_check(not get_tree().paused, "Resume ends the pause (SPEC Section 20.7)")
 
 
+## Changes the language in the settings of the pause menu, and checks that the
+## open menus and the station change at once (SPEC Section 23.1).
+func _check_language(station: StationScreen) -> void:
+	var main: Control = station.get_parent()
+	var start := TranslationServer.get_locale()
+	var other: String = Settings.LOCALES[1 - Settings.LOCALES.find(start)]
+	var pause: Overlay = main.open_overlay(PauseMenu.new())
+	var panel := SettingsPanel.new()
+	pause.add_child(panel)
+	await get_tree().process_frame
+	var options: OptionButton = panel.find_children("*", "OptionButton", true, false)[0]
+	var slider: HSlider = panel.find_children("*", "HSlider", true, false)[0]
+	var heading: Label = panel.box.get_child(0)
+	slider.value = slider.value - 5
+	await get_tree().process_frame
+	_check(
+		is_instance_valid(heading) and heading.is_inside_tree(),
+		"a volume change does not build the settings again (SPEC Section 23.1)"
+	)
+	options.item_selected.emit(Settings.LOCALES.find(other))
+	await get_tree().process_frame
+	await get_tree().process_frame
+	# The locale is the new language now, so tr() gives the text that must show.
+	var want := func(text: String) -> String: return tr(text)
+	var texts := func(node: Node) -> PackedStringArray:
+		var out := PackedStringArray()
+		for n in node.find_children("*", "", true, false):
+			if n is Label or n is Button:
+				out.append(n.text)
+		return out
+	_check(
+		texts.call(panel).has(want.call(SettingsPanel.SETTINGS_TEXT)),
+		"the open settings show the new language (SPEC Section 23.1)"
+	)
+	_check(
+		texts.call(pause).has(want.call(PauseMenu.RESUME_TEXT)),
+		"the pause menu shows the new language (SPEC Section 23.1)"
+	)
+	_check(
+		texts.call(main.screen()).has(want.call(StationScreen.WARP_TEXT)),
+		"the station shows the new language (SPEC Section 23.1)"
+	)
+	Settings.set_value("locale", start)
+	pause.close()
+	await get_tree().process_frame
+	await get_tree().process_frame
+
+
 ## Places a cargo from the dock by clicks, and checks that the next dock cargo is
 ## picked up at once (SPEC Section 8.2).
 func _check_chain(station: StationScreen) -> void:
@@ -253,6 +302,12 @@ func _play_station(state: Node, station: StationScreen) -> void:
 			state.accept_contract(k["index"])
 			mass += add
 	await get_tree().process_frame
+	if not _language_checked:
+		_language_checked = true
+		var main: Control = station.get_parent()
+		await _check_language(station)
+		# A new language builds the station again (SPEC Section 23.1).
+		station = main.screen()
 	_check_chain(station)
 	await get_tree().process_frame
 	run = state.view()["run"]
