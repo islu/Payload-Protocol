@@ -1,0 +1,7 @@
+{
+	"id": "heart_transplant",
+	"sectors": [2, 3],
+	"client_name": "Helix Medical",
+	"freight": ["artificial_heart", "artificial_heart"],
+	"pay": 18
+}

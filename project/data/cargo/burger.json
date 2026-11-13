@@ -1,0 +1,8 @@
+{
+	"id": "burger",
+	"name": "Burger",
+	"kind": "freight",
+	"weight": "standard",
+	"traits": ["perishable"],
+	"shape": [[0, 0]]
+}

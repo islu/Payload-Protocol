@@ -1,0 +1,8 @@
+{
+	"id": "flashlight",
+	"name": "Flashlight",
+	"kind": "freight",
+	"weight": "light",
+	"traits": ["electronic"],
+	"shape": [[0, 0]]
+}

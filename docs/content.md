@@ -26,7 +26,7 @@ This file has the design rules of the game content. The data files in `project/d
 
 ## First Content (Version 1)
 
-The first content has 14 freight and 6 kit. The data files set the shapes and the values.
+The first content has 38 freight and 6 kit. The freight has themes: supplies, tech, food, medical, contraband, weapons, robots, and Earth relics. The data files set the shapes and the values.
 
 ### Freight
 
@@ -46,6 +46,30 @@ The first content has 14 freight and 6 kit. The data files set the shapes and th
 | `space_cheese` | Space Cheese | standard | Perishable | 1 cell |
 | `frozen_octopus` | Frozen Octopus | standard | Perishable | 4 cells, a T |
 | `courier_drone` | Courier Drone | light | Thruster, Electronic | 1 cell |
+| `pill_bottle` | Pill Bottle | light | — | 1 cell |
+| `vaccine_vial` | Vaccine Vial | light | Perishable | 1 cell |
+| `blood_sample` | Blood Sample | standard | Perishable, Fragile | 2 cells, a line |
+| `artificial_heart` | Artificial Heart | standard | Perishable, Electronic | 2 cells, a line |
+| `medkit` | Medkit | standard | — | 1 cell |
+| `liquor_bottle` | Liquor Bottle | light | Fragile | 2 cells, a line |
+| `cigarette_pack` | Cigarette Pack | light | — | 1 cell |
+| `stim_pack` | Stim Pack | light | Fragile | 1 cell |
+| `laser_rifle` | Laser Rifle | standard | Electronic | 2 cells, a line |
+| `rocket_launcher` | Rocket Launcher | standard | Volatile | 2 cells, a line |
+| `ammo_crate` | Ammo Crate | standard | Volatile | 1 cell |
+| `weapon_rack` | Weapon Rack | heavy | — | 4 cells, a square |
+| `helper_bot` | Helper Bot | standard | Electronic | 1 cell |
+| `service_android` | Service Android | heavy | Electronic | 2 cells, a line |
+| `mining_bot` | Mining Bot | heavy | Electronic | 4 cells, a square |
+| `mech_suit` | Mech Suit | heavy | Thruster | 4 cells, a square |
+| `antique_phone` | Antique Phone | light | Fragile, Electronic | 2 cells, a line |
+| `antique_soda` | Antique Soda | light | Fluid | 2 cells, a line |
+| `fire_hydrant` | Fire Hydrant | heavy | — | 2 cells, a line |
+| `parking_meter` | Parking Meter | standard | Electronic | 2 cells, a line |
+| `mailbox` | Mailbox | standard | — | 2 cells, a line |
+| `instant_noodles` | Instant Noodles | light | — | 1 cell |
+| `flashlight` | Flashlight | light | Electronic | 1 cell |
+| `burger` | Burger | standard | Perishable | 1 cell |
 
 ### Kit
 
@@ -61,9 +85,12 @@ The first content has 14 freight and 6 kit. The data files set the shapes and th
 ## Contract Rules
 
 - A sector 1 contract has 1 to 6 pieces, and one trait at most.
-- A sector 2 contract has 2 to 5 pieces, and can mix two traits.
+- A sector 2 contract has 1 to 5 pieces, and can mix two traits.
 - A sector 3 contract has 1 to 5 pieces. It can have Volatile and Fluid freight together.
 - Put Perishable freight only in the contracts of sectors 2 and 3. The player can buy a Cooler Unit in sector 1 first.
+- A Black Market contract carries contraband or weapons. It pays about 1.5 times a contract with freight of the same size and risk.
+- An Earth Heritage Museum or Old Town Collectors contract carries Earth relics: everyday things of old Earth.
+- Each freight is in one contract at least.
 - The 4 offers of a station must have a total mass of 1.3 times the mass limit or more (SPEC Section 25). Then the player must select.
 
 ## Pilot Lines

@@ -1,0 +1,18 @@
+{
+	"id": "antique_tech",
+	"sectors": [2, 3],
+	"client_name": "Earth Heritage Museum",
+	"freight": [
+		"antique_phone",
+		"antique_phone",
+		"antique_phone",
+		"antique_soda",
+		"antique_soda"
+	],
+	"pay": 10,
+	"bonus": {
+		"type": "not_next_to",
+		"pay": 10,
+		"trait": "fluid"
+	}
+}

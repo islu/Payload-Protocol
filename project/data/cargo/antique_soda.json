@@ -1,0 +1,8 @@
+{
+	"id": "antique_soda",
+	"name": "Antique Soda",
+	"kind": "freight",
+	"weight": "light",
+	"traits": ["fluid"],
+	"shape": [[0, 0], [0, 1]]
+}

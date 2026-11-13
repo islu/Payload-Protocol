@@ -1,0 +1,11 @@
+{
+	"id": "diner",
+	"sectors": [2, 3],
+	"client_name": "Neon Diner",
+	"freight": ["burger", "burger", "burger", "antique_soda", "antique_soda"],
+	"pay": 7,
+	"bonus": {
+		"type": "all_intact",
+		"pay": 8
+	}
+}

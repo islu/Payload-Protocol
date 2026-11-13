@@ -1,0 +1,8 @@
+{
+	"id": "mining_bot",
+	"name": "Mining Bot",
+	"kind": "freight",
+	"weight": "heavy",
+	"traits": ["electronic"],
+	"shape": [[0, 0], [1, 0], [0, 1], [1, 1]]
+}

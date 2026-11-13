@@ -530,12 +530,40 @@ msgstr ""
 msgid "breached"
 msgstr ""
 
+#: project/data/cargo/ammo_crate.json
+msgid "Ammo Crate"
+msgstr ""
+
+#: project/data/cargo/antique_phone.json
+msgid "Antique Phone"
+msgstr ""
+
+#: project/data/cargo/antique_soda.json
+msgid "Antique Soda"
+msgstr ""
+
+#: project/data/cargo/artificial_heart.json
+msgid "Artificial Heart"
+msgstr ""
+
 #: project/data/cargo/battery_pack.json
 msgid "Battery Pack"
 msgstr ""
 
+#: project/data/cargo/blood_sample.json
+msgid "Blood Sample"
+msgstr ""
+
+#: project/data/cargo/burger.json
+msgid "Burger"
+msgstr ""
+
 #: project/data/cargo/cargo_crate.json
 msgid "Cargo Crate"
+msgstr ""
+
+#: project/data/cargo/cigarette_pack.json
+msgid "Cigarette Pack"
 msgstr ""
 
 #: project/data/cargo/circuit_boards.json
@@ -558,6 +586,14 @@ msgstr ""
 msgid "Energy Crystal"
 msgstr ""
 
+#: project/data/cargo/fire_hydrant.json
+msgid "Fire Hydrant"
+msgstr ""
+
+#: project/data/cargo/flashlight.json
+msgid "Flashlight"
+msgstr ""
+
 #: project/data/cargo/foam_pad.json
 msgid "Foam Pad"
 msgstr ""
@@ -570,8 +606,48 @@ msgstr ""
 msgid "Fuel Drum"
 msgstr ""
 
+#: project/data/cargo/helper_bot.json
+msgid "Helper Bot"
+msgstr ""
+
 #: project/data/cargo/inertia_anchor.json
 msgid "Inertia Anchor"
+msgstr ""
+
+#: project/data/cargo/instant_noodles.json
+msgid "Instant Noodles"
+msgstr ""
+
+#: project/data/cargo/laser_rifle.json
+msgid "Laser Rifle"
+msgstr ""
+
+#: project/data/cargo/liquor_bottle.json
+msgid "Liquor Bottle"
+msgstr ""
+
+#: project/data/cargo/mailbox.json
+msgid "Mailbox"
+msgstr ""
+
+#: project/data/cargo/mech_suit.json
+msgid "Mech Suit"
+msgstr ""
+
+#: project/data/cargo/medkit.json
+msgid "Medkit"
+msgstr ""
+
+#: project/data/cargo/mining_bot.json
+msgid "Mining Bot"
+msgstr ""
+
+#: project/data/cargo/parking_meter.json
+msgid "Parking Meter"
+msgstr ""
+
+#: project/data/cargo/pill_bottle.json
+msgid "Pill Bottle"
 msgstr ""
 
 #: project/data/cargo/plasma_cell.json
@@ -590,8 +666,16 @@ msgstr ""
 msgid "Reactor Core"
 msgstr ""
 
+#: project/data/cargo/rocket_launcher.json
+msgid "Rocket Launcher"
+msgstr ""
+
 #: project/data/cargo/sensor_array.json
 msgid "Sensor Array"
+msgstr ""
+
+#: project/data/cargo/service_android.json
+msgid "Service Android"
 msgstr ""
 
 #: project/data/cargo/shield_generator.json
@@ -608,6 +692,45 @@ msgstr ""
 
 #: project/data/cargo/steel_ingot.json
 msgid "Steel Ingot"
+msgstr ""
+
+#: project/data/cargo/stim_pack.json
+msgid "Stim Pack"
+msgstr ""
+
+#: project/data/cargo/vaccine_vial.json
+msgid "Vaccine Vial"
+msgstr ""
+
+#: project/data/cargo/weapon_rack.json
+msgid "Weapon Rack"
+msgstr ""
+
+#: project/data/contracts/androids.json
+#: project/data/contracts/helper_bots.json
+msgid "Cogwork Robotics"
+msgstr ""
+
+#: project/data/contracts/antique_tech.json
+#: project/data/contracts/earth_curios.json
+msgid "Earth Heritage Museum"
+msgstr ""
+
+#: project/data/contracts/armory.json
+#: project/data/contracts/rifle_order.json
+msgid "Militia Supply"
+msgstr ""
+
+#: project/data/contracts/arms_deal.json
+#: project/data/contracts/contraband_mix.json
+#: project/data/contracts/smokes.json
+msgid "Black Market"
+msgstr ""
+
+#: project/data/contracts/blood_bank.json
+#: project/data/contracts/field_hospital.json
+#: project/data/contracts/vaccine_run.json
+msgid "Red Ring Relief"
 msgstr ""
 
 #: project/data/contracts/boards.json
@@ -630,6 +753,10 @@ msgstr ""
 msgid "Frostline Labs"
 msgstr ""
 
+#: project/data/contracts/diner.json
+msgid "Neon Diner"
+msgstr ""
+
 #: project/data/contracts/drone_swarm.json
 #: project/data/contracts/drones.json
 msgid "Swift Courier"
@@ -645,17 +772,42 @@ msgstr ""
 msgid "Redline Fuel"
 msgstr ""
 
+#: project/data/contracts/heart_transplant.json
+msgid "Helix Medical"
+msgstr ""
+
 #: project/data/contracts/heavy_glass.json
 #: project/data/contracts/heavy_metal.json
 msgid "Ironworks Guild"
+msgstr ""
+
+#: project/data/contracts/hydrants.json
+#: project/data/contracts/parking_meters.json
+msgid "Old Town Collectors"
 msgstr ""
 
 #: project/data/contracts/mail_run.json
 msgid "Orbital Post"
 msgstr ""
 
+#: project/data/contracts/mech_delivery.json
+msgid "Titan Works"
+msgstr ""
+
+#: project/data/contracts/mining_bots.json
+msgid "Deep Core Mining"
+msgstr ""
+
+#: project/data/contracts/night_market.json
+msgid "Night Market"
+msgstr ""
+
 #: project/data/contracts/octopus.json
 msgid "Neptune Seafood"
+msgstr ""
+
+#: project/data/contracts/pharmacy.json
+msgid "Orbital Pharmacy"
 msgstr ""
 
 #: project/data/contracts/plasma_crate.json

@@ -1,0 +1,8 @@
+{
+	"id": "helper_bot",
+	"name": "Helper Bot",
+	"kind": "freight",
+	"weight": "standard",
+	"traits": ["electronic"],
+	"shape": [[0, 0]]
+}

@@ -557,13 +557,41 @@ msgstr "炸毀"
 msgid "breached"
 msgstr "違約"
 
+#: project/data/cargo/ammo_crate.json
+msgid "Ammo Crate"
+msgstr "彈藥箱"
+
+#: project/data/cargo/antique_phone.json
+msgid "Antique Phone"
+msgstr "古董手機"
+
+#: project/data/cargo/antique_soda.json
+msgid "Antique Soda"
+msgstr "古董汽水"
+
+#: project/data/cargo/artificial_heart.json
+msgid "Artificial Heart"
+msgstr "人工心臟"
+
 #: project/data/cargo/battery_pack.json
 msgid "Battery Pack"
 msgstr "電池組"
 
+#: project/data/cargo/blood_sample.json
+msgid "Blood Sample"
+msgstr "血液樣本"
+
+#: project/data/cargo/burger.json
+msgid "Burger"
+msgstr "漢堡"
+
 #: project/data/cargo/cargo_crate.json
 msgid "Cargo Crate"
 msgstr "貨箱"
+
+#: project/data/cargo/cigarette_pack.json
+msgid "Cigarette Pack"
+msgstr "香菸"
 
 #: project/data/cargo/circuit_boards.json
 msgid "Circuit Boards"
@@ -585,6 +613,14 @@ msgstr "快遞無人機"
 msgid "Energy Crystal"
 msgstr "能量水晶"
 
+#: project/data/cargo/fire_hydrant.json
+msgid "Fire Hydrant"
+msgstr "消防栓"
+
+#: project/data/cargo/flashlight.json
+msgid "Flashlight"
+msgstr "手電筒"
+
 #: project/data/cargo/foam_pad.json
 msgid "Foam Pad"
 msgstr "緩衝泡棉"
@@ -597,9 +633,49 @@ msgstr "冷凍章魚"
 msgid "Fuel Drum"
 msgstr "燃料桶"
 
+#: project/data/cargo/helper_bot.json
+msgid "Helper Bot"
+msgstr "小幫手機器人"
+
 #: project/data/cargo/inertia_anchor.json
 msgid "Inertia Anchor"
 msgstr "慣性錨"
+
+#: project/data/cargo/instant_noodles.json
+msgid "Instant Noodles"
+msgstr "泡麵"
+
+#: project/data/cargo/laser_rifle.json
+msgid "Laser Rifle"
+msgstr "雷射步槍"
+
+#: project/data/cargo/liquor_bottle.json
+msgid "Liquor Bottle"
+msgstr "烈酒"
+
+#: project/data/cargo/mailbox.json
+msgid "Mailbox"
+msgstr "郵筒"
+
+#: project/data/cargo/mech_suit.json
+msgid "Mech Suit"
+msgstr "機甲"
+
+#: project/data/cargo/medkit.json
+msgid "Medkit"
+msgstr "醫療箱"
+
+#: project/data/cargo/mining_bot.json
+msgid "Mining Bot"
+msgstr "採礦機器人"
+
+#: project/data/cargo/parking_meter.json
+msgid "Parking Meter"
+msgstr "停車計時器"
+
+#: project/data/cargo/pill_bottle.json
+msgid "Pill Bottle"
+msgstr "藥丸"
 
 #: project/data/cargo/plasma_cell.json
 msgid "Plasma Cell"
@@ -617,9 +693,17 @@ msgstr "口糧箱"
 msgid "Reactor Core"
 msgstr "反應爐核心"
 
+#: project/data/cargo/rocket_launcher.json
+msgid "Rocket Launcher"
+msgstr "火箭筒"
+
 #: project/data/cargo/sensor_array.json
 msgid "Sensor Array"
 msgstr "感測陣列"
+
+#: project/data/cargo/service_android.json
+msgid "Service Android"
+msgstr "服務型機器人"
 
 #: project/data/cargo/shield_generator.json
 msgid "Shield Generator"
@@ -636,6 +720,45 @@ msgstr "標本管"
 #: project/data/cargo/steel_ingot.json
 msgid "Steel Ingot"
 msgstr "鋼錠"
+
+#: project/data/cargo/stim_pack.json
+msgid "Stim Pack"
+msgstr "興奮劑"
+
+#: project/data/cargo/vaccine_vial.json
+msgid "Vaccine Vial"
+msgstr "疫苗"
+
+#: project/data/cargo/weapon_rack.json
+msgid "Weapon Rack"
+msgstr "武器架"
+
+#: project/data/contracts/androids.json
+#: project/data/contracts/helper_bots.json
+msgid "Cogwork Robotics"
+msgstr "齒輪機器人公司"
+
+#: project/data/contracts/antique_tech.json
+#: project/data/contracts/earth_curios.json
+msgid "Earth Heritage Museum"
+msgstr "地球遺產博物館"
+
+#: project/data/contracts/armory.json
+#: project/data/contracts/rifle_order.json
+msgid "Militia Supply"
+msgstr "民兵補給處"
+
+#: project/data/contracts/arms_deal.json
+#: project/data/contracts/contraband_mix.json
+#: project/data/contracts/smokes.json
+msgid "Black Market"
+msgstr "黑市"
+
+#: project/data/contracts/blood_bank.json
+#: project/data/contracts/field_hospital.json
+#: project/data/contracts/vaccine_run.json
+msgid "Red Ring Relief"
+msgstr "紅環救援會"
 
 #: project/data/contracts/boards.json
 #: project/data/contracts/mixed_tech.json
@@ -657,6 +780,10 @@ msgstr "月球乳業合作社"
 msgid "Frostline Labs"
 msgstr "霜線實驗室"
 
+#: project/data/contracts/diner.json
+msgid "Neon Diner"
+msgstr "霓虹餐館"
+
 #: project/data/contracts/drone_swarm.json
 #: project/data/contracts/drones.json
 msgid "Swift Courier"
@@ -672,18 +799,43 @@ msgstr "流明畫廊"
 msgid "Redline Fuel"
 msgstr "紅線燃料"
 
+#: project/data/contracts/heart_transplant.json
+msgid "Helix Medical"
+msgstr "螺旋醫療"
+
 #: project/data/contracts/heavy_glass.json
 #: project/data/contracts/heavy_metal.json
 msgid "Ironworks Guild"
 msgstr "鐵工公會"
 
+#: project/data/contracts/hydrants.json
+#: project/data/contracts/parking_meters.json
+msgid "Old Town Collectors"
+msgstr "舊城收藏家"
+
 #: project/data/contracts/mail_run.json
 msgid "Orbital Post"
 msgstr "軌道郵政"
 
+#: project/data/contracts/mech_delivery.json
+msgid "Titan Works"
+msgstr "泰坦工業"
+
+#: project/data/contracts/mining_bots.json
+msgid "Deep Core Mining"
+msgstr "深核礦業"
+
+#: project/data/contracts/night_market.json
+msgid "Night Market"
+msgstr "夜市"
+
 #: project/data/contracts/octopus.json
 msgid "Neptune Seafood"
 msgstr "海王星海產"
+
+#: project/data/contracts/pharmacy.json
+msgid "Orbital Pharmacy"
+msgstr "軌道藥局"
 
 #: project/data/contracts/plasma_crate.json
 #: project/data/contracts/plasma_small.json

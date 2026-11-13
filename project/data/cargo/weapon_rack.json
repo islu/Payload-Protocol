@@ -1,0 +1,8 @@
+{
+	"id": "weapon_rack",
+	"name": "Weapon Rack",
+	"kind": "freight",
+	"weight": "heavy",
+	"traits": [],
+	"shape": [[0, 0], [1, 0], [0, 1], [1, 1]]
+}

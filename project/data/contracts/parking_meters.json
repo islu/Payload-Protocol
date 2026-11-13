@@ -1,0 +1,12 @@
+{
+	"id": "parking_meters",
+	"sectors": [2],
+	"client_name": "Old Town Collectors",
+	"freight": ["parking_meter", "parking_meter", "parking_meter"],
+	"pay": 7,
+	"bonus": {
+		"type": "not_next_to",
+		"pay": 6,
+		"trait": "fluid"
+	}
+}

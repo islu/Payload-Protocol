@@ -1,0 +1,8 @@
+{
+	"id": "blood_sample",
+	"name": "Blood Sample",
+	"kind": "freight",
+	"weight": "standard",
+	"traits": ["perishable", "fragile"],
+	"shape": [[0, 0], [0, 1]]
+}

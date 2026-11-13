@@ -1,0 +1,11 @@
+{
+	"id": "arms_deal",
+	"sectors": [3],
+	"client_name": "Black Market",
+	"freight": ["rocket_launcher", "rocket_launcher", "ammo_crate", "ammo_crate"],
+	"pay": 20,
+	"bonus": {
+		"type": "all_intact",
+		"pay": 15
+	}
+}

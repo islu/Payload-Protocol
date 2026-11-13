@@ -1,0 +1,7 @@
+{
+	"id": "mining_bots",
+	"sectors": [3],
+	"client_name": "Deep Core Mining",
+	"freight": ["mining_bot", "helper_bot", "helper_bot"],
+	"pay": 16
+}

@@ -1,0 +1,8 @@
+{
+	"id": "cigarette_pack",
+	"name": "Cigarette Pack",
+	"kind": "freight",
+	"weight": "light",
+	"traits": [],
+	"shape": [[0, 0]]
+}

@@ -41,6 +41,8 @@ This file keeps each problem that is found and not fixed yet. Each item is in on
 
 - **[Balance · Data] The cargo shapes of the images** (found 2026-11-13, by /game-design). The images changed four shapes: Cargo Crate and Shield Generator are 1 cell (mass 2), Coolant Pipe is an L (mass 6), and Specimen Tube is a line of 2 (mass 4). Check in the next playtest: do the contracts still fill the mass limit, and is packing still hard?
 - **[UX · Scenes] Pixel density of the cargo and the effects** (found 2026-11-13, by /game-design). The cargo images show at half their size, with fine pixels. The effects show at 3 times their size, with large pixels. Check with `task shots` and players that the two look good together.
+- **[Balance · Data] The 24 new freight** (found 2026-11-13, by /game-design). The themes medical, contraband, weapons, robots, and Earth relics added 24 freight and 21 contracts. Check in the next playtest: is the Black Market pay (about 1.5 times) worth the risk, and is the Mech Suit (heavy, Thruster, a square) a wall that is always best?
+- **[Spec · Rules] Remove the sectors** (found 2026-11-13, by the user). The user may remove the sector concept later. The sectors now set the contracts, the kit pools, the hazard steps, and the tolls (SPEC Sections 14 to 19). Discuss it with /game-design first.
 
 ## To Do
 
