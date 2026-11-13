@@ -3,7 +3,7 @@ extends Control
 ## The picture of a How to Play page (SPEC Section 23.2): a small hold drawn with
 ## CargoDraw. The pictures are examples only. Their numbers come from the view.
 
-const CELL := 56.0
+const CELL := 84.0
 const COLUMNS := 6
 const ROWS := 3
 const FORCE_TEXT := "{weight} × {cells} = {force}"

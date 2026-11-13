@@ -11,30 +11,24 @@ const BACK_TEXT := "Back"
 const CLOSE_TEXT := "Close"
 const PAGE_1_TEXT := """[b]Contracts and the hold[/b]
 
-Accept contracts at the station. Their freight goes to the dock.
-Drag each cargo into the hold, or click it to pick it up and click again to drop it.
-A green preview fits, a red one does not.
-Right click or press R to rotate a cargo. A rotation that does not fit moves the cargo 1 cell."""
+• Accept contracts. Their freight goes to the dock.
+• Drag a cargo into the hold, or click it and then click a cell.
+• Right click or R rotates it. Green fits, red does not."""
 const PAGE_2_TEXT := """[b]The warp[/b]
 
-The hazard panel shows each shift step of the next jump, in order.
-In each step, all cargo slides in that direction until a wall or a stopped cargo blocks it.
-Force = weight × cells that it slid. Light {light}, standard {standard}, heavy {heavy}.
-A cargo that does not slide makes no hit, but a cargo at the front wall takes a jolt: force = its weight.
-From sector 2, the last step is a fork: one of two directions. You see which one only at the warp."""
+• Each shift step slides all cargo to a wall or a stopped cargo.
+• Force = weight × cells slid. Light {light}, standard {standard}, heavy {heavy}.
+• Cargo at the front wall takes a jolt. From sector 2, the last step is a fork."""
 const PAGE_3_TEXT := """[b]Traits and reactions[/b]
 
-Fragile breaks at force {fragile}. Volatile explodes at force {volatile} and breaks the cargo around it.
-Fluid leaks at force {fluid} and shorts each Electronic cargo next to it.
-Broken cargo becomes scrap. Scrap stays in the hold and takes space."""
-const PAGE_4_TEXT := """[b]Links, clamps, the shop, and tolls[/b]
+• Fragile breaks at force {fragile}. Broken cargo becomes scrap and stays.
+• Volatile explodes at force {volatile} and breaks the cargo around it.
+• Fluid leaks at force {fluid} and shorts the Electronic cargo next to it."""
+const PAGE_4_TEXT := """[b]Links, the shop, and tolls[/b]
 
-Perishable cargo needs a Cooler next to it at the arrival.
-A Shield next to a Battery protects the cargo next to it from one reaction.
-A clamp stops a cargo from sliding. Buy kit, clamps, and a bigger hold in the shop.
-Mass = weight × cells. Over the mass limit, the warp costs a fuel fee. Reinforce the hull to carry more.
-A Sensor in the hold shows the direction of the fork step.
-Pay the toll at the end of each sector, or the run ends."""
+• Perishable needs a Cooler next to it. A Shield next to a Battery stops one reaction.
+• Clamps stop a slide. Over the mass limit, the warp costs a fuel fee.
+• Pay the toll at the end of each sector, or the run ends."""
 const PAGES: Array[String] = [PAGE_1_TEXT, PAGE_2_TEXT, PAGE_3_TEXT, PAGE_4_TEXT]
 
 var _page := 0
@@ -58,7 +52,7 @@ func _build() -> void:
 	_text = RichTextLabel.new()
 	_text.bbcode_enabled = true
 	_text.fit_content = true
-	_text.custom_minimum_size.y = 260
+	_text.custom_minimum_size.y = 200
 	_text.add_theme_font_size_override("normal_font_size", 22)
 	_text.add_theme_font_size_override("bold_font_size", 26)
 	box.add_child(_text)

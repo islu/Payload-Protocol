@@ -29,6 +29,18 @@ func _run() -> void:
 	await _check_hints()
 	for sound in Sound.NAMES:
 		_check(Sound.exists(sound), "the sound %s has a file (SPEC Section 4.3)" % sound)
+	_check(
+		(
+			[CargoDraw.border_width(1), CargoDraw.border_width(2), CargoDraw.border_width(3)]
+			== [2.0, 3.0, 5.0]
+		),
+		"the border shows the weight: 2, 3, and 5 pixels (SPEC Section 4.2)"
+	)
+	for face in PilotFace.SHEETS:
+		_check(
+			not FxSheets.sheet(face).is_empty(),
+			"the portrait %s has a sheet (SPEC Section 22)" % face
+		)
 	for fx in FxLayer.NAMES:
 		var sheet := FxSheets.sheet(fx)
 		_check(
@@ -70,6 +82,17 @@ func _play_run(main: Control) -> void:
 	var new_run: Button = main.screen().find_child("NewRunButton", true, false)
 	_check(new_run != null, "the title shows first (SPEC Section 20.1)")
 	await get_tree().process_frame
+	var title_hold: TitleHold = main.screen().find_child("TitleHold", true, false)
+	_check(
+		title_hold != null and title_hold.cells().size() >= 4,
+		"a small hold with cargo is behind the title (SPEC Section 20.1)"
+	)
+	if title_hold != null:
+		var before := title_hold.cells()
+		await get_tree().create_timer(3.0).timeout
+		_check(
+			title_hold.cells() != before, "the cargo behind the title slides (SPEC Section 20.1)"
+		)
 	var mid := new_run.get_global_rect().get_center()
 	var screen := get_viewport().get_visible_rect().size
 	_check(
@@ -121,6 +144,21 @@ func _check_hints() -> void:
 	GameState.accept_contract(0)
 	await get_tree().process_frame
 	_check(text.call().contains(Hints.text(Hints.DRAG)), "then: drag a cargo (SPEC Section 23.3)")
+	_check(station._pilot_label.visible_ratio < 1.0, "a new line types out (SPEC Section 22)")
+	_check(
+		not (
+			station
+			. find_children("*", "", true, false)
+			. filter(func(n: Node) -> bool: return n is PilotFace)
+			. is_empty()
+		),
+		"the pilot box shows the portrait (SPEC Section 22)"
+	)
+	await get_tree().create_timer(3.0).timeout
+	_check(
+		is_equal_approx(station._pilot_label.visible_ratio, 1.0),
+		"the line ends typed out (SPEC Section 22)"
+	)
 	var run: Dictionary = GameState.view()["run"]
 	var placed := false
 	for y in run["hold"]["rows"]:
@@ -219,6 +257,11 @@ func _check_overlays(main: Control) -> void:
 	pause.add_child(SettingsPanel.new())
 	var help := HowToPlay.new()
 	pause.add_child(help)
+	for page in HowToPlay.PAGES:
+		var points := Array(tr(page).split("\n")).filter(
+			func(line: String) -> bool: return line.begins_with("•")
+		)
+		_check(points.size() == 3, "a page of How to Play has 3 points (SPEC Section 23.2)")
 	await get_tree().process_frame
 	for i in 4:
 		help._show(i)

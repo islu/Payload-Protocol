@@ -15,6 +15,8 @@ const MIN_CELL := 84.0
 const MAX_CELL := 128.0
 ## The free space around the grid, in cells: the marks of the front wall are there.
 const MARGIN := 0.8
+## The width of the frame around the grid, in pixels.
+const FRAME := 14.0
 
 ## The size of a cell in pixels now.
 var cell := MIN_CELL
@@ -147,12 +149,7 @@ func _first_cell_offset(c: Dictionary) -> Vector2:
 
 func _draw() -> void:
 	var o := grid_origin()
-	draw_rect(
-		Rect2(o - Vector2(6, 6), Vector2(columns, rows) * cell + Vector2(12, 12)),
-		Palette.PANEL_LINE,
-		false,
-		3.0
-	)
+	_draw_frame(o)
 	for y in rows:
 		for x in columns:
 			var r := Rect2(o + Vector2(x, y) * cell, Vector2(cell, cell))
@@ -240,6 +237,27 @@ func _center(c: Dictionary) -> Vector2:
 
 
 ## Draws the front wall of the first shift step as a dashed line with arrows (SPEC Section 12.3).
+## Draws the frame of the hold: metal plates with a rivet at each cell line (SPEC Section 4.2).
+func _draw_frame(o: Vector2) -> void:
+	var grid := Rect2(o, Vector2(columns, rows) * cell)
+	var outer := grid.grow(FRAME)
+	draw_rect(outer, Palette.PANEL_LINE.darkened(0.35))
+	draw_rect(outer, Palette.PANEL_LINE, false, 2.0)
+	draw_rect(grid.grow(2), Palette.BACKGROUND)
+	var rivet := Palette.PANEL_LINE.lightened(0.25)
+	var mid := FRAME / 2.0
+	for x in columns + 1:
+		var px := o.x + x * cell
+		draw_circle(Vector2(px, grid.position.y - mid), 2.5, rivet)
+		draw_circle(Vector2(px, grid.end.y + mid), 2.5, rivet)
+	for y in rows + 1:
+		var py := o.y + y * cell
+		draw_circle(Vector2(grid.position.x - mid, py), 2.5, rivet)
+		draw_circle(Vector2(grid.end.x + mid, py), 2.5, rivet)
+
+
+## Draws the front wall: a band of yellow and black stripes on the frame, and
+## arrows out of it (SPEC Section 12.3).
 func _draw_front_wall(o: Vector2) -> void:
 	if front_wall == "":
 		return
@@ -258,15 +276,49 @@ func _draw_front_wall(o: Vector2) -> void:
 		Defs.DIR_DOWN:
 			a = o + Vector2(0, h)
 			b = o + Vector2(w, h)
-	var out := Vector2(Defs.delta(front_wall)) * 10.0
-	draw_dashed_line(a + out, b + out, Palette.WARN, 4.0, 14.0)
+	var dir := Vector2(Defs.delta(front_wall))
+	_draw_stripes(a, b, dir)
 	for k in 3:
-		var p := a.lerp(b, (k + 1) / 4.0) + out * 2.0
+		var p := a.lerp(b, (k + 1) / 4.0) + dir * (FRAME + 14.0)
 		var d := Vector2(Defs.delta(front_wall)) * 10.0
 		var side := Vector2(-d.y, d.x)
 		draw_colored_polygon(
 			PackedVector2Array([p + d, p - d * 0.3 + side, p - d * 0.3 - side]), Palette.WARN
 		)
+
+
+## Draws stripes on the frame band from a to b. dir points out of the hold.
+func _draw_stripes(a: Vector2, b: Vector2, dir: Vector2) -> void:
+	var along := (b - a).normalized()
+	var length := a.distance_to(b)
+	var inner := a + dir * 2.0
+	var depth := dir * (FRAME - 2.0)
+	draw_colored_polygon(
+		PackedVector2Array(
+			[inner, inner + along * length, inner + along * length + depth, inner + depth]
+		),
+		Palette.BACKGROUND
+	)
+	var step := 16.0
+	var t := 0.0
+	while t < length:
+		var t0 := t
+		var t1 := minf(t + step / 2.0, length)
+		# A slanted stripe: its outer edge is a half step further along.
+		var s0 := minf(t0 + step / 2.0, length)
+		var s1 := minf(t1 + step / 2.0, length)
+		draw_colored_polygon(
+			PackedVector2Array(
+				[
+					inner + along * t0,
+					inner + along * t1,
+					inner + along * s1 + depth,
+					inner + along * s0 + depth
+				]
+			),
+			Palette.WARN
+		)
+		t += step
 
 
 ## Draws the jolt warning on a cargo: the wall jolt would make it react (SPEC Section 12.3).

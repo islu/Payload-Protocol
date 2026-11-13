@@ -164,6 +164,11 @@ func _title() -> Control:
 	var root := Control.new()
 	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	root.add_child(Starfield.new())
+	# The small hold behind the title shows the idea of the game (SPEC Section 20.1).
+	var title_hold := TitleHold.new()
+	title_hold.name = "TitleHold"
+	title_hold.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	root.add_child(title_hold)
 	# A CenterContainer keeps the box in the center at each window size.
 	var center := CenterContainer.new()
 	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)

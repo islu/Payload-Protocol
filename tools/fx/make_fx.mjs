@@ -30,8 +30,8 @@ for (const [name, e] of Object.entries(list)) {
   const from = Math.round((e.start ?? 0) * r.fps);
   const to = Math.min(r.n, from + Math.round((e.seconds ?? fx.meta.duration) * r.fps));
   const frames = r.frames.slice(from, to);
-  // The last quarter fades out, so that a cut animation does not stop at once.
-  const fadeFrom = Math.floor(frames.length * 0.75);
+  // The last quarter fades out, so that a cut animation does not stop at once. A loop does not fade.
+  const fadeFrom = fx.meta.loop ? frames.length : Math.floor(frames.length * 0.75);
   frames.forEach((f, i) => {
     if (i < fadeFrom) return;
     const k = 1 - (i - fadeFrom + 1) / (frames.length - fadeFrom);
@@ -46,6 +46,7 @@ for (const [name, e] of Object.entries(list)) {
     columns: meta.columns,
     pivot: e.pivot ?? meta.pivot,
     scale: e.scale ?? 1,
+    loop: fx.meta.loop,
   };
   writeFileSync(join(out, `${name}.png`), sheet.png);
   writeFileSync(join(out, `${name}.json`), JSON.stringify(info, null, "\t") + "\n");

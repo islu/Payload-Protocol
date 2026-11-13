@@ -44,6 +44,8 @@ const FUEL_TEXT := "Fuel fee {fee}"
 const OVER_MAX_TEXT := "Too heavy: {max} at most"
 const REINFORCE_TEXT := "Reinforce hull +{amount} ({price} cr)"
 const OR_TEXT := "or"
+## The characters of a pilot line that type out in each second (SPEC Section 22).
+const TYPE_SPEED := 40.0
 const ARROWS := {Defs.DIR_LEFT: "←", Defs.DIR_RIGHT: "→", Defs.DIR_UP: "↑", Defs.DIR_DOWN: "↓"}
 const CONTRACT_MASS_TEXT := "Mass {mass}"
 const TIP_MASS_TEXT := "Mass {mass}"
@@ -79,6 +81,8 @@ var _sell_area: PanelContainer
 var _sell_label: Label
 var _warp_button: Button
 var _pilot_label: Label
+var _pilot_face: PilotFace
+var _type_tween: Tween
 var _tip: PanelContainer
 var _tip_label: RichTextLabel
 var _toast: Label
@@ -149,9 +153,15 @@ func _build() -> void:
 	_contracts_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_contracts_box.add_theme_constant_override("separation", 10)
 	scroll.add_child(_contracts_box)
-	var pilot := _panel(left)
+	var pilot := HBoxContainer.new()
+	pilot.add_theme_constant_override("separation", 12)
+	_panel(left).add_child(pilot)
+	_pilot_face = PilotFace.new()
+	pilot.add_child(_pilot_face)
 	_pilot_label = _label(pilot, "", TextSize.BODY, Palette.ACCENT)
 	_pilot_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_pilot_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_pilot_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 
 	var center := VBoxContainer.new()
 	center.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -302,13 +312,29 @@ func refresh() -> void:
 ## Shows the hint of the first runs in the pilot box, or the line of the pilot (SPEC Section 23.3).
 func _show_pilot() -> void:
 	var hint := Hints.current(_run)
+	var text := ""
 	if hint == "":
-		_pilot_label.text = GameText.PILOT_NAME + ": " + tr(_run["line"])
+		text = GameText.PILOT_NAME + ": " + tr(_run["line"])
 		_pilot_label.add_theme_color_override("font_color", Palette.ACCENT)
 	else:
-		_pilot_label.text = GameText.PILOT_NAME + " ▸ " + tr(Hints.text(hint))
+		text = GameText.PILOT_NAME + " ▸ " + tr(Hints.text(hint))
 		_pilot_label.add_theme_color_override("font_color", Palette.WARN)
+	if text != _pilot_label.text:
+		_pilot_label.text = text
+		_type_line()
 	_hazard_box.modulate = Color(1.4, 1.4, 1.4) if hint == Hints.HAZARD else Color.WHITE
+
+
+## Types out the line of the pilot, and moves the mouth of the portrait (SPEC Section 22).
+func _type_line() -> void:
+	if _type_tween != null:
+		_type_tween.kill()
+	_pilot_label.visible_ratio = 0.0
+	_pilot_face.talking = true
+	var seconds := _pilot_label.get_total_character_count() / TYPE_SPEED
+	_type_tween = create_tween()
+	_type_tween.tween_property(_pilot_label, "visible_ratio", 1.0, seconds)
+	_type_tween.tween_callback(func() -> void: _pilot_face.talking = false)
 
 
 func _count_credits(target: int) -> void:

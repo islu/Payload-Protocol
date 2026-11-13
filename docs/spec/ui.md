@@ -8,6 +8,7 @@ This file is part of the [game specification](../spec.md). The section numbers a
 
 - The title screen has these buttons: New Run, How to Play, Settings, and Quit.
 - The background shows a starfield that moves slowly.
+- Behind the title, a faint small hold shows the idea of the game: every 2.5 seconds, its cargo slides in a random direction and hits.
 
 ### 20.2 Station
 
@@ -97,7 +98,8 @@ The station screen has these areas:
 
 ## 22. The Pilot
 
-- The pilot is the AI of the ship. Its name is **MAGELLAN**. The name does not change with the language. The pilot box shows its icon and one line.
+- The pilot is the AI of the ship. Its name is **MAGELLAN**. The name does not change with the language. The pilot box shows its pixel art portrait and one line.
+- The portrait blinks. A new line types out at 40 characters each second, and the mouth of the portrait moves while it types.
 - The pilot speaks at these events:
   - The station opens: a line about the hazard.
   - The arrival: a line about the result (all intact, a break, an explosion, a chain of explosions, a leak, a spoil).
@@ -117,7 +119,7 @@ The station screen has these areas:
 
 ### 23.2 How to Play
 
-- How to Play has 4 pages with a picture on each page:
+- How to Play has 4 pages. Each page has a large picture and 3 short points:
   1. Contracts and the hold: accept, drag, and rotate.
   2. The warp: the slide, distance, weight, and force.
   3. Traits and reactions.

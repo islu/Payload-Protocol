@@ -23,7 +23,9 @@ static func draw(
 			r.position + Vector2(gap, gap), r.size - Vector2(gap + grow_r, gap + grow_b)
 		)
 		canvas.draw_rect(body, color.darkened(0.55))
-		canvas.draw_rect(body, color, false, 2.0)
+		# A thicker border is a heavier cargo (SPEC Section 4.2).
+		var line := minf(border_width(cargo.get("weight_value", 1)), cell * 0.08)
+		canvas.draw_rect(body.grow(-line / 2.0), color, false, line)
 	if cargo.get("kind", "") == Defs.KIND_SCRAP:
 		_draw_cracks(canvas, cells, origin, cell, color)
 	var first := _first_cell(cells)
@@ -38,13 +40,26 @@ static func draw(
 		mark_color.a *= alpha
 		draw_icon(canvas, t, Vector2(x, top_left.y + gap + 4 + icon / 2), icon, mark_color)
 		x += icon + 4
-	# The weight: one dot for each weight value (SPEC Section 6.1).
+	# The weight: one dot for each weight value, on a dark disc (SPEC Sections 4.2 and 6.1).
 	var dots: int = cargo.get("weight_value", 0)
+	# The dots grow with the cell, so that a small chip has small dots.
+	var r := clampf(cell * 0.045, 1.5, 5.0)
 	for i in dots:
-		var p := top_left + Vector2(cell - gap - 8 - i * 9, cell - gap - 8)
-		canvas.draw_circle(p, 3.0, Color(Palette.TEXT, alpha))
+		var p := top_left + Vector2(cell - gap - r * 2.6 - i * r * 2.8, cell - gap - r * 2.6)
+		canvas.draw_circle(p, r * 1.5, Color(Palette.BACKGROUND, 0.8 * alpha))
+		canvas.draw_circle(p, r, Color(Palette.TEXT, alpha))
 	if cargo.get("clamped", false):
 		canvas.draw_rect(clamp_rect(top_left, cell), Color(Palette.CLAMP, alpha))
+
+
+## Returns the width of the border of a cargo for its weight value (SPEC Section 4.2).
+static func border_width(weight_value: int) -> float:
+	match weight_value:
+		1:
+			return 2.0
+		2:
+			return 3.0
+	return 5.0
 
 
 ## Draws the icon of a trait in a square of a size at a center.
