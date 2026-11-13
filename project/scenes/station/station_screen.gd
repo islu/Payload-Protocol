@@ -288,10 +288,10 @@ func refresh() -> void:
 func _show_pilot() -> void:
 	var hint := Hints.current(_run)
 	if hint == "":
-		_pilot_label.text = "PIP: " + tr(_run["line"])
+		_pilot_label.text = GameText.PILOT_NAME + ": " + tr(_run["line"])
 		_pilot_label.add_theme_color_override("font_color", Palette.ACCENT)
 	else:
-		_pilot_label.text = "PIP ▸ " + tr(Hints.text(hint))
+		_pilot_label.text = GameText.PILOT_NAME + " ▸ " + tr(Hints.text(hint))
 		_pilot_label.add_theme_color_override("font_color", Palette.WARN)
 	_hazard_box.modulate = Color(1.4, 1.4, 1.4) if hint == Hints.HAZARD else Color.WHITE
 

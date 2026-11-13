@@ -200,7 +200,7 @@ func _render(run: Run) -> void:
 		over = " · fuel fee %d at the warp" % m["fee"]
 	_say("Mass %d/%d (max %d)%s" % [m["hold"], m["limit"], m["max"], over])
 	if v["line"] != "":
-		_say("PIP: " + v["line"])
+		_say(GameText.PILOT_NAME + ": " + v["line"])
 	match v["phase"]:
 		Defs.PHASE_STATION:
 			_render_station(run, v)

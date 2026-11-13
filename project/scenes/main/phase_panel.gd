@@ -78,7 +78,7 @@ func refresh() -> void:
 			_add_button(NEW_RUN_TEXT, _new_run)
 			_add_button(TITLE_BUTTON_TEXT, func() -> void: GameState.abandon_run())
 	lines.append("")
-	lines.append("PIP: " + tr(run["line"]))
+	lines.append(GameText.PILOT_NAME + ": " + tr(run["line"]))
 	_body.text = "\n".join(lines)
 
 

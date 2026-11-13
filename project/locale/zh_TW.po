@@ -746,6 +746,10 @@ msgstr "我數了爆炸次數。後來不數了。再後來我用二進位哭了
 msgid "Fireworks! Nobody ordered fireworks. We delivered them anyway."
 msgstr "煙火！沒人訂煙火，但我們還是送到了。"
 
+#: project/data/lines/chain.json
+msgid "I was named after an explorer, not after a fireworks show."
+msgstr "我是以探險家命名的，不是以煙火秀。"
+
 #: project/data/lines/empty.json
 msgid "We flew with nothing. Very safe. Very poor."
 msgstr "我們空著飛。很安全，也很窮。"
@@ -761,6 +765,10 @@ msgstr "我很享受這趟安靜的跳躍。銀行不這麼想。"
 #: project/data/lines/empty.json
 msgid "No cargo, no damage, no credits. Perfect balance."
 msgstr "沒貨、沒損傷、沒收入。完美的平衡。"
+
+#: project/data/lines/empty.json
+msgid "Magellan crossed the world for spices. You cross it with an empty hold."
+msgstr "麥哲倫為了香料環遊世界。你帶著空貨艙環遊世界。"
 
 #: project/data/lines/explosion.json
 msgid "One explosion. Small. Mostly. Please stop the fire."
@@ -798,6 +806,10 @@ msgstr "今天的跳躍很顛簸。跟每天一樣。塞緊一點。"
 msgid "Navigation says: hold on. Cargo says nothing. Cargo never listens."
 msgstr "導航說：抓穩。貨物什麼都沒說。貨物從來不聽話。"
 
+#: project/data/lines/hazard.json
+msgid "My namesake called an ocean 'peaceful'. This jump is not that ocean."
+msgstr "我的同名前輩替一片海取名叫「太平」。這次跳躍可一點都不太平。"
+
 #: project/data/lines/leak.json
 msgid "Something leaked. Something else sparked. Do not lick the floor."
 msgstr "有東西漏了，又有東西冒火花。不要舔地板。"
@@ -829,6 +841,10 @@ msgstr "沒錢了。我要開始賣你的椅子了。"
 #: project/data/lines/lose.json
 msgid "Run over. Next time, maybe fewer explosions."
 msgstr "航程結束。下次也許少炸一點。"
+
+#: project/data/lines/lose.json
+msgid "The first Magellan did not finish his trip either. You are in good company."
+msgstr "初代麥哲倫也沒跑完全程。你並不孤單。"
 
 #: project/data/lines/spoil.json
 msgid "The food went bad. The smell is now a crew member."
@@ -862,6 +878,10 @@ msgstr "繳費時間。拜託告訴我錢夠。"
 msgid "The gate is open. Our wallet is about to be too."
 msgstr "閘門開了。我們的錢包也快被打開了。"
 
+#: project/data/lines/toll.json
+msgid "My namesake paid for his voyage with his life. You only pay credits."
+msgstr "我的同名前輩用性命付了航程。你只需要付錢。"
+
 #: project/data/lines/win.json
 msgid "We made it. All three sectors. I am framing this log."
 msgstr "我們辦到了，三個星區全部通過。我要把這份紀錄裱框。"
@@ -877,6 +897,10 @@ msgstr "航程完成。貨物活下來了，大部分。幹得好。"
 #: project/data/lines/win.json
 msgid "We won. I will tell the other ships. They will not believe me."
 msgstr "我們贏了。我會告訴其他飛船，它們不會相信的。"
+
+#: project/data/lines/win.json
+msgid "Full circle, and the captain is alive. That is more than my namesake managed."
+msgstr "繞了一整圈，船長還活著。這點我的同名前輩可沒做到。"
 
 #: project/data/terms.json
 msgid "All Intact"

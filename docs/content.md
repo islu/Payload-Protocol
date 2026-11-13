@@ -67,6 +67,6 @@ The first content has 14 freight and 6 kit. The data files set the shapes and th
 
 ## Pilot Lines
 
-- PIP is calm, dry, and a little rude. It never blames itself.
+- MAGELLAN is calm, dry, and a little rude. It never blames itself.
 - Each event has 4 lines at least.
 - Write each line in English first. Then add the zh-TW translation.

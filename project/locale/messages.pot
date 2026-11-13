@@ -713,6 +713,10 @@ msgstr ""
 msgid "Fireworks! Nobody ordered fireworks. We delivered them anyway."
 msgstr ""
 
+#: project/data/lines/chain.json
+msgid "I was named after an explorer, not after a fireworks show."
+msgstr ""
+
 #: project/data/lines/empty.json
 msgid "We flew with nothing. Very safe. Very poor."
 msgstr ""
@@ -727,6 +731,10 @@ msgstr ""
 
 #: project/data/lines/empty.json
 msgid "No cargo, no damage, no credits. Perfect balance."
+msgstr ""
+
+#: project/data/lines/empty.json
+msgid "Magellan crossed the world for spices. You cross it with an empty hold."
 msgstr ""
 
 #: project/data/lines/explosion.json
@@ -765,6 +773,10 @@ msgstr ""
 msgid "Navigation says: hold on. Cargo says nothing. Cargo never listens."
 msgstr ""
 
+#: project/data/lines/hazard.json
+msgid "My namesake called an ocean 'peaceful'. This jump is not that ocean."
+msgstr ""
+
 #: project/data/lines/leak.json
 msgid "Something leaked. Something else sparked. Do not lick the floor."
 msgstr ""
@@ -795,6 +807,10 @@ msgstr ""
 
 #: project/data/lines/lose.json
 msgid "Run over. Next time, maybe fewer explosions."
+msgstr ""
+
+#: project/data/lines/lose.json
+msgid "The first Magellan did not finish his trip either. You are in good company."
 msgstr ""
 
 #: project/data/lines/spoil.json
@@ -829,6 +845,10 @@ msgstr ""
 msgid "The gate is open. Our wallet is about to be too."
 msgstr ""
 
+#: project/data/lines/toll.json
+msgid "My namesake paid for his voyage with his life. You only pay credits."
+msgstr ""
+
 #: project/data/lines/win.json
 msgid "We made it. All three sectors. I am framing this log."
 msgstr ""
@@ -843,6 +863,10 @@ msgstr ""
 
 #: project/data/lines/win.json
 msgid "We won. I will tell the other ships. They will not believe me."
+msgstr ""
+
+#: project/data/lines/win.json
+msgid "Full circle, and the captain is alive. That is more than my namesake managed."
 msgstr ""
 
 #: project/data/terms.json

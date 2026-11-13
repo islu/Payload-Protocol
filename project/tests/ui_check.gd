@@ -127,7 +127,7 @@ func _check_hints() -> void:
 	Hints.done(Hints.WARP)
 	station.refresh()
 	_check(
-		text.call().begins_with("PIP: "),
+		text.call().begins_with("MAGELLAN: "),
 		"after the last hint, the pilot speaks its line (SPEC Section 22)"
 	)
 	for i in Hints.RUNS_WITH_HINTS:

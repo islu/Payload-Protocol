@@ -399,7 +399,7 @@ func _report_lines(run: Dictionary) -> String:
 	lines.append("")
 	lines.append("[b]%s[/b]" % tr(TOTAL_TEXT).format(a))
 	lines.append("")
-	lines.append("PIP: " + tr(run["line"]))
+	lines.append(GameText.PILOT_NAME + ": " + tr(run["line"]))
 	return "\n".join(lines)
 
 

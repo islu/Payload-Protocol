@@ -95,7 +95,7 @@ The station screen has these areas:
 
 ## 22. The Pilot
 
-- The pilot is the AI of the ship. Its name is **PIP**. The pilot box shows its icon and one line.
+- The pilot is the AI of the ship. Its name is **MAGELLAN**. The name does not change with the language. The pilot box shows its icon and one line.
 - The pilot speaks at these events:
   - The station opens: a line about the hazard.
   - The arrival: a line about the result (all intact, a break, an explosion, a chain of explosions, a leak, a spoil).
