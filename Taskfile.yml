@@ -5,6 +5,9 @@ vars:
   PROJECT_PATH: project
   # gdtoolkit in nixpkgs is 3.x (Godot 3 only), so run the 4.x release from PyPI with uvx
   GDTOOLKIT: uvx --from gdtoolkit==4.5.0
+  # pixelfx (MIT) makes the effect sheets. Change the commit on purpose only, then run task fx.
+  PIXELFX_URL: https://github.com/patch-gg/pixelfx
+  PIXELFX_COMMIT: 5294518ce7c72e48b6100a744596e0acf57f2826
 
 tasks:
   default:
@@ -78,6 +81,13 @@ tasks:
     desc: Serve build/web at http://localhost:8060 to check the web build in a browser
     cmds:
       - uv run --no-project python -m http.server 8060 --directory build/web
+
+  fx:
+    desc: Make the effect sheets in project/art/fx from tools/fx/fx.json with pixelfx (Node). Then run task import.
+    cmds:
+      - test -d .local/pixelfx/.git || git clone -q {{.PIXELFX_URL}} .local/pixelfx
+      - git -C .local/pixelfx checkout -q {{.PIXELFX_COMMIT}} || (git -C .local/pixelfx fetch -q && git -C .local/pixelfx checkout -q {{.PIXELFX_COMMIT}})
+      - node tools/fx/make_fx.mjs .local/pixelfx project/art/fx
 
   sfx:
     desc: Make the placeholder sounds in project/audio/sfx (synthesized, no license needed)

@@ -70,7 +70,7 @@ The station screen has these areas:
 
 ### 21.2 Hits
 
-- Each hit shows sparks at the contact edge and the force number above the cargo.
+- Each hit shows a spark flare at the contact edge, in the direction of the slide, and the force number above the cargo.
 - The screen shakes. A larger force makes a larger shake. A setting turns the shake off (Section 23.1).
 - A hit with a force of 0 plays a soft sound. A hit with a force of 1 or more plays a metal hit sound. A larger force plays a louder sound.
 
@@ -78,18 +78,18 @@ The station screen has these areas:
 
 | Reaction | Visual | Sound |
 | --- | --- | --- |
-| Break | Shards fly. The cargo turns gray with cracks. | Glass break |
-| Explosion | A white flash, a ring of fire on the blast area, a large shake, and a hit stop of 0.1 seconds. | Explosion |
-| Leak | Liquid spreads to the cells next to the cargo. | Splash |
-| Short | Electric sparks on the cargo. | Electric buzz |
-| Spoil | A green cloud at the arrival. | Squelch |
-| Shield | A blue bubble on the protected cargo. | Shield hum |
+| Break | Glass shards fly out from the cargo. The cargo turns gray with cracks. | Glass break |
+| Explosion | A white flash, a fire blast with smoke, a glow on the blast area, a large shake, and a hit stop of 0.1 seconds. | Explosion |
+| Leak | A splash of liquid on the cargo. | Splash |
+| Short | A bolt of electricity hits the cargo. | Electric buzz |
+| Spoil | A green cloud with bubbles at the arrival. | Squelch |
+| Shield | A dome of force on the protected cargo takes the hit. | Shield hum |
 
 - Reactions of one chain play one after the other, 0.15 seconds apart, so that the player can see the chain.
 
 ### 21.4 Station
 
-- A purchase plays a coin sound. A sale and a delivery play a coin sound too.
+- A purchase plays a coin sound. A sale and a delivery play a coin sound too. Each coin sound shows a gold sparkle at the credits.
 - The credits count up or down in the top bar.
 - The link lines glow and move slowly.
 

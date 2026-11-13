@@ -2,7 +2,8 @@
   "packages": [
     "go-task@3.53.1",
     "uv@0.12.5",
-    "coreutils@9.11"
+    "coreutils@9.11",
+    "nodejs@26.10.0"
   ],
   "env": {
     "DEVBOX_SHELL_ENABLED":  "1",

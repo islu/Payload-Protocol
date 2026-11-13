@@ -45,6 +45,12 @@ This file keeps each problem that is found and not fixed yet. Each item is in on
                         Fix then: set the tolls from the income that the playtest measures.
 - **[UX · Scenes] Small issues from round 2** (found 2026-11-12, by /playtest round 2). The station does not mark a fork step that a Sensor shows. The end screen of the text player still shows "toll 350 after 1 jump(s)". The text player does not show the Reinforce hull price.
 
+- **[UX · Scenes] Shaders for the effects** (found 2026-11-13, by Claude). The pixelfx sheets are flat sprites. Three options can make them stronger:
+  (a) Light with additive blend: `make_fx.mjs` exports the light buffer of pixelfx as a second sheet, and `FxLayer` draws it with `BLEND_MODE_ADD`. Low cost. The best first step.
+  (b) A palette swap shader: one gray sheet, colored by the trait of the cargo. Fewer files.
+  (c) Screen space: a shock wave ring at an explosion (`hint_screen_texture`), and a short color split on a heavy hit. The largest effect on the show (SPEC Section 1.1).
+  To decide             Options: do (a), (c), or (b), in any order, or none. Each needs a line in SPEC Section 21.
+
 ## To Do
 
 - **[Docs · Docs] A README for players** (found 2026-11-12, by the first plan). The itch.io page needs a short text for players: how to start, the controls, and where to send feedback.

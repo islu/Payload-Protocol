@@ -115,6 +115,45 @@
         }
       }
     },
+    "nodejs@26.10.0": {
+      "last_modified": "2026-10-05T09:07:57Z",
+      "plugin_version": "0.0.4",
+      "resolved": "github:NixOS/nixpkgs/aa48d347080940b8a2b8d2f48228674e280a3514#nodejs_26",
+      "source": "devbox-search",
+      "version": "26.10.0",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/c9xqn5rlbnvbxxcvx9saqarablxalvx9-nodejs-26.10.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/c9xqn5rlbnvbxxcvx9saqarablxalvx9-nodejs-26.10.0"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/hll7rrhj7iif7k6zn5015bxzhs6vykzg-nodejs-26.10.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/hll7rrhj7iif7k6zn5015bxzhs6vykzg-nodejs-26.10.0"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/b9kyvc9jb7hd97bzp4xhfqqp5ldkga04-nodejs-26.10.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/b9kyvc9jb7hd97bzp4xhfqqp5ldkga04-nodejs-26.10.0"
+        }
+      }
+    },
     "uv@0.12.5": {
       "last_modified": "2026-08-27T07:16:00Z",
       "resolved": "github:NixOS/nixpkgs/c27cdad491a991b11ed731760aa2ef8db0cb0410#uv",

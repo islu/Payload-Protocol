@@ -30,8 +30,8 @@ description: Conventions of the Payload Protocol scenes and UI (project/scenes) 
 | Folder | Content |
 | --- | --- |
 | `scenes/main/` | `main.gd`: the title, the screen of each phase, and Esc for the pause. `PhasePanel`: the toll gate and the run end. `Overlay` (the base of a panel on top), `PauseMenu`, `SettingsPanel`, `HowToPlay`, `TutorialPicture` (the picture of each How to Play page) |
-| `scenes/common/` | `GameState` (autoload), `DataFiles`, `Settings` (`user://settings.cfg`), `Sound` (plays `audio/sfx/<name>`), `Palette` (all colors), `GameText` (`{key, args}` text), `CargoDraw` (draws a cargo), `CargoChip` (a cargo in a list), `Starfield` |
-| `scenes/warp/` | `WarpScreen` (plays the event log, then the arrival report), `FxLayer` (the drawn effects of Section 21) |
+| `scenes/common/` | `GameState` (autoload), `DataFiles`, `Settings` (`user://settings.cfg`), `Sound` (plays `audio/sfx/<name>`), `Palette` (all colors), `GameText` (`{key, args}` text), `CargoDraw` (draws a cargo), `CargoChip` (a cargo in a list), `Starfield`, `FxSheets` (loads `art/fx/<name>`) |
+| `scenes/warp/` | `WarpScreen` (plays the event log, then the arrival report), `FxLayer` (the effects of Section 21: pixel art sheets, force numbers, the blast glow, the flash) |
 | `scenes/station/` | `StationScreen` (the layout, the drag, the drops, the tooltip), `HoldView` (the grid, the cargo, the links, the preview), `DragLayer`, `ClampChip`, `Hints` (the hints of the first runs, SPEC Section 23.3) |
 
 ## 4. The Drag
@@ -51,6 +51,8 @@ description: Conventions of the Payload Protocol scenes and UI (project/scenes) 
 - `WarpScreen` copies `warp.before` and changes the copy with each slide and reaction of the log. It calculates no result.
 - Wait with `_wait(seconds)`. It divides by `speed`, and it stops during the pause menu. Do not use a timer that runs during the pause.
 - Call `Sound.play(self, "<name>")` for each event of Section 21. A new name goes in `Sound.NAMES` and in `tools/sfx/make_sfx.py`. Then run `task sfx`. The UI check fails when a name has no file.
+- Show an effect with a method of `FxLayer`. A new effect goes in `FxLayer.NAMES` and in `tools/fx/fx.json`. Then run `task fx` and `task import`. The UI check fails when a name has no sheet.
+- A new effect: first look for one in pixelfx (`node .local/pixelfx/tools/list.mjs <words>`). If none fits, write it in `tools/fx/effects/payload/` with the pixelfx skill (`.local/pixelfx/skills`). The hold is seen from above: an effect has no floor.
 - A sound from outside the project replaces the placeholder with the same name. Record it in `docs/assets.md`.
 - The shake reads the setting `shake` (SPEC Section 23.1).
 

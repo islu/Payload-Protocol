@@ -277,7 +277,7 @@ func _play_hits(step: Dictionary, d: String) -> void:
 		for cell: Dictionary in h["contact"]:
 			sum += Vector2(cell["x"], cell["y"]) + Vector2(0.5, 0.5) + Vector2(delta) * 0.5
 		var at: Vector2 = _hold.grid_origin() + sum / h["contact"].size() * HoldView.CELL
-		_fx.spark(at, h["force"])
+		_fx.spark(at, Vector2(delta))
 		_fx.number(_hold.cargo_center(c), h["force"])
 		strongest = maxi(strongest, h["force"])
 	if step["hits"].is_empty():
@@ -296,7 +296,7 @@ func _play_reaction(r: Dictionary) -> void:
 	var at := _hold.cargo_center(c)
 	match r["kind"]:
 		Defs.REACT_BREAK, Defs.REACT_BLAST:
-			_fx.shards(at, Palette.cargo_color(c))
+			_fx.shards(at)
 			_to_scrap(c)
 			Sound.play(self, "glass_break")
 		Defs.REACT_LEAK:
@@ -316,7 +316,7 @@ func _play_reaction(r: Dictionary) -> void:
 			Sound.play(self, "explosion")
 			_shake_screen(28.0)
 		Defs.REACT_CLEAR:
-			_fx.shards(at, Palette.SCRAP)
+			_fx.shards(at)
 			_cargo.erase(r["cargo"])
 		Defs.REACT_SHIELD:
 			_fx.bubble(at)
@@ -355,6 +355,7 @@ func _finish(run: Dictionary) -> void:
 			fade.tween_method(func(a: float) -> void: _fade(id, a), 1.0, 0.0, 0.6)
 	if run["arrival"]["total"] != 0:
 		Sound.play(self, "coin")
+		_fx.coin(_report_head.get_global_rect().get_center())
 	_report_text.text = _report_lines(run)
 	_report.visible = true
 	_skip_label.visible = false

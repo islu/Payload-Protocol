@@ -7,7 +7,7 @@ A puzzle game about cargo in a spaceship hold. Pack the freight, warp, and watch
 
 ## Requirements
 
-- [devbox](https://www.jetify.com/devbox). It installs Task and uv at fixed versions.
+- [devbox](https://www.jetify.com/devbox). It installs Task, uv, and Node.js at fixed versions.
 - Godot 4.7 as `godot` on your `PATH`. To use a different binary, set `GODOT=/path/to/godot`.
 
 ## Setup
@@ -32,6 +32,7 @@ To open the project in the Godot Project Manager, import `project/project.godot`
 | `task smoke` | Run the game headless for 5 frames |
 | `task export:web` | Export the web build to `build/web` |
 | `task serve:web` | Serve `build/web` at http://localhost:8060 |
+| `task fx` | Make the effect sheets with pixelfx |
 | `task fmt` | Format the GDScript code |
 | `task lint` | Lint the GDScript code, and check the format |
 | `task check` | Run lint, the tests, and smoke |

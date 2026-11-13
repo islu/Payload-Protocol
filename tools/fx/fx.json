@@ -1,0 +1,17 @@
+{
+	"_comment": "The effects of SPEC Section 21. Each key is the file name in project/art/fx. id: a pixelfx effect, or payload/<name> from tools/fx/effects. start and seconds cut the animation; the last quarter fades out. scale: the size on the screen. pivot: the point of the effect in the frame, when it is not the pixelfx origin.",
+	"hit": {"id": "impacts/hit-spark", "seconds": 0.5, "scale": 2, "pivot": [44, 44]},
+	"break": {"id": "payload/shard-burst", "seconds": 0.9, "scale": 2},
+	"explosion": {"id": "explosions/small-explosion", "seconds": 1.3, "scale": 2},
+	"leak": {"id": "water/splash", "options": {"stone": false}, "start": 0.12, "seconds": 1.2, "scale": 2},
+	"short": {"id": "lightning/zap-hit", "seconds": 0.9, "scale": 2},
+	"shield": {"id": "scifi/force-field", "options": {"radius": 30}, "start": 0.4, "seconds": 0.9, "scale": 2, "pivot": [76, 70]},
+	"spoil": {"id": "payload/spoil-puff", "seconds": 1.4, "scale": 2},
+	"coin": {
+		"id": "pickups/collect-burst",
+		"options": {"palette": ["#1e1206", "#4a2c08", "#86520c", "#c48412", "#f0b424", "#ffe066", "#fff6c4", "#ffffff"]},
+		"seconds": 1.1,
+		"scale": 2,
+		"pivot": [56, 64]
+	}
+}

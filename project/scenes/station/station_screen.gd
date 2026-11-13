@@ -83,6 +83,8 @@ var _tip_label: RichTextLabel
 var _toast: Label
 var _confirm: ConfirmationDialog
 var _drag_layer: DragLayer
+## The gold sparkle of a coin sound (SPEC Section 21.4).
+var _fx: FxLayer
 
 
 func _ready() -> void:
@@ -203,6 +205,9 @@ func _build() -> void:
 
 	_drag_layer = DragLayer.new()
 	add_child(_drag_layer)
+	_fx = FxLayer.new()
+	_fx.hold = _hold
+	add_child(_fx)
 
 	_tip = PanelContainer.new()
 	_tip.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -522,6 +527,8 @@ func _act(err: String, ok_sound := "") -> void:
 		Sound.play(self, "deny")
 	elif ok_sound != "":
 		Sound.play(self, ok_sound)
+		if ok_sound == "coin":
+			_fx.coin(_credits_label.get_global_rect().get_center())
 
 
 func _show_toast(text: String) -> void:

@@ -29,6 +29,12 @@ func _run() -> void:
 	await _check_hints()
 	for sound in Sound.NAMES:
 		_check(Sound.exists(sound), "the sound %s has a file (SPEC Section 4.3)" % sound)
+	for fx in FxLayer.NAMES:
+		var sheet := FxSheets.sheet(fx)
+		_check(
+			not sheet.is_empty() and sheet["frames"] > 0 and sheet["texture"] != null,
+			"the effect %s has a sprite sheet (SPEC Sections 4.2 and 21)" % fx
+		)
 	# Play in each language, so that a translation with a bad placeholder fails here.
 	for locale in Settings.LOCALES:
 		TranslationServer.set_locale(locale)
@@ -155,6 +161,12 @@ func _play_warp(main: Control) -> void:
 	_check(
 		warp.finished and warp._report.visible,
 		"the arrival report shows after the warp (SPEC Section 20.4)"
+	)
+	var hits := 0
+	for step: Dictionary in GameState.view()["run"]["warp"]["steps"]:
+		hits += step["hits"].size()
+	_check(
+		hits == 0 or warp._fx.played.has("hit"), "a hit plays the spark sheet (SPEC Section 21.2)"
 	)
 
 
@@ -333,6 +345,8 @@ func _play_station(state: Node, station: StationScreen) -> void:
 		station._end_drag()
 	station._begin_clamp_drag()
 	station._end_drag()
+	station._act("", "coin")
+	_check(station._fx.played.has("coin"), "a coin sound shows a gold sparkle (SPEC Section 21.4)")
 	_check(
 		station._hold.columns == run["hold"]["columns"],
 		"the hold view has the size of the hold (SPEC Section 5)"
