@@ -2,6 +2,8 @@ class_name DragLayer
 extends Control
 ## Draws the cargo or the clamp that the player drags, at the mouse (SPEC Section 21.1).
 
+## The hold: a dragged cargo has the size of its cells.
+var hold: HoldView
 var _cargo: Dictionary = {}
 var _shape: Array = []
 var _grab := Vector2.ZERO
@@ -41,7 +43,7 @@ func _draw() -> void:
 		return
 	if _cargo.is_empty():
 		return
-	var cell := HoldView.CELL
+	var cell := hold.cell
 	# A lifted cargo: a shadow and a scale of 1.05 (SPEC Section 21.1).
 	var origin := mouse - (_grab + Vector2(0.5, 0.5)) * cell * 1.05
 	CargoDraw.draw(self, {"kind": "scrap"}, _shape, origin + Vector2(8, 10), cell * 1.05, 0.35)

@@ -10,6 +10,9 @@ const NAMES: PackedStringArray = [
 	"hit", "break", "explosion", "leak", "short", "shield", "spoil", "coin"
 ]
 
+## The font size of a force number.
+const NUMBER_SIZE := 56
+
 var hold: HoldView
 var speed := 1.0
 ## The names of the sheets that this layer played. The UI check reads it.
@@ -25,7 +28,8 @@ func _ready() -> void:
 	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 
 
-## A hit at the contact edge. The flare points in the direction of the slide (SPEC Section 21.2).
+## A hit at the contact edge. The direction of the flare is back into the hold
+## (SPEC Section 21.2).
 func spark(at: Vector2, direction: Vector2) -> void:
 	_sheet("hit", at, direction.angle())
 
@@ -34,7 +38,7 @@ func number(at: Vector2, force: int) -> void:
 	var color: Color = (
 		Palette.TEXT_DIM if force == 0 else (Palette.BAD if force >= 3 else Palette.WARN)
 	)
-	_add({"kind": "number", "at": at, "time": 0.9, "color": color, "text": str(force)})
+	_add({"kind": "number", "at": at, "time": 1.1, "color": color, "text": str(force)})
 
 
 func shards(at: Vector2) -> void:
@@ -107,21 +111,18 @@ func _draw() -> void:
 			"number":
 				var color: Color = fx["color"]
 				color.a = 1.0 - k
-				var font := ThemeDB.fallback_font
-				draw_string(
-					font,
-					at + Vector2(-10, -30 - 50 * k),
-					fx["text"],
-					HORIZONTAL_ALIGNMENT_LEFT,
-					-1,
-					34,
-					color
-				)
+				# Large digits with a dark outline, so that they read on each cargo color (SPEC Section 21.2).
+				var font := get_theme_default_font()
+				var pos := at + Vector2(-NUMBER_SIZE * 0.3, -24 - 70 * k)
+				var outline := Color(Palette.BACKGROUND, color.a)
+				var align := HORIZONTAL_ALIGNMENT_LEFT
+				draw_string_outline(font, pos, fx["text"], align, -1, NUMBER_SIZE, 10, outline)
+				draw_string(font, pos, fx["text"], align, -1, NUMBER_SIZE, color)
 			"area":
 				var color: Color = fx["color"]
 				for c: Vector2i in fx["cells"]:
 					var r := Rect2(
-						hold.grid_origin() + Vector2(c) * HoldView.CELL, Vector2.ONE * HoldView.CELL
+						hold.grid_origin() + Vector2(c) * hold.cell, Vector2.ONE * hold.cell
 					)
 					draw_rect(r, Color(color, 0.5 * (1.0 - k)))
 	draw_set_transform_matrix(Transform2D.IDENTITY)

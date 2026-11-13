@@ -35,6 +35,10 @@ func _run() -> void:
 			not sheet.is_empty() and sheet["frames"] > 0 and sheet["texture"] != null,
 			"the effect %s has a sprite sheet (SPEC Sections 4.2 and 21)" % fx
 		)
+		_check(
+			not sheet.is_empty() and is_equal_approx(sheet["scale"], 3.0),
+			"the effect %s plays at 3 times its pixel size (SPEC Section 4.2)" % fx
+		)
 	# Play in each language, so that a translation with a bad placeholder fails here.
 	for locale in Settings.LOCALES:
 		TranslationServer.set_locale(locale)
@@ -173,6 +177,25 @@ func _play_warp(main: Control) -> void:
 	_check(
 		hits == 0 or warp._fx.played.has("hit"), "a hit plays the spark sheet (SPEC Section 21.2)"
 	)
+	await get_tree().process_frame
+	if GameState.view()["run"]["arrival"]["total"] != 0:
+		var report := warp._report.get_global_rect()
+		var inside := false
+		for fx: Dictionary in warp._top_fx._fx:
+			if fx["kind"] == "sheet" and fx["sheet"] == FxSheets.sheet("coin"):
+				inside = report.has_point(warp._top_fx.get_global_transform() * fx["at"])
+		_check(
+			inside and warp._top_fx.get_index() > warp._report.get_index(),
+			"the gold sparkle is on the arrival report, in front of it (SPEC Section 21.4)"
+		)
+	# The hold moves in 0.4 seconds.
+	await get_tree().create_timer(0.7).timeout
+	var hold := warp._hold
+	var grid_right := hold.global_position.x + hold.grid_origin().x + hold.columns * hold.cell
+	_check(
+		grid_right <= warp._report.global_position.x,
+		"the report does not cover the hold (SPEC Section 20.4)"
+	)
 
 
 ## Opens and closes the pause menu, the settings, and How to Play (SPEC Sections 20.7 and 23).
@@ -189,6 +212,33 @@ func _check_overlays(main: Control) -> void:
 	pause.close()
 	await get_tree().process_frame
 	_check(not get_tree().paused, "Resume ends the pause (SPEC Section 20.7)")
+
+
+## The hold fills the center, and the hazard panel is above it (SPEC Section 20.2).
+func _check_layout(station: StationScreen) -> void:
+	var hold := station._hold
+	_check(
+		hold.cell >= 100.0,
+		"the cells grow to fill the center: %s px (SPEC Section 20.2)" % hold.cell
+	)
+	var grid := Rect2(hold.grid_origin(), Vector2(hold.columns, hold.rows) * hold.cell)
+	_check(
+		Rect2(Vector2.ZERO, hold.size).encloses(grid),
+		"the grid fits in the hold (SPEC Section 20.2)"
+	)
+	var panel := station._hazard_box.get_global_rect()
+	var top := hold.global_position.y + grid.position.y
+	_check(
+		station._hazard_box.get_child_count() == GameState.view()["run"]["hazard"].size(),
+		"the hazard panel has one card for each step (SPEC Section 20.2)"
+	)
+	_check(
+		(
+			panel.end.y <= top
+			and absf(panel.get_center().x - hold.get_global_rect().get_center().x) < 2.0
+		),
+		"the hazard panel is above the hold, in the center (SPEC Section 20.2)"
+	)
 
 
 ## Changes the language in the settings of the pause menu, and checks that the
@@ -259,7 +309,7 @@ func _check_chain(station: StationScreen) -> void:
 				var at := (
 					hold.global_position
 					+ hold.grid_origin()
-					+ (Vector2(x, y) + Vector2(0.2, 0.2)) * HoldView.CELL
+					+ (Vector2(x, y) + Vector2(0.2, 0.2)) * hold.cell
 				)
 				station._drop_at(at)
 	var placed: Array = GameState.view()["run"]["cargo"].filter(
@@ -319,6 +369,7 @@ func _play_station(state: Node, station: StationScreen) -> void:
 			state.accept_contract(k["index"])
 			mass += add
 	await get_tree().process_frame
+	_check_layout(station)
 	if not _language_checked:
 		_language_checked = true
 		var main: Control = station.get_parent()

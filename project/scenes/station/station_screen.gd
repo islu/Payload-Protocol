@@ -44,6 +44,7 @@ const FUEL_TEXT := "Fuel fee {fee}"
 const OVER_MAX_TEXT := "Too heavy: {max} at most"
 const REINFORCE_TEXT := "Reinforce hull +{amount} ({price} cr)"
 const OR_TEXT := "or"
+const ARROWS := {Defs.DIR_LEFT: "←", Defs.DIR_RIGHT: "→", Defs.DIR_UP: "↑", Defs.DIR_DOWN: "↓"}
 const CONTRACT_MASS_TEXT := "Mass {mass}"
 const TIP_MASS_TEXT := "Mass {mass}"
 const LOAD_ALL_TEXT := "Load all"
@@ -119,10 +120,6 @@ func _build() -> void:
 	_toll_label = _label(top, "", 22, Palette.TEXT_DIM)
 	_mass_label = _label(top, "", 24, Palette.TEXT)
 
-	_hazard_box = HBoxContainer.new()
-	_hazard_box.add_theme_constant_override("separation", 16)
-	root.add_child(_hazard_box)
-
 	var body := HBoxContainer.new()
 	body.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	body.add_theme_constant_override("separation", 20)
@@ -158,7 +155,15 @@ func _build() -> void:
 
 	var center := VBoxContainer.new()
 	center.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	center.add_theme_constant_override("separation", 8)
 	body.add_child(center)
+	# The hazard panel: one card for each shift step, above the hold (SPEC Section 20.2).
+	var next_jump := _label(center, NEXT_JUMP_TEXT, 20, Palette.WARN)
+	next_jump.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_hazard_box = HBoxContainer.new()
+	_hazard_box.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	_hazard_box.add_theme_constant_override("separation", 14)
+	center.add_child(_hazard_box)
 	_hold = HoldView.new()
 	_hold.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	_hold.cargo_pressed.connect(_on_hold_pressed)
@@ -204,6 +209,7 @@ func _build() -> void:
 	add_child(_confirm)
 
 	_drag_layer = DragLayer.new()
+	_drag_layer.hold = _hold
 	add_child(_drag_layer)
 	_fx = FxLayer.new()
 	_fx.hold = _hold
@@ -337,28 +343,44 @@ func _show_mass() -> void:
 ## that happens when a Sensor is in the hold (SPEC Section 18).
 func _refresh_hazard() -> void:
 	_clear(_hazard_box)
-	_label(_hazard_box, NEXT_JUMP_TEXT, 24, Palette.WARN)
 	var i := 0
 	for step: Dictionary in _run["hazard"]:
-		if i > 0:
-			_label(_hazard_box, "›", 24, Palette.TEXT_DIM)
-		var text := "%d. " % (i + 1)
-		if step["fork"] and step["known"] == "":
-			var names := PackedStringArray()
-			for d: String in step["directions"]:
-				names.append(direction_text(d, _view))
-			text += (" %s " % tr(OR_TEXT)).join(names)
-		else:
-			text += direction_text(step["known"], _view)
-		_label(_hazard_box, text, 28, Palette.BAD if step["fork"] else Palette.WARN)
 		i += 1
+		var color: Color = Palette.BAD if step["fork"] else Palette.WARN
+		var card := _panel(_hazard_box)
+		var style: StyleBoxFlat = card.get_theme_stylebox("panel")
+		style.border_color = color
+		card.custom_minimum_size = Vector2(120, 0)
+		var box := VBoxContainer.new()
+		box.add_theme_constant_override("separation", 0)
+		card.add_child(box)
+		var arrow := ""
+		var names := PackedStringArray()
+		if step["fork"] and step["known"] == "":
+			# A fork step: two directions, and the warp shows which one (SPEC Section 18).
+			for d: String in step["directions"]:
+				arrow += ARROWS.get(d, "?")
+				names.append(direction_name(d, _view))
+			arrow += "?"
+		else:
+			arrow = ARROWS.get(step["known"], "?")
+			names.append(direction_name(step["known"], _view))
+		var big := _label(box, "", 52, color)
+		big.text = arrow
+		big.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		var name_label := _label(box, "", 17, color)
+		name_label.text = "%d · %s" % [i, (" %s " % tr(OR_TEXT)).join(names)]
+		name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 
 
 ## Returns the arrow and the name of a direction.
 static func direction_text(d: String, view: Dictionary) -> String:
-	var arrows := {Defs.DIR_LEFT: "←", Defs.DIR_RIGHT: "→", Defs.DIR_UP: "↑", Defs.DIR_DOWN: "↓"}
-	var name: String = view["names"]["directions"].get(d, d)
-	return "%s %s" % [arrows.get(d, "?"), TranslationServer.translate(name)]
+	return "%s %s" % [ARROWS.get(d, "?"), direction_name(d, view)]
+
+
+## Returns the translated name of a direction.
+static func direction_name(d: String, view: Dictionary) -> String:
+	return TranslationServer.translate(view["names"]["directions"].get(d, d))
 
 
 func _refresh_dock() -> void:

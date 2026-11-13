@@ -27,6 +27,8 @@ const PIECE_STATE_TEXT := {
 	Defs.PIECE_BREACHED: "breached",
 }
 const ARROWS := {Defs.DIR_LEFT: "←", Defs.DIR_RIGHT: "→", Defs.DIR_UP: "↑", Defs.DIR_DOWN: "↓"}
+## The space between the hold and the report, in pixels.
+const REPORT_GAP := 40.0
 ## The cells that a slide moves in each second (SPEC Section 21.1).
 const CELLS_PER_SECOND := 8.0
 ## The time between two reactions of a chain (SPEC Section 21.3).
@@ -42,6 +44,8 @@ var _stars: Starfield
 var _stage: Control
 var _hold: HoldView
 var _fx: FxLayer
+## The effects above the report: the gold sparkle (SPEC Section 21.4).
+var _top_fx: FxLayer
 var _banner: Label
 var _skip_label: Label
 var _report_head: Label
@@ -83,6 +87,8 @@ func _ready() -> void:
 	_skip_label.grow_horizontal = Control.GROW_DIRECTION_BOTH
 	add_child(_skip_label)
 	_build_report()
+	_top_fx = FxLayer.new()
+	add_child(_top_fx)
 	_view = GameState.view()
 	_play.call_deferred()
 
@@ -276,8 +282,8 @@ func _play_hits(step: Dictionary, d: String) -> void:
 		var sum := Vector2.ZERO
 		for cell: Dictionary in h["contact"]:
 			sum += Vector2(cell["x"], cell["y"]) + Vector2(0.5, 0.5) + Vector2(delta) * 0.5
-		var at: Vector2 = _hold.grid_origin() + sum / h["contact"].size() * HoldView.CELL
-		_fx.spark(at, Vector2(delta))
+		var at: Vector2 = _hold.grid_origin() + sum / h["contact"].size() * _hold.cell
+		_fx.spark(at, -Vector2(delta))
 		_fx.number(_hold.cargo_center(c), h["force"])
 		strongest = maxi(strongest, h["force"])
 	if step["hits"].is_empty():
@@ -355,14 +361,30 @@ func _finish(run: Dictionary) -> void:
 			fade.tween_method(func(a: float) -> void: _fade(id, a), 1.0, 0.0, 0.6)
 	if run["arrival"]["total"] != 0:
 		Sound.play(self, "coin")
-		_fx.coin(_report_head.get_global_rect().get_center())
+		_coin_on_report.call_deferred()
 	_report_text.text = _report_lines(run)
 	_report.visible = true
+	_make_room_for_report.call_deferred()
 	_skip_label.visible = false
 	_banner.text = ""
 	finished = true
 	_continue.grab_focus()
 	playback_finished.emit()
+
+
+## The report has its place after one frame: the containers sort it then.
+func _coin_on_report() -> void:
+	await get_tree().process_frame
+	_top_fx.coin(_report_head.get_global_rect().get_center())
+
+
+## Moves the hold to the left when the report covers it (SPEC Section 20.4).
+func _make_room_for_report() -> void:
+	await get_tree().process_frame
+	var right := _hold.global_position.x + _hold.grid_origin().x + _hold.columns * _hold.cell
+	var overlap := right + REPORT_GAP - _report.global_position.x
+	if overlap > 0.0:
+		create_tween().tween_property(_hold, "position:x", _hold.position.x - overlap, 0.4)
 
 
 func _fade(id: int, a: float) -> void:

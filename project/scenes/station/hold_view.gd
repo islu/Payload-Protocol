@@ -10,7 +10,14 @@ signal clamp_pressed(id: int)
 ## The mouse is on a cargo, or on no cargo (id -1).
 signal cargo_hovered(id: int)
 
-const CELL := 84.0
+## The size of a cell grows to fill the free space, between these values (SPEC Section 20.2).
+const MIN_CELL := 84.0
+const MAX_CELL := 128.0
+## The free space around the grid, in cells: the marks of the front wall are there.
+const MARGIN := 0.8
+
+## The size of a cell in pixels now.
+var cell := MIN_CELL
 
 var columns := 6
 var rows := 6
@@ -43,43 +50,51 @@ func set_view(run: Dictionary) -> void:
 	cargo = run["cargo"]
 	links = run["links"]
 	front_wall = run.get("front_wall", "")
-	custom_minimum_size = Vector2(run["hold"]["max_columns"], run["hold"]["max_rows"]) * CELL
+	custom_minimum_size = Vector2(columns + MARGIN, rows + MARGIN) * MIN_CELL
+	_fit()
+	queue_redraw()
+
+
+## Sets the size of a cell from the size of the view.
+func _fit() -> void:
+	var fit := minf(size.x / (columns + MARGIN), size.y / (rows + MARGIN))
+	cell = clampf(floorf(fit), MIN_CELL, MAX_CELL)
 	queue_redraw()
 
 
 ## Returns the upper left of the grid in local coordinates. The grid is centered.
 func grid_origin() -> Vector2:
-	return ((size - Vector2(columns, rows) * CELL) / 2.0).floor()
+	return ((size - Vector2(columns, rows) * cell) / 2.0).floor()
 
 
 ## Returns the cell at a global position, also outside the grid.
 func cell_at(global_pos: Vector2) -> Vector2i:
 	var local := global_pos - global_position - grid_origin()
-	return Vector2i(floori(local.x / CELL), floori(local.y / CELL))
+	return Vector2i(floori(local.x / cell), floori(local.y / cell))
 
 
 ## Returns the cell of the upper left of a shape when the player holds it at a
 ## global position. The shape snaps to the nearest cell (SPEC Section 8.3).
 func snap_origin(global_pos: Vector2, grab: Vector2) -> Vector2i:
-	var local := global_pos - global_position - grid_origin() - grab * CELL
-	return Vector2i(roundi(local.x / CELL), roundi(local.y / CELL))
+	var local := global_pos - global_position - grid_origin() - grab * cell
+	return Vector2i(roundi(local.x / cell), roundi(local.y / cell))
 
 
 func is_over(global_pos: Vector2) -> bool:
 	return (
-		Rect2(global_position + grid_origin(), Vector2(columns, rows) * CELL)
-		. grow(CELL * 0.5)
+		Rect2(global_position + grid_origin(), Vector2(columns, rows) * cell)
+		. grow(cell * 0.5)
 		. has_point(global_pos)
 	)
 
 
 ## Returns the ID of the cargo in a cell, or -1.
-func cargo_at(cell: Vector2i) -> int:
+func cargo_at(at: Vector2i) -> int:
 	for c: Dictionary in cargo:
 		if not c["in_hold"]:
 			continue
 		for s: Dictionary in c["shape"]:
-			if Vector2i(c["x"] + s["x"], c["y"] + s["y"]) == cell:
+			if Vector2i(c["x"] + s["x"], c["y"] + s["y"]) == at:
 				return c["id"]
 	return -1
 
@@ -91,22 +106,24 @@ func _gui_input(event: InputEvent) -> void:
 			_hover = id
 			cargo_hovered.emit(id)
 	elif event is InputEventMouseButton and event.pressed:
-		var cell := cell_at(get_global_mouse_position())
-		var id := cargo_at(cell)
+		var at := cell_at(get_global_mouse_position())
+		var id := cargo_at(at)
 		if id < 0:
 			return
 		var c := _cargo(id)
-		var top_left := grid_origin() + Vector2(c["x"], c["y"]) * CELL + _first_cell_offset(c)
+		var top_left := grid_origin() + Vector2(c["x"], c["y"]) * cell + _first_cell_offset(c)
 		if c["clamped"] and event.button_index == MOUSE_BUTTON_LEFT:
-			if CargoDraw.clamp_rect(top_left, CELL).grow(4).has_point(get_local_mouse_position()):
+			if CargoDraw.clamp_rect(top_left, cell).grow(4).has_point(get_local_mouse_position()):
 				clamp_pressed.emit(id)
 				accept_event()
 				return
-		cargo_pressed.emit(id, cell - Vector2i(c["x"], c["y"]), event.button_index)
+		cargo_pressed.emit(id, at - Vector2i(c["x"], c["y"]), event.button_index)
 		accept_event()
 
 
 func _notification(what: int) -> void:
+	if what == NOTIFICATION_RESIZED:
+		_fit()
 	if what == NOTIFICATION_MOUSE_EXIT and _hover != -1:
 		_hover = -1
 		cargo_hovered.emit(-1)
@@ -125,30 +142,30 @@ func _first_cell_offset(c: Dictionary) -> Vector2:
 		var v := Vector2i(s["x"], s["y"])
 		if v.y < best.y or (v.y == best.y and v.x < best.x):
 			best = v
-	return Vector2(best) * CELL
+	return Vector2(best) * cell
 
 
 func _draw() -> void:
 	var o := grid_origin()
 	draw_rect(
-		Rect2(o - Vector2(6, 6), Vector2(columns, rows) * CELL + Vector2(12, 12)),
+		Rect2(o - Vector2(6, 6), Vector2(columns, rows) * cell + Vector2(12, 12)),
 		Palette.PANEL_LINE,
 		false,
 		3.0
 	)
 	for y in rows:
 		for x in columns:
-			var r := Rect2(o + Vector2(x, y) * CELL, Vector2(CELL, CELL))
+			var r := Rect2(o + Vector2(x, y) * cell, Vector2(cell, cell))
 			draw_rect(r, Palette.GRID)
 			draw_rect(r, Palette.GRID_LINE, false, 1.0)
 	for z: Dictionary in zone:
-		draw_rect(Rect2(o + Vector2(z["x"], z["y"]) * CELL, Vector2(CELL, CELL)), Palette.ZONE)
+		draw_rect(Rect2(o + Vector2(z["x"], z["y"]) * cell, Vector2(cell, cell)), Palette.ZONE)
 	for c: Dictionary in cargo:
 		if c["in_hold"]:
 			var alpha: float = 0.3 if c["id"] == dragging else fades.get(c["id"], 1.0)
 			var off: Vector2 = offsets.get(c["id"], Vector2.ZERO)
-			var at := o + (Vector2(c["x"], c["y"]) + off) * CELL
-			CargoDraw.draw(self, c, c["shape"], at, CELL, alpha)
+			var at := o + (Vector2(c["x"], c["y"]) + off) * cell
+			CargoDraw.draw(self, c, c["shape"], at, cell, alpha)
 			if c.get("no_cooler", false) or c.get("no_power", false):
 				_draw_warning(at + _first_cell_offset(c))
 			if c.get("jolt_risk", false):
@@ -160,8 +177,8 @@ func _draw() -> void:
 				draw_rect(
 					(
 						Rect2(
-							o + Vector2(c["x"] + s["x"], c["y"] + s["y"]) * CELL,
-							Vector2(CELL, CELL)
+							o + Vector2(c["x"] + s["x"], c["y"] + s["y"]) * cell,
+							Vector2(cell, cell)
 						)
 						. grow(-3)
 					),
@@ -174,8 +191,8 @@ func _draw() -> void:
 	if not preview.is_empty():
 		_draw_preview_links(o)
 		var color: Color = Palette.GOOD if preview["ok"] else Palette.BAD
-		for cell: Vector2i in preview["cells"]:
-			var r := Rect2(o + Vector2(cell) * CELL, Vector2(CELL, CELL)).grow(-2)
+		for p: Vector2i in preview["cells"]:
+			var r := Rect2(o + Vector2(p) * cell, Vector2(cell, cell)).grow(-2)
 			draw_rect(r, Color(color, 0.25))
 			draw_rect(r, color, false, 2.0)
 
@@ -199,9 +216,9 @@ func _draw_links(o: Vector2) -> void:
 ## Draws the links that the drop would make, from the preview cells (SPEC Section 8.3).
 func _draw_preview_links(o: Vector2) -> void:
 	var sum := Vector2.ZERO
-	for cell: Vector2i in preview["cells"]:
-		sum += Vector2(cell) + Vector2(0.5, 0.5)
-	var at: Vector2 = sum / preview["cells"].size() * CELL
+	for p: Vector2i in preview["cells"]:
+		sum += Vector2(p) + Vector2(0.5, 0.5)
+	var at: Vector2 = sum / preview["cells"].size() * cell
 	for l: Dictionary in preview.get("links", []):
 		var other_id: int = l["to"] if l["from"] == preview["id"] else l["from"]
 		var other := _cargo(other_id)
@@ -219,15 +236,15 @@ func _center(c: Dictionary) -> Vector2:
 	var sum := Vector2.ZERO
 	for s: Dictionary in c["shape"]:
 		sum += Vector2(c["x"] + s["x"], c["y"] + s["y"]) + Vector2(0.5, 0.5)
-	return sum / c["shape"].size() * CELL
+	return sum / c["shape"].size() * cell
 
 
 ## Draws the front wall of the first shift step as a dashed line with arrows (SPEC Section 12.3).
 func _draw_front_wall(o: Vector2) -> void:
 	if front_wall == "":
 		return
-	var w := columns * CELL
-	var h := rows * CELL
+	var w := columns * cell
+	var h := rows * cell
 	var a := o
 	var b := o
 	match front_wall:
@@ -254,13 +271,13 @@ func _draw_front_wall(o: Vector2) -> void:
 
 ## Draws the jolt warning on a cargo: the wall jolt would make it react (SPEC Section 12.3).
 func _draw_jolt(top_left: Vector2) -> void:
-	var p := top_left + Vector2(CELL * 0.72, CELL * 0.62)
+	var p := top_left + Vector2(cell * 0.72, cell * 0.62)
 	draw_circle(p, 12.0, Palette.BAD)
 	CargoDraw.draw_icon(self, Defs.TRAIT_ELECTRONIC, p, 14.0, Palette.BACKGROUND)
 
 
 func _draw_warning(top_left: Vector2) -> void:
-	var p := top_left + Vector2(CELL * 0.5, CELL * 0.62)
+	var p := top_left + Vector2(cell * 0.5, cell * 0.62)
 	draw_colored_polygon(
 		PackedVector2Array([p + Vector2(0, -12), p + Vector2(11, 8), p + Vector2(-11, 8)]),
 		Palette.WARN
@@ -284,4 +301,4 @@ func _process(_delta: float) -> void:
 ## Returns the center of a cargo in local coordinates, with its offset.
 func cargo_center(c: Dictionary) -> Vector2:
 	var off: Vector2 = offsets.get(c["id"], Vector2.ZERO)
-	return grid_origin() + _center(c) + off * CELL
+	return grid_origin() + _center(c) + off * cell

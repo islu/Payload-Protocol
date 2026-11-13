@@ -16,10 +16,10 @@ The station screen has these areas:
 | Area | Position | Content |
 | --- | --- | --- |
 | Top bar | Top | The sector and the jump ("Sector 2 · Jump 1"), the credits, the toll of this sector, and the jumps before the toll. |
-| Hazard panel | Top, below the top bar | The shift steps of the next jump (Section 18). |
+| Hazard panel | Center, above the hold | The shift steps of the next jump in order (Section 18). Each step is a card with a large arrow, its number, and its direction. A fork step shows its two directions and a question mark. |
 | Dock | Left | The cargo on the dock (Section 8.1). |
 | Contract board | Left, below the dock | The 3 contracts, with Accept and Cancel buttons (Section 15). |
-| Hold | Center | The grid and its cargo, the links, and the clamps. |
+| Hold | Center | The grid and its cargo, the links, and the clamps. The cells grow to fill the free space of the center, from 84 to 128 pixels. |
 | Shop | Right | The kit offers, Reroll, the services, and the sell area (Section 17). |
 | Clamp panel | Right, below the shop | The free clamps (Section 13). |
 | Warp button | Bottom right | Starts the warp (Section 9). |
@@ -44,6 +44,7 @@ The station screen has these areas:
 - It shows the total credits that the jump gave.
 - The pilot speaks a line about the result.
 - A Continue button goes to the next station, or to the toll gate.
+- When the report covers the hold, the hold moves to the left.
 
 ### 20.5 Toll Gate
 
@@ -70,7 +71,7 @@ The station screen has these areas:
 
 ### 21.2 Hits
 
-- Each hit shows a spark flare at the contact edge, in the direction of the slide, and the force number above the cargo.
+- Each hit shows a spark flare at the contact edge that sprays back against the slide, and the force number above the cargo in large bold digits with a dark outline.
 - The screen shakes. A larger force makes a larger shake. A setting turns the shake off (Section 23.1).
 - A hit with a force of 0 plays a soft sound. A hit with a force of 1 or more plays a metal hit sound. A larger force plays a louder sound.
 
@@ -89,7 +90,7 @@ The station screen has these areas:
 
 ### 21.4 Station
 
-- A purchase plays a coin sound. A sale and a delivery play a coin sound too. Each coin sound shows a gold sparkle at the credits.
+- A purchase plays a coin sound. A sale and a delivery play a coin sound too. Each coin sound shows a gold sparkle: at the credits on the station, and at the title of the arrival report.
 - The credits count up or down in the top bar.
 - The link lines glow and move slowly.
 

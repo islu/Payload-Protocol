@@ -52,7 +52,7 @@ These games are references for mechanics only. Do not copy their art, names, ite
 
 - The art style is a clean sci-fi dashboard: a dark navy background, thin bright lines, and flat panels.
 - The game draws all cargo with code or with SVG files. Do not draw cargo as pixel art.
-- The effects of Section 21 are pixel art animations. `task fx` makes them with pixelfx (MIT). They play at 2 times their pixel size, with no smoothing.
+- The effects of Section 21 are pixel art animations. `task fx` makes them with pixelfx (MIT). They play at 3 times their pixel size, with no smoothing.
 - Each trait has one color and one icon. Each cargo shows the icon of each trait. Do not show a trait with a color only.
 - A **CRT filter** draws scanlines and a vignette on the full screen. It does not bend the image, so that the mouse points at the cell that the player sees. A setting turns it off (Section 23.1).
 - The font is jf open huninn 2.1 (SIL Open Font License 1.1). It has Latin and Traditional Chinese glyphs.
