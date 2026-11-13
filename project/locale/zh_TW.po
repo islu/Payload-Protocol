@@ -90,7 +90,7 @@ msgstr "那個貨物不是廢鐵。"
 
 #: project/rules/run.gd
 msgid "The ship has not arrived yet."
-msgstr "飛船還沒抵達。"
+msgstr "太空船還沒抵達。"
 
 #: project/rules/run.gd
 msgid "You are not at a toll gate."
@@ -103,6 +103,14 @@ msgstr "貨艙太重，無法跳躍。請卸下貨物，或強化船體。"
 #: project/rules/run_record.gd
 msgid "There is nothing to undo at this station."
 msgstr "這個站點沒有可以復原的動作。"
+
+#: project/rules/run_view.gd
+msgid "Helps {count} of your freight"
+msgstr "可幫助你 {count} 件貨物"
+
+#: project/rules/run_view.gd
+msgid "The next jump has a fork step"
+msgstr "下一次跳躍有二選一位移"
 
 #: project/scenes/common/game_state.gd
 msgid "The game data did not load."
@@ -299,6 +307,42 @@ msgstr "語言"
 msgid "{weight} × {cells} = {force}"
 msgstr "{weight} × {cells} = {force}"
 
+#: project/scenes/station/contract_card.gd
+msgid "Accept"
+msgstr "接下"
+
+#: project/scenes/station/contract_card.gd
+msgid "Cancel"
+msgstr "取消"
+
+#: project/scenes/station/contract_card.gd
+msgid "×{count}"
+msgstr "×{count}"
+
+#: project/scenes/station/contract_card.gd
+msgid "{pieces} pieces · Pay {pay} each · Total {total}"
+msgstr "{pieces} 件 · 每件 {pay} 點 · 共 {total} 點"
+
+#: project/scenes/station/contract_card.gd
+msgid "Mass {mass} · After {after}/{limit}"
+msgstr "載重 {mass} · 接下後 {after}/{limit}"
+
+#: project/scenes/station/contract_card.gd
+msgid "Mass {mass} · After {after}/{limit} (fuel fee)"
+msgstr "載重 {mass} · 接下後 {after}/{limit}（要付燃料費）"
+
+#: project/scenes/station/contract_card.gd
+msgid "Mass {mass} · After {after}/{limit} (too heavy)"
+msgstr "載重 {mass} · 接下後 {after}/{limit}（超重）"
+
+#: project/scenes/station/contract_card.gd
+msgid "Loaded {loaded}/{pieces}"
+msgstr "已裝入 {loaded}/{pieces}"
+
+#: project/scenes/station/contract_card.gd
+msgid "Bonus +{pay}: {text}"
+msgstr "獎金 +{pay}：{text}"
+
 #: project/scenes/station/hints.gd
 msgid "Accept a contract on the left. Its freight goes to the dock."
 msgstr "在左邊接下一張合約，貨物會送到碼頭。"
@@ -319,9 +363,53 @@ msgstr "看看上方的危險預報：每一段位移都會讓所有貨物往那
 msgid "When the hold is ready, press WARP."
 msgstr "貨艙整理好了，就按「跳躍」。"
 
+#: project/scenes/station/shop_panel.gd
+msgid "Buy · {price} cr"
+msgstr "購買 · {price} 點"
+
+#: project/scenes/station/shop_panel.gd
+msgid "Sold"
+msgstr "已售出"
+
+#: project/scenes/station/shop_panel.gd
+msgid "Reroll ({price} cr)"
+msgstr "換一批商品（{price} 點）"
+
+#: project/scenes/station/shop_panel.gd
+msgid "Services"
+msgstr "服務"
+
+#: project/scenes/station/shop_panel.gd
+msgid "{price} cr"
+msgstr "{price} 點"
+
+#: project/scenes/station/shop_panel.gd
+msgid "Clamps {now}/{max} → {after}/{max}"
+msgstr "卡榫 {now}/{max} → {after}/{max}"
+
+#: project/scenes/station/shop_panel.gd
+msgid "Hold {columns}×{rows}"
+msgstr "貨艙 {columns}×{rows}"
+
+#: project/scenes/station/shop_panel.gd
+msgid "+Column → {columns}×{rows} · {price} cr"
+msgstr "+欄 → {columns}×{rows} · {price} 點"
+
+#: project/scenes/station/shop_panel.gd
+msgid "+Row → {columns}×{rows} · {price} cr"
+msgstr "+列 → {columns}×{rows} · {price} 點"
+
+#: project/scenes/station/shop_panel.gd
+msgid "Mass limit {now} → {after}"
+msgstr "載重上限 {now} → {after}"
+
 #: project/scenes/station/station_screen.gd
 msgid "Dock"
 msgstr "碼頭"
+
+#: project/scenes/station/station_screen.gd
+msgid "Dock ({count})"
+msgstr "碼頭（{count}）"
 
 #: project/scenes/station/station_screen.gd
 msgid "Contracts"
@@ -340,44 +428,20 @@ msgid "Next jump:"
 msgstr "下一次跳躍："
 
 #: project/scenes/station/station_screen.gd
-msgid "Accept"
-msgstr "接下"
+msgid "Sell kit or clear scrap: drop it here"
+msgstr "賣出裝備或清除廢料：拖到這裡"
 
 #: project/scenes/station/station_screen.gd
-msgid "Cancel"
-msgstr "取消"
+msgid "Sell {name}: +{price} cr"
+msgstr "賣出{name}：+{price} 點"
 
 #: project/scenes/station/station_screen.gd
-msgid "Buy"
-msgstr "購買"
+msgid "Clear the scrap: -{price} cr"
+msgstr "清除廢料：-{price} 點"
 
 #: project/scenes/station/station_screen.gd
-msgid "Sold"
-msgstr "已售出"
-
-#: project/scenes/station/station_screen.gd
-msgid "Reroll ({price} cr)"
-msgstr "刷新商品（{price} 點）"
-
-#: project/scenes/station/station_screen.gd
-msgid "Buy a clamp ({price} cr)"
-msgstr "購買卡榫（{price} 點）"
-
-#: project/scenes/station/station_screen.gd
-msgid "Add a column ({price} cr)"
-msgstr "加一欄（{price} 點）"
-
-#: project/scenes/station/station_screen.gd
-msgid "Add a row ({price} cr)"
-msgstr "加一列（{price} 點）"
-
-#: project/scenes/station/station_screen.gd
-msgid ""
-"Drop kit here to sell it.\n"
-"Drop scrap here to clear it ({price} cr for each cell)."
-msgstr ""
-"把裝備拖到這裡賣出。\n"
-"把廢鐵拖到這裡清除（每格 {price} 點）。"
+msgid "Freight cannot be sold"
+msgstr "貨物不能賣"
 
 #: project/scenes/station/station_screen.gd
 msgid "WARP"
@@ -398,14 +462,6 @@ msgstr "再 {jumps} 次跳躍後付通行費 {toll}"
 #: project/scenes/station/station_screen.gd
 msgid "{free} of {total} free. Drag a clamp onto a cargo. Click a clamp to take it off."
 msgstr "空閒 {free} / {total}。把卡榫拖到貨物上固定，點卡榫可以拆下。"
-
-#: project/scenes/station/station_screen.gd
-msgid "Pay {pay} each"
-msgstr "每件 {pay} 點"
-
-#: project/scenes/station/station_screen.gd
-msgid "Bonus +{pay}: {text}"
-msgstr "獎金 +{pay}：{text}"
 
 #: project/scenes/station/station_screen.gd
 msgid "Empty. Accept a contract or buy kit."
@@ -468,10 +524,6 @@ msgid "Too heavy: {max} at most"
 msgstr "超重：最多 {max}"
 
 #: project/scenes/station/station_screen.gd
-msgid "Reinforce hull +{amount} ({price} cr)"
-msgstr "強化船體 +{amount}（{price} 點）"
-
-#: project/scenes/station/station_screen.gd
 #: project/scenes/warp/warp_screen.gd
 msgid "or"
 msgstr "或"
@@ -523,7 +575,7 @@ msgstr "慢速重播"
 
 #: project/scenes/warp/warp_screen.gd
 msgid "Click or press Space to speed up."
-msgstr "點擊或按空白鍵加速。"
+msgstr "按一下滑鼠或空白鍵可以加速。"
 
 #: project/scenes/warp/warp_screen.gd
 msgid "Bonus +{bonus}"
@@ -1053,7 +1105,7 @@ msgstr "航程完成。貨物活下來了，大部分。幹得好。"
 
 #: project/data/lines/win.json
 msgid "We won. I will tell the other ships. They will not believe me."
-msgstr "我們贏了。我會告訴其他飛船，它們不會相信的。"
+msgstr "我們贏了。我會告訴其他太空船，它們不會相信的。"
 
 #: project/data/lines/win.json
 msgid "Full circle, and the captain is alive. That is more than my namesake managed."

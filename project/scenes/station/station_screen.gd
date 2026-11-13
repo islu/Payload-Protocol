@@ -5,28 +5,21 @@ extends Control
 ## the Warp button. It reads GameState.view() and calls the actions of GameState.
 
 const DOCK_TEXT := "Dock"
+const DOCK_COUNT_TEXT := "Dock ({count})"
 const CONTRACTS_TEXT := "Contracts"
 const SHOP_TEXT := "Shop"
 const CLAMPS_TEXT := "Clamps"
 const NEXT_JUMP_TEXT := "Next jump:"
-const ACCEPT_TEXT := "Accept"
-const CANCEL_TEXT := "Cancel"
-const BUY_TEXT := "Buy"
-const SOLD_TEXT := "Sold"
-const REROLL_TEXT := "Reroll ({price} cr)"
-const BUY_CLAMP_TEXT := "Buy a clamp ({price} cr)"
-const ADD_COLUMN_TEXT := "Add a column ({price} cr)"
-const ADD_ROW_TEXT := "Add a row ({price} cr)"
-# gdlint:ignore = max-line-length
-const SELL_AREA_TEXT := "Drop kit here to sell it.\nDrop scrap here to clear it ({price} cr for each cell)."
+const SELL_IDLE_TEXT := "Sell kit or clear scrap: drop it here"
+const SELL_KIT_TEXT := "Sell {name}: +{price} cr"
+const CLEAR_SCRAP_TEXT := "Clear the scrap: -{price} cr"
+const NO_SELL_TEXT := "Freight cannot be sold"
 const WARP_TEXT := "WARP"
 const TOP_BAR_TEXT := "Sector {sector}/{sectors} · Jump {jump}/{jumps}"
 const CREDITS_TEXT := "Credits: {credits}"
 const TOLL_TEXT := "Toll {toll} after {jumps} jump(s)"
 # gdlint:ignore = max-line-length
 const FREE_CLAMPS_TEXT := "{free} of {total} free. Drag a clamp onto a cargo. Click a clamp to take it off."
-const PAY_TEXT := "Pay {pay} each"
-const BONUS_TEXT := "Bonus +{pay}: {text}"
 const EMPTY_DOCK_TEXT := "Empty. Accept a contract or buy kit."
 const CONFIRM_TITLE_TEXT := "Cargo on the dock"
 # gdlint:ignore = max-line-length
@@ -42,7 +35,6 @@ const NO_POWER_TEXT := "No Battery next to it: no power."
 const MASS_TEXT := "Mass {hold}/{limit}"
 const FUEL_TEXT := "Fuel fee {fee}"
 const OVER_MAX_TEXT := "Too heavy: {max} at most"
-const REINFORCE_TEXT := "Reinforce hull +{amount} ({price} cr)"
 const OR_TEXT := "or"
 const UNDO_TEXT := "Undo (Ctrl+Z)"
 ## The mark of a fork step that a Sensor shows (SPEC Section 20.2).
@@ -50,10 +42,12 @@ const SENSOR_TEXT := "Sensor"
 ## The characters of a pilot line that type out in each second (SPEC Section 22).
 const TYPE_SPEED := 40.0
 const ARROWS := {Defs.DIR_LEFT: "←", Defs.DIR_RIGHT: "→", Defs.DIR_UP: "↑", Defs.DIR_DOWN: "↓"}
-const CONTRACT_MASS_TEXT := "Mass {mass}"
 const TIP_MASS_TEXT := "Mass {mass}"
 const LOAD_ALL_TEXT := "Load all"
 const SIDE_WIDTH := 470.0
+const SELL_HEIGHT := 48.0
+## The cell of the cargo on the dock (SPEC Section 20.2).
+const DOCK_CELL := 48.0
 ## A press and a release closer than this are a click: a pick up (SPEC Section 8.2).
 const CLICK_DISTANCE := 8.0
 
@@ -74,14 +68,18 @@ var _credits_label: Label
 var _toll_label: Label
 var _mass_label: Label
 var _hazard_box: VBoxContainer
+var _dock_title: Label
 var _dock_panel: PanelContainer
 var _dock_flow: HFlowContainer
 var _contracts_box: VBoxContainer
-var _shop_box: VBoxContainer
+var _contract_cards: Array[ContractCard] = []
+var _shop: ShopPanel
 var _clamp_box: HBoxContainer
 var _clamp_label: Label
 var _sell_area: PanelContainer
 var _sell_label: Label
+## What the sell area shows now: "idle", "sell", "clear", or "none" (SPEC Section 20.2).
+var _sell_mode := "idle"
 var _warp_button: Button
 var _undo_button: Button
 var _pilot_label: Label
@@ -139,11 +137,11 @@ func _build() -> void:
 	body.add_child(left)
 	var dock_head := HBoxContainer.new()
 	left.add_child(dock_head)
-	var dock_title := _label(dock_head, DOCK_TEXT, TextSize.HEADING, Palette.ACCENT)
-	dock_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_dock_title = _label(dock_head, DOCK_TEXT, TextSize.HEADING, Palette.ACCENT)
+	_dock_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_button(dock_head, tr(LOAD_ALL_TEXT), func() -> void: _act(GameState.load_all(), "clack"))
+	# The dock fits its cargo. An empty dock is one line (SPEC Section 20.2).
 	_dock_panel = _panel(left)
-	_dock_panel.custom_minimum_size.y = 200
 	_dock_flow = HFlowContainer.new()
 	_dock_flow.add_theme_constant_override("h_separation", 10)
 	_dock_flow.add_theme_constant_override("v_separation", 10)
@@ -201,21 +199,22 @@ func _build() -> void:
 	right.add_theme_constant_override("separation", 10)
 	body.add_child(right)
 	_label(right, SHOP_TEXT, TextSize.HEADING, Palette.ACCENT)
-	_shop_box = VBoxContainer.new()
-	_shop_box.add_theme_constant_override("separation", 8)
-	right.add_child(_shop_box)
+	_shop = ShopPanel.new()
+	_shop.screen = self
+	right.add_child(_shop)
 	_label(right, CLAMPS_TEXT, TextSize.HEADING, Palette.ACCENT)
 	_clamp_box = HBoxContainer.new()
 	_clamp_box.add_theme_constant_override("separation", 8)
 	right.add_child(_clamp_box)
 	_clamp_label = _label(right, "", TextSize.SMALL, Palette.TEXT_DIM)
 	_clamp_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	# The sell area is a small bar. A drag colors it (SPEC Section 20.2).
 	_sell_area = _panel(right)
-	_sell_area.custom_minimum_size.y = 110
+	_sell_area.custom_minimum_size.y = SELL_HEIGHT
 	_sell_label = _label(_sell_area, "", TextSize.SMALL, Palette.TEXT_DIM)
-	_sell_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_sell_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_sell_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_show_sell({})
 	var spacer := Control.new()
 	spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	right.add_child(spacer)
@@ -320,7 +319,7 @@ func refresh() -> void:
 	_refresh_hazard()
 	_refresh_dock()
 	_refresh_contracts()
-	_refresh_shop()
+	_shop.refresh()
 	_refresh_clamps()
 	_update_marks()
 
@@ -461,12 +460,13 @@ static func direction_name(d: String, view: Dictionary) -> String:
 
 func _refresh_dock() -> void:
 	_clear(_dock_flow)
+	_dock_title.text = tr(DOCK_COUNT_TEXT).format({"count": _run["dock"].size()})
 	if _run["dock"].is_empty():
 		_label(_dock_flow, EMPTY_DOCK_TEXT, TextSize.SMALL, Palette.TEXT_DIM)
 	for c: Dictionary in _run["cargo"]:
 		if c["in_hold"]:
 			continue
-		var chip := CargoChip.new().setup(c, 34.0)
+		var chip := CargoChip.new().setup(c, DOCK_CELL)
 		chip.pressed.connect(
 			func(_chip: CargoChip) -> void: _begin_cargo_drag(c["id"], Vector2.ZERO)
 		)
@@ -477,100 +477,41 @@ func _refresh_dock() -> void:
 
 func _refresh_contracts() -> void:
 	_clear(_contracts_box)
+	_contract_cards.clear()
 	for k: Dictionary in _run["contracts"]:
-		var card := _panel(_contracts_box)
-		var box := VBoxContainer.new()
-		card.add_child(box)
-		var head := HBoxContainer.new()
-		box.add_child(head)
-		var client := _label(
-			head, "", TextSize.BODY, Palette.ACCENT if k["accepted"] else Palette.TEXT
-		)
-		client.text = tr(k["client_name"])
-		client.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		var index: int = k["index"]
-		if k["accepted"]:
-			_button(head, tr(CANCEL_TEXT), func() -> void: _act(GameState.cancel_contract(index)))
-		else:
-			_button(head, tr(ACCEPT_TEXT), func() -> void: _act(GameState.accept_contract(index)))
-		var row := HFlowContainer.new()
-		row.add_theme_constant_override("h_separation", 8)
-		box.add_child(row)
-		for f: Dictionary in k["freight"]:
-			var chip := CargoChip.new().setup(f, 20.0)
-			chip.mouse_filter = Control.MOUSE_FILTER_PASS
-			chip.mouse_entered.connect(func() -> void: _show_tip(f))
-			chip.mouse_exited.connect(_hide_tip)
-			row.add_child(chip)
-		var mass := 0
-		for f: Dictionary in k["freight"]:
-			mass += f["mass"]
-		var pay_line := tr(PAY_TEXT).format({"pay": k["pay"]})
-		_label(
-			box, pay_line + " · " + tr(CONTRACT_MASS_TEXT).format({"mass": mass}), TextSize.SMALL
-		)
-		if not k["bonus"].is_empty():
-			var b: Dictionary = k["bonus"]
-			var bonus := _label(box, "", TextSize.SMALL, Palette.WARN)
-			bonus.text = tr(BONUS_TEXT).format(
-				{"pay": b["pay"], "text": GameText.format(b["text"])}
-			)
-			bonus.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		card.mouse_entered.connect(func() -> void: _set_hover_contract(index))
-		card.mouse_exited.connect(func() -> void: _set_hover_contract(-1))
+		var card := ContractCard.new()
+		_contracts_box.add_child(card)
+		card.setup(self, k)
+		_contract_cards.append(card)
 
 
-func _refresh_shop() -> void:
-	_clear(_shop_box)
-	var s: Dictionary = _run["shop"]
-	for o: Dictionary in s["offers"]:
-		var card := _panel(_shop_box)
-		var row := HBoxContainer.new()
-		row.add_theme_constant_override("separation", 12)
-		card.add_child(row)
-		var chip := CargoChip.new().setup(o, 26.0)
-		chip.mouse_entered.connect(func() -> void: _show_tip(o))
-		chip.mouse_exited.connect(_hide_tip)
-		row.add_child(chip)
-		var name := _label(row, "", TextSize.BODY)
-		name.text = "%s\n%d cr" % [tr(o["name"]), o["price"]]
-		name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		var index: int = o["index"]
-		if o["bought"]:
-			_button(row, tr(SOLD_TEXT), func() -> void: pass, false)
-		else:
-			_button(row, tr(BUY_TEXT), func() -> void: _act(GameState.buy_kit(index), "coin"))
-	_button(
-		_shop_box,
-		tr(REROLL_TEXT).format({"price": s["reroll_price"]}),
-		func() -> void: _act(GameState.reroll(), "coin")
-	)
-	_button(
-		_shop_box,
-		tr(BUY_CLAMP_TEXT).format({"price": s["clamp_price"]}),
-		func() -> void: _act(GameState.buy_clamp(), "coin"),
-		_run["clamps"] < s["clamp_max"]
-	)
-	var grow := HBoxContainer.new()
-	_shop_box.add_child(grow)
-	_button(
-		grow,
-		tr(ADD_COLUMN_TEXT).format({"price": s["upgrade_price"]}),
-		func() -> void: _act(GameState.upgrade_hold(Defs.AXIS_COLUMN), "coin"),
-		s["can_column"]
-	)
-	_button(
-		grow,
-		tr(ADD_ROW_TEXT).format({"price": s["upgrade_price"]}),
-		func() -> void: _act(GameState.upgrade_hold(Defs.AXIS_ROW), "coin"),
-		s["can_row"]
-	)
-	_button(
-		_shop_box,
-		tr(REINFORCE_TEXT).format({"amount": s["reinforce_amount"], "price": s["reinforce_price"]}),
-		func() -> void: _act(GameState.reinforce_hull(), "coin")
-	)
-	_sell_label.text = tr(SELL_AREA_TEXT).format({"price": s["scrap_cell"]})
+## Shows the sell area for a dragged cargo view, or idle for {} (SPEC Section 20.2).
+func _show_sell(c: Dictionary) -> void:
+	var color := Palette.PANEL_LINE
+	_sell_mode = "idle"
+	_sell_label.text = tr(SELL_IDLE_TEXT)
+	_sell_label.add_theme_color_override("font_color", Palette.TEXT_DIM)
+	if not c.is_empty():
+		match c.get("kind", Defs.KIND_FREIGHT):
+			Defs.KIND_KIT:
+				_sell_mode = "sell"
+				color = Palette.GOOD
+				_sell_label.text = tr(SELL_KIT_TEXT).format(
+					{"name": tr(c["name"]), "price": c.get("sell_price", 0)}
+				)
+			Defs.KIND_SCRAP:
+				_sell_mode = "clear"
+				color = Palette.BAD
+				_sell_label.text = tr(CLEAR_SCRAP_TEXT).format({"price": c.get("clear_price", 0)})
+			_:
+				_sell_mode = "none"
+				_sell_label.text = tr(NO_SELL_TEXT)
+		if _sell_mode != "none":
+			_sell_label.add_theme_color_override("font_color", color)
+	var style: StyleBoxFlat = _sell_area.get_theme_stylebox("panel").duplicate()
+	style.border_color = color
+	style.bg_color = Palette.PANEL if _sell_mode in ["idle", "none"] else Color(color, 0.15)
+	_sell_area.add_theme_stylebox_override("panel", style)
 
 
 func _refresh_clamps() -> void:
@@ -686,6 +627,7 @@ func _begin_cargo_drag(id: int, grab: Vector2) -> void:
 		"from_dock": not c["in_hold"],
 	}
 	_hold.dragging = id
+	_show_sell(c)
 	_drag_layer.start(c, c["rotations"][c["rot"]], grab)
 	_update_drag()
 	_update_marks()
@@ -824,6 +766,7 @@ func _pick_next() -> void:
 
 func _end_drag() -> void:
 	_drag = {}
+	_show_sell({})
 	_hold.dragging = -1
 	_hold.preview = {}
 	_drag_layer.stop()

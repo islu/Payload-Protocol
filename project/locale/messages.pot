@@ -103,6 +103,14 @@ msgstr ""
 msgid "There is nothing to undo at this station."
 msgstr ""
 
+#: project/rules/run_view.gd
+msgid "Helps {count} of your freight"
+msgstr ""
+
+#: project/rules/run_view.gd
+msgid "The next jump has a fork step"
+msgstr ""
+
 #: project/scenes/common/game_state.gd
 msgid "The game data did not load."
 msgstr ""
@@ -278,6 +286,42 @@ msgstr ""
 msgid "{weight} × {cells} = {force}"
 msgstr ""
 
+#: project/scenes/station/contract_card.gd
+msgid "Accept"
+msgstr ""
+
+#: project/scenes/station/contract_card.gd
+msgid "Cancel"
+msgstr ""
+
+#: project/scenes/station/contract_card.gd
+msgid "×{count}"
+msgstr ""
+
+#: project/scenes/station/contract_card.gd
+msgid "{pieces} pieces · Pay {pay} each · Total {total}"
+msgstr ""
+
+#: project/scenes/station/contract_card.gd
+msgid "Mass {mass} · After {after}/{limit}"
+msgstr ""
+
+#: project/scenes/station/contract_card.gd
+msgid "Mass {mass} · After {after}/{limit} (fuel fee)"
+msgstr ""
+
+#: project/scenes/station/contract_card.gd
+msgid "Mass {mass} · After {after}/{limit} (too heavy)"
+msgstr ""
+
+#: project/scenes/station/contract_card.gd
+msgid "Loaded {loaded}/{pieces}"
+msgstr ""
+
+#: project/scenes/station/contract_card.gd
+msgid "Bonus +{pay}: {text}"
+msgstr ""
+
 #: project/scenes/station/hints.gd
 msgid "Accept a contract on the left. Its freight goes to the dock."
 msgstr ""
@@ -298,8 +342,52 @@ msgstr ""
 msgid "When the hold is ready, press WARP."
 msgstr ""
 
+#: project/scenes/station/shop_panel.gd
+msgid "Buy · {price} cr"
+msgstr ""
+
+#: project/scenes/station/shop_panel.gd
+msgid "Sold"
+msgstr ""
+
+#: project/scenes/station/shop_panel.gd
+msgid "Reroll ({price} cr)"
+msgstr ""
+
+#: project/scenes/station/shop_panel.gd
+msgid "Services"
+msgstr ""
+
+#: project/scenes/station/shop_panel.gd
+msgid "{price} cr"
+msgstr ""
+
+#: project/scenes/station/shop_panel.gd
+msgid "Clamps {now}/{max} → {after}/{max}"
+msgstr ""
+
+#: project/scenes/station/shop_panel.gd
+msgid "Hold {columns}×{rows}"
+msgstr ""
+
+#: project/scenes/station/shop_panel.gd
+msgid "+Column → {columns}×{rows} · {price} cr"
+msgstr ""
+
+#: project/scenes/station/shop_panel.gd
+msgid "+Row → {columns}×{rows} · {price} cr"
+msgstr ""
+
+#: project/scenes/station/shop_panel.gd
+msgid "Mass limit {now} → {after}"
+msgstr ""
+
 #: project/scenes/station/station_screen.gd
 msgid "Dock"
+msgstr ""
+
+#: project/scenes/station/station_screen.gd
+msgid "Dock ({count})"
 msgstr ""
 
 #: project/scenes/station/station_screen.gd
@@ -319,41 +407,19 @@ msgid "Next jump:"
 msgstr ""
 
 #: project/scenes/station/station_screen.gd
-msgid "Accept"
+msgid "Sell kit or clear scrap: drop it here"
 msgstr ""
 
 #: project/scenes/station/station_screen.gd
-msgid "Cancel"
+msgid "Sell {name}: +{price} cr"
 msgstr ""
 
 #: project/scenes/station/station_screen.gd
-msgid "Buy"
+msgid "Clear the scrap: -{price} cr"
 msgstr ""
 
 #: project/scenes/station/station_screen.gd
-msgid "Sold"
-msgstr ""
-
-#: project/scenes/station/station_screen.gd
-msgid "Reroll ({price} cr)"
-msgstr ""
-
-#: project/scenes/station/station_screen.gd
-msgid "Buy a clamp ({price} cr)"
-msgstr ""
-
-#: project/scenes/station/station_screen.gd
-msgid "Add a column ({price} cr)"
-msgstr ""
-
-#: project/scenes/station/station_screen.gd
-msgid "Add a row ({price} cr)"
-msgstr ""
-
-#: project/scenes/station/station_screen.gd
-msgid ""
-"Drop kit here to sell it.\n"
-"Drop scrap here to clear it ({price} cr for each cell)."
+msgid "Freight cannot be sold"
 msgstr ""
 
 #: project/scenes/station/station_screen.gd
@@ -374,14 +440,6 @@ msgstr ""
 
 #: project/scenes/station/station_screen.gd
 msgid "{free} of {total} free. Drag a clamp onto a cargo. Click a clamp to take it off."
-msgstr ""
-
-#: project/scenes/station/station_screen.gd
-msgid "Pay {pay} each"
-msgstr ""
-
-#: project/scenes/station/station_screen.gd
-msgid "Bonus +{pay}: {text}"
 msgstr ""
 
 #: project/scenes/station/station_screen.gd
@@ -438,10 +496,6 @@ msgstr ""
 
 #: project/scenes/station/station_screen.gd
 msgid "Too heavy: {max} at most"
-msgstr ""
-
-#: project/scenes/station/station_screen.gd
-msgid "Reinforce hull +{amount} ({price} cr)"
 msgstr ""
 
 #: project/scenes/station/station_screen.gd

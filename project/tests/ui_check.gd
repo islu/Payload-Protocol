@@ -9,6 +9,8 @@ const MAIN_SCENE := preload("res://scenes/main/main.tscn")
 var _failures := 0
 var _language_checked := false
 var _undo_checked := false
+var _shop_checked := false
+var _contracts_checked := false
 
 
 func _ready() -> void:
@@ -521,6 +523,12 @@ func _play_station(state: Node, station: StationScreen) -> void:
 		_undo_checked = true
 		await _check_undo(state, station)
 	_check_layout(station)
+	if not _contracts_checked:
+		_contracts_checked = true
+		await _check_contracts(station)
+	if not _shop_checked:
+		_shop_checked = true
+		_check_shop(station)
 	if not _language_checked:
 		_language_checked = true
 		var main: Control = station.get_parent()
@@ -663,3 +671,182 @@ func _check_cargo_art() -> void:
 		[turned.call("coolant_pipe", 2), turned.call("frozen_octopus", 3)] == [2, 3],
 		"an L or a T turns its image with the cargo (SPEC Section 4.2)"
 	)
+
+
+## The shop: the kit cards, the services, and the sell area (SPEC Section 20.2).
+func _check_shop(station: StationScreen) -> void:
+	var run: Dictionary = GameState.view()["run"]
+	var shop: Dictionary = run["shop"]
+	var terms := {}
+	for t: Dictionary in GameState.view()["terms"]:
+		terms[t["id"]] = t
+	_check(
+		station._shop.offer_cards.size() == shop["offers"].size(),
+		"the shop shows a card for each kit offer (SPEC Section 20.2)"
+	)
+	for i in mini(station._shop.offer_cards.size(), shop["offers"].size()):
+		var o: Dictionary = shop["offers"][i]
+		var card: Dictionary = station._shop.offer_cards[i]
+		for t: String in o["traits"]:
+			_check(
+				GameText.format(terms[t]["rule"]) in card["text"],
+				"a kit card shows the rule of its trait %s (SPEC Section 20.2)" % t
+			)
+		_check(
+			str(o["price"]) in card["buy"].text,
+			"a kit card shows its price on the Buy button (SPEC Section 20.2)"
+		)
+		if not o["helps"].is_empty():
+			_check(
+				GameText.format(o["helps"]) in card["text"],
+				"a kit card shows how it helps the freight (SPEC Section 20.2)"
+			)
+	# A price that is more than the credits shows in red.
+	var credits: int = station._run["credits"]
+	station._run["credits"] = 0
+	station._shop.refresh()
+	if not station._shop.offer_cards.is_empty():
+		var buy: Button = station._shop.offer_cards[0]["buy"]
+		_check(
+			buy.get_theme_color("font_color") == Palette.BAD,
+			"a price that is more than the credits shows in red (SPEC Section 20.2)"
+		)
+	station._run["credits"] = credits
+	station._shop.refresh()
+	if not station._shop.offer_cards.is_empty():
+		var buy: Button = station._shop.offer_cards[0]["buy"]
+		_check(
+			(
+				shop["offers"][0]["price"] > credits
+				or buy.get_theme_color("font_color") != Palette.BAD
+			),
+			"a price that the player can pay is not red (SPEC Section 20.2)"
+		)
+	var texts: Dictionary = station._shop.service_texts
+	_check(
+		(
+			"%d/" % shop["clamps"] in texts.get("clamp", "")
+			and "→ %d/" % mini(shop["clamps_after"], shop["clamp_max"]) in texts.get("clamp", "")
+		),
+		"the clamp service shows the clamps now and after (SPEC Section 20.2)"
+	)
+	_check(
+		"%d → %d" % [shop["mass_limit"], shop["mass_limit_after"]] in texts.get("hull", ""),
+		"Reinforce hull shows the mass limit now and after (SPEC Section 20.2)"
+	)
+	_check(
+		"%d×%d" % [shop["hold"]["columns"], shop["hold"]["rows"]] in texts.get("hold", ""),
+		"the hold service shows the hold now (SPEC Section 20.2)"
+	)
+	# The sell area is a small bar. A drag colors it.
+	_check(
+		station._sell_area.size.y <= StationScreen.SELL_HEIGHT + 4.0,
+		"the sell area is a small bar: %d (SPEC Section 20.2)" % station._sell_area.size.y
+	)
+	_check(station._sell_mode == "idle", "the sell area is idle with no drag (SPEC Section 20.2)")
+	station._show_sell({"kind": Defs.KIND_KIT, "name": "Cooler Unit", "sell_price": 4})
+	_check(
+		station._sell_mode == "sell" and "4" in station._sell_label.text,
+		"a drag of a kit shows the sell price (SPEC Section 20.2)"
+	)
+	_check(
+		station._sell_area.get_theme_stylebox("panel").border_color == Palette.GOOD,
+		"a drag of a kit makes the sell area green (SPEC Section 20.2)"
+	)
+	station._show_sell({"kind": Defs.KIND_SCRAP, "clear_price": 6})
+	_check(
+		station._sell_mode == "clear" and "6" in station._sell_label.text,
+		"a drag of a scrap shows the clear price (SPEC Section 20.2)"
+	)
+	_check(
+		station._sell_area.get_theme_stylebox("panel").border_color == Palette.BAD,
+		"a drag of a scrap makes the sell area red (SPEC Section 20.2)"
+	)
+	if not run["cargo"].is_empty():
+		station._begin_cargo_drag(run["cargo"][0]["id"], Vector2.ZERO)
+		_check(station._sell_mode != "idle", "a drag changes the sell area (SPEC Section 20.2)")
+		station._end_drag()
+	_check(
+		station._sell_mode == "idle",
+		"the end of a drag makes the sell area idle (SPEC Section 20.2)"
+	)
+
+
+## The contract cards and the dock (SPEC Section 20.2).
+func _check_contracts(station: StationScreen) -> void:
+	var run: Dictionary = GameState.view()["run"]
+	_check(
+		station._contract_cards.size() == run["contracts"].size(),
+		"the board shows a card for each contract (SPEC Section 20.2)"
+	)
+	var seen_open := false
+	var seen_accepted := false
+	for i in mini(station._contract_cards.size(), run["contracts"].size()):
+		var k: Dictionary = run["contracts"][i]
+		var card: ContractCard = station._contract_cards[i]
+		for g: Dictionary in k["groups"]:
+			_check(
+				"×%d" % g["count"] in card.text,
+				"a card shows each freight one time with ×N (SPEC Section 20.2)"
+			)
+		_check(
+			str(k["total_pay"]) in card.text and str(k["pieces"]) in card.text,
+			"a card shows the pieces and the total pay (SPEC Section 20.2)"
+		)
+		var border: Color = card.get_theme_stylebox("panel").border_color
+		if k["accepted"]:
+			seen_accepted = true
+			_check(
+				border == Palette.ACCENT, "an accepted card has a bright border (SPEC Section 20.2)"
+			)
+			_check(
+				"%d/%d" % [k["loaded"], k["pieces"]] in card.text,
+				"an accepted card shows Loaded N/M (SPEC Section 20.2)"
+			)
+		else:
+			seen_open = true
+			_check(
+				border != Palette.ACCENT,
+				"a card that is not accepted has no bright border (SPEC Section 20.2)"
+			)
+			_check(
+				str(k["mass_after"]) in card.text,
+				"a card shows the mass after it is accepted (SPEC Section 20.2)"
+			)
+			var colors := {"ok": Palette.TEXT_DIM, "fee": Palette.WARN, "over": Palette.BAD}
+			var want: Color = colors[k["mass_state"]]
+			_check(
+				card.mass_color == want,
+				"the mass after is yellow above the limit and red above the maximum (SPEC Section 20.2)"
+			)
+	_check(seen_open and seen_accepted, "the check sees an open card and an accepted card")
+	_check(
+		str(run["dock"].size()) in station._dock_title.text,
+		"the dock title shows the number of cargo on the dock (SPEC Section 20.2)"
+	)
+	var chips := station._dock_flow.get_children().filter(
+		func(n: Node) -> bool: return n is CargoChip
+	)
+	_check(
+		chips.size() == run["dock"].size(),
+		"the dock shows each cargo on the dock (SPEC Section 20.2)"
+	)
+	if not chips.is_empty():
+		_check(
+			is_equal_approx(chips[0].cell, StationScreen.DOCK_CELL),
+			"the dock shows its cargo at 48 pixels for each cell (SPEC Section 20.2)"
+		)
+	# An empty dock is one line of text.
+	var saved: Array = station._run["dock"]
+	station._run["dock"] = []
+	var cargo: Array = station._run["cargo"]
+	station._run["cargo"] = cargo.filter(func(c: Dictionary) -> bool: return c["in_hold"])
+	station._refresh_dock()
+	await get_tree().process_frame
+	_check(
+		station._dock_panel.size.y < 70.0,
+		"an empty dock is one line: %d (SPEC Section 20.2)" % station._dock_panel.size.y
+	)
+	station._run["dock"] = saved
+	station._run["cargo"] = cargo
+	station._refresh_dock()

@@ -47,6 +47,7 @@ These games are references for mechanics only. Do not copy their art, names, ite
 - The controls are the mouse and the keyboard.
 - The base resolution is 1920×1080. The screen scales with the window and keeps its aspect.
 - The languages are English and Traditional Chinese (zh-TW). English is the source language.
+- The zh-TW text uses the words of Taiwan. Do not use the words of mainland China (for example 刷新, 點擊, 飛船).
 
 ### 4.2 Art
 

@@ -26,10 +26,17 @@ The station screen has these areas:
 | Warp button | Bottom right | Starts the warp (Section 9). |
 | Pilot box | Bottom left | The line of the pilot (Section 22). |
 
-- Each contract card shows its client, its freight with small shapes, its pay, and its bonus.
+- Each contract card shows its client, its freight, the number of pieces, the pay for each piece, the total pay, and its bonus. The same freight shows one time, with its image, "×N", and its trait icons.
+- A contract that is not accepted shows its mass and the mass after it is accepted: the mass of the hold and the dock, plus the mass of the contract. That mass is yellow above the mass limit (a fuel fee), and red above the maximum.
+- An accepted contract has a bright border and shows "Loaded N/M": N pieces of its M pieces are in the hold.
+- The dock title shows the number of cargo on the dock. The dock shows its cargo at 48 pixels for each cell. An empty dock is one line of text.
 - When the mouse is on a contract, the hold marks the freight of that contract.
 - When the mouse is on a hazard card, the hold marks the front wall of that step with the stripes of Section 12.3. A fork step that the player does not know marks both walls. The wall jolt warnings are for the first step only.
 - A fork step that a Sensor shows has a Sensor icon and its one direction (Section 18).
+- Each kit offer shows its image, each trait with its icon and its rule, its weight, and its price on the Buy button. A price that is more than the credits shows in red.
+- Each kit offer shows how it helps the accepted freight on the dock and in the hold: "Helps N of your freight". A Cooler counts Perishable freight. A Cushion counts Fragile freight. A Shield counts freight that is Fragile, Volatile, Fluid, or Electronic. A Battery counts the Shield kit on the dock and in the hold. A Sensor shows "The next jump has a fork step" when it does. Other kit and a count of 0 show nothing.
+- Each service shows the value now and the value after the purchase: the clamps (1/4 → 2/4), the hold (6×6 → 7×6 or 6×7), and the mass limit (24 → 30).
+- The sell area is a small bar. During a drag of a kit, it is green and shows the sell price. During a drag of a scrap, it is red and shows the clear price.
 - An Undo button and Ctrl+Z take back the last action at this station: a placement, a contract, a purchase, a sale, a reroll, or a service. Undo does not go back past the arrival at the station. After an undo, the same action gives the same result again.
 
 ### 20.3 Warp

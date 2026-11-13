@@ -98,6 +98,7 @@ docs/notes/           # Notes that are not in git (the first draft)
 - Use one file for each definition. The `id` is snake_case and is the same as the file name.
 - Put text for the player in data only in `name`, `text`, and keys that end in `_name`.
 - Translate all text for the player. After you change text, run `task i18n` and translate each new entry of `project/locale/zh_TW.po`. `task lint` fails when an entry has no translation.
+- Use the words of Taiwan in zh-TW, not the words of mainland China. `task lint` fails on a word of `tools/i18n/zh_tw_avoid.json`.
 
 ## Key Prohibitions
 

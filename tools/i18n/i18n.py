@@ -17,6 +17,9 @@ player, so the tool skips them.
 
 Run it from the repository root: task i18n
 With --check, it changes nothing and fails if a file is not up to date.
+
+It fails when zh_TW.po uses a word of mainland China from
+tools/i18n/zh_tw_avoid.json (SPEC Section 4.1).
 """
 
 import json
@@ -27,6 +30,7 @@ from pathlib import Path
 PROJECT = Path("project")
 LOCALE = PROJECT / "locale"
 POT = LOCALE / "messages.pot"
+AVOID = Path("tools/i18n/zh_tw_avoid.json")
 SKIP_DIRS = {"tests", "tools", ".godot", "addons"}
 DATA_KEYS = {"name", "text"}
 
@@ -217,7 +221,24 @@ def main():
             print(f"i18n: {path}: {len(missing)} of {len(cat.ids)} entries have no translation")
             if check:
                 stale = True
+    if avoid_words(files):
+        stale = True
     sys.exit(1 if stale else 0)
+
+
+def avoid_words(files):
+    """Prints each word of mainland China in zh_TW.po. Returns True if it finds one."""
+    avoid = json.loads(AVOID.read_text(encoding="utf-8"))
+    found = False
+    for path, text in files.items():
+        if path.stem != "zh_TW":
+            continue
+        for msgid, msgstr in parse_po(text).items():
+            for word, use in avoid.items():
+                if word in msgstr:
+                    found = True
+                    print(f"i18n: {path}: {word} is a word of mainland China. Use {use}: {msgid!r}")
+    return found
 
 
 if __name__ == "__main__":

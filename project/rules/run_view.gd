@@ -4,6 +4,10 @@ class_name RunView
 ## arrays, strings, ints, and bools. A cell is {x, y}. A text for the player with
 ## arguments is {key, args}.
 
+## The help of a kit offer for the freight on the dock and in the hold (SPEC Section 20.2).
+const HELPS_TEXT := "Helps {count} of your freight"
+const FORK_HELP_TEXT := "The next jump has a fork step"
+
 
 ## Returns the name, the rule, and the break limit of each trait (SPEC Section 8.4).
 static func terms(cat: Catalog) -> Array:
@@ -78,6 +82,33 @@ static func text(key: String, args: Dictionary = {}) -> Dictionary:
 	return {"key": key, "args": args}
 
 
+## Returns how a kit definition helps the cargo on the dock and in the hold, as a
+## text, or {} (SPEC Section 20.2).
+static func kit_helps(run: Run, d: CargoDef) -> Dictionary:
+	if d.traits.has(Defs.TRAIT_SENSOR):
+		return text(FORK_HELP_TEXT) if not run.fork_options.is_empty() else {}
+	var wants: Array = []
+	var kind := Defs.KIND_FREIGHT
+	if d.traits.has(Defs.TRAIT_COOLER):
+		wants = [Defs.TRAIT_PERISHABLE]
+	elif d.traits.has(Defs.TRAIT_CUSHION):
+		wants = [Defs.TRAIT_FRAGILE]
+	elif d.traits.has(Defs.TRAIT_SHIELD):
+		wants = [Defs.TRAIT_FRAGILE, Defs.TRAIT_VOLATILE, Defs.TRAIT_FLUID, Defs.TRAIT_ELECTRONIC]
+	elif d.traits.has(Defs.TRAIT_BATTERY):
+		wants = [Defs.TRAIT_SHIELD]
+		kind = Defs.KIND_KIT
+	var count := 0
+	for c: Cargo in run.cargo.values():
+		if c.kind != kind:
+			continue
+		for t: String in wants:
+			if c.has(t):
+				count += 1
+				break
+	return text(HELPS_TEXT, {"count": count}) if count > 0 else {}
+
+
 ## Returns the visible state of a run.
 static func view(run: Run) -> Dictionary:
 	var cat := run.cat
@@ -148,6 +179,7 @@ static func view(run: Run) -> Dictionary:
 					"mass": run.def_mass(d),
 					"traits": Array(d.traits),
 					"shape": Shapes.to_view(d.shape),
+					"helps": kit_helps(run, d),
 				}
 			)
 		)
@@ -163,6 +195,13 @@ static func view(run: Run) -> Dictionary:
 		"reinforce_price": run.reinforce_price(),
 		"reinforce_amount": cat.reinforce_amount,
 		"scrap_cell": cat.price("scrap_cell"),
+		"clamps": run.clamps,
+		"clamps_after": run.clamps + 1,
+		"hold": {"columns": run.columns, "rows": run.rows},
+		"column_after": {"columns": run.columns + 1, "rows": run.rows},
+		"row_after": {"columns": run.columns, "rows": run.rows + 1},
+		"mass_limit": run.mass_limit,
+		"mass_limit_after": run.mass_limit + cat.reinforce_amount,
 	}
 	if run.phase == Defs.PHASE_TOLL:
 		v["toll_gate"] = {
@@ -256,6 +295,42 @@ static func preview_links(run: Run, id: int, pos: Vector2i, rot: int) -> Array:
 	return out
 
 
+## Adds the values of a contract card to its view: the freight groups, the totals,
+## the mass after it is accepted, and the loaded pieces (SPEC Section 20.2).
+static func _contract_card(run: Run, k: Contract, kv: Dictionary) -> void:
+	var groups := []
+	var by_id := {}
+	var mass := 0
+	for f: Dictionary in kv["freight"]:
+		mass += f["mass"]
+		if by_id.has(f["def_id"]):
+			by_id[f["def_id"]]["count"] += 1
+			continue
+		var g := f.duplicate()
+		g["count"] = 1
+		by_id[f["def_id"]] = g
+		groups.append(g)
+	var carried := 0
+	for c in run.hold_cargo():
+		carried += run.cargo_mass(c)
+	for id in run.dock:
+		carried += run.cargo_mass(run.cargo[id])
+	var after := carried + mass
+	var loaded := 0
+	for c in run.hold_cargo():
+		if k.accepted and c.contract == k.id:
+			loaded += 1
+	kv["groups"] = groups
+	kv["pieces"] = kv["freight"].size()
+	kv["total_pay"] = k.template.pay * kv["freight"].size()
+	kv["mass"] = mass
+	kv["mass_after"] = after
+	kv["mass_state"] = (
+		"over" if after > run.max_mass() else "fee" if after > run.mass_limit else "ok"
+	)
+	kv["loaded"] = loaded
+
+
 static func _contract(run: Run, i: int, k: Contract) -> Dictionary:
 	var t := k.template
 	var freight := []
@@ -283,6 +358,7 @@ static func _contract(run: Run, i: int, k: Contract) -> Dictionary:
 		"bonus": {},
 		"accepted": k.accepted,
 	}
+	_contract_card(run, k, kv)
 	if t.has_bonus():
 		var b := t.bonus
 		var key := run.cat.term_text("bonuses", b["type"])
