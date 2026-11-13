@@ -1,8 +1,8 @@
 {
-	"id": "coolant_tank",
-	"name": "Coolant Tank",
+	"id": "specimen_tube",
+	"name": "Specimen Tube",
 	"kind": "freight",
 	"weight": "standard",
-	"traits": ["fluid"],
+	"traits": ["fragile"],
 	"shape": [[0, 0], [0, 1]]
 }

@@ -12,12 +12,48 @@ const SLIDE_TIME := 0.45
 const ALPHA := 0.18
 ## The cargo: a shape, its first cell, and how it looks.
 const START: Array[Dictionary] = [
-	{"cell": Vector2i(0, 0), "shape": [[0, 0], [1, 0]], "traits": ["fragile"], "weight": 1},
-	{"cell": Vector2i(4, 1), "shape": [[0, 0], [0, 1]], "traits": ["volatile"], "weight": 2},
-	{"cell": Vector2i(7, 0), "shape": [[0, 0]], "traits": [], "weight": 3},
-	{"cell": Vector2i(2, 3), "shape": [[0, 0], [1, 0], [1, 1]], "traits": ["fluid"], "weight": 2},
-	{"cell": Vector2i(6, 4), "shape": [[0, 0], [1, 0]], "traits": ["electronic"], "weight": 1},
-	{"cell": Vector2i(0, 5), "shape": [[0, 0]], "traits": ["shield"], "weight": 2},
+	{
+		"id": "steel_ingot",
+		"cell": Vector2i(0, 0),
+		"shape": [[0, 0], [1, 0]],
+		"traits": [],
+		"weight": 3
+	},
+	{
+		"id": "specimen_tube",
+		"cell": Vector2i(4, 1),
+		"shape": [[0, 0], [0, 1]],
+		"traits": ["fragile"],
+		"weight": 2
+	},
+	{
+		"id": "fuel_drum",
+		"cell": Vector2i(7, 0),
+		"shape": [[0, 0]],
+		"traits": ["fluid", "volatile"],
+		"weight": 2
+	},
+	{
+		"id": "coolant_pipe",
+		"cell": Vector2i(2, 3),
+		"shape": [[0, 0], [1, 0], [0, 1]],
+		"traits": ["fluid"],
+		"weight": 2
+	},
+	{
+		"id": "circuit_boards",
+		"cell": Vector2i(6, 4),
+		"shape": [[0, 0], [1, 0]],
+		"traits": ["electronic"],
+		"weight": 1
+	},
+	{
+		"id": "shield_generator",
+		"cell": Vector2i(0, 5),
+		"shape": [[0, 0]],
+		"traits": ["shield"],
+		"weight": 2
+	},
 ]
 const DIRECTIONS: Array[Vector2i] = [Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i.DOWN]
 
@@ -32,7 +68,12 @@ func _ready() -> void:
 		var shape := []
 		for xy: Array in c["shape"]:
 			shape.append({"x": xy[0], "y": xy[1]})
-		var look := {"kind": Defs.KIND_FREIGHT, "traits": c["traits"], "weight_value": c["weight"]}
+		var look := {
+			"def_id": c["id"],
+			"kind": Defs.KIND_FREIGHT,
+			"traits": c["traits"],
+			"weight_value": c["weight"],
+		}
 		_cargo.append(
 			{"cell": c["cell"], "shape": shape, "look": look, "from": c["cell"], "t": 1.0}
 		)

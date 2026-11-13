@@ -1,0 +1,70 @@
+{
+	"battery_pack": {
+		"source": "sorted/scifi-objects/battery-pack-rectangular-yellow-charged_20260225_034401.png"
+	},
+	"cargo_crate": {
+		"source": "sorted/scifi-objects/crate-metal-gray-cargo-container-storage_20260225_035321.png"
+	},
+	"circuit_boards": {
+		"source": "sorted/scifi-items/circuit-board-green-chips-traces-copper_20260225_124039.png",
+		"crop": [
+			0,
+			50,
+			200,
+			100
+		]
+	},
+	"coolant_pipe": {
+		"source": "sorted/scifi-items/coolant-pipe-curved-metal-tube-joint_20260225_124150.png"
+	},
+	"cooler_unit": {
+		"source": "sorted/cyberpunk-assets/interior_items/cyber-fridge-food-storage-kitchen-008-2026-03-07T18-21-35.png"
+	},
+	"courier_drone": {
+		"source": "sorted/scifi-objects/drone-delivery-box-carrying-flying_20260225_032705.png"
+	},
+	"energy_crystal": {
+		"source": "sorted/scifi-items/energy-crystal-blue-hexagonal-glowing-shard_20260225_122346.png"
+	},
+	"foam_pad": {
+		"source": "sorted/sports/yoga-mat-rolled-purple-foam-exercise-floor_20260217_225623.png",
+		"scale": "fit"
+	},
+	"frozen_octopus": {
+		"source": "sorted/ocean-creatures/ocean-octopus-tentacles-eight-arms-003-2026-03-25T19-14-54.png"
+	},
+	"fuel_drum": {
+		"source": "sorted/scifi-objects/barrel-fuel-red-hazard-warning-stripe_20260225_035402.png"
+	},
+	"inertia_anchor": {
+		"source": "sorted/scifi-items/thruster-nozzle-cone-metal-exhaust-engine_20260225_123900.png"
+	},
+	"plasma_cell": {
+		"source": "sorted/scifi-items/plasma-core-sphere-orange-contained-hot_20260225_122416.png"
+	},
+	"radar_dish": {
+		"source": "sorted/scifi-objects/satellite-dish-large-parabolic-antenna-white_20260225_033521.png"
+	},
+	"ration_crate": {
+		"source": "sorted/cyberpunk/cyberpunk-synth-food-bar-packaged-nutrition_20260218_074903.png"
+	},
+	"reactor_core": {
+		"source": "sorted/scifi-interior/scifi-fusion-reactor-core-glowing-blue-contained_20260217_142026.png"
+	},
+	"sensor_array": {
+		"source": "sorted/scifi-items/sensor-module-small-dome-camera-lens_20260225_124243.png"
+	},
+	"shield_generator": {
+		"source": "sorted/scifi-objects/shield-generator-small-disc-blue-glow_20260225_033352.png"
+	},
+	"space_cheese": {
+		"source": "sorted/food-cooking/ingredient-cheese-block-yellow-holes_20260217_095150.png"
+	},
+	"specimen_tube": {
+		"source": "sorted/scifi-interior/scifi-cryo-chamber-pod-frozen-glass-tube_20260217_135421.png"
+	},
+	"steel_ingot": {
+		"source": "sorted/rpg-crafting-items/rpg-steel-ingot-polished-metal-002-2026-03-03T17-02-45.png",
+		"scale": "fit"
+	}
+}

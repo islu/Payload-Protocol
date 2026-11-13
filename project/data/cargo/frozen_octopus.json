@@ -1,0 +1,8 @@
+{
+	"id": "frozen_octopus",
+	"name": "Frozen Octopus",
+	"kind": "freight",
+	"weight": "standard",
+	"traits": ["perishable"],
+	"shape": [[1, 0], [0, 1], [1, 1], [2, 1]]
+}

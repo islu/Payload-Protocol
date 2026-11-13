@@ -2,6 +2,6 @@
 	"id": "coolant",
 	"sectors": [1, 2],
 	"client_name": "Frostline Labs",
-	"freight": ["coolant_tank", "coolant_tank", "coolant_tank"],
+	"freight": ["coolant_pipe", "coolant_pipe", "coolant_pipe"],
 	"pay": 7
 }

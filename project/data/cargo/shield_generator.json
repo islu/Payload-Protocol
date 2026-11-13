@@ -4,6 +4,6 @@
 	"kind": "kit",
 	"weight": "standard",
 	"traits": ["shield"],
-	"shape": [[0, 0], [1, 0]],
+	"shape": [[0, 0]],
 	"price": 12
 }

@@ -112,7 +112,7 @@ A cargo can have more than one trait.
 ## 25. Mass
 
 - Each cargo has a **mass**: its weight value (Section 6.1) multiplied by the number of its cells.
-  - Example: a Cargo Crate (standard, 2 cells) has a mass of 4. A Reactor Core (heavy, 4 cells) has a mass of 12.
+  - Example: a Steel Ingot (heavy, 2 cells) has a mass of 6. A Reactor Core (heavy, 4 cells) has a mass of 12.
 - Freight, kit, and scrap have mass. Scrap is light, so each cell of scrap has a mass of 1.
 - The **hold mass** is the sum of the mass of each cargo in the hold. Cargo on the dock does not count.
 - The ship has a **mass limit**. A run starts with a mass limit of 24. The **Reinforce hull** service adds to it (Section 17.2).

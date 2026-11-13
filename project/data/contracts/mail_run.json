@@ -3,12 +3,12 @@
 	"sectors": [1],
 	"client_name": "Orbital Post",
 	"freight": [
-		"mail_bundle",
-		"mail_bundle",
-		"mail_bundle",
-		"mail_bundle",
-		"mail_bundle",
-		"mail_bundle"
+		"ration_crate",
+		"ration_crate",
+		"ration_crate",
+		"ration_crate",
+		"ration_crate",
+		"ration_crate"
 	],
 	"pay": 3
 }

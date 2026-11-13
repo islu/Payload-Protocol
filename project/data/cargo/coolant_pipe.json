@@ -1,0 +1,8 @@
+{
+	"id": "coolant_pipe",
+	"name": "Coolant Pipe",
+	"kind": "freight",
+	"weight": "standard",
+	"traits": ["fluid"],
+	"shape": [[0, 0], [1, 0], [0, 1]]
+}

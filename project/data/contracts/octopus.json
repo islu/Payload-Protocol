@@ -1,7 +1,7 @@
 {
-	"id": "squid",
+	"id": "octopus",
 	"sectors": [2],
 	"client_name": "Neptune Seafood",
-	"freight": ["frozen_squid"],
+	"freight": ["frozen_octopus"],
 	"pay": 20
 }

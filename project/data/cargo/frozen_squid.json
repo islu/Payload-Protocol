@@ -1,8 +1,0 @@
-{
-	"id": "frozen_squid",
-	"name": "Frozen Squid",
-	"kind": "freight",
-	"weight": "standard",
-	"traits": ["perishable"],
-	"shape": [[0, 0], [1, 0], [2, 0], [1, 1]]
-}

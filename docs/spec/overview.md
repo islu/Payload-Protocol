@@ -51,15 +51,17 @@ These games are references for mechanics only. Do not copy their art, names, ite
 ### 4.2 Art
 
 - The art style is a clean sci-fi dashboard: a dark navy background, thin bright lines, and flat panels.
-- The game draws all cargo with code or with SVG files. Do not draw cargo as pixel art.
+- Each cargo shows one pixel art image over its cells, at 100 pixels for each cell. The images come from freepixel.art (`docs/assets.md`). A cargo with no image shows a drawn shape.
+- A cargo keeps its image upright when its cells allow it. A cargo of 1 cell does not turn its image. A line or a square turns its image by 0 or 90 degrees only. An L or a T turns its image with the cargo.
+- The cells of each cargo have a faint floor color. When the mouse is on a cargo, a bright frame shows its cells.
+- Scrap shows the image of its cargo in gray, with cracks.
 - The effects of Section 21 are pixel art animations. `task fx` makes them with pixelfx (MIT). They play at 3 times their pixel size, with no smoothing.
-- The border of a cargo shows its weight: 2 pixels for light, 3 for standard, and 5 for heavy. The cargo also has one dot for each weight value, on a dark disc.
+- A cargo shows one dot for each weight value at its bottom right corner, on a dark disc.
 - The hold has a frame of metal plates with rivets.
-- Each trait has one color and one icon. Each cargo shows the icon of each trait. Do not show a trait with a color only.
+- Each trait has one color and one icon. Each cargo shows a small badge with the icon of each trait at its top left corner. Do not show a trait with a color only.
 - A **CRT filter** draws scanlines and a vignette on the full screen. It does not bend the image, so that the mouse points at the cell that the player sees. A setting turns it off (Section 23.1).
 - The font is jf open huninn 2.1 (SIL Open Font License 1.1). It has Latin and Traditional Chinese glyphs.
 - The text has four sizes only: heading 24, body 18, small 15, and button 20 pixels. Display text is the exception: the title of the game, the Warp button, and the arrows of the hazard cards.
-- An art file can replace a drawn shape with no code change (the `fx-art` skill has the file names).
 
 ### 4.3 Sound
 

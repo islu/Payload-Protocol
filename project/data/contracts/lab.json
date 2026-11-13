@@ -3,11 +3,11 @@
 	"sectors": [3],
 	"client_name": "Frostline Labs",
 	"freight": [
-		"coolant_tank",
-		"coolant_tank",
+		"coolant_pipe",
+		"coolant_pipe",
 		"circuit_boards",
 		"circuit_boards",
-		"crystal_vase"
+		"energy_crystal"
 	],
 	"pay": 11,
 	"bonus": {

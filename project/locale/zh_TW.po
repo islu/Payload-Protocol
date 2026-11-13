@@ -569,9 +569,9 @@ msgstr "貨箱"
 msgid "Circuit Boards"
 msgstr "電路板"
 
-#: project/data/cargo/coolant_tank.json
-msgid "Coolant Tank"
-msgstr "冷卻液罐"
+#: project/data/cargo/coolant_pipe.json
+msgid "Coolant Pipe"
+msgstr "冷卻液管"
 
 #: project/data/cargo/cooler_unit.json
 msgid "Cooler Unit"
@@ -581,33 +581,25 @@ msgstr "冷藏機"
 msgid "Courier Drone"
 msgstr "快遞無人機"
 
-#: project/data/cargo/crystal_vase.json
-msgid "Crystal Vase"
-msgstr "水晶花瓶"
+#: project/data/cargo/energy_crystal.json
+msgid "Energy Crystal"
+msgstr "能量水晶"
 
 #: project/data/cargo/foam_pad.json
 msgid "Foam Pad"
 msgstr "緩衝泡棉"
 
-#: project/data/cargo/frozen_squid.json
-msgid "Frozen Squid"
-msgstr "冷凍魷魚"
+#: project/data/cargo/frozen_octopus.json
+msgid "Frozen Octopus"
+msgstr "冷凍章魚"
 
 #: project/data/cargo/fuel_drum.json
 msgid "Fuel Drum"
 msgstr "燃料桶"
 
-#: project/data/cargo/glass_sculpture.json
-msgid "Glass Sculpture"
-msgstr "玻璃雕塑"
-
 #: project/data/cargo/inertia_anchor.json
 msgid "Inertia Anchor"
 msgstr "慣性錨"
-
-#: project/data/cargo/mail_bundle.json
-msgid "Mail Bundle"
-msgstr "郵件包"
 
 #: project/data/cargo/plasma_cell.json
 msgid "Plasma Cell"
@@ -616,6 +608,10 @@ msgstr "電漿電池"
 #: project/data/cargo/radar_dish.json
 msgid "Radar Dish"
 msgstr "雷達天線"
+
+#: project/data/cargo/ration_crate.json
+msgid "Ration Crate"
+msgstr "口糧箱"
 
 #: project/data/cargo/reactor_core.json
 msgid "Reactor Core"
@@ -632,6 +628,10 @@ msgstr "護盾產生器"
 #: project/data/cargo/space_cheese.json
 msgid "Space Cheese"
 msgstr "太空起司"
+
+#: project/data/cargo/specimen_tube.json
+msgid "Specimen Tube"
+msgstr "標本管"
 
 #: project/data/cargo/steel_ingot.json
 msgid "Steel Ingot"
@@ -681,6 +681,10 @@ msgstr "鐵工公會"
 msgid "Orbital Post"
 msgstr "軌道郵政"
 
+#: project/data/contracts/octopus.json
+msgid "Neptune Seafood"
+msgstr "海王星海產"
+
 #: project/data/contracts/plasma_crate.json
 #: project/data/contracts/plasma_small.json
 msgid "Bright Spark Mining"
@@ -698,10 +702,6 @@ msgstr "螺旋能源"
 #: project/data/contracts/sculpture.json
 msgid "Museum of Nowhere"
 msgstr "無處博物館"
-
-#: project/data/contracts/squid.json
-msgid "Neptune Seafood"
-msgstr "海王星海產"
 
 #: project/data/lines/all_intact.json
 msgid "Everything arrived in one piece. I am as surprised as you are."

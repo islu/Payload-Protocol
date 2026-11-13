@@ -10,16 +10,15 @@ signal clamp_pressed(id: int)
 ## The mouse is on a cargo, or on no cargo (id -1).
 signal cargo_hovered(id: int)
 
-## The size of a cell grows to fill the free space, between these values (SPEC Section 20.2).
-const MIN_CELL := 84.0
-const MAX_CELL := 128.0
+## The size of a cell: the cargo images show at half their size (SPEC Sections 4.2 and 20.2).
+const CELL := 100.0
 ## The free space around the grid, in cells: the marks of the front wall are there.
 const MARGIN := 0.8
 ## The width of the frame around the grid, in pixels.
 const FRAME := 14.0
 
-## The size of a cell in pixels now.
-var cell := MIN_CELL
+## The size of a cell in pixels.
+var cell := CELL
 
 var columns := 6
 var rows := 6
@@ -56,7 +55,7 @@ func set_view(run: Dictionary) -> void:
 	links = run["links"]
 	front_walls = PackedStringArray([run.get("front_wall", "")])
 	show_jolts = true
-	custom_minimum_size = Vector2(columns + MARGIN, rows + MARGIN) * MIN_CELL
+	custom_minimum_size = Vector2(columns + MARGIN, rows + MARGIN) * CELL
 	_fit()
 	queue_redraw()
 
@@ -68,11 +67,28 @@ func show_front_walls(walls: PackedStringArray, jolts: bool) -> void:
 	queue_redraw()
 
 
-## Sets the size of a cell from the size of the view.
+## The grid stays centered when the view changes size.
 func _fit() -> void:
-	var fit := minf(size.x / (columns + MARGIN), size.y / (rows + MARGIN))
-	cell = clampf(floorf(fit), MIN_CELL, MAX_CELL)
 	queue_redraw()
+
+
+## Sets the cargo under the mouse, or -1. It shows a bright frame on its cells (SPEC Section 4.2).
+func set_hover(id: int) -> void:
+	if id != _hover:
+		_hover = id
+		cargo_hovered.emit(id)
+		queue_redraw()
+
+
+## Returns the cells of the frame of the cargo under the mouse (SPEC Section 4.2).
+func frame_cells() -> Array[Vector2i]:
+	var out: Array[Vector2i] = []
+	var c := _cargo(_hover)
+	if c.is_empty() or not c["in_hold"]:
+		return out
+	for s: Dictionary in c["shape"]:
+		out.append(Vector2i(c["x"] + s["x"], c["y"] + s["y"]))
+	return out
 
 
 ## Returns the upper left of the grid in local coordinates. The grid is centered.
@@ -114,10 +130,7 @@ func cargo_at(at: Vector2i) -> int:
 
 func _gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
-		var id := cargo_at(cell_at(get_global_mouse_position()))
-		if id != _hover:
-			_hover = id
-			cargo_hovered.emit(id)
+		set_hover(cargo_at(cell_at(get_global_mouse_position())))
 	elif event is InputEventMouseButton and event.pressed:
 		var at := cell_at(get_global_mouse_position())
 		var id := cargo_at(at)
@@ -137,9 +150,8 @@ func _gui_input(event: InputEvent) -> void:
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_RESIZED:
 		_fit()
-	if what == NOTIFICATION_MOUSE_EXIT and _hover != -1:
-		_hover = -1
-		cargo_hovered.emit(-1)
+	if what == NOTIFICATION_MOUSE_EXIT:
+		set_hover(-1)
 
 
 func _cargo(id: int) -> Dictionary:
@@ -196,6 +208,16 @@ func _draw() -> void:
 					false,
 					3.0
 				)
+	# The cargo under the mouse: a bright frame on its cells (SPEC Section 4.2).
+	var framed := frame_cells()
+	for p in framed:
+		var r := Rect2(o + Vector2(p) * cell, Vector2(cell, cell))
+		for d: Vector2i in Shapes.EDGE_NEIGHBORS:
+			if p + d in framed:
+				continue
+			var a := r.get_center() + (Vector2(d) - Vector2(d.y, d.x).abs()) * cell / 2.0
+			var b := r.get_center() + (Vector2(d) + Vector2(d.y, d.x).abs()) * cell / 2.0
+			draw_line(a - Vector2(d) * 2.0, b - Vector2(d) * 2.0, Palette.ACCENT, 3.0)
 	for wall in front_walls:
 		_draw_front_wall(o, wall)
 	_draw_links(o)

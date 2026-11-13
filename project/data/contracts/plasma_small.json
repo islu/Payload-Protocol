@@ -2,6 +2,6 @@
 	"id": "plasma_small",
 	"sectors": [1],
 	"client_name": "Bright Spark Mining",
-	"freight": ["plasma_cell", "cargo_crate", "mail_bundle"],
+	"freight": ["plasma_cell", "cargo_crate", "ration_crate"],
 	"pay": 7
 }

@@ -2,7 +2,7 @@
 	"id": "heavy_glass",
 	"sectors": [2, 3],
 	"client_name": "Ironworks Guild",
-	"freight": ["steel_ingot", "steel_ingot", "crystal_vase", "crystal_vase"],
+	"freight": ["steel_ingot", "steel_ingot", "energy_crystal", "energy_crystal"],
 	"pay": 9,
 	"bonus": {
 		"type": "all_intact",

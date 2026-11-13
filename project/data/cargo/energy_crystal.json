@@ -1,6 +1,6 @@
 {
-	"id": "crystal_vase",
-	"name": "Crystal Vase",
+	"id": "energy_crystal",
+	"name": "Energy Crystal",
 	"kind": "freight",
 	"weight": "light",
 	"traits": ["fragile"],

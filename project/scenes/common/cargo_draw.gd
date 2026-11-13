@@ -2,9 +2,14 @@ class_name CargoDraw
 ## Draws a cargo shape with its color, its trait marks, its weight, and its clamp
 ## (SPEC Section 4.2). The hold, the dock, the contracts, and the drag use it.
 
+## The floor color under the image of a cargo: it shows the cells (SPEC Section 4.2).
+const FLOOR_ALPHA := 0.16
+
 
 ## Draws a cargo at a place. shape is a list of {x, y}. origin is the upper left
-## of the cell (0, 0). alpha fades the cargo.
+## of the cell (0, 0). alpha fades the cargo. A cargo with an image (CargoArt)
+## shows a faint floor on its cells and the image over them. Other cargo shows a
+## drawn shape (SPEC Section 4.2).
 static func draw(
 	canvas: CanvasItem, cargo: Dictionary, shape: Array, origin: Vector2, cell: float, alpha := 1.0
 ) -> void:
@@ -14,6 +19,8 @@ static func draw(
 	var cells := {}
 	for c: Dictionary in shape:
 		cells[Vector2i(int(c["x"]), int(c["y"]))] = true
+	var scrap: bool = cargo.get("kind", "") == Defs.KIND_SCRAP
+	var floor_color := Color(color, FLOOR_ALPHA * alpha)
 	for c: Vector2i in cells:
 		var r := Rect2(origin + Vector2(c) * cell, Vector2(cell, cell))
 		# Fill the gap to a neighbor cell, so that one cargo reads as one piece.
@@ -22,44 +29,46 @@ static func draw(
 		var body := Rect2(
 			r.position + Vector2(gap, gap), r.size - Vector2(gap + grow_r, gap + grow_b)
 		)
-		canvas.draw_rect(body, color.darkened(0.55))
-		# A thicker border is a heavier cargo (SPEC Section 4.2).
-		var line := minf(border_width(cargo.get("weight_value", 1)), cell * 0.08)
-		canvas.draw_rect(body.grow(-line / 2.0), color, false, line)
-	if cargo.get("kind", "") == Defs.KIND_SCRAP:
-		_draw_cracks(canvas, cells, origin, cell, color)
+		if cargo.has("def_id") and CargoArt.texture(cargo["def_id"]) != null:
+			canvas.draw_rect(body, floor_color)
+		else:
+			canvas.draw_rect(body, color.darkened(0.55))
+			canvas.draw_rect(body.grow(-1.5), color, false, 3.0)
+	CargoArt.draw(
+		canvas, cargo.get("def_id", ""), shape, origin, cell, scrap, Color(1, 1, 1, alpha)
+	)
+	if scrap:
+		_draw_cracks(canvas, cells, origin, cell, Color(Palette.BAD.lerp(Color.WHITE, 0.3), alpha))
 	var first := _first_cell(cells)
 	var top_left := origin + Vector2(first) * cell
 	if cell < 18.0:
 		return
-	# One icon for each trait, in a row at the top of the first cell (SPEC Section 4.2).
-	var icon := clampf(cell * 0.26, 10.0, 22.0)
-	var x := top_left.x + gap + 4 + icon / 2
-	for t: String in cargo.get("traits", []):
+	# A badge with one icon for each trait, at the top left (SPEC Section 4.2).
+	var traits: Array = cargo.get("traits", [])
+	var icon := clampf(cell * 0.2, 8.0, 18.0)
+	if not traits.is_empty():
+		var badge := Rect2(
+			top_left + Vector2(gap + 2, gap + 2), Vector2(traits.size() * (icon + 4) + 4, icon + 8)
+		)
+		canvas.draw_rect(badge, Color(Palette.BACKGROUND, 0.75 * alpha))
+	var x := top_left.x + gap + 6 + icon / 2
+	for t: String in traits:
 		var mark_color: Color = Palette.TRAIT_COLORS.get(t, Palette.TEXT)
 		mark_color.a *= alpha
-		draw_icon(canvas, t, Vector2(x, top_left.y + gap + 4 + icon / 2), icon, mark_color)
+		draw_icon(canvas, t, Vector2(x, top_left.y + gap + 6 + icon / 2), icon, mark_color)
 		x += icon + 4
-	# The weight: one dot for each weight value, on a dark disc (SPEC Sections 4.2 and 6.1).
+	# The weight: one dot for each weight value, on a dark disc, at the bottom
+	# right (SPEC Sections 4.2 and 6.1). The dots grow with the cell.
+	var last := _last_cell(cells)
+	var corner := origin + Vector2(last + Vector2i.ONE) * cell
 	var dots: int = cargo.get("weight_value", 0)
-	# The dots grow with the cell, so that a small chip has small dots.
 	var r := clampf(cell * 0.045, 1.5, 5.0)
 	for i in dots:
-		var p := top_left + Vector2(cell - gap - r * 2.6 - i * r * 2.8, cell - gap - r * 2.6)
+		var p := corner - Vector2(gap + r * 2.6 + i * r * 2.8, gap + r * 2.6)
 		canvas.draw_circle(p, r * 1.5, Color(Palette.BACKGROUND, 0.8 * alpha))
 		canvas.draw_circle(p, r, Color(Palette.TEXT, alpha))
 	if cargo.get("clamped", false):
 		canvas.draw_rect(clamp_rect(top_left, cell), Color(Palette.CLAMP, alpha))
-
-
-## Returns the width of the border of a cargo for its weight value (SPEC Section 4.2).
-static func border_width(weight_value: int) -> float:
-	match weight_value:
-		1:
-			return 2.0
-		2:
-			return 3.0
-	return 5.0
 
 
 ## Draws the icon of a trait in a square of a size at a center.
@@ -184,6 +193,15 @@ static func _first_cell(cells: Dictionary) -> Vector2i:
 	var best := Vector2i(1 << 20, 1 << 20)
 	for c: Vector2i in cells:
 		if c.y < best.y or (c.y == best.y and c.x < best.x):
+			best = c
+	return best
+
+
+## The cell at the bottom right of a shape: the last row, the last cell in it.
+static func _last_cell(cells: Dictionary) -> Vector2i:
+	var best := Vector2i(-1, -1)
+	for c: Vector2i in cells:
+		if c.y > best.y or (c.y == best.y and c.x > best.x):
 			best = c
 	return best
 

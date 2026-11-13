@@ -30,13 +30,7 @@ func _run() -> void:
 	await _check_hints()
 	for sound in Sound.NAMES:
 		_check(Sound.exists(sound), "the sound %s has a file (SPEC Section 4.3)" % sound)
-	_check(
-		(
-			[CargoDraw.border_width(1), CargoDraw.border_width(2), CargoDraw.border_width(3)]
-			== [2.0, 3.0, 5.0]
-		),
-		"the border shows the weight: 2, 3, and 5 pixels (SPEC Section 4.2)"
-	)
+	_check_cargo_art()
 	for face in PilotFace.SHEETS:
 		_check(
 			not FxSheets.sheet(face).is_empty(),
@@ -345,10 +339,7 @@ func _check_layout(station: StationScreen) -> void:
 			wrong.append("%s %d %s" % [n.get_class(), font_size, station.get_path_to(n)])
 	_check(wrong.is_empty(), "the station text has the four sizes: %s (SPEC Section 4.2)" % [wrong])
 	var hold := station._hold
-	_check(
-		hold.cell >= 100.0,
-		"the cells grow to fill the center: %s px (SPEC Section 20.2)" % hold.cell
-	)
+	_check(hold.cell == 100.0, "each cell is 100 pixels: %s px (SPEC Section 20.2)" % hold.cell)
 	var grid := Rect2(hold.grid_origin(), Vector2(hold.columns, hold.rows) * hold.cell)
 	_check(
 		Rect2(Vector2.ZERO, hold.size).encloses(grid),
@@ -360,13 +351,32 @@ func _check_layout(station: StationScreen) -> void:
 		station._hazard_box.get_child_count() == GameState.view()["run"]["hazard"].size(),
 		"the hazard panel has one card for each step (SPEC Section 20.2)"
 	)
+	var left := hold.global_position.x + grid.position.x
+	var cards := station._hazard_box.get_children()
 	_check(
 		(
-			panel.end.y <= top
-			and absf(panel.get_center().x - hold.get_global_rect().get_center().x) < 2.0
+			panel.end.x <= left
+			and panel.position.y >= top
+			and panel.end.y <= top + grid.size.y
+			and (cards.size() < 2 or cards[1].global_position.y > cards[0].global_position.y)
 		),
-		"the hazard panel is above the hold, in the center (SPEC Section 20.2)"
+		(
+			"the hazard panel is at the left of the hold: %s, grid %s (SPEC Section 20.2)"
+			% [panel, Rect2(Vector2(left, top), grid.size)]
+		)
 	)
+	# The mouse on a cargo shows a bright frame on its cells (SPEC Section 4.2).
+	var run: Dictionary = GameState.view()["run"]
+	for c: Dictionary in run["cargo"]:
+		if c["in_hold"]:
+			hold.set_hover(c["id"])
+			_check(
+				hold.frame_cells().size() == c["shape"].size(),
+				"the mouse on a cargo frames its cells (SPEC Section 4.2)"
+			)
+			hold.set_hover(-1)
+			_check(hold.frame_cells().is_empty(), "no frame when the mouse leaves the cargo")
+			break
 
 
 ## Changes the language in the settings of the pause menu, and checks that the
@@ -624,4 +634,32 @@ func _check_hazard_hover(station: StationScreen) -> void:
 			and seen["arrow"] == StationScreen.ARROWS[Defs.DIR_UP]
 		),
 		"a fork step that a Sensor shows has a Sensor icon and one direction (SPEC Section 20.2)"
+	)
+
+
+## Each cargo has an image and a scrap image, and the image stays upright when the
+## cells allow it (SPEC Section 4.2).
+func _check_cargo_art() -> void:
+	var missing := PackedStringArray()
+	for id: String in GameState.catalog.cargo:
+		if CargoArt.texture(id) == null or CargoArt.texture(id, true) == null:
+			missing.append(id)
+	_check(
+		missing.is_empty(),
+		"each cargo has an image and a scrap image: %s (SPEC Section 4.2)" % [missing]
+	)
+	var turned := func(id: String, rot: int) -> int:
+		var base: Array[Vector2i] = GameState.catalog.cargo[id].shape
+		return CargoArt.turns(id, Shapes.to_view(Shapes.rotate(base, rot)))
+	_check(
+		[turned.call("fuel_drum", 1), turned.call("fuel_drum", 3)] == [0, 0],
+		"a cargo of 1 cell does not turn its image (SPEC Section 4.2)"
+	)
+	_check(
+		[turned.call("specimen_tube", 1), turned.call("specimen_tube", 2)] == [1, 0],
+		"a line turns its image by 0 or 90 degrees only (SPEC Section 4.2)"
+	)
+	_check(
+		[turned.call("coolant_pipe", 2), turned.call("frozen_octopus", 3)] == [2, 3],
+		"an L or a T turns its image with the cargo (SPEC Section 4.2)"
 	)

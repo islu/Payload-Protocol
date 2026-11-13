@@ -17,10 +17,10 @@ The station screen has these areas:
 | Area | Position | Content |
 | --- | --- | --- |
 | Top bar | Top | The sector and the jump ("Sector 2 · Jump 1"), the credits, the toll of this sector, and the jumps before the toll. |
-| Hazard panel | Center, above the hold | The shift steps of the next jump in order (Section 18). Each step is a card with a large arrow, its number, and its direction. A fork step shows its two directions and a question mark. |
+| Hazard panel | Center, at the left of the hold, from top to bottom | The shift steps of the next jump in order (Section 18). Each step is a card with a large arrow, its number, and its direction. A fork step shows its two directions and a question mark. |
 | Dock | Left | The cargo on the dock (Section 8.1). |
 | Contract board | Left, below the dock | The 3 contracts, with Accept and Cancel buttons (Section 15). |
-| Hold | Center | The grid and its cargo, the links, and the clamps. The cells grow to fill the free space of the center, from 84 to 128 pixels. |
+| Hold | Center | The grid and its cargo, the links, and the clamps. Each cell is 100 pixels, so that the cargo images show at half their size (Section 4.2). |
 | Shop | Right | The kit offers, Reroll, the services, and the sell area (Section 17). |
 | Clamp panel | Right, below the shop | The free clamps (Section 13). |
 | Warp button | Bottom right | Starts the warp (Section 9). |
@@ -45,7 +45,7 @@ The station screen has these areas:
 ### 20.4 Arrival Report
 
 - The report shows each contract: its pieces (delivered, scrap, spoiled, lost, or breached), its pay, and its bonus. A lost piece is a piece that an explosion removed.
-- Pieces of a contract with the same name and the same state share one line with a count, for example "Mail Bundle ×6: delivered".
+- Pieces of a contract with the same name and the same state share one line with a count, for example "Ration Crate ×6: delivered".
 - It shows the total credits that the jump gave.
 - The pilot speaks a line about the result.
 - A Continue button goes to the next station, or to the toll gate.

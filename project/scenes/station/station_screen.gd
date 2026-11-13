@@ -73,7 +73,7 @@ var _top_label: Label
 var _credits_label: Label
 var _toll_label: Label
 var _mass_label: Label
-var _hazard_box: HBoxContainer
+var _hazard_box: VBoxContainer
 var _dock_panel: PanelContainer
 var _dock_flow: HFlowContainer
 var _contracts_box: VBoxContainer
@@ -171,19 +171,28 @@ func _build() -> void:
 	center.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	center.add_theme_constant_override("separation", 8)
 	body.add_child(center)
-	# The hazard panel: one card for each shift step, above the hold (SPEC Section 20.2).
-	var next_jump := _label(center, NEXT_JUMP_TEXT, TextSize.BODY, Palette.WARN)
+	var row := HBoxContainer.new()
+	row.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	row.add_theme_constant_override("separation", 8)
+	center.add_child(row)
+	# The hazard panel: one card for each shift step, from top to bottom, at the
+	# left of the hold (SPEC Section 20.2).
+	var hazard := VBoxContainer.new()
+	hazard.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	hazard.add_theme_constant_override("separation", 10)
+	row.add_child(hazard)
+	var next_jump := _label(hazard, NEXT_JUMP_TEXT, TextSize.BODY, Palette.WARN)
 	next_jump.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_hazard_box = HBoxContainer.new()
-	_hazard_box.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	_hazard_box.add_theme_constant_override("separation", 14)
-	center.add_child(_hazard_box)
+	_hazard_box = VBoxContainer.new()
+	_hazard_box.add_theme_constant_override("separation", 10)
+	hazard.add_child(_hazard_box)
 	_hold = HoldView.new()
 	_hold.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_hold.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_hold.cargo_pressed.connect(_on_hold_pressed)
 	_hold.clamp_pressed.connect(func(id: int) -> void: _act(GameState.unclamp_cargo(id)))
 	_hold.cargo_hovered.connect(_on_hold_hovered)
-	center.add_child(_hold)
+	row.add_child(_hold)
 	var hint := _label(center, HINT_TEXT, TextSize.SMALL, Palette.TEXT_DIM)
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 

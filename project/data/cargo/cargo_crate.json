@@ -4,5 +4,5 @@
 	"kind": "freight",
 	"weight": "standard",
 	"traits": [],
-	"shape": [[0, 0], [1, 0]]
+	"shape": [[0, 0]]
 }

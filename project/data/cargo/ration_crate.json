@@ -1,6 +1,6 @@
 {
-	"id": "mail_bundle",
-	"name": "Mail Bundle",
+	"id": "ration_crate",
+	"name": "Ration Crate",
 	"kind": "freight",
 	"weight": "light",
 	"traits": [],

@@ -542,8 +542,8 @@ msgstr ""
 msgid "Circuit Boards"
 msgstr ""
 
-#: project/data/cargo/coolant_tank.json
-msgid "Coolant Tank"
+#: project/data/cargo/coolant_pipe.json
+msgid "Coolant Pipe"
 msgstr ""
 
 #: project/data/cargo/cooler_unit.json
@@ -554,32 +554,24 @@ msgstr ""
 msgid "Courier Drone"
 msgstr ""
 
-#: project/data/cargo/crystal_vase.json
-msgid "Crystal Vase"
+#: project/data/cargo/energy_crystal.json
+msgid "Energy Crystal"
 msgstr ""
 
 #: project/data/cargo/foam_pad.json
 msgid "Foam Pad"
 msgstr ""
 
-#: project/data/cargo/frozen_squid.json
-msgid "Frozen Squid"
+#: project/data/cargo/frozen_octopus.json
+msgid "Frozen Octopus"
 msgstr ""
 
 #: project/data/cargo/fuel_drum.json
 msgid "Fuel Drum"
 msgstr ""
 
-#: project/data/cargo/glass_sculpture.json
-msgid "Glass Sculpture"
-msgstr ""
-
 #: project/data/cargo/inertia_anchor.json
 msgid "Inertia Anchor"
-msgstr ""
-
-#: project/data/cargo/mail_bundle.json
-msgid "Mail Bundle"
 msgstr ""
 
 #: project/data/cargo/plasma_cell.json
@@ -588,6 +580,10 @@ msgstr ""
 
 #: project/data/cargo/radar_dish.json
 msgid "Radar Dish"
+msgstr ""
+
+#: project/data/cargo/ration_crate.json
+msgid "Ration Crate"
 msgstr ""
 
 #: project/data/cargo/reactor_core.json
@@ -604,6 +600,10 @@ msgstr ""
 
 #: project/data/cargo/space_cheese.json
 msgid "Space Cheese"
+msgstr ""
+
+#: project/data/cargo/specimen_tube.json
+msgid "Specimen Tube"
 msgstr ""
 
 #: project/data/cargo/steel_ingot.json
@@ -654,6 +654,10 @@ msgstr ""
 msgid "Orbital Post"
 msgstr ""
 
+#: project/data/contracts/octopus.json
+msgid "Neptune Seafood"
+msgstr ""
+
 #: project/data/contracts/plasma_crate.json
 #: project/data/contracts/plasma_small.json
 msgid "Bright Spark Mining"
@@ -670,10 +674,6 @@ msgstr ""
 
 #: project/data/contracts/sculpture.json
 msgid "Museum of Nowhere"
-msgstr ""
-
-#: project/data/contracts/squid.json
-msgid "Neptune Seafood"
 msgstr ""
 
 #: project/data/lines/all_intact.json

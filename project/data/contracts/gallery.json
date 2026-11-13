@@ -2,7 +2,7 @@
 	"id": "gallery",
 	"sectors": [2, 3],
 	"client_name": "Luma Gallery",
-	"freight": ["glass_sculpture", "crystal_vase", "crystal_vase"],
+	"freight": ["specimen_tube", "energy_crystal", "energy_crystal"],
 	"pay": 12,
 	"bonus": {
 		"type": "zone",

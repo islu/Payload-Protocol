@@ -22,6 +22,7 @@ This file has the design rules of the game content. The data files in `project/d
 - A large shape (4 or 5 cells) is hard to pack. Give it more pay, or make it a good wall.
 - Heavy cargo makes strong hits. It is a danger for its neighbors and a safe wall when it is clamped.
 - Kit helps freight. A kit is never a target of a contract.
+- Each cargo has an image (SPEC Section 4.2). Select the image first, then give the cargo the shape of the image. Add the image to `tools/art/cargo_art.json` and run `task art`.
 
 ## First Content (Version 1)
 
@@ -31,19 +32,19 @@ The first content has 14 freight and 6 kit. The data files set the shapes and th
 
 | ID | Name | Weight | Traits | Shape idea |
 | --- | --- | --- | --- | --- |
-| `mail_bundle` | Mail Bundle | light | — | 1 cell |
-| `cargo_crate` | Cargo Crate | standard | — | 2 cells, a line |
+| `ration_crate` | Ration Crate | light | — | 1 cell |
+| `cargo_crate` | Cargo Crate | standard | — | 1 cell |
 | `steel_ingot` | Steel Ingot | heavy | — | 2 cells, a line |
-| `crystal_vase` | Crystal Vase | light | Fragile | 1 cell |
-| `glass_sculpture` | Glass Sculpture | standard | Fragile | 3 cells, an L |
+| `energy_crystal` | Energy Crystal | light | Fragile | 1 cell |
+| `specimen_tube` | Specimen Tube | standard | Fragile | 2 cells, a line |
 | `radar_dish` | Radar Dish | standard | Fragile, Electronic | 4 cells, a square |
 | `circuit_boards` | Circuit Boards | light | Electronic | 2 cells, a line |
-| `coolant_tank` | Coolant Tank | standard | Fluid | 2 cells, a line |
+| `coolant_pipe` | Coolant Pipe | standard | Fluid | 3 cells, an L |
 | `plasma_cell` | Plasma Cell | light | Volatile | 1 cell |
 | `fuel_drum` | Fuel Drum | standard | Fluid, Volatile | 1 cell |
 | `reactor_core` | Reactor Core | heavy | Volatile | 4 cells, a square |
 | `space_cheese` | Space Cheese | standard | Perishable | 1 cell |
-| `frozen_squid` | Frozen Squid | standard | Perishable | 4 cells, a T |
+| `frozen_octopus` | Frozen Octopus | standard | Perishable | 4 cells, a T |
 | `courier_drone` | Courier Drone | light | Thruster, Electronic | 1 cell |
 
 ### Kit
@@ -53,7 +54,7 @@ The first content has 14 freight and 6 kit. The data files set the shapes and th
 | `foam_pad` | Foam Pad | light | Cushion | 2 cells, a line |
 | `cooler_unit` | Cooler Unit | standard | Cooler | 1 cell |
 | `battery_pack` | Battery Pack | standard | Battery, Electronic | 1 cell |
-| `shield_generator` | Shield Generator | standard | Shield | 2 cells, a line |
+| `shield_generator` | Shield Generator | standard | Shield | 1 cell |
 | `inertia_anchor` | Inertia Anchor | heavy | Thruster | 1 cell |
 | `sensor_array` | Sensor Array | standard | Sensor | 1 cell |
 

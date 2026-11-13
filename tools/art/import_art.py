@@ -1,0 +1,99 @@
+"""Make the cargo images in project/art/cargo from FreePixel images (SPEC Section 4.2).
+
+Run it from the repository root: task art.
+
+tools/art/cargo_art.json has an entry for each cargo ID:
+  {"source": "<path at the FreePixel CDN>", "crop": [x, y, w, h], "scale": 0.5 or "fit", "offset": [x, y]}
+Only "source" is necessary.
+
+For each cargo, the tool:
+1. Downloads the image to .local/art (not in git). The license does not let us
+   redistribute the raw files (docs/assets.md).
+2. Crops it to "crop", or to the pixels that are not transparent.
+3. Scales it to fit the cells of the shape at 100 pixels for each cell. The scale is
+   1 or 0.5 when the image fits, so that the pixels stay clean.
+4. Writes <id>.png (the image over the box of the shape), <id>_scrap.png (the same
+   image in dark gray, for scrap), and <id>.json ({"shape": the cells of the shape}).
+"""
+
+import json
+import sys
+import urllib.request
+from pathlib import Path
+
+from PIL import Image, ImageOps
+
+CDN = "https://pub-8b7609252a6742d7b029292aaede7f7f.r2.dev/"
+CELL = 100
+ROOT = Path(__file__).resolve().parents[2]
+TABLE = ROOT / "tools/art/cargo_art.json"
+CARGO = ROOT / "project/data/cargo"
+RAW = ROOT / ".local/art"
+OUT = ROOT / "project/art/cargo"
+
+
+def download(source: str) -> Path:
+    path = RAW / Path(source).name
+    if not path.exists():
+        RAW.mkdir(parents=True, exist_ok=True)
+        req = urllib.request.Request(CDN + source, headers={"User-Agent": "payload-protocol-art"})
+        with urllib.request.urlopen(req, timeout=60) as r:
+            path.write_bytes(r.read())
+    return path
+
+
+def make(cargo_id: str, entry: dict) -> None:
+    shape = json.loads((CARGO / f"{cargo_id}.json").read_text())["shape"]
+    cols = max(c[0] for c in shape) + 1
+    rows = max(c[1] for c in shape) + 1
+    box_w, box_h = cols * CELL, rows * CELL
+    img = Image.open(download(entry["source"])).convert("RGBA")
+    if "crop" in entry:
+        x, y, w, h = entry["crop"]
+        img = img.crop((x, y, x + w, y + h))
+    else:
+        img = img.crop(img.getbbox())
+    fit = min(box_w / img.width, box_h / img.height)
+    scale = entry.get("scale", 1.0 if fit >= 1.0 else 0.5 if fit >= 0.5 else fit)
+    if scale == "fit":
+        # Fill the box: a scale that is not 1 or 0.5 makes the pixels a little soft.
+        scale = fit
+    size = (max(1, round(img.width * scale)), max(1, round(img.height * scale)))
+    if scale >= 1.0:
+        resample = Image.Resampling.NEAREST
+    elif scale == 0.5:
+        resample = Image.Resampling.BOX
+    else:
+        resample = Image.Resampling.LANCZOS
+    img = img.resize(size, resample)
+    ox, oy = entry.get("offset", [0, 0])
+    canvas = Image.new("RGBA", (box_w, box_h), (0, 0, 0, 0))
+    canvas.alpha_composite(img, ((box_w - img.width) // 2 + ox, (box_h - img.height) // 2 + oy))
+    canvas.save(OUT / f"{cargo_id}.png")
+    # Scrap: the same image, gray and dark (SPEC Section 4.2).
+    gray = ImageOps.grayscale(canvas).point(lambda v: int(v * 0.6)).convert("RGBA")
+    gray.putalpha(canvas.getchannel("A"))
+    gray.save(OUT / f"{cargo_id}_scrap.png")
+    (OUT / f"{cargo_id}.json").write_text(json.dumps({"shape": shape}) + "\n")
+    print(f"art: {cargo_id} {size[0]}x{size[1]} in {box_w}x{box_h}, scale {scale:g}")
+
+
+def main() -> int:
+    table = json.loads(TABLE.read_text())
+    OUT.mkdir(parents=True, exist_ok=True)
+    known = set()
+    for cargo_id, entry in table.items():
+        make(cargo_id, entry)
+        known.update({f"{cargo_id}.png", f"{cargo_id}_scrap.png", f"{cargo_id}.json"})
+    # Remove the files of cargo that left the table.
+    for f in OUT.iterdir():
+        if f.suffix in (".png", ".json") and f.name not in known:
+            f.unlink()
+    missing = sorted(p.stem for p in CARGO.glob("*.json") if p.stem not in table)
+    if missing:
+        print("art: no image for " + ", ".join(missing))
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
