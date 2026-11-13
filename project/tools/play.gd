@@ -33,6 +33,7 @@ const ACTIONS := {
 	"warp": "warp",
 	"continue": "continue",
 	"pay": "pay",
+	"undo": "undo (takes back the last action at this station)",
 }
 
 var _out: PackedStringArray = []
@@ -73,15 +74,15 @@ func _command(path: String, args: Array) -> int:
 	if session.is_empty():
 		_say("no session at %s. Start one: new [seed]" % path)
 		return 1
-	var run := Run.new(cat, int(session["seed"]))
+	var rec := RunRecord.new(cat, int(session["seed"]))
 	for a: Array in session["actions"]:
-		var err := _act(run, a)
+		var err := rec.act(func(r: Run) -> String: return _act(r, a))
 		if err != "":
 			_say("the session does not replay: %s: %s" % [" ".join(a), err])
 			return 1
 	match args[0]:
 		"look":
-			_render(run)
+			_render(rec.run)
 			return 0
 		"history":
 			for a: Array in session["actions"]:
@@ -91,26 +92,31 @@ func _command(path: String, args: Array) -> int:
 			var steps := " ".join(args.slice(1)).split(";", false)
 			for s in steps:
 				var parts := Array(s.strip_edges().split(" ", false))
-				if not _step(run, session, parts):
+				if not _step(rec, session, parts):
 					break
 			_write(path, session)
 		_:
-			_step(run, session, args)
+			_step(rec, session, args)
 			_write(path, session)
-	_render(run)
+	_render(rec.run)
 	return 0
 
 
 ## Runs one action. It records the action when it works.
-func _step(run: Run, session: Dictionary, parts: Array) -> bool:
-	var err := _act(run, parts)
+## An undo takes back the last action of the session (SPEC Section 20.2).
+func _step(rec: RunRecord, session: Dictionary, parts: Array) -> bool:
+	var undo: bool = parts[0] == "undo"
+	var err := rec.undo() if undo else rec.act(func(r: Run) -> String: return _act(r, parts))
 	if err != "":
 		_say("> %s: %s" % [" ".join(parts), err])
 		return false
 	_say("> " + " ".join(parts))
-	session["actions"].append(parts)
+	if undo:
+		session["actions"].pop_back()
+	else:
+		session["actions"].append(parts)
 	if parts[0] == "warp":
-		_render_warp(run)
+		_render_warp(rec.run)
 	return true
 
 

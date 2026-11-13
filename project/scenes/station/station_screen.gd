@@ -44,6 +44,9 @@ const FUEL_TEXT := "Fuel fee {fee}"
 const OVER_MAX_TEXT := "Too heavy: {max} at most"
 const REINFORCE_TEXT := "Reinforce hull +{amount} ({price} cr)"
 const OR_TEXT := "or"
+const UNDO_TEXT := "Undo (Ctrl+Z)"
+## The mark of a fork step that a Sensor shows (SPEC Section 20.2).
+const SENSOR_TEXT := "Sensor"
 ## The characters of a pilot line that type out in each second (SPEC Section 22).
 const TYPE_SPEED := 40.0
 const ARROWS := {Defs.DIR_LEFT: "←", Defs.DIR_RIGHT: "→", Defs.DIR_UP: "↑", Defs.DIR_DOWN: "↓"}
@@ -80,6 +83,7 @@ var _clamp_label: Label
 var _sell_area: PanelContainer
 var _sell_label: Label
 var _warp_button: Button
+var _undo_button: Button
 var _pilot_label: Label
 var _pilot_face: PilotFace
 var _type_tween: Tween
@@ -206,6 +210,8 @@ func _build() -> void:
 	var spacer := Control.new()
 	spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	right.add_child(spacer)
+	# Undo takes back the last action at this station (SPEC Section 20.2).
+	_undo_button = _button(right, tr(UNDO_TEXT), _undo, false)
 	_warp_button = Button.new()
 	_warp_button.text = tr(WARP_TEXT)
 	_warp_button.custom_minimum_size = Vector2(0, 90)
@@ -300,6 +306,7 @@ func refresh() -> void:
 	_toll_label.text = tr(TOLL_TEXT).format({"toll": _run["toll"], "jumps": _run["jumps_to_toll"]})
 	_show_mass()
 	_show_pilot()
+	_undo_button.disabled = not GameState.can_undo()
 	_hold.set_view(_run)
 	_refresh_hazard()
 	_refresh_dock()
@@ -375,32 +382,62 @@ func _refresh_hazard() -> void:
 	_clear(_hazard_box)
 	var i := 0
 	for step: Dictionary in _run["hazard"]:
+		var index := i
 		i += 1
 		var color: Color = Palette.BAD if step["fork"] else Palette.WARN
 		var card := _panel(_hazard_box)
 		var style: StyleBoxFlat = card.get_theme_stylebox("panel")
 		style.border_color = color
 		card.custom_minimum_size = Vector2(120, 0)
+		# The mouse on a card marks the front wall of its step (SPEC Section 20.2).
+		card.mouse_filter = Control.MOUSE_FILTER_PASS
+		card.mouse_entered.connect(func() -> void: _set_hover_step(index))
+		card.mouse_exited.connect(func() -> void: _set_hover_step(-1))
 		var box := VBoxContainer.new()
 		box.add_theme_constant_override("separation", 0)
 		card.add_child(box)
-		var arrow := ""
-		var names := PackedStringArray()
-		if step["fork"] and step["known"] == "":
-			# A fork step: two directions, and the warp shows which one (SPEC Section 18).
-			for d: String in step["directions"]:
-				arrow += ARROWS.get(d, "?")
-				names.append(direction_name(d, _view))
-			arrow += "?"
-		else:
-			arrow = ARROWS.get(step["known"], "?")
-			names.append(direction_name(step["known"], _view))
+		var look := step_card(step, _view)
 		var big := _label(box, "", 52, color)
-		big.text = arrow
+		big.text = look["arrow"]
 		big.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		var name_label := _label(box, "", 17, color)
-		name_label.text = "%d · %s" % [i, (" %s " % tr(OR_TEXT)).join(names)]
+		name_label.text = "%d · %s" % [i, look["names"]]
 		name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		if look["sensor"]:
+			var sensor := _label(box, "", TextSize.SMALL, Palette.ACCENT)
+			sensor.text = "◉ " + tr(SENSOR_TEXT)
+			sensor.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+
+
+## Returns how a hazard card looks: {arrow, names, sensor}. A fork step shows its
+## two directions and "?". A fork step that a Sensor shows has its one direction
+## and the Sensor mark (SPEC Sections 18 and 20.2).
+static func step_card(step: Dictionary, view: Dictionary) -> Dictionary:
+	if step["fork"] and step["known"] == "":
+		var arrow := ""
+		var names := PackedStringArray()
+		for d: String in step["directions"]:
+			arrow += ARROWS.get(d, "?")
+			names.append(direction_name(d, view))
+		var joined := (" %s " % TranslationServer.translate(OR_TEXT)).join(names)
+		return {"arrow": arrow + "?", "names": joined, "sensor": false}
+	return {
+		"arrow": ARROWS.get(step["known"], "?"),
+		"names": direction_name(step["known"], view),
+		"sensor": step["fork"],
+	}
+
+
+## Marks the front wall of a step in the hold, or of the first step for -1. The
+## wall jolt warnings are for the first step only (SPEC Sections 12.3 and 20.2).
+func _set_hover_step(index: int) -> void:
+	var hazard: Array = _run.get("hazard", [])
+	if index < 0 or index >= hazard.size():
+		_hold.show_front_walls(PackedStringArray([_run.get("front_wall", "")]), true)
+		return
+	var step: Dictionary = hazard[index]
+	var walls := PackedStringArray(step["directions"] if step["known"] == "" else [step["known"]])
+	_hold.show_front_walls(walls, index == 0)
 
 
 ## Returns the arrow and the name of a direction.
@@ -587,6 +624,11 @@ func _act(err: String, ok_sound := "") -> void:
 			_fx.coin(_credits_label.get_global_rect().get_center())
 
 
+## Takes back the last action at this station (SPEC Section 20.2).
+func _undo() -> void:
+	_act(GameState.undo())
+
+
 func _show_toast(text: String) -> void:
 	_toast.text = text
 	_toast.modulate.a = 1.0
@@ -656,6 +698,9 @@ func _input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 		return
 	if _drag.is_empty():
+		if event.is_action_pressed(&"ui_undo"):
+			_undo()
+			get_viewport().set_input_as_handled()
 		return
 	if event is InputEventMouseMotion:
 		_update_drag()

@@ -28,6 +28,7 @@ description: Conventions of the Payload Protocol rules layer (project/rules) and
 | `run.gd` | `Run`: the state, the phases, placement (`ROTATE_KICKS`), clamps, contracts, the shop, the mass (`cargo_mass`, `hold_mass`, `max_mass`, `fuel_fee`, `reinforce_hull`), the hazard with its fork step (`fork_options`), the dock at the warp, the pilot lines |
 | `shift.gd` | `Shift.step()`: power, slide, hits (with the wall jolt of SPEC Section 10.4: a hit with `jolt: true`), reactions, blast area, shields. It returns the event log of the step |
 | `arrival.gd` | `Arrival.arrive()`: spoil, delivery, bonus, breach, the report, the line event |
+| `run_record.gd` | `RunRecord`: the seed and each action that worked (a `Callable` on the `Run`). `undo()` plays the run again from the seed with no last action, back to the arrival at the station (SPEC Section 20.2). |
 | `run_view.gd` | `RunView.view()`: the plain data that the UI reads. `hazard()` hides the direction of a fork step unless a Sensor is in the hold. |
 
 `scenes/common/game_state.gd` (the autoload `GameState`) and `scenes/common/data_files.gd` (`DataFiles`) are the only places that read files and own a `Run`.
@@ -37,7 +38,7 @@ description: Conventions of the Payload Protocol rules layer (project/rules) and
 1. Add the data field and its check in `Catalog` (`_check_*`).
 2. Add the rule in the file of its topic. A new reaction goes in `Shift._react()` and `Shift._apply()`, with a `Defs.REACT_*` constant.
 3. Add each value that the screen needs to `RunView`. The UI must not calculate it.
-4. Add the action to `GameState` (one line with `_act`) and to the text player (`_act` and `ACTIONS` in `project/tools/play.gd`).
+4. Add the action to `GameState` (one line with `_act`: a `Callable` that takes the `Run`, so that `RunRecord` can play it again) and to the text player (`_act` and `ACTIONS` in `project/tools/play.gd`).
 
 ## 4. Tests
 

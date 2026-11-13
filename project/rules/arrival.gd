@@ -2,7 +2,7 @@ class_name Arrival
 ## The arrival and the cold chain (SPEC Sections 12.1 and 16).
 ##
 ## The report for the UI: {spoiled: [id], sold, total, contracts: [{client_name,
-## pieces: [{name, state}], pay, bonus, has_bonus, bonus_met, breach}]}.
+## pieces: [{id, name, state}], pay, bonus, has_bonus, bonus_met, breach}]}.
 
 
 ## Does the arrival: spoil, delivery, bonus, breach, and the report (SPEC Section 16).
@@ -47,7 +47,7 @@ static func arrive(run: Run) -> void:
 				res["pay"] += k.template.pay
 				delivered.append(c)
 			res["pieces"].append(
-				{"name": run.cat.cargo[k.template.freight[i]].name, "state": state}
+				{"id": id, "name": run.cat.cargo[k.template.freight[i]].name, "state": state}
 			)
 		if bonus_met(run, k, delivered):
 			res["bonus_met"] = true

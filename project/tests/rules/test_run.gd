@@ -163,6 +163,11 @@ func test_lost_freight() -> void:
 		Defs.PIECE_LOST,
 		"exploded freight is lost (SPEC Section 20.4)"
 	)
+	eq(
+		run.last_arrival["contracts"][0]["pieces"][0].get("id"),
+		run.contracts[0].cargo[0],
+		"each piece has the ID of its cargo, so that the report can mark it (SPEC Section 20.4)"
+	)
 	eq(run.credits, 40, "lost freight does not pay (SPEC Section 16)")
 
 

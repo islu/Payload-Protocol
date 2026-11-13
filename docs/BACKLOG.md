@@ -31,7 +31,7 @@ This file keeps each problem that is found and not fixed yet. Each item is in on
 - **[Balance · Data] The free clamp and the tolls after the wall jolt** (found 2026-11-12, by /playtest round 2). Round 2 (before the wall jolt) found: the free clamp comes back each jump and fills the last gap of a tight pack; zero-risk income was about 140 for each jump, so the tolls 70 / 180 / 350 were easy. The agents suggest tolls of about 120 / 350 / 650, and 1 free clamp for each sector.
   Waiting on a trigger  Waits for: a playtest with the wall jolt (SPEC Section 10.4).
                         Fix then: set the tolls from the income that the playtest measures.
-- **[UX · Scenes] Small issues from round 2** (found 2026-11-12, by /playtest round 2). The station does not mark a fork step that a Sensor shows. The end screen of the text player still shows "toll 350 after 1 jump(s)". The text player does not show the Reinforce hull price.
+- **[UX · Scenes] Small issues from round 2** (found 2026-11-12, by /playtest round 2). The end screen of the text player still shows "toll 350 after 1 jump(s)". The text player does not show the Reinforce hull price.
 
 - **[UX · Scenes] Shaders for the effects** (found 2026-11-13, by Claude). The pixelfx sheets are flat sprites. Three options can make them stronger:
   (a) Light with additive blend: `make_fx.mjs` exports the light buffer of pixelfx as a second sheet, and `FxLayer` draws it with `BLEND_MODE_ADD`. Low cost. The best first step.

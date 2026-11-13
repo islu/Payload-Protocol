@@ -100,6 +100,10 @@ msgstr "目前不在收費站。"
 msgid "The hold is too heavy to warp. Take cargo out, or reinforce the hull."
 msgstr "貨艙太重，無法跳躍。請卸下貨物，或強化船體。"
 
+#: project/rules/run_record.gd
+msgid "There is nothing to undo at this station."
+msgstr "這個站點沒有可以復原的動作。"
+
 #: project/scenes/common/game_state.gd
 msgid "The game data did not load."
 msgstr "遊戲資料載入失敗。"
@@ -473,6 +477,15 @@ msgid "or"
 msgstr "或"
 
 #: project/scenes/station/station_screen.gd
+msgid "Undo (Ctrl+Z)"
+msgstr "復原 (Ctrl+Z)"
+
+#: project/scenes/station/station_screen.gd
+#: project/data/terms.json
+msgid "Sensor"
+msgstr "感測器"
+
+#: project/scenes/station/station_screen.gd
 msgid "Mass {mass}"
 msgstr "載重 {mass}"
 
@@ -503,6 +516,10 @@ msgstr "合計：{total} 點"
 #: project/scenes/warp/warp_screen.gd
 msgid "Kit sold from the dock: +{credits}"
 msgstr "碼頭上的裝備已賣出：+{credits}"
+
+#: project/scenes/warp/warp_screen.gd
+msgid "Replay (slow)"
+msgstr "慢速重播"
 
 #: project/scenes/warp/warp_screen.gd
 msgid "Click or press Space to speed up."
@@ -1013,10 +1030,6 @@ msgstr "生鮮"
 #: project/data/terms.json
 msgid "Spoils at the arrival if it is not next to a Cooler."
 msgstr "抵達時如果沒有緊鄰冷藏機就會腐爛。"
-
-#: project/data/terms.json
-msgid "Sensor"
-msgstr "感測器"
 
 #: project/data/terms.json
 msgid "At the station, it shows the direction of the fork step."

@@ -15,6 +15,7 @@ const ARRIVAL_TEXT := "Arrival"
 const TOTAL_TEXT := "Total: {total} credits"
 const SOLD_TEXT := "Kit sold from the dock: +{credits}"
 const CONTINUE_TEXT := "Continue"
+const REPLAY_TEXT := "Replay (slow)"
 const SKIP_TEXT := "Click or press Space to speed up."
 const BONUS_TEXT := "Bonus +{bonus}"
 const BONUS_MISSED_TEXT := "Bonus missed"
@@ -33,6 +34,8 @@ const REPORT_GAP := 40.0
 const CELLS_PER_SECOND := 8.0
 ## The time between two reactions of a chain (SPEC Section 21.3).
 const REACTION_GAP := 0.15
+## The speed of a replay, against the warp speed setting (SPEC Section 20.4).
+const REPLAY_SPEED := 0.5
 
 ## The play speed: the warp speed setting, and 4 times faster after a click (SPEC Section 20.3).
 var speed := 1.0
@@ -52,6 +55,9 @@ var _report_head: Label
 var _report: PanelContainer
 var _report_text: RichTextLabel
 var _continue: Button
+var _replay: Button
+## True while the warp plays again: no coin sound (SPEC Section 20.4).
+var _replaying := false
 var _shake := 0.0
 
 
@@ -119,10 +125,19 @@ func _build_report() -> void:
 	box.add_child(_report_head)
 	_report_text = RichTextLabel.new()
 	_report_text.bbcode_enabled = true
+	# Each line of pieces is a link: the mouse on it marks its pieces (SPEC Section 20.4).
+	_report_text.meta_underlined = false
+	_report_text.meta_hover_started.connect(_on_piece_hover)
+	_report_text.meta_hover_ended.connect(func(_meta: Variant) -> void: _mark_pieces([]))
 	_report_text.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	_report_text.add_theme_font_size_override("normal_font_size", 21)
 	_report_text.add_theme_font_size_override("bold_font_size", 22)
 	box.add_child(_report_text)
+	_replay = Button.new()
+	_replay.text = tr(REPLAY_TEXT)
+	_replay.add_theme_font_size_override("font_size", TextSize.BUTTON)
+	_replay.pressed.connect(_start_replay)
+	box.add_child(_replay)
 	_continue = Button.new()
 	_continue.text = tr(CONTINUE_TEXT)
 	_continue.custom_minimum_size = Vector2(0, 70)
@@ -137,6 +152,7 @@ func retranslate() -> void:
 	_skip_label.text = tr(SKIP_TEXT)
 	_report_head.text = tr(ARRIVAL_TEXT)
 	_continue.text = tr(CONTINUE_TEXT)
+	_replay.text = tr(REPLAY_TEXT)
 	if finished:
 		_report_text.text = _report_lines(_view["run"])
 
@@ -250,7 +266,7 @@ func _play_step(n: int, step: Dictionary, run: Dictionary) -> void:
 			c["kind"] = spot["kind"]
 	for id: int in _cargo.keys():
 		if not kept.has(id):
-			_cargo.erase(id)
+			_remove(id)
 	_show_hold(run)
 	var fade := create_tween()
 	fade.tween_property(_banner, "modulate:a", 0.0, 0.3 / speed)
@@ -318,15 +334,22 @@ func _play_reaction(r: Dictionary) -> void:
 			for cell: Dictionary in r.get("area", []):
 				cells.append(Vector2i(cell["x"], cell["y"]))
 			_fx.explosion(at, cells)
-			_cargo.erase(r["cargo"])
+			_remove(r["cargo"])
 			Sound.play(self, "explosion")
 			_shake_screen(28.0)
 		Defs.REACT_CLEAR:
 			_fx.shards(at)
-			_cargo.erase(r["cargo"])
+			_remove(r["cargo"])
 		Defs.REACT_SHIELD:
 			_fx.bubble(at)
 			Sound.play(self, "shield")
+
+
+## Hides a cargo that a reaction removed. It stays in the view, so that the report
+## can mark its place (SPEC Section 20.4).
+func _remove(id: int) -> void:
+	_hold.fades[id] = 0.0
+	_hold.queue_redraw()
 
 
 func _to_scrap(c: Dictionary) -> void:
@@ -354,12 +377,12 @@ func _finish(run: Dictionary) -> void:
 		stays[c["id"]] = true
 	var fade: Tween = null
 	for id: int in _cargo.keys():
-		if not stays.has(id):
+		if not stays.has(id) and _hold.fades.get(id, 1.0) > 0.0:
 			if fade == null:
 				fade = create_tween().set_parallel(true)
 			_hold.fades[id] = 1.0
 			fade.tween_method(func(a: float) -> void: _fade(id, a), 1.0, 0.0, 0.6)
-	if run["arrival"]["total"] != 0:
+	if run["arrival"]["total"] != 0 and not _replaying:
 		Sound.play(self, "coin")
 		_coin_on_report.call_deferred()
 	_report_text.text = _report_lines(run)
@@ -370,6 +393,38 @@ func _finish(run: Dictionary) -> void:
 	finished = true
 	_continue.grab_focus()
 	playback_finished.emit()
+
+
+## Plays the warp again from the start at half speed (SPEC Section 20.4).
+func _start_replay() -> void:
+	if not finished:
+		return
+	finished = false
+	_replaying = true
+	_report.visible = false
+	_skip_label.visible = true
+	_mark_pieces([])
+	_cargo.clear()
+	_hold.fades.clear()
+	_hold.offsets.clear()
+	speed = float(Settings.get_value("warp_speed")) * REPLAY_SPEED
+	_fx.speed = speed
+	_stars.speed = 30.0
+	_play()
+
+
+## Returns the meta of a line of pieces: the IDs of its cargo (SPEC Section 20.4).
+static func piece_meta(ids: Array) -> String:
+	return ",".join(ids.map(func(id: int) -> String: return str(id)))
+
+
+func _on_piece_hover(meta: Variant) -> void:
+	_mark_pieces(Array(str(meta).split(",", false)).map(func(id: String) -> int: return int(id)))
+
+
+func _mark_pieces(ids: Array) -> void:
+	_hold.marked = ids
+	_hold.queue_redraw()
 
 
 ## The report has its place after one frame: the containers sort it then.
@@ -403,19 +458,20 @@ func _report_lines(run: Dictionary) -> String:
 			var found := false
 			for g in groups:
 				if g["name"] == p["name"] and g["state"] == p["state"]:
-					g["count"] += 1
+					g["ids"].append(p["id"])
 					found = true
 			if not found:
-				groups.append({"name": p["name"], "state": p["state"], "count": 1})
+				groups.append({"name": p["name"], "state": p["state"], "ids": [p["id"]]})
 		for g in groups:
 			var color: Color = Palette.GOOD if g["state"] == Defs.PIECE_DELIVERED else Palette.BAD
 			var piece: String = tr(g["name"])
-			if g["count"] > 1:
-				piece += " ×%d" % g["count"]
+			if g["ids"].size() > 1:
+				piece += " ×%d" % g["ids"].size()
 			lines.append(
 				(
-					"   [color=#%s]%s: %s[/color]"
+					"   [url=%s][color=#%s]%s: %s[/color][/url]"
 					% [
+						piece_meta(g["ids"]),
 						color.to_html(false),
 						piece,
 						tr(PIECE_STATE_TEXT.get(g["state"], g["state"]))

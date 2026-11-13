@@ -8,6 +8,7 @@ const MAIN_SCENE := preload("res://scenes/main/main.tscn")
 
 var _failures := 0
 var _language_checked := false
+var _undo_checked := false
 
 
 func _ready() -> void:
@@ -247,6 +248,62 @@ func _play_warp(main: Control) -> void:
 		grid_right <= warp._report.global_position.x,
 		"the report does not cover the hold (SPEC Section 20.4)"
 	)
+	await _check_report_marks(warp)
+	await _check_replay(warp)
+
+
+## The mouse on a line of pieces marks those pieces in the hold (SPEC Section 20.4).
+func _check_report_marks(warp: WarpScreen) -> void:
+	var contracts: Array = GameState.view()["run"]["arrival"]["contracts"]
+	if contracts.is_empty() or contracts[0]["pieces"].is_empty():
+		return
+	var first: Dictionary = contracts[0]["pieces"][0]
+	var ids := []
+	for p: Dictionary in contracts[0]["pieces"]:
+		if p["name"] == first["name"] and p["state"] == first["state"]:
+			ids.append(p["id"])
+	var meta := WarpScreen.piece_meta(ids)
+	_check(
+		warp._report_text.text.contains("[url=%s]" % meta),
+		"a line of pieces has the IDs of its pieces (SPEC Section 20.4)"
+	)
+	warp._report_text.meta_hover_started.emit(meta)
+	_check(
+		warp._hold.marked == ids,
+		"the mouse on a line marks its pieces in the hold: %s (SPEC Section 20.4)" % [ids]
+	)
+	warp._report_text.meta_hover_ended.emit(meta)
+	_check(warp._hold.marked.is_empty(), "the marks go when the mouse leaves the line")
+
+
+## The Replay button plays the warp again at half speed (SPEC Section 20.4).
+func _check_replay(warp: WarpScreen) -> void:
+	_check(
+		warp._replay != null and warp._replay.visible,
+		"the arrival report has a Replay button (SPEC Section 20.4)"
+	)
+	if warp._replay == null:
+		return
+	warp._replay.pressed.emit()
+	await get_tree().process_frame
+	_check(
+		not warp.finished and not warp._report.visible,
+		"Replay hides the report and plays the warp again (SPEC Section 20.4)"
+	)
+	_check(
+		is_equal_approx(warp.speed, float(Settings.get_value("warp_speed")) * 0.5),
+		"the replay plays at half speed (SPEC Section 20.4)"
+	)
+	warp.speed_up()
+	warp.speed = 200.0
+	var frames := 0
+	while not warp.finished and frames < 2000:
+		frames += 1
+		await get_tree().process_frame
+	_check(
+		warp.finished and warp._report.visible,
+		"the report shows after the replay (SPEC Section 20.4)"
+	)
 
 
 ## Opens and closes the pause menu, the settings, and How to Play (SPEC Sections 20.7 and 23).
@@ -435,6 +492,11 @@ func _check_pick_up(station: StationScreen, id: int) -> void:
 ## Accepts the contracts, packs the freight, uses the tooltip and the marks, and warps.
 func _play_station(state: Node, station: StationScreen) -> void:
 	var run: Dictionary = state.view()["run"]
+	_check(
+		station._undo_button.disabled,
+		"a new station has nothing to undo: the Undo button is off (SPEC Section 20.2)"
+	)
+	_check_hazard_hover(station)
 	# Take contracts while the mass stays under the limit (SPEC Section 25).
 	var mass: int = run["mass"]["hold"]
 	for k: Dictionary in run["contracts"]:
@@ -445,6 +507,9 @@ func _play_station(state: Node, station: StationScreen) -> void:
 			state.accept_contract(k["index"])
 			mass += add
 	await get_tree().process_frame
+	if not _undo_checked:
+		_undo_checked = true
+		await _check_undo(state, station)
 	_check_layout(station)
 	if not _language_checked:
 		_language_checked = true
@@ -488,3 +553,75 @@ func _play_station(state: Node, station: StationScreen) -> void:
 	if station._confirm.visible:
 		station._confirm.hide()
 		state.warp()
+
+
+## Ctrl+Z takes back the last action at the station (SPEC Section 20.2).
+func _check_undo(state: Node, station: StationScreen) -> void:
+	var accepted := func() -> Array:
+		var out := []
+		for k: Dictionary in state.view()["run"]["contracts"]:
+			if k["accepted"]:
+				out.append(k["index"])
+		return out
+	var before: Array = accepted.call()
+	if before.is_empty():
+		return
+	_check(not station._undo_button.disabled, "after an action, Undo is on (SPEC Section 20.2)")
+	var key := InputEventKey.new()
+	key.keycode = KEY_Z
+	key.command_or_control_autoremap = true
+	key.pressed = true
+	station._input(key)
+	await get_tree().process_frame
+	var after: Array = accepted.call()
+	_check(
+		after.size() == before.size() - 1,
+		"Ctrl+Z takes back the last contract: %s, then %s (SPEC Section 20.2)" % [before, after]
+	)
+	for i: int in before:
+		if not i in after:
+			state.accept_contract(i)
+	await get_tree().process_frame
+
+
+## The mouse on a hazard card marks the front wall of that step (SPEC Section 20.2).
+func _check_hazard_hover(station: StationScreen) -> void:
+	var run: Dictionary = GameState.view()["run"]
+	var hazard: Array = run["hazard"]
+	for i in hazard.size():
+		var step: Dictionary = hazard[i]
+		var want := PackedStringArray(
+			step["directions"] if step["known"] == "" else [step["known"]]
+		)
+		station._set_hover_step(i)
+		_check(
+			station._hold.front_walls == want,
+			(
+				"the mouse on hazard card %d marks its front wall: %s, want %s (SPEC Section 20.2)"
+				% [i + 1, station._hold.front_walls, want]
+			)
+		)
+		_check(
+			station._hold.show_jolts == (i == 0),
+			"the wall jolt warnings are for the first step only (SPEC Section 20.2)"
+		)
+	station._set_hover_step(-1)
+	_check(
+		station._hold.front_walls == PackedStringArray([run["front_wall"]]),
+		"the hold marks the first step again when the mouse leaves (SPEC Section 12.3)"
+	)
+	var seen := StationScreen.step_card(
+		{"directions": [Defs.DIR_LEFT, Defs.DIR_UP], "fork": true, "known": Defs.DIR_UP},
+		GameState.view()
+	)
+	var unknown := StationScreen.step_card(
+		{"directions": [Defs.DIR_LEFT, Defs.DIR_UP], "fork": true, "known": ""}, GameState.view()
+	)
+	_check(
+		(
+			seen["sensor"]
+			and not unknown["sensor"]
+			and seen["arrow"] == StationScreen.ARROWS[Defs.DIR_UP]
+		),
+		"a fork step that a Sensor shows has a Sensor icon and one direction (SPEC Section 20.2)"
+	)

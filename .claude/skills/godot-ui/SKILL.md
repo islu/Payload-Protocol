@@ -40,7 +40,7 @@ description: Conventions of the Payload Protocol scenes and UI (project/scenes) 
 - Two ways to move (SPEC Section 8.2): a release after a drag drops the cargo. A release closer than `CLICK_DISTANCE` to the press is a click: `held` becomes true, and the next press drops it. `_ignore_release` eats the release of that press.
 - After a click drop of a cargo from the dock (`from_dock` and `held`), `_pick_next()` picks up the next dock cargo (SPEC Section 8.2). Use `_drop_at(position)` in a check: the headless mouse does not move.
 - "Load all" calls `GameState.load_all()`. The scene does not search for places.
-- `HoldView` draws the front wall of the first step (`front_wall` of the view) and a jolt icon on each cargo with `jolt_risk` (SPEC Section 12.3).
+- `HoldView` draws the front wall of the first step (`front_wall` of the view) and a jolt icon on each cargo with `jolt_risk` (SPEC Section 12.3). `show_front_walls()` marks the walls of the hazard card under the mouse, with no jolt icons after the first step (SPEC Section 20.2).
 - A rotation in place that does not fit moves the cargo 1 cell (`Run.ROTATE_KICKS`). The scene only calls `GameState.rotate_cargo()`.
 - Do not bend the screen in a shader. The mouse must point at the cell that the player sees (SPEC Section 4.2).
 - A drop goes to the first target under the mouse: the sell area, the dock, or the hold. A drop anywhere else does nothing.
@@ -48,7 +48,7 @@ description: Conventions of the Payload Protocol scenes and UI (project/scenes) 
 
 ## 5. The Warp
 
-- `WarpScreen` copies `warp.before` and changes the copy with each slide and reaction of the log. It calculates no result.
+- `WarpScreen` copies `warp.before` and changes the copy with each slide and reaction of the log. It calculates no result. A removed cargo stays in the copy with a fade of 0, so that a line of the report can mark it (`[url]` meta: `piece_meta()`). Replay plays the same log again.
 - Wait with `_wait(seconds)`. It divides by `speed`, and it stops during the pause menu. Do not use a timer that runs during the pause.
 - Call `Sound.play(self, "<name>")` for each event of Section 21. A new name goes in `Sound.NAMES` and in `tools/sfx/make_sfx.py`. Then run `task sfx`. The UI check fails when a name has no file.
 - Show an effect with a method of `FxLayer`. A new effect goes in `FxLayer.NAMES` and in `tools/fx/fx.json`. Then run `task fx` and `task import`. The UI check fails when a name has no sheet.

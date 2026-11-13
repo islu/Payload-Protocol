@@ -28,6 +28,9 @@ The station screen has these areas:
 
 - Each contract card shows its client, its freight with small shapes, its pay, and its bonus.
 - When the mouse is on a contract, the hold marks the freight of that contract.
+- When the mouse is on a hazard card, the hold marks the front wall of that step with the stripes of Section 12.3. A fork step that the player does not know marks both walls. The wall jolt warnings are for the first step only.
+- A fork step that a Sensor shows has a Sensor icon and its one direction (Section 18).
+- An Undo button and Ctrl+Z take back the last action at this station: a placement, a contract, a purchase, a sale, a reroll, or a service. Undo does not go back past the arrival at the station. After an undo, the same action gives the same result again.
 
 ### 20.3 Warp
 
@@ -47,6 +50,8 @@ The station screen has these areas:
 - The pilot speaks a line about the result.
 - A Continue button goes to the next station, or to the toll gate.
 - When the report covers the hold, the hold moves to the left.
+- When the mouse is on a line of pieces, the hold marks those pieces at their place at the end of the warp.
+- A Replay button plays the warp again from the start, at half speed. A click or the Space key during the replay makes it faster (Section 20.3). The replay plays no coin sound.
 
 ### 20.5 Toll Gate
 

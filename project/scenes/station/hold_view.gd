@@ -32,8 +32,11 @@ var marked: Array = []
 var preview: Dictionary = {}
 ## The ID of the cargo that the player drags. It shows faded in its old place.
 var dragging := -1
-## The front wall of the first shift step, or "" (SPEC Section 12.3).
-var front_wall := ""
+## The front walls to mark: the wall of the first shift step, or of the step under
+## the mouse (SPEC Sections 12.3 and 20.2).
+var front_walls := PackedStringArray()
+## The wall jolt warnings show only for the first shift step (SPEC Section 12.3).
+var show_jolts := true
 ## The offset of each cargo from its cell, in cells, by ID. The warp tweens it to 0.
 var offsets: Dictionary = {}
 ## The fade of each cargo, by ID (1 is opaque). The arrival fades out delivered freight.
@@ -51,9 +54,17 @@ func set_view(run: Dictionary) -> void:
 	rows = run["hold"]["rows"]
 	cargo = run["cargo"]
 	links = run["links"]
-	front_wall = run.get("front_wall", "")
+	front_walls = PackedStringArray([run.get("front_wall", "")])
+	show_jolts = true
 	custom_minimum_size = Vector2(columns + MARGIN, rows + MARGIN) * MIN_CELL
 	_fit()
+	queue_redraw()
+
+
+## Marks front walls. jolts shows the wall jolt warnings (SPEC Section 20.2).
+func show_front_walls(walls: PackedStringArray, jolts: bool) -> void:
+	front_walls = walls
+	show_jolts = jolts
 	queue_redraw()
 
 
@@ -160,12 +171,14 @@ func _draw() -> void:
 	for c: Dictionary in cargo:
 		if c["in_hold"]:
 			var alpha: float = 0.3 if c["id"] == dragging else fades.get(c["id"], 1.0)
+			if alpha <= 0.0:
+				continue
 			var off: Vector2 = offsets.get(c["id"], Vector2.ZERO)
 			var at := o + (Vector2(c["x"], c["y"]) + off) * cell
 			CargoDraw.draw(self, c, c["shape"], at, cell, alpha)
 			if c.get("no_cooler", false) or c.get("no_power", false):
 				_draw_warning(at + _first_cell_offset(c))
-			if c.get("jolt_risk", false):
+			if show_jolts and c.get("jolt_risk", false):
 				_draw_jolt(at + _first_cell_offset(c))
 	for id: int in marked:
 		var c := _cargo(id)
@@ -183,7 +196,8 @@ func _draw() -> void:
 					false,
 					3.0
 				)
-	_draw_front_wall(o)
+	for wall in front_walls:
+		_draw_front_wall(o, wall)
 	_draw_links(o)
 	if not preview.is_empty():
 		_draw_preview_links(o)
@@ -236,7 +250,6 @@ func _center(c: Dictionary) -> Vector2:
 	return sum / c["shape"].size() * cell
 
 
-## Draws the front wall of the first shift step as a dashed line with arrows (SPEC Section 12.3).
 ## Draws the frame of the hold: metal plates with a rivet at each cell line (SPEC Section 4.2).
 func _draw_frame(o: Vector2) -> void:
 	var grid := Rect2(o, Vector2(columns, rows) * cell)
@@ -258,7 +271,7 @@ func _draw_frame(o: Vector2) -> void:
 
 ## Draws the front wall: a band of yellow and black stripes on the frame, and
 ## arrows out of it (SPEC Section 12.3).
-func _draw_front_wall(o: Vector2) -> void:
+func _draw_front_wall(o: Vector2, front_wall: String) -> void:
 	if front_wall == "":
 		return
 	var w := columns * cell
