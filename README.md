@@ -30,6 +30,7 @@ To open the project in the Godot Project Manager, import `project/project.godot`
 | `task test` | Run the rule tests |
 | `task play -- help` | The text player |
 | `task smoke` | Run the game headless for 5 frames |
+| `task shots` | Take screenshots of each screen into `shots/` |
 | `task export:web` | Export the web build to `build/web` |
 | `task serve:web` | Serve `build/web` at http://localhost:8060 |
 | `task fx` | Make the effect sheets with pixelfx |

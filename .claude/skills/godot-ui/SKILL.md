@@ -66,4 +66,4 @@ description: Conventions of the Payload Protocol scenes and UI (project/scenes) 
 
 - `task test:ui` (`tests/ui_check.tscn`) plays a full run through the screens and calls the station functions (tooltip, marks, drag, warp). Add a call there for each new screen function. It is a scene, so that the autoload `GameState` exists.
 - `task smoke` runs the main scene for 5 frames and fails on an error.
-- Do not launch the game with a window or take screenshots to verify a change.
+- Do not launch the game with a window to verify a change. To review the look of the screens, run `task shots`: it saves an image of each screen in `shots/` (not in git). Read the images, then delete `shots/`. Add a screen to `tests/shots.gd` when a new screen needs a review.

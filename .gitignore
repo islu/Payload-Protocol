@@ -18,6 +18,9 @@ build/
 # Task cache
 .task/
 
+# Screenshots of task shots (delete them after a review)
+shots/
+
 # Playtest reports (the playtest skill)
 playtest/*
 

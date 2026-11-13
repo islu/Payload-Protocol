@@ -70,6 +70,12 @@ tasks:
         echo "$out"
         if echo "$out" | grep -q -e "SCRIPT ERROR" -e "Parse Error" -e "ERROR:"; then exit 1; fi
 
+  shots:
+    desc: Take screenshots of each screen into shots/ (not in git). It opens a window. Delete them after the review.
+    cmds:
+      - rm -rf shots
+      - timeout 120 {{.GODOT}} --path {{.PROJECT_PATH}} res://tests/shots.tscn
+
   export:web:
     desc: Export the web build to build/web (needs the export templates of Godot 4.7.2)
     deps: [import]

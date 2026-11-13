@@ -60,6 +60,7 @@ task export:web   # Export the web build to build/web
 task serve:web    # Serve build/web at http://localhost:8060
 task play -- help # The text player: one command in each call (the playtest skill)
 task smoke        # Run the game headless for 5 frames. Fails on an error.
+task shots        # Take screenshots of each screen into shots/ (a window opens). Delete them after the review.
 task i18n         # Collect the text for translation into project/locale/
 task sfx          # Make the placeholder sounds in project/audio/sfx
 task fx           # Make the effect sheets in project/art/fx with pixelfx (tools/fx/fx.json)
@@ -110,6 +111,6 @@ docs/notes/           # Notes that are not in git (the first draft)
 
 1. Run `task fmt`.
 2. Run `task check:quiet`. Make sure that it passes.
-3. Do not launch the game with a window or take screenshots to verify a change. The tests and `task smoke` are the check.
+3. The tests and `task smoke` are the check. Do not launch the game with a window to verify a change. For a review of the look of a screen, use `task shots` only, and delete `shots/` after.
 4. If the change affects game rules or values, make sure that it agrees with `docs/spec.md`.
 5. Add each problem that you found and did not fix to `docs/BACKLOG.md`. Delete each item that the change completed.

@@ -46,3 +46,5 @@ This file keeps each problem that is found and not fixed yet. Each item is in on
 - **[Build · Build] Builds for macOS and Windows** (found 2026-11-12, by the first plan). Only the web build exists. These builds are optional.
   Waiting on a trigger  Waits for: a player who asks for a download, or a second playtest round.
                         Fix then: add the export presets, a task for each, and sign or note the macOS build.
+- **[Cleanup · Tests] Resources in use at the exit of task shots** (found 2026-11-13, by Claude). `task shots` prints "2 resources still in use at exit" when it quits. A run with `--verbose` does not print it, so the two resources are not known. The screenshots are correct.
+  To do                 Fix: find the two resources (for example the music stream or the FxSheets cache) and free them before quit().
