@@ -468,7 +468,7 @@ func _refresh_dock() -> void:
 			continue
 		var chip := CargoChip.new().setup(c, DOCK_CELL)
 		chip.pressed.connect(
-			func(_chip: CargoChip) -> void: _begin_cargo_drag(c["id"], Vector2.ZERO)
+			func(chip: CargoChip) -> void: _begin_cargo_drag(c["id"], Vector2(chip.press_cell))
 		)
 		chip.mouse_entered.connect(func() -> void: _show_tip(c))
 		chip.mouse_exited.connect(_hide_tip)
@@ -692,11 +692,12 @@ func _rotate_drag() -> void:
 	if _drag["kind"] != "cargo":
 		return
 	var c := _cargo(_drag["id"])
+	# The same cell of the cargo stays under the cursor (SPEC Section 8.2).
+	_drag["grab"] = HoldView.rotate_grab(c["rotations"][_drag["rot"]], _drag["grab"])
 	_drag["rot"] = (_drag["rot"] + 1) % 4
 	Hints.done(Hints.ROTATE)
 	_show_pilot()
-	_drag["grab"] = Vector2.ZERO
-	_drag_layer.start(c, c["rotations"][_drag["rot"]], Vector2.ZERO)
+	_drag_layer.start(c, c["rotations"][_drag["rot"]], _drag["grab"])
 	_update_drag()
 
 
@@ -760,7 +761,10 @@ func _pick_next() -> void:
 	var dock: Array = GameState.view()["run"]["dock"]
 	if dock.is_empty():
 		return
-	_begin_cargo_drag(dock[0], Vector2.ZERO)
+	# Grab a real cell of the shape: cell (0, 0) of the box can be empty (SPEC Section 8.3).
+	var c := _cargo(dock[0])
+	var first: Dictionary = c["rotations"][c["rot"]][0]
+	_begin_cargo_drag(dock[0], Vector2(first["x"], first["y"]))
 	_drag["held"] = true
 
 

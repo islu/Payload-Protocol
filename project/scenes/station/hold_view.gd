@@ -103,10 +103,19 @@ func cell_at(global_pos: Vector2) -> Vector2i:
 
 
 ## Returns the cell of the upper left of a shape when the player holds it at a
-## global position. The shape snaps to the nearest cell (SPEC Section 8.3).
+## global position. The grab cell goes to the cell under the cursor (SPEC Section 8.3).
 func snap_origin(global_pos: Vector2, grab: Vector2) -> Vector2i:
 	var local := global_pos - global_position - grid_origin() - grab * cell
-	return Vector2i(roundi(local.x / cell), roundi(local.y / cell))
+	return Vector2i(floori(local.x / cell), floori(local.y / cell))
+
+
+## Returns the grab cell after a clockwise rotation of a shape (SPEC Section 8.2).
+## The same cell of the cargo stays under the cursor. The rule is the one of Shapes.rotate.
+static func rotate_grab(shape: Array, grab: Vector2) -> Vector2:
+	var low := Vector2(INF, INF)
+	for c: Dictionary in shape:
+		low = Vector2(minf(low.x, -c["y"]), minf(low.y, c["x"]))
+	return Vector2(-grab.y, grab.x) - low
 
 
 func is_over(global_pos: Vector2) -> bool:

@@ -44,8 +44,19 @@ This file keeps each problem that is found and not fixed yet. Each item is in on
 - **[Balance · Data] The 24 new freight** (found 2026-11-13, by /game-design). The themes medical, contraband, weapons, robots, and Earth relics added 24 freight and 21 contracts. Check in the next playtest: is the Black Market pay (about 1.5 times) worth the risk, and is the Mech Suit (heavy, Thruster, a square) a wall that is always best?
 - **[Spec · Rules] Remove the sectors** (found 2026-11-13, by the user). The user may remove the sector concept later. The sectors now set the contracts, the kit pools, the hazard steps, and the tolls (SPEC Sections 14 to 19). Discuss it with /game-design first.
 
+- **[UX · Spec] Keep the cargo after a bad drop** (found 2026-11-14, by /code-review). SPEC Section 8.3: after a drop that is not valid, the cargo goes back to its last place. A cargo from the dock goes back to the dock with no animation, and the player must find it and pick it up again.
+  To decide             Options: (a) after a bad drop over the hold, the player keeps the cargo (a deny sound and a small shake). Only Esc or a drop outside the hold puts it back. (b) Keep the rule, and move the cargo back with a short tween. Needs a change of SPEC Section 8.3.
+- **[UX · Spec] The same feedback for each miss** (found 2026-11-14, by /code-review). A drop 0.4 cell outside the hold plays the deny sound and a toast. A drop 0.6 cell outside does nothing, and the cargo goes back with no sound.
+  To decide             Options: (a) the same feedback for each return (a tween and a soft sound). (b) Also snap a near miss to the nearest valid place within 1 cell, in the order of the rotate fallback of SPEC Section 8.2.
+- **[UX · Spec] A preview that says why** (found 2026-11-14, by /code-review). A red preview does not show why the drop fails: outside the hold, or a cargo in the way.
+  To decide             Options: color each blocked cell red and each free cell green, mark the cargo in the way, and show the nearest valid place as a faint ghost. Needs a line in SPEC Section 8.3.
+- **[UX · Spec] Place many cargo with drags** (found 2026-11-14, by /code-review). Only the click mode picks up the next cargo of the dock (SPEC Section 8.2). Players who drag do not find it.
+  To decide             Options: (a) mark the next cargo of the dock, and show a hint after the first drag. (b) A drag also picks up the next cargo, with a setting to turn it off.
 ## To Do
 
+
+- **[Art · Data] A new image for the Foam Pad** (found 2026-11-14, by the user). The Foam Pad uses a rolled yoga mat (`tools/art/cargo_art.json`). The image does not look like a cushion kit, and the "fit" scale makes it a little soft.
+  To do                 Fix: find a FreePixel image of a foam pad or a cushion that fits a line of 2 cells. Change its `source` and run `task art`.
 - **[Docs · Docs] A README for players** (found 2026-11-12, by the first plan). The itch.io page needs a short text for players: how to start, the controls, and where to send feedback.
   To do                 Fix: write the text. Keep README.md for developers.
 - **[Build · Build] Builds for macOS and Windows** (found 2026-11-12, by the first plan). Only the web build exists. These builds are optional.

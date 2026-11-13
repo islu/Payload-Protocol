@@ -11,6 +11,7 @@ var _language_checked := false
 var _undo_checked := false
 var _shop_checked := false
 var _contracts_checked := false
+var _snap_checked := false
 
 
 func _ready() -> void:
@@ -454,7 +455,7 @@ func _check_chain(station: StationScreen) -> void:
 				var at := (
 					hold.global_position
 					+ hold.grid_origin()
-					+ (Vector2(x, y) + Vector2(0.2, 0.2)) * hold.cell
+					+ (Vector2(x, y) + Vector2(0.7, 0.7)) * hold.cell
 				)
 				station._drop_at(at)
 	var placed: Array = GameState.view()["run"]["cargo"].filter(
@@ -523,6 +524,9 @@ func _play_station(state: Node, station: StationScreen) -> void:
 		_undo_checked = true
 		await _check_undo(state, station)
 	_check_layout(station)
+	if not _snap_checked:
+		_snap_checked = true
+		_check_snap(station)
 	if not _contracts_checked:
 		_contracts_checked = true
 		await _check_contracts(station)
@@ -850,3 +854,54 @@ func _check_contracts(station: StationScreen) -> void:
 	station._run["dock"] = saved
 	station._run["cargo"] = cargo
 	station._refresh_dock()
+
+
+## The shape snaps to the cells under the cursor: the cell under the mouse is the
+## grab cell, from the dock too, and after a rotation (SPEC Section 8.3).
+func _check_snap(station: StationScreen) -> void:
+	var hold := station._hold
+	var base := hold.global_position + hold.grid_origin()
+	for at: Vector2 in [Vector2(3.5, 2.5), Vector2(3.1, 2.1), Vector2(3.9, 2.9)]:
+		var origin := hold.snap_origin(base + at * hold.cell, Vector2(1, 0))
+		_check(
+			origin == Vector2i(2, 2),
+			(
+				"the grab cell goes to the cell under the mouse at %s: %s (SPEC Section 8.3)"
+				% [at, origin]
+			)
+		)
+	var line := [{"x": 0, "y": 0}, {"x": 1, "y": 0}, {"x": 2, "y": 0}]
+	_check(
+		HoldView.rotate_grab(line, Vector2(2, 0)) == Vector2(0, 2),
+		"a rotation keeps the grab cell under the mouse: a line (SPEC Section 8.2)"
+	)
+	var ell := [{"x": 0, "y": 0}, {"x": 0, "y": 1}, {"x": 1, "y": 1}]
+	_check(
+		HoldView.rotate_grab(ell, Vector2(1, 1)) == Vector2(0, 1),
+		"a rotation keeps the grab cell under the mouse: an L (SPEC Section 8.2)"
+	)
+	var chip := CargoChip.new().setup({"shape": ell}, 48.0)
+	_check(
+		chip.cell_at(Vector2(2, 2) + Vector2(1.5, 1.5) * 48.0) == Vector2i(1, 1),
+		"a press on a dock cargo grabs the cell under the press (SPEC Section 8.3)"
+	)
+	_check(
+		chip.cell_at(Vector2(2, 2) + Vector2(1.5, 0.5) * 48.0) in [Vector2i(0, 0), Vector2i(1, 1)],
+		"a press on an empty cell of the box grabs the nearest cell of the shape (SPEC Section 8.3)"
+	)
+	chip.free()
+	# The R key during a drag keeps the grab cell under the mouse.
+	var run: Dictionary = GameState.view()["run"]
+	for c: Dictionary in run["cargo"]:
+		var shape: Array = c["rotations"][c["rot"]]
+		if shape.size() < 2:
+			continue
+		var grab := Vector2(shape[-1]["x"], shape[-1]["y"])
+		station._begin_cargo_drag(c["id"], grab)
+		station._rotate_drag()
+		_check(
+			station._drag["grab"] == HoldView.rotate_grab(shape, grab),
+			"R keeps the grab cell under the mouse (SPEC Section 8.2)"
+		)
+		station._end_drag()
+		break
