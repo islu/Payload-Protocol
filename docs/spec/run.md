@@ -39,7 +39,7 @@ Each contract has:
 | `zone` | Each delivered piece of the contract has all its cells in the zone of the contract: a set of columns or a set of rows. |
 | `not_next_to` | No delivered piece of the contract is next to a cargo with the trait of the contract. |
 
-- A bonus with no delivered piece does not pay.
+- A bonus pays only when each piece of the contract is delivered. One piece that is scrap, spoiled, lost, or breached cancels the bonus.
 - The contract card shows its condition. The station shows the zone of a `zone` bonus on the hold during a drag of its freight.
 
 ### 15.4 Breach

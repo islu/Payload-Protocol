@@ -89,7 +89,9 @@ static func cooled(c: Cargo, hold: Array[Cargo]) -> bool:
 ## delivered has the pieces that are delivered (SPEC Section 15.3).
 static func bonus_met(run: Run, k: Contract, delivered: Array[Cargo]) -> bool:
 	var b := k.template.bonus
-	if b.is_empty() or delivered.is_empty() or not k.breached.is_empty():
+	# Each piece must be delivered: one piece that is scrap, spoiled, lost, or
+	# breached cancels the bonus.
+	if b.is_empty() or delivered.size() != k.cargo.size() or not k.breached.is_empty():
 		return false
 	match b["type"]:
 		Defs.BONUS_ALL_INTACT:

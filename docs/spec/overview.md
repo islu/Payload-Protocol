@@ -63,6 +63,7 @@ These games are references for mechanics only. Do not copy their art, names, ite
 - Sounds and music come from CC0 sources, for example Kenney. Record each file in [assets.md](../assets.md).
 - Each event in Section 21 has a sound.
 - A setting sets the volume of the music and of the sounds (Section 23.1).
+- One music loop plays on all screens, also during the pause. A browser starts it after the first click, because it blocks sound before.
 
 ### 4.4 Terms
 

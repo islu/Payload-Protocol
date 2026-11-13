@@ -8,11 +8,14 @@ const NEW_RUN_TEXT := "New Run"
 const HOW_TO_PLAY_TEXT := "How to Play"
 const SETTINGS_TEXT := "Settings"
 const QUIT_TEXT := "Quit"
+## The music loop (SPEC Section 4.3). docs/assets.md has its source.
+const MUSIC_PATH := "res://audio/music/vintage_menu.ogg"
 
 var _screen: Control
 var _screen_kind := ""
 var _overlays: CanvasLayer
 var _crt: ColorRect
+var _music: AudioStreamPlayer
 ## The language of the text on the screen.
 var _locale := ""
 
@@ -24,6 +27,7 @@ func _ready() -> void:
 	_overlays.layer = 10
 	add_child(_overlays)
 	_add_crt()
+	_add_music()
 	GameState.state_changed.connect(_update)
 	_update()
 	# Change the window last. On macOS, a change of the window mode runs frames
@@ -75,6 +79,25 @@ func _retranslate() -> void:
 		return
 	_screen_kind = ""
 	_update()
+
+
+## Plays the music loop on all screens (SPEC Section 4.3). Main runs during the
+## pause, so the music does too. A browser starts the sound at the first click.
+func _add_music() -> void:
+	_music = AudioStreamPlayer.new()
+	_music.bus = &"Music"
+	var stream: AudioStreamOggVorbis = load(MUSIC_PATH)
+	stream.loop = true
+	_music.stream = stream
+	add_child(_music)
+	# Headless runs (the tests) have no audio device.
+	if DisplayServer.get_name() != "headless":
+		_music.play()
+
+
+## Returns the music player. The UI check uses it.
+func music() -> AudioStreamPlayer:
+	return _music
 
 
 ## Adds the CRT filter above all screens and overlays (SPEC Section 4.2).

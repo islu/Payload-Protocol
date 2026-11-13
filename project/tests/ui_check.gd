@@ -43,6 +43,11 @@ func _run() -> void:
 		# Main applies the saved language. Use the language of this pass.
 		TranslationServer.set_locale(locale)
 		await get_tree().process_frame
+		var music: AudioStreamPlayer = main.music()
+		_check(
+			music.stream != null and music.stream.loop and music.bus == &"Music",
+			"one music loop plays on the Music bus (SPEC Section 4.3)"
+		)
 		await _play_run(main)
 		main.queue_free()
 		await get_tree().process_frame

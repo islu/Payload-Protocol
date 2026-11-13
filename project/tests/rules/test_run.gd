@@ -109,6 +109,20 @@ func test_not_next_to_bonus_fails() -> void:
 	eq(run.credits, 40 + 10, "not_next_to does not pay next to the trait (SPEC Section 15.3)")
 
 
+func test_bonus_needs_each_piece() -> void:
+	var k := accept(["k_chips"])[0]
+	load_row(k, 0)
+	put("tank", 4, 0)
+	# One chip broke on the way: the other chip arrives, far from the Fluid cargo.
+	run.cargo[k.cargo[1]].kind = Defs.KIND_SCRAP
+	warp_with([])
+	eq(
+		run.credits,
+		40 + 5,
+		"one piece that is scrap cancels the bonus of its contract (SPEC Section 15.3)"
+	)
+
+
 func test_breach() -> void:
 	var k := accept(["k_vases"])[0]
 	run.place_cargo(k.cargo[0], Vector2i(0, 5), 0)
