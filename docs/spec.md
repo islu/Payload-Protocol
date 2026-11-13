@@ -24,4 +24,3 @@ The specification is in the files of [spec/](spec/). Each file has some sections
 - Use the terms of Section 4.4 only. Do not use a synonym for a term.
 - [content.md](content.md) has the content design rules. The data files in `project/data` have the values.
 - The values in the spec are first values. The data files are the source of the values. Change them after playtests.
-- [plan.md](plan.md) has the development plan and the milestones.

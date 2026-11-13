@@ -47,4 +47,10 @@ This file keeps each problem that is found and not fixed yet. Each item is in on
 
 ## To Do
 
-- **[Build · Build] The web export** (found 2026-11-12, by Claude). The export templates of Godot 4.7.2 are not installed. Install them, add the web preset with no thread support, and check a build in a browser on Day 4.
+- **[Docs · Docs] A README for players** (found 2026-11-12, by the first plan). The itch.io page needs a short text for players: how to start, the controls, and where to send feedback.
+  To do                 Fix: write the text. Keep README.md for developers.
+- **[Build · Build] Builds for macOS and Windows** (found 2026-11-12, by the first plan). Only the web build exists. These builds are optional.
+  Waiting on a trigger  Waits for: a player who asks for a download, or a second playtest round.
+                        Fix then: add the export presets, a task for each, and sign or note the macOS build.
+- **[Spec · Scenes] Music** (found 2026-11-12, by the first plan). Music is cut. Section 23.1 has a music volume, but no music plays. In a browser, audio starts only after the first click.
+  To decide             Options: (a) add CC0 music that starts at the first click on the title; (b) remove the music volume from the spec and the settings.

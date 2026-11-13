@@ -2,9 +2,9 @@
 
 Payload Protocol is a single-player puzzle game about cargo in the hold of a spaceship. The player packs freight into a grid. Each warp shifts the hold: cargo slides, hits, breaks, explodes, and leaks (SPEC Section 1).
 
-**Status:** The rules of Sections 5 to 19 are in the code, with tests and a text player. All screens of Section 20 are in the code: the title, the station, the warp with the arrival report, the toll gate and the run end (`PhasePanel`), the pause menu, the settings, How to Play with pictures, and the hints of the first runs. The effects of Section 21, the placeholder sounds, the CRT filter, the trait icons, and the zh-TW text are in the code. Music is not made (the cut list of docs/plan.md).
+**Status:** The rules of Sections 5 to 19 are in the code, with tests and a text player. All screens of Section 20 are in the code: the title, the station, the warp with the arrival report, the toll gate and the run end (`PhasePanel`), the pause menu, the settings, How to Play with pictures, and the hints of the first runs. The effects of Section 21, the placeholder sounds, the CRT filter, the trait icons, and the zh-TW text are in the code. Music is not made (docs/BACKLOG.md).
 
-[docs/spec.md](docs/spec.md) is the source of truth for game design. If the code and the spec do not agree, ask the user. Do not change the spec without approval. [docs/content.md](docs/content.md) has the content design rules. [docs/plan.md](docs/plan.md) has the plan and the milestones.
+[docs/spec.md](docs/spec.md) is the source of truth for game design. If the code and the spec do not agree, ask the user. Do not change the spec without approval. [docs/content.md](docs/content.md) has the content design rules.
 
 ## Skills
 
@@ -80,7 +80,7 @@ project/locale/       # messages.pot (made by task i18n) and the .po file for ea
 project/audio/sfx/    # The sounds. tools/sfx/make_sfx.py makes the placeholders.
 tools/                # i18n/i18n.py, sfx/make_sfx.py, and fmt_json/fmt_json.py (Python through uv)
 project/art/          # Font, theme, and optional art
-docs/                 # spec.md (index) and spec/ (the spec by topic), content.md, plan.md, BACKLOG.md, assets.md
+docs/                 # spec.md (index) and spec/ (the spec by topic), content.md, BACKLOG.md, assets.md
 docs/notes/           # Notes that are not in git (the first draft)
 ```
 
