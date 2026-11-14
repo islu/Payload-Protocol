@@ -38,6 +38,17 @@ func test_contract_rules() -> void:
 			check(in_contract.has(id), "freight %s is in one contract at least (content.md)" % id)
 
 
+func test_leg_1_has_no_route_rule() -> void:
+	var d := Fixture.data()
+	d["rules"]["legs"][0]["environment"] = true
+	d["rules"]["legs"][0]["incident_percent"] = 50
+	eq(
+		Catalog.from_data(d).errors.size(),
+		2,
+		"the data check rejects an environment and incidents in leg 1 (SPEC Sections 28.1 and 29.1)"
+	)
+
+
 ## A bot accepts each contract, packs the freight where it fits, and warps. The
 ## runs must end with no script error, and each phase must follow the spec.
 func test_bot_runs_end() -> void:

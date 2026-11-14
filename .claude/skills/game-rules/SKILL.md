@@ -37,7 +37,7 @@ description: Conventions of the Payload Protocol rules layer (project/rules) and
 ## 3. Add a Rule
 
 1. Add the data field and its check in `Catalog` (`_check_*`).
-2. Add the rule in the file of its topic. A new reaction goes in `Shift._react()` and `Shift._apply()`, with a `Defs.REACT_*` constant.
+2. Add the rule in the file of its topic. A new reaction goes in `Shift.reaction_at()` (what starts it) and `Shift._apply()` (what it does), with a `Defs.REACT_*` constant.
 3. Add each value that the screen needs to `RunView`. The UI must not calculate it.
 4. Add the action to `GameState` (one line with `_act`: a `Callable` that takes the `Run`, so that `RunRecord` can play it again) and to the text player (`_act` and `ACTIONS` in `project/tools/play.gd`).
 

@@ -210,18 +210,25 @@ static func _react(run: Run, forces: Dictionary, powered: Dictionary, out: Dicti
 	for c in run.hold_cargo():
 		if not forces.has(c.id):
 			continue
-		var f: int = forces[c.id]
-		# One reaction for each cargo: the first in this order (SPEC Section 11).
-		if c.has(Defs.TRAIT_VOLATILE) and f >= run.break_limit(Defs.TRAIT_VOLATILE):
-			queue.append([Defs.REACT_EXPLOSION, c.id, -1])
-		elif c.has(Defs.TRAIT_FLUID) and f >= run.break_limit(Defs.TRAIT_FLUID):
-			queue.append([Defs.REACT_LEAK, c.id, -1])
-		elif c.has(Defs.TRAIT_FRAGILE) and f >= run.break_limit(Defs.TRAIT_FRAGILE):
-			queue.append([Defs.REACT_BREAK, c.id, -1])
-		elif c.has(Defs.TRAIT_ELECTRONIC) and f >= _radiation(run):
-			# A Radiation Belt shorts Electronic cargo at a hit (SPEC Section 28.2).
-			queue.append([Defs.REACT_SHORT, c.id, -1])
+		var kind := reaction_at(run, c, forces[c.id])
+		if kind != "":
+			queue.append([kind, c.id, -1])
 	_run_queue(run, queue, powered, out)
+
+
+## Returns the reaction of a cargo that takes a hit of a force, or "". One reaction
+## for each cargo: the first in this order (SPEC Section 11). A Radiation Belt
+## shorts Electronic cargo (SPEC Section 28.2).
+static func reaction_at(run: Run, c: Cargo, force: int) -> String:
+	if c.has(Defs.TRAIT_VOLATILE) and force >= run.break_limit(Defs.TRAIT_VOLATILE):
+		return Defs.REACT_EXPLOSION
+	if c.has(Defs.TRAIT_FLUID) and force >= run.break_limit(Defs.TRAIT_FLUID):
+		return Defs.REACT_LEAK
+	if c.has(Defs.TRAIT_FRAGILE) and force >= run.break_limit(Defs.TRAIT_FRAGILE):
+		return Defs.REACT_BREAK
+	if c.has(Defs.TRAIT_ELECTRONIC) and force >= _radiation(run):
+		return Defs.REACT_SHORT
+	return ""
 
 
 ## Does the reactions of a queue, and each reaction that they start, in order.
@@ -406,13 +413,13 @@ static func blast_area(run: Run, c: Cargo) -> Dictionary:
 ## next to a Battery that is not scrap (SPEC Section 12.2).
 static func power_check(run: Run) -> Dictionary:
 	var powered := {}
+	# A Magnetic Storm takes the power of each Shield, with Array Power too (SPEC Section 28.2).
+	if run.environment == Defs.ENV_MAGNETIC_STORM:
+		return powered
 	var hold := run.hold_cargo()
 	for s in hold:
 		if not s.has(Defs.TRAIT_SHIELD):
 			continue
-		# A Magnetic Storm takes the power of each Shield, with Array Power too (SPEC Section 28.2).
-		if run.environment == Defs.ENV_MAGNETIC_STORM:
-			break
 		# The Array Power mod gives power to each Shield (SPEC Section 27.2).
 		if run.has_mod(Defs.MOD_ARRAY_POWER):
 			powered[s.id] = true

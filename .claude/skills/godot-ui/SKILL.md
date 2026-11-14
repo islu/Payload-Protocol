@@ -48,7 +48,7 @@ description: Conventions of the Payload Protocol scenes and UI (project/scenes) 
 
 ## 5. The Warp
 
-- `WarpScreen` copies `warp.before` and changes the copy with each slide and reaction of the log. It calculates no result. A removed cargo stays in the copy with a fade of 0, so that a line of the report can mark it (`[url]` meta: `piece_meta()`). Replay plays the same log again.
+- `WarpScreen` copies `warp.before` and changes the copy with each slide and reaction of the log. It calculates no result. A removed cargo stays in the copy with a fade of 0, so that a line of the report can mark it: the mouse on a group of pieces sends `pieces_hovered` of `ReportPanel`, and `_mark_pieces()` marks them. Replay plays the same log again.
 - Wait with `_wait(seconds)`. It divides by `speed`, and it stops during the pause menu. Do not use a timer that runs during the pause.
 - Call `Sound.play(self, "<name>")` for each event of Section 21. A new name goes in `Sound.NAMES` and in `tools/sfx/make_sfx.py`. Then run `task sfx`. The UI check fails when a name has no file.
 - A new cargo needs an image: add it to `tools/art/cargo_art.json`, then run `task art` and `task import`. The UI check fails when a cargo has no image.

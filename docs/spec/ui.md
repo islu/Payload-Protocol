@@ -80,7 +80,7 @@ The station screen has these areas:
 
 - When a station with an event opens, the event shows in a panel at the center, above the station (Section 26).
 - The panel shows the name, the text, and a button for each choice. Each button shows the text of the choice, its cost, and its effects.
-- A choice with a cost more than the credits is disabled.
+- A choice that the player cannot select is disabled (Section 26.2).
 - The player cannot use the station until the player selects a choice.
 
 ### 20.9 Mod Choice

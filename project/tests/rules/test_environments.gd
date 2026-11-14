@@ -107,3 +107,34 @@ func test_environment_view() -> void:
 	var e: Dictionary = RunView.view(run)["environment"]
 	eq(e["id"], Defs.ENV_HEAT_ZONE, "the view has the environment of the leg (SPEC Section 28.1)")
 	check(e["text"] != "", "the view has its rule (SPEC Section 28.1)")
+
+
+func test_heat_zone_view() -> void:
+	run.environment = Defs.ENV_HEAT_ZONE
+	var limits := {}
+	for t: Dictionary in RunView.terms(run.cat, run):
+		limits[t["id"]] = t["limit"]
+	eq(
+		[limits[Defs.TRAIT_VOLATILE], limits[Defs.TRAIT_FLUID]],
+		[2, 1],
+		"in a Heat Zone, the rules of the traits show the limits of the leg (SPEC Section 28.2)"
+	)
+	eq(
+		RunView.names(run.cat, run)["limits"][Defs.TRAIT_FLUID],
+		1,
+		"How to Play shows the limits of the leg (SPEC Section 28.2)"
+	)
+
+
+func test_radiation_jolt_risk() -> void:
+	run.environment = Defs.ENV_RADIATION_BELT
+	run.hazard = PackedStringArray([Defs.DIR_LEFT, Defs.DIR_UP])
+	run.fork_options = PackedStringArray()
+	var battery := put("battery", 0, 2)
+	check(
+		RunView.jolt_risks(run).has(battery.id),
+		(
+			"in a Radiation Belt, an Electronic cargo that the jolt would short shows a warning"
+			+ " (SPEC Sections 12.3 and 28.2)"
+		)
+	)

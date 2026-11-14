@@ -73,6 +73,10 @@ msgid "You have the most clamps already."
 msgstr "卡榫已經達到上限。"
 
 #: project/rules/run.gd
+msgid "The ship has each mod already."
+msgstr "船上已經裝了全部的改裝模組。"
+
+#: project/rules/run.gd
 msgid "The hold cannot grow more that way."
 msgstr "貨艙不能再往那個方向擴充。"
 

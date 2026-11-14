@@ -267,7 +267,7 @@ func _render_event(e: Dictionary) -> void:
 			notes.append("cost %d" % c["cost"])
 		for f: Dictionary in c["effects"]:
 			notes.append(GameText.format(f))
-		var off := "" if c["can"] else " (not enough credits)"
+		var off := "" if c["can"] else " (%s)" % c["why"]
 		_say("  %d: %s [%s]%s" % [c["index"], c["text"], ", ".join(notes), off])
 
 

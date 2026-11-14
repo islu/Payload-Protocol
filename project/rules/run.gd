@@ -23,6 +23,7 @@ const OFFER_BOUGHT_TEXT := "That offer is sold already."
 const NOT_ENOUGH_TEXT := "You do not have enough credits."
 const IN_DEBT_TEXT := "You cannot buy while your credits are below 0."
 const CLAMPS_MAXED_TEXT := "You have the most clamps already."
+const NO_MOD_LEFT_TEXT := "The ship has each mod already."
 const HOLD_MAXED_TEXT := "The hold cannot grow more that way."
 const BAD_AXIS_TEXT := "Select a column or a row."
 const CANNOT_SELL_TEXT := "You can sell only kit."
@@ -312,11 +313,11 @@ func choose_event(index: int) -> String:
 		return NO_EVENT_TEXT
 	if index < 0 or index >= event.choices.size():
 		return NO_CHOICE_TEXT
+	var err := choice_error(index)
+	if err != "":
+		return err
 	var choice: Dictionary = event.choices[index]
-	if choice["cost"] > 0:
-		var err := _pay(choice["cost"])
-		if err != "":
-			return err
+	credits -= choice["cost"]
 	event = null
 	phase = Defs.PHASE_STATION
 	var mod := false
@@ -324,6 +325,25 @@ func choose_event(index: int) -> String:
 		mod = _do_effect(f) or mod
 	if mod:
 		offer_mods()
+	return ""
+
+
+## Returns why the player cannot select a choice of the open event, or "". A choice
+## with a cost needs the credits, and each of its effects must be able to happen
+## (SPEC Section 26.2).
+func choice_error(index: int) -> String:
+	var choice: Dictionary = event.choices[index]
+	if choice["cost"] == 0:
+		return ""
+	if credits < 0:
+		return IN_DEBT_TEXT
+	if choice["cost"] > credits:
+		return NOT_ENOUGH_TEXT
+	for f: Dictionary in choice["effects"]:
+		if f["type"] == Defs.EFFECT_CLAMP and clamps >= cat.price("clamp_max"):
+			return CLAMPS_MAXED_TEXT
+		if f["type"] == Defs.EFFECT_MOD and _mod_pool().is_empty():
+			return NO_MOD_LEFT_TEXT
 	return ""
 
 
@@ -348,13 +368,19 @@ func _do_effect(f: Dictionary) -> bool:
 	return false
 
 
-## Starts a mod choice with the mods that the ship does not have. With no mod left,
-## nothing happens (SPEC Section 27.1).
-func offer_mods() -> void:
+## Returns the IDs of the mods that the ship does not have.
+func _mod_pool() -> Array:
 	var pool: Array = []
 	for id in Defs.MODS:
 		if cat.mods.has(id) and not id in mods:
 			pool.append(id)
+	return pool
+
+
+## Starts a mod choice with the mods that the ship does not have. With no mod left,
+## nothing happens (SPEC Section 27.1).
+func offer_mods() -> void:
+	var pool := _mod_pool()
 	if pool.is_empty():
 		return
 	mod_offer = PackedStringArray(pick_n(rng, pool, cat.mod_offers))
@@ -905,16 +931,16 @@ func _leave_dock(warp_log: Dictionary) -> void:
 
 ## Selects a line of an event with the line stream of the seed. It does not
 ## select the same line two times in a row (SPEC Section 22).
-func say(event: String) -> void:
-	var texts: PackedStringArray = cat.lines.get(event, PackedStringArray())
+func say(line_event: String) -> void:
+	var texts: PackedStringArray = cat.lines.get(line_event, PackedStringArray())
 	if texts.is_empty():
 		line = ""
 		return
 	var n := texts.size()
 	var i := line_rng.randi_range(0, n - 1)
-	if n > 1 and _last_line.get(event, -1) == i:
+	if n > 1 and _last_line.get(line_event, -1) == i:
 		i = (i + 1 + line_rng.randi_range(0, n - 2)) % n
-	_last_line[event] = i
+	_last_line[line_event] = i
 	line = texts[i]
 
 

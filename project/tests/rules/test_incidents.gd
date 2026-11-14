@@ -189,3 +189,13 @@ func test_incident_view() -> void:
 		run.columns,
 		"the view has the cells of its place: a row (SPEC Section 29.3)"
 	)
+
+
+func test_incident_picks_the_line() -> void:
+	var boom := {"kind": Defs.REACT_EXPLOSION}
+	run.last_warp = {"steps": [], "incident": {"reactions": [boom, boom]}}
+	eq(
+		Arrival._line_event(run, {"contracts": [], "spoiled": []}),
+		Defs.LINE_CHAIN,
+		"the reactions of an incident select the line of the pilot (SPEC Sections 22 and 29.2)"
+	)

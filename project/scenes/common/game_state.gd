@@ -33,8 +33,8 @@ func view() -> Dictionary:
 		return {"version": VERSION, "terms": [], "names": {}, "run": {}}
 	return {
 		"version": VERSION,
-		"terms": RunView.terms(catalog),
-		"names": RunView.names(catalog),
+		"terms": RunView.terms(catalog, run),
+		"names": RunView.names(catalog, run),
 		"run": RunView.view(run) if run != null else {},
 	}
 

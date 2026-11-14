@@ -796,7 +796,8 @@ func _drop_at(mouse: Vector2) -> void:
 
 ## Picks up the next cargo on the dock after a placement by clicks (SPEC Section 8.2).
 func _pick_next() -> void:
-	var dock: Array = GameState.view()["run"]["dock"]
+	# refresh() set _run for this action already.
+	var dock: Array = _run["dock"]
 	if dock.is_empty():
 		return
 	# Grab a real cell of the shape: cell (0, 0) of the box can be empty (SPEC Section 8.3).

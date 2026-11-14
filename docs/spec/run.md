@@ -148,6 +148,7 @@ The arrival has these steps, in this order:
 - Each choice has a text, an optional cost in credits, and a list of **effects**.
 - One choice of each event has no cost.
 - The player must select one choice. The player cannot select a choice when its cost is more than the credits.
+- The player cannot select a choice with a cost when one of its effects cannot happen: a `clamp` effect at the maximum of clamps, or a `mod` effect with no mod left.
 - The effects happen in the order of the list:
 
 | Effect | Result |

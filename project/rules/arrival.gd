@@ -167,8 +167,11 @@ static func _line_event(run: Run, report: Dictionary) -> String:
 	var explosions := 0
 	var leaks := 0
 	var breaks := 0
-	for s: Dictionary in run.last_warp.get("steps", []):
-		for r: Dictionary in s["reactions"]:
+	# The reactions of the incident count too (SPEC Section 29.2).
+	var groups: Array = run.last_warp.get("steps", []).duplicate()
+	groups.append(run.last_warp.get("incident", {}))
+	for s: Dictionary in groups:
+		for r: Dictionary in s.get("reactions", []):
 			match r["kind"]:
 				Defs.REACT_EXPLOSION:
 					explosions += 1

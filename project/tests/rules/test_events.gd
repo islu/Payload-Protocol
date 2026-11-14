@@ -250,3 +250,33 @@ func test_mod_areas_view() -> void:
 		run.rows,
 		"Cryo Line shows the left column (SPEC Section 27.2)"
 	)
+
+
+func test_choice_with_no_effect() -> void:
+	_open_one()
+	run.credits = 40
+	run.clamps = 4
+	eq(
+		run.choose_event(0),
+		Run.CLAMPS_MAXED_TEXT,
+		"a choice with a cost cannot add a clamp at the maximum (SPEC Section 26.2)"
+	)
+	eq(
+		[run.credits, run.phase],
+		[40, Defs.PHASE_EVENT],
+		"the choice takes no credits, and the event stays open (SPEC Section 26.2)"
+	)
+	eq(
+		RunView.view(run)["event"]["choices"][0]["can"],
+		false,
+		"the view disables that choice (SPEC Section 20.8)"
+	)
+	run.event.choices[1]["cost"] = 8
+	for id in Defs.MODS:
+		run.mods.append(id)
+	eq(
+		run.choose_event(1),
+		Run.NO_MOD_LEFT_TEXT,
+		"a choice with a cost cannot start a mod choice with no mod left (SPEC Section 26.2)"
+	)
+	eq(run.credits, 40, "the mod choice takes no credits (SPEC Section 26.2)")

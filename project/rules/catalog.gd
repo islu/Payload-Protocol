@@ -251,6 +251,12 @@ func _check_rules() -> void:
 		_fail("rules: the offers must be 1 or more")
 	if chance_percent < 0 or chance_percent > 100:
 		_fail("rules: the chance of an event must be 0 to 100")
+	if not legs.is_empty():
+		# Leg 1 has no environment and no incidents (SPEC Sections 28.1 and 29.1).
+		if legs[0]["environment"]:
+			_fail("rules: leg 1 cannot have an environment")
+		if legs[0]["incident_percent"] > 0:
+			_fail("rules: leg 1 cannot have incidents")
 	for i in legs.size():
 		var s: Dictionary = legs[i]
 		if s["hazard_steps"].is_empty():

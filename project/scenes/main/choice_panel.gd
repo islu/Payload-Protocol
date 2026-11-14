@@ -44,6 +44,7 @@ func _build_event(e: Dictionary) -> void:
 		var index: int = c["index"]
 		var b := _choice("\n".join(lines), func() -> void: _pick(GameState.choose_event(index)))
 		b.disabled = not c["can"]
+		b.tooltip_text = tr(c["why"])
 
 
 func _build_mods(offer: Array) -> void:

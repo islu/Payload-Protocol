@@ -21,18 +21,16 @@ const EFFECT_TEXT := {
 
 
 ## Returns the name, the rule, and the break limit of each trait (SPEC Section 8.4).
-static func terms(cat: Catalog) -> Array:
+## With a run, the limits are the limits of the leg (SPEC Section 28.2).
+static func terms(cat: Catalog, run: Run = null) -> Array:
 	var out := []
 	for t in Defs.TRAITS:
-		var limit := cat.break_limit(t)
+		var limit := _limit(cat, run, t)
 		var rule := text(cat.term_text("traits", t), {"limit": limit})
 		out.append({"id": t, "name": cat.term_name("traits", t), "rule": rule, "limit": limit})
 	return out
 
 
-## Returns the names of the words of the rules: {kinds, weights, directions}, each a
-## map from the ID to the name (SPEC Section 4.4). It also has the weight value of each
-## weight (weight_values) and the break limit of each trait (limits), for the rules text.
 ## Returns the IDs of the cargo at the front wall of the first shift step that would
 ## react to its wall jolt, as a set (SPEC Sections 10.4 and 12.3).
 static func jolt_risks(run: Run) -> Dictionary:
@@ -50,9 +48,8 @@ static func jolt_risks(run: Run) -> Dictionary:
 		if run.has_mod(Defs.MOD_PADDED_WALLS):
 			continue
 		var f := Shift.taken(run, c, 0 if c.has(Defs.TRAIT_CUSHION) else Shift.force_weight(run, c))
-		for t in Defs.LIMIT_TRAITS:
-			if c.has(t) and f >= run.break_limit(t):
-				out[c.id] = true
+		if Shift.reaction_at(run, c, f) != "":
+			out[c.id] = true
 	return out
 
 
@@ -75,7 +72,11 @@ static func hazard(run: Run) -> Array:
 	return out
 
 
-static func names(cat: Catalog) -> Dictionary:
+## Returns the names of the words of the rules: {kinds, weights, directions}, each a
+## map from the ID to the name (SPEC Section 4.4). It also has the weight value of each
+## weight (weight_values) and the break limit of each trait (limits), for the rules text.
+## With a run, the limits are the limits of the leg (SPEC Section 28.2).
+static func names(cat: Catalog, run: Run = null) -> Dictionary:
 	var out := {}
 	var groups := {"kinds": Defs.KINDS, "weights": Defs.WEIGHTS, "directions": Defs.DIRECTIONS}
 	for group: String in groups:
@@ -87,8 +88,12 @@ static func names(cat: Catalog) -> Dictionary:
 		out["weight_values"][w] = cat.weight_value(w)
 	out["limits"] = {}
 	for t in Defs.LIMIT_TRAITS:
-		out["limits"][t] = cat.break_limit(t)
+		out["limits"][t] = _limit(cat, run, t)
 	return out
+
+
+static func _limit(cat: Catalog, run: Run, trait_id: String) -> int:
+	return run.break_limit(trait_id) if run != null else cat.break_limit(trait_id)
 
 
 static func text(key: String, args: Dictionary = {}) -> Dictionary:
@@ -433,8 +438,9 @@ static func mod_areas(run: Run) -> Array:
 	return out
 
 
-## Returns the open event: {name, text, choices: [{index, text, cost, can, effects}]},
-## or {}. Each effect is a text {key, args} (SPEC Section 20.8).
+## Returns the open event: {name, text, choices: [{index, text, cost, can, why,
+## effects}]}, or {}. why is the error text of a choice that cannot be selected.
+## Each effect is a text {key, args} (SPEC Section 20.8).
 static func event(run: Run) -> Dictionary:
 	if run.phase != Defs.PHASE_EVENT or run.event == null:
 		return {}
@@ -444,9 +450,19 @@ static func event(run: Run) -> Dictionary:
 		var effects := []
 		for f: Dictionary in c["effects"]:
 			effects.append(_effect(run, f))
-		var can: bool = c["cost"] == 0 or (run.credits >= 0 and c["cost"] <= run.credits)
-		choices.append(
-			{"index": i, "text": c["text"], "cost": c["cost"], "can": can, "effects": effects}
+		var why := run.choice_error(i)
+		(
+			choices
+			. append(
+				{
+					"index": i,
+					"text": c["text"],
+					"cost": c["cost"],
+					"can": why == "",
+					"why": why,
+					"effects": effects,
+				}
+			)
 		)
 	return {"id": run.event.id, "name": run.event.name, "text": run.event.text, "choices": choices}
 
