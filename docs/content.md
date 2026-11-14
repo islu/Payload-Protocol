@@ -31,7 +31,7 @@ This file has the design rules of the game content. The data files in `project/d
 
 ## First Content (Version 1)
 
-The first content has 40 freight and 6 kit. The freight has themes: supplies, tech, food, medical, contraband, weapons, robots, and Earth relics. The data files set the shapes and the values.
+The first content has 43 freight and 6 kit. The freight has themes: supplies, tech, food, medical, contraband, weapons, robots, and Earth relics. The data files set the shapes and the values.
 
 ### Freight
 
@@ -77,6 +77,9 @@ The first content has 40 freight and 6 kit. The freight has themes: supplies, te
 | `instant_noodles` | Instant Noodles | light | — | 1 cell |
 | `flashlight` | Flashlight | light | Electronic | 1 cell |
 | `burger` | Burger | standard | Perishable | 1 cell |
+| `prosthetic_arm` | Prosthetic Arm | light | Electronic | 1 cell |
+| `hydroponic_garden` | Hydroponic Garden | standard | Perishable | 2 cells, a line |
+| `warp_core` | Warp Core | heavy | Volatile, Electronic | 2 cells, a line |
 
 ### Kit
 

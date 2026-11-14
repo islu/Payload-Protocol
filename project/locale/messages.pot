@@ -797,6 +797,10 @@ msgstr ""
 msgid "Helper Bot"
 msgstr ""
 
+#: project/data/cargo/hydroponic_garden.json
+msgid "Hydroponic Garden"
+msgstr ""
+
 #: project/data/cargo/inertia_anchor.json
 msgid "Inertia Anchor"
 msgstr ""
@@ -839,6 +843,10 @@ msgstr ""
 
 #: project/data/cargo/plasma_cell.json
 msgid "Plasma Cell"
+msgstr ""
+
+#: project/data/cargo/prosthetic_arm.json
+msgid "Prosthetic Arm"
 msgstr ""
 
 #: project/data/cargo/radar_dish.json
@@ -891,6 +899,10 @@ msgstr ""
 
 #: project/data/cargo/vaccine_vial.json
 msgid "Vaccine Vial"
+msgstr ""
+
+#: project/data/cargo/warp_core.json
+msgid "Warp Core"
 msgstr ""
 
 #: project/data/cargo/weapon_rack.json
@@ -968,6 +980,10 @@ msgstr ""
 msgid "Redline Fuel"
 msgstr ""
 
+#: project/data/contracts/greenhouse.json
+msgid "Verdant Colony Farms"
+msgstr ""
+
 #: project/data/contracts/heart_transplant.json
 msgid "Helix Medical"
 msgstr ""
@@ -1019,6 +1035,10 @@ msgstr ""
 msgid "Bright Spark Mining"
 msgstr ""
 
+#: project/data/contracts/prosthetics.json
+msgid "Second Hand Clinic"
+msgstr ""
+
 #: project/data/contracts/radar.json
 #: project/data/contracts/radar_pair.json
 msgid "Deep Watch Array"
@@ -1042,6 +1062,10 @@ msgstr ""
 
 #: project/data/contracts/vip_embassy.json
 msgid "Embassy Courier"
+msgstr ""
+
+#: project/data/contracts/warp_core.json
+msgid "Fold Drive Works"
 msgstr ""
 
 #: project/data/environments/heat_zone.json

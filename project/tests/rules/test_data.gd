@@ -5,7 +5,7 @@ extends TestCase
 func test_the_real_data_loads() -> void:
 	var cat := DataFiles.catalog()
 	eq(cat.errors, PackedStringArray(), "the data check finds no errors (content.md)")
-	eq(cat.cargo.size(), 46, "the first content has 40 freight and 6 kit (content.md)")
+	eq(cat.cargo.size(), 49, "the first content has 43 freight and 6 kit (content.md)")
 
 
 ## The contract rules of content.md.

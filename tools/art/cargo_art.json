@@ -74,6 +74,10 @@
  "helper_bot": {
   "source": "sorted/scifi-objects/robot-small-friendly-round-blue-eye_20260225_032501.png"
  },
+ "hydroponic_garden": {
+  "source": "sorted/scifi-pro/hydroponic-garden-plants-led-grow-lights-green-pods_20260225_012345.png",
+  "scale": "fit"
+ },
  "inertia_anchor": {
   "source": "sorted/scifi-items/thruster-nozzle-cone-metal-exhaust-engine_20260225_123900.png"
  },
@@ -108,6 +112,10 @@
  "plasma_cell": {
   "source": "sorted/scifi-items/plasma-core-sphere-orange-contained-hot_20260225_122416.png"
  },
+ "prosthetic_arm": {
+  "source": "sorted/cyberpunk-assets/cyberware/cyber-cyborg-arm-mechanical-prosthetic-001-2026-03-07T18-21-35.png",
+  "scale": "fit"
+ },
  "radar_dish": {
   "source": "sorted/scifi-objects/satellite-dish-large-parabolic-antenna-white_20260225_033521.png"
  },
@@ -125,7 +133,8 @@
   "source": "sorted/scifi-items/sensor-module-small-dome-camera-lens_20260225_124243.png"
  },
  "service_android": {
-  "source": "sorted/scifi-objects/robot-tall-humanoid-silver-standing_20260225_032523.png"
+  "source": "sorted/scifi-pro/light-mech-scout-fast-agile-thin-legs-sensor-head_20260225_012605.png",
+  "scale": "fit"
  },
  "shield_generator": {
   "source": "sorted/scifi-objects/shield-generator-small-disc-blue-glow_20260225_033352.png"
@@ -149,6 +158,10 @@
  },
  "vaccine_vial": {
   "source": "sorted/scifi-items/dna-sampler-small-vial-tube-device_20260225_123800.png"
+ },
+ "warp_core": {
+  "source": "sorted/scifi-interior/scifi-warp-drive-unit-complex-glowing-unstable_20260217_142401.png",
+  "scale": "fit"
  },
  "weapon_rack": {
   "source": "sorted/scifi-interior/scifi-weapon-rack-wall-display-guns-mounted_20260217_141912.png"

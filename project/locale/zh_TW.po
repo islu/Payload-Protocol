@@ -824,6 +824,10 @@ msgstr "燃料桶"
 msgid "Helper Bot"
 msgstr "小幫手機器人"
 
+#: project/data/cargo/hydroponic_garden.json
+msgid "Hydroponic Garden"
+msgstr "水耕菜園"
+
 #: project/data/cargo/inertia_anchor.json
 msgid "Inertia Anchor"
 msgstr "慣性錨"
@@ -867,6 +871,10 @@ msgstr "藥丸"
 #: project/data/cargo/plasma_cell.json
 msgid "Plasma Cell"
 msgstr "電漿電池"
+
+#: project/data/cargo/prosthetic_arm.json
+msgid "Prosthetic Arm"
+msgstr "義肢手臂"
 
 #: project/data/cargo/radar_dish.json
 msgid "Radar Dish"
@@ -919,6 +927,10 @@ msgstr "興奮劑"
 #: project/data/cargo/vaccine_vial.json
 msgid "Vaccine Vial"
 msgstr "疫苗"
+
+#: project/data/cargo/warp_core.json
+msgid "Warp Core"
+msgstr "曲速核心"
 
 #: project/data/cargo/weapon_rack.json
 msgid "Weapon Rack"
@@ -995,6 +1007,10 @@ msgstr "流明畫廊"
 msgid "Redline Fuel"
 msgstr "紅線燃料"
 
+#: project/data/contracts/greenhouse.json
+msgid "Verdant Colony Farms"
+msgstr "翠綠殖民農場"
+
 #: project/data/contracts/heart_transplant.json
 msgid "Helix Medical"
 msgstr "螺旋醫療"
@@ -1046,6 +1062,10 @@ msgstr "軌道藥局"
 msgid "Bright Spark Mining"
 msgstr "火花礦業"
 
+#: project/data/contracts/prosthetics.json
+msgid "Second Hand Clinic"
+msgstr "義手診所"
+
 #: project/data/contracts/radar.json
 #: project/data/contracts/radar_pair.json
 msgid "Deep Watch Array"
@@ -1070,6 +1090,10 @@ msgstr "軌道診所"
 #: project/data/contracts/vip_embassy.json
 msgid "Embassy Courier"
 msgstr "使館信差"
+
+#: project/data/contracts/warp_core.json
+msgid "Fold Drive Works"
+msgstr "摺疊引擎工坊"
 
 #: project/data/environments/heat_zone.json
 msgid "Heat Zone"

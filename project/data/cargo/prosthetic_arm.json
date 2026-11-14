@@ -1,0 +1,8 @@
+{
+	"id": "prosthetic_arm",
+	"name": "Prosthetic Arm",
+	"kind": "freight",
+	"weight": "light",
+	"traits": ["electronic"],
+	"shape": [[0, 0]]
+}
