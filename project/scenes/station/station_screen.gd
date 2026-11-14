@@ -17,9 +17,6 @@ const SELL_KIT_TEXT := "Sell {name}: +{price} cr"
 const CLEAR_SCRAP_TEXT := "Clear the scrap: -{price} cr"
 const NO_SELL_TEXT := "Freight cannot be sold"
 const WARP_TEXT := "WARP"
-const TOP_BAR_TEXT := "Leg {leg}/{legs} · Jump {jump}/{jumps}"
-const CREDITS_TEXT := "Credits: {credits}"
-const PAYMENT_TEXT := "Payment {payment} after {jumps} jump(s)"
 # gdlint:ignore = max-line-length
 const FREE_CLAMPS_TEXT := "{free} of {total} free. Drag a clamp onto a cargo. Click a clamp to take it off."
 const EMPTY_DOCK_TEXT := "Empty. Accept a contract or buy kit."
@@ -28,9 +25,6 @@ const CONFIRM_TITLE_TEXT := "Cargo on the dock"
 const CONFIRM_TEXT := "Cargo on the dock stays at the station.\nEach freight on the dock pays a breach fee of {fee} credits.\nEach kit on the dock is sold at half price.\nWarp now?"
 # gdlint:ignore = max-line-length
 const HINT_TEXT := "Drag cargo, or click to pick it up and click to drop it. Right click or R rotates it."
-const MASS_TEXT := "Mass {hold}/{limit}"
-const FUEL_TEXT := "Fuel fee {fee}"
-const OVER_MAX_TEXT := "Too heavy: {max} at most"
 const OR_TEXT := "or"
 const UNDO_TEXT := "Undo (Ctrl+Z)"
 ## The mark of a fork step that a Sensor shows (SPEC Section 20.2).
@@ -55,18 +49,21 @@ var _shown_credits := -1
 var _hold: HoldView
 ## The shock bay above the hold (SPEC Section 31.2).
 var _bay: HoldView
-var _top_label: Label
+## The top bar: the leg, the credits, the mass, and the environment (SPEC Section 20.2).
+var _top_bar: TopBar
+## The credits of the top bar: the gold sparkle of a coin goes there (SPEC Section 21.4).
 var _credits_label: Label
-var _payment_label: Label
-var _mods_box: HBoxContainer
-var _mass_label: Label
+## The mod bar below the hold (SPEC Section 20.2).
+var _mod_bar: ModBar
 var _hazard_box: VBoxContainer
 var _dock_title: Label
 var _dock_panel: PanelContainer
 var _dock_flow: HFlowContainer
 var _contracts_box: VBoxContainer
 var _contract_cards: Array[ContractCard] = []
+## The shop: the kit offers and Reroll, then the services (SPEC Section 20.2).
 var _shop: ShopPanel
+var _services: ShopPanel
 var _clamp_box: HBoxContainer
 var _clamp_label: Label
 var _sell_area: PanelContainer
@@ -111,17 +108,11 @@ func _build() -> void:
 	margin.add_child(root)
 
 	var top := HBoxContainer.new()
-	top.add_theme_constant_override("separation", 40)
+	top.add_theme_constant_override("separation", 14)
 	root.add_child(top)
-	_top_label = _label(top, "", TextSize.HEADING)
-	_credits_label = _label(top, "", TextSize.HEADING, Palette.GOOD)
-	_payment_label = _label(top, "", TextSize.BODY, Palette.TEXT_DIM)
-	_mass_label = _label(top, "", TextSize.HEADING, Palette.TEXT)
-	# An icon for each mod of the ship, with its rule (SPEC Section 20.2).
-	_mods_box = HBoxContainer.new()
-	_mods_box.name = "Mods"
-	_mods_box.add_theme_constant_override("separation", 8)
-	top.add_child(_mods_box)
+	_top_bar = TopBar.new()
+	top.add_child(_top_bar)
+	_credits_label = _top_bar.credits_label
 
 	var body := HBoxContainer.new()
 	body.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -201,8 +192,15 @@ func _build() -> void:
 	_hold.clamp_pressed.connect(func(id: int) -> void: _act(GameState.unclamp_cargo(id)))
 	_hold.cargo_hovered.connect(_on_hold_hovered)
 	ship.add_child(_hold)
-	var hint := _label(center, HINT_TEXT, TextSize.SMALL, Palette.TEXT_DIM)
-	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	# Below the hold: the mod bar, and the hint of the controls (SPEC Section 20.2).
+	var bottom := HBoxContainer.new()
+	bottom.alignment = BoxContainer.ALIGNMENT_CENTER
+	bottom.add_theme_constant_override("separation", 16)
+	center.add_child(bottom)
+	_mod_bar = ModBar.new()
+	bottom.add_child(_mod_bar)
+	var hint := _label(bottom, HINT_TEXT, TextSize.SMALL, Palette.TEXT_DIM)
+	hint.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 
 	var right := VBoxContainer.new()
 	right.custom_minimum_size.x = SIDE_WIDTH
@@ -212,6 +210,10 @@ func _build() -> void:
 	_shop = ShopPanel.new()
 	_shop.screen = self
 	right.add_child(_shop)
+	_services = ShopPanel.new()
+	_services.screen = self
+	_services.show_services = true
+	right.add_child(_services)
 	_label(right, CLAMPS_TEXT, TextSize.HEADING, Palette.ACCENT)
 	_clamp_box = HBoxContainer.new()
 	_clamp_box.add_theme_constant_override("separation", 8)
@@ -309,12 +311,10 @@ func refresh() -> void:
 	# The station shows behind an event and a mod choice (SPEC Sections 20.8 and 20.9).
 	if _run.is_empty() or not _run["phase"] in STATION_PHASES:
 		return
-	_top_label.text = tr(TOP_BAR_TEXT).format(_run)
+	_top_bar.set_view(_run)
 	_count_credits(_run["credits"])
-	_payment_label.text = tr(PAYMENT_TEXT).format(
-		{"payment": _run["payment"], "jumps": _run["jumps_to_payment"]}
-	)
-	_show_mass()
+	# The Warp button does not work over the maximum mass (SPEC Section 25).
+	_warp_button.disabled = _run["mass"]["hold"] > _run["mass"]["max"]
 	_show_mods()
 	_show_pilot()
 	_undo_button.disabled = not GameState.can_undo()
@@ -324,29 +324,20 @@ func refresh() -> void:
 	_refresh_dock()
 	_refresh_contracts()
 	_shop.refresh()
+	_services.refresh()
 	_refresh_clamps()
 	_update_marks()
 
 
-## Shows a tag for each mod of the ship. The mouse on it shows the rule (SPEC Section 20.2).
+## Shows the mod bar (SPEC Section 20.2).
 func _show_mods() -> void:
-	_clear(_mods_box)
-	# The environment of the leg comes first (SPEC Section 28.1).
-	if not _run.get("environment", {}).is_empty():
-		RouteCards.env_tag(_mods_box, _run["environment"])
-	for m: Dictionary in _run.get("mods", []):
-		var tag := PanelContainer.new()
-		tag.mouse_filter = Control.MOUSE_FILTER_STOP
-		tag.tooltip_text = "%s: %s" % [tr(m["name"]), tr(m["text"])]
-		var style := StyleBoxFlat.new()
-		style.bg_color = Palette.PANEL
-		style.border_color = Palette.ACCENT
-		style.set_border_width_all(1)
-		style.set_corner_radius_all(4)
-		style.set_content_margin_all(6)
-		tag.add_theme_stylebox_override("panel", style)
-		_label(tag, "", TextSize.SMALL, Palette.ACCENT).text = tr(m["name"])
-		_mods_box.add_child(tag)
+	_mod_bar.set_mods(_run.get("mods", []), _set_hover_mod)
+
+
+## Marks the area of the mod under the mouse on the hold, or none for "".
+func _set_hover_mod(id: String) -> void:
+	_hold.hover_mod = id
+	_hold.queue_redraw()
 
 
 ## Shows the hint of the first runs in the pilot box, or the line of the pilot (SPEC Section 23.3).
@@ -389,24 +380,7 @@ func _count_credits(target: int) -> void:
 
 func _set_credits(value: int) -> void:
 	_shown_credits = value
-	_credits_label.text = tr(CREDITS_TEXT).format({"credits": value})
-
-
-## Shows the hold mass, the limit, and the fuel fee (SPEC Section 25). Over the limit
-## the text is yellow, and over the maximum it is red.
-func _show_mass() -> void:
-	var m: Dictionary = _run["mass"]
-	var parts := PackedStringArray([tr(MASS_TEXT).format(m)])
-	var color := Palette.TEXT
-	if m["hold"] > m["max"]:
-		parts.append(tr(OVER_MAX_TEXT).format(m))
-		color = Palette.BAD
-	elif m["fee"] > 0:
-		parts.append(tr(FUEL_TEXT).format(m))
-		color = Palette.WARN
-	_mass_label.text = " · ".join(parts)
-	_mass_label.add_theme_color_override("font_color", color)
-	_warp_button.disabled = m["hold"] > m["max"]
+	_top_bar.set_credits(value)
 
 
 ## Shows each step of the hazard. A fork step shows its two directions, or the one
@@ -644,10 +618,14 @@ func _on_hold_pressed(id: int, grab: Vector2i, button: int) -> void:
 # --- Input ---
 
 
+## The input of the station. Esc puts back a held cargo first (StationDrag). Only
+## then main opens the pause menu (SPEC Section 20.7).
 func _input(event: InputEvent) -> void:
 	if _drag.handle_input(event):
 		get_viewport().set_input_as_handled()
-	elif not _drag.is_active() and event.is_action_pressed(&"ui_undo"):
+	elif _drag.is_active():
+		return
+	elif event.is_action_pressed(&"ui_undo"):
 		_undo()
 		get_viewport().set_input_as_handled()
 

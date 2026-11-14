@@ -574,18 +574,6 @@ msgid "WARP"
 msgstr "跳躍"
 
 #: project/scenes/station/station_screen.gd
-msgid "Leg {leg}/{legs} · Jump {jump}/{jumps}"
-msgstr "還款期 {leg}/{legs} · 跳躍 {jump}/{jumps}"
-
-#: project/scenes/station/station_screen.gd
-msgid "Credits: {credits}"
-msgstr "信用點：{credits}"
-
-#: project/scenes/station/station_screen.gd
-msgid "Payment {payment} after {jumps} jump(s)"
-msgstr "再 {jumps} 次跳躍後還款 {payment}"
-
-#: project/scenes/station/station_screen.gd
 msgid "{free} of {total} free. Drag a clamp onto a cargo. Click a clamp to take it off."
 msgstr "空閒 {free} / {total}。把卡榫拖到貨物上固定，點卡榫可以拆下。"
 
@@ -614,18 +602,6 @@ msgid "Drag cargo, or click to pick it up and click to drop it. Right click or R
 msgstr "拖曳貨物，或點一下拿起、再點一下放下。右鍵或 R 旋轉。"
 
 #: project/scenes/station/station_screen.gd
-msgid "Mass {hold}/{limit}"
-msgstr "載重 {hold}/{limit}"
-
-#: project/scenes/station/station_screen.gd
-msgid "Fuel fee {fee}"
-msgstr "燃料費 {fee}"
-
-#: project/scenes/station/station_screen.gd
-msgid "Too heavy: {max} at most"
-msgstr "超重：最多 {max}"
-
-#: project/scenes/station/station_screen.gd
 #: project/scenes/warp/warp_screen.gd
 msgid "or"
 msgstr "或"
@@ -642,6 +618,30 @@ msgstr "感測器"
 #: project/scenes/station/station_screen.gd
 msgid "Load all"
 msgstr "全部裝入"
+
+#: project/scenes/station/top_bar.gd
+msgid "Leg {leg}/{legs}"
+msgstr "還款期 {leg}/{legs}"
+
+#: project/scenes/station/top_bar.gd
+msgid "Credits: {credits}"
+msgstr "信用點：{credits}"
+
+#: project/scenes/station/top_bar.gd
+msgid "Payment {payment} after {jumps} jump(s)"
+msgstr "再 {jumps} 次跳躍後還款 {payment}"
+
+#: project/scenes/station/top_bar.gd
+msgid "Mass {hold}/{limit}"
+msgstr "載重 {hold}/{limit}"
+
+#: project/scenes/station/top_bar.gd
+msgid "Fuel fee {fee}"
+msgstr "燃料費 {fee}"
+
+#: project/scenes/station/top_bar.gd
+msgid "Too heavy: {max} at most"
+msgstr "超重：最多 {max}"
 
 #: project/scenes/warp/report_panel.gd
 msgid "Arrival"

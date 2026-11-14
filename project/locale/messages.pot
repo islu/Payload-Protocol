@@ -551,18 +551,6 @@ msgid "WARP"
 msgstr ""
 
 #: project/scenes/station/station_screen.gd
-msgid "Leg {leg}/{legs} · Jump {jump}/{jumps}"
-msgstr ""
-
-#: project/scenes/station/station_screen.gd
-msgid "Credits: {credits}"
-msgstr ""
-
-#: project/scenes/station/station_screen.gd
-msgid "Payment {payment} after {jumps} jump(s)"
-msgstr ""
-
-#: project/scenes/station/station_screen.gd
 msgid "{free} of {total} free. Drag a clamp onto a cargo. Click a clamp to take it off."
 msgstr ""
 
@@ -587,18 +575,6 @@ msgid "Drag cargo, or click to pick it up and click to drop it. Right click or R
 msgstr ""
 
 #: project/scenes/station/station_screen.gd
-msgid "Mass {hold}/{limit}"
-msgstr ""
-
-#: project/scenes/station/station_screen.gd
-msgid "Fuel fee {fee}"
-msgstr ""
-
-#: project/scenes/station/station_screen.gd
-msgid "Too heavy: {max} at most"
-msgstr ""
-
-#: project/scenes/station/station_screen.gd
 #: project/scenes/warp/warp_screen.gd
 msgid "or"
 msgstr ""
@@ -614,6 +590,30 @@ msgstr ""
 
 #: project/scenes/station/station_screen.gd
 msgid "Load all"
+msgstr ""
+
+#: project/scenes/station/top_bar.gd
+msgid "Leg {leg}/{legs}"
+msgstr ""
+
+#: project/scenes/station/top_bar.gd
+msgid "Credits: {credits}"
+msgstr ""
+
+#: project/scenes/station/top_bar.gd
+msgid "Payment {payment} after {jumps} jump(s)"
+msgstr ""
+
+#: project/scenes/station/top_bar.gd
+msgid "Mass {hold}/{limit}"
+msgstr ""
+
+#: project/scenes/station/top_bar.gd
+msgid "Fuel fee {fee}"
+msgstr ""
+
+#: project/scenes/station/top_bar.gd
+msgid "Too heavy: {max} at most"
 msgstr ""
 
 #: project/scenes/warp/report_panel.gd

@@ -8,10 +8,13 @@ const COST_TEXT := "Cost {cost}"
 
 ## The buttons of the choices, in order. The UI check reads them.
 var choices: Array[Button] = []
+## The icon of each mod card of a mod choice (SPEC Section 20.9).
+var mod_icons: Array[ModIcon] = []
 
 
 func _build() -> void:
 	choices.clear()
+	mod_icons.clear()
 	var run: Dictionary = GameState.view()["run"]
 	if run.get("phase", "") == Defs.PHASE_EVENT:
 		_build_event(run["event"])
@@ -47,12 +50,20 @@ func _build_event(e: Dictionary) -> void:
 		b.tooltip_text = tr(c["why"])
 
 
+## A card for each mod: its icon, its name, and its rule (SPEC Section 20.9). The
+## icon is the one of the mod bar.
 func _build_mods(offer: Array) -> void:
 	heading(MOD_CHOICE_TEXT)
 	for i in offer.size():
 		var m: Dictionary = offer[i]
 		var text := "%s\n%s" % [tr(m["name"]), tr(m["text"])]
-		_choice(text, func() -> void: _pick(GameState.choose_mod(i)))
+		var b := _choice(text, func() -> void: _pick(GameState.choose_mod(i)))
+		# An empty icon keeps room for the mod icon at the left of the text.
+		b.icon = ImageTexture.create_from_image(Image.create(56, 48, false, Image.FORMAT_RGBA8))
+		var icon := ModIcon.new(m["id"], 48.0)
+		icon.position = Vector2(14, (b.custom_minimum_size.y - 48.0) / 2.0)
+		b.add_child(icon)
+		mod_icons.append(icon)
 
 
 func _choice(text: String, action: Callable) -> Button:

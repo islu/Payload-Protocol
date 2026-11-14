@@ -600,6 +600,7 @@ func _play_station(state: Node, station: StationScreen) -> void:
 		_undo_checked = true
 		await _check_undo(state, station)
 	_check_layout(station)
+	UiCheckTopBar.check(self, station)
 	if not _snap_checked:
 		_snap_checked = true
 		_check_snap(station)
@@ -809,7 +810,7 @@ func _check_shop(station: StationScreen) -> void:
 			),
 			"a price that the player can pay is not red (SPEC Section 20.2)"
 		)
-	var texts: Dictionary = station._shop.service_texts
+	var texts: Dictionary = station._services.service_texts
 	_check(
 		(
 			"%d/" % shop["clamps"] in texts.get("clamp", "")

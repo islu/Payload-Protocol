@@ -74,6 +74,12 @@ static func choose(ui: Node, main: Control) -> void:
 		panel.choices.size() == want.size(),
 		"the panel has a button for each choice (SPEC Sections 20.8 and 20.9)"
 	)
+	if run["phase"] == Defs.PHASE_MOD:
+		var icons: Array = panel.mod_icons.map(func(m: ModIcon) -> String: return m.mod)
+		var ids: Array = want.map(func(m: Dictionary) -> String: return m["id"])
+		ui._check(
+			icons == ids, "each mod card has the icon of its mod: %s (SPEC Section 20.9)" % [icons]
+		)
 	if run["phase"] == Defs.PHASE_EVENT:
 		for i in want.size():
 			ui._check(
@@ -90,13 +96,25 @@ static func choose(ui: Node, main: Control) -> void:
 	if run["phase"] == Defs.PHASE_STATION and main.screen() is StationScreen:
 		var station: StationScreen = main.screen()
 		station.refresh()
+		var bar: ModBar = station._mod_bar
 		ui._check(
-			(
-				station._mods_box.get_child_count()
-				== run["mods"].size() + (0 if run["environment"].is_empty() else 1)
-			),
-			"the top bar has a tag for each mod (SPEC Section 20.2)"
+			bar.cards.size() == run["mods"].size(),
+			"the mod bar has a card for each mod (SPEC Section 20.2)"
 		)
+		for i in mini(bar.cards.size(), run["mods"].size()):
+			var m: Dictionary = run["mods"][i]
+			ui._check(
+				TranslationServer.translate(m["text"]) in bar.cards[i].tooltip_text,
+				"the mouse on a mod card shows its rule (SPEC Section 20.2)"
+			)
+			bar.cards[i].mouse_entered.emit()
+			ui._check(
+				station._hold.hover_mod == m["id"],
+				"the mouse on a mod card marks its area on the hold (SPEC Section 20.2)"
+			)
+			bar.cards[i].mouse_exited.emit()
+		for id in Defs.MODS:
+			ui._check(ModIcon.has_icon(id), "the mod %s has an icon (SPEC Section 20.2)" % id)
 		ui._check(
 			station._hold.mod_areas == run["mod_areas"],
 			"the hold shows the areas of the mods (SPEC Section 27.2)"
@@ -112,8 +130,10 @@ static func route_station(ui: Node, station: StationScreen) -> int:
 	var seen := 0
 	if not run["environment"].is_empty():
 		seen = 1
-		var tag := station._mods_box.get_node_or_null("Environment")
-		ui._check(tag != null, "the top bar shows the environment of the leg (SPEC Section 28.1)")
+		ui._check(
+			station._top_bar.env_badge.visible,
+			"the top bar shows the environment of the leg (SPEC Section 28.1)"
+		)
 		ui._check(
 			station._hazard_box.get_child(0).name == "Environment",
 			"the hazard panel shows the environment first (SPEC Section 28.1)"

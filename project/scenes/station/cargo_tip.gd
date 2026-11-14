@@ -82,7 +82,7 @@ func _place() -> void:
 	var area: Vector2 = get_parent_area_size()
 	var p := get_global_mouse_position() + Vector2(18, 18)
 	var max_p := area - size - Vector2(8, 8)
-	position = Vector2(minf(p.x, max_p.x), minf(p.y, max_p.y))
+	position = Vector2(maxf(8.0, minf(p.x, max_p.x)), maxf(8.0, minf(p.y, max_p.y)))
 
 
 func _process(_delta: float) -> void:

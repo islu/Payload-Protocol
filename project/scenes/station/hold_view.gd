@@ -54,6 +54,8 @@ var fades: Dictionary = {}
 var checks: Dictionary = {}
 ## The areas of the mods of the ship: [{mod, cells}] (SPEC Section 27.2).
 var mod_areas: Array = []
+## The mod under the mouse on the mod bar: its area has a bright frame (SPEC Section 20.2).
+var hover_mod := ""
 ## The cells of the place of the incident of the next jump (SPEC Section 29.3).
 var incident_cells: Array = []
 
@@ -247,6 +249,8 @@ func _draw() -> void:
 		for c: Dictionary in a["cells"]:
 			var r := Rect2(o + Vector2(c["x"], c["y"]) * cell, Vector2(cell, cell)).grow(-3)
 			draw_rect(r, MOD_COLORS.get(a["mod"], Palette.ZONE))
+			if a["mod"] == hover_mod:
+				draw_rect(r, Palette.ACCENT, false, 3.0)
 	for c: Dictionary in incident_cells:
 		var r := Rect2(o + Vector2(c["x"], c["y"]) * cell, Vector2(cell, cell)).grow(-2)
 		draw_rect(r, Color(RouteCards.INCIDENT_COLOR, 0.12))

@@ -17,6 +17,9 @@ const HULL_SERVICE_TEXT := "Mass limit {now} → {after}"
 const OFFER_CELL := 56.0
 
 var screen: StationScreen
+## What the panel shows: the kit offers and Reroll, or the services. The right
+## column has one panel of each (SPEC Section 20.2).
+var show_services := false
 ## The parts of each kit offer card, for the checks: {buy: Button, text: String}.
 var offer_cards: Array = []
 ## The text of each service row, by service: clamp, hold, hull.
@@ -32,6 +35,9 @@ func refresh() -> void:
 	StationScreen._clear(self)
 	var s: Dictionary = run["shop"]
 	offer_cards.clear()
+	if show_services:
+		_build_services(s)
+		return
 	for o: Dictionary in s["offers"]:
 		_offer_card(o)
 	_price_button(
@@ -40,12 +46,15 @@ func refresh() -> void:
 		s["reroll_price"],
 		func() -> void: screen._act(GameState.reroll(), "coin")
 	)
+
+
+func _build_services(s: Dictionary) -> void:
 	# Each service shows the value now and after the purchase (SPEC Section 20.2).
-	screen._label(self, SERVICES_TEXT, TextSize.BODY, Palette.ACCENT)
-	var services := screen._panel(self)
+	screen._label(self, SERVICES_TEXT, TextSize.HEADING, Palette.ACCENT)
+	var box := screen._panel(self)
 	var list := VBoxContainer.new()
 	list.add_theme_constant_override("separation", 6)
-	services.add_child(list)
+	box.add_child(list)
 	service_texts.clear()
 	var max_clamps: int = s["clamp_max"]
 	var clamp_text := tr(CLAMP_SERVICE_TEXT).format(

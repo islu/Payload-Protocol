@@ -19,28 +19,22 @@ The station screen has these areas:
 | Top bar | Top | Four groups: (1) the leg, and a dot for each jump of the leg; (2) the credits, and a bar of the credits against the payment of this leg, with the jumps before the payment; (3) a bar of the hold mass, with a mark at the mass limit and a mark at the maximum (Section 25); (4) a badge with the icon and the name of the environment of the leg, with its rule when the mouse is on it (Section 28). A gear button at the right opens the pause menu (Section 20.7). |
 | Pilot box | Bottom left | The portrait and the line of the pilot, in a wide box (Section 22). |
 | Hazard panel | Center, at the left of the hold, from top to bottom | The shift steps of the next jump in order (Section 18). Each step is a card with a large arrow, its number, and its direction. A fork step shows its two directions and a question mark. |
-| Dock | Left, top | The cargo on the dock (Section 8.1). It uses most of the left side. |
-| Accepted contracts | Left, below the dock | One line for each accepted contract: the client, "Loaded N/M", and the total pay. The Contract Board button opens the contract drawer. |
+| Dock | Left, top | The cargo on the dock (Section 8.1). |
+| Contract board | Left, below the dock | The 4 contracts, with Accept and Cancel buttons (Section 15). |
 | Hold | Center | The grid and its cargo, the links, and the clamps. Each cell is 100 pixels, the size of the cargo images (Section 4.2). |
 | Shock bay | Above the hold | The cells of the shock bay, after its purchase (Section 31.2). |
 | Mod bar | Below the hold | A card with the icon of each mod of the ship (Section 27). The mouse on a card shows the name and the rule of the mod, and marks the area of the mod on the hold. |
-| Services | Right | The services (Section 17.2), the sell area, and the Shop button that opens the shop drawer. |
+| Shop | Right | The kit offers, Reroll, the services, and the sell area (Section 17). |
 | Clamp panel | Right, below the services | The free clamps (Section 13). |
 | Warp button | Bottom right | Starts the warp (Section 9). The warp checklist is above it. |
-
-Drawers:
-
-- The **contract drawer** slides in from the left, over the dock. It shows the 4 contracts of the board, with Accept and Cancel buttons (Section 15). When a station opens, the contract drawer is open. Its button or Esc closes it. The hold stays visible.
-- The **shop drawer** slides in from the right. It shows the kit offers and Reroll (Section 17.1). The hold stays visible. The player can drag a bought kit from the dock while the shop drawer is open.
-- Only one drawer is open at a time.
 
 Contracts and the dock:
 
 - Each contract card shows on its first line the client, the total pay, and the mass of the contract. The second line shows the freight and the bonus. The same freight shows one time, with its image, "×N", and its trait icons.
 - The mouse on a contract card shows the details: the number of pieces, the pay for each piece, the rules of the traits, and the mass after it is accepted (the mass of the hold and the dock, plus the mass of the contract).
 - The mass of a contract that is not accepted is yellow when the mass after it is above the mass limit (a fuel fee), and red when it is above the maximum.
-- In the contract drawer, an accepted contract has a bright border and shows "Loaded N/M": N pieces of its M pieces are in the hold or in the shock bay.
-- When the mouse is on a contract card or on a line of an accepted contract, the hold marks the freight of that contract.
+- An accepted contract has a bright border and shows "Loaded N/M": N pieces of its M pieces are in the hold or in the shock bay.
+- When the mouse is on a contract card, the hold marks the freight of that contract.
 - The dock title shows the number of cargo on the dock. The dock shows its cargo at 48 pixels for each cell. An empty dock is one line of text.
 
 The hazard:
@@ -95,7 +89,7 @@ The warp:
 ### 20.7 Pause
 
 - Esc opens the pause menu at the station and during the warp. A gear button at the top right of the station and the warp opens it too.
-- At the station, Esc does only the first of these: it puts back a held cargo (Section 8.3), it closes an open drawer (Section 20.2), or it opens the pause menu. It has these buttons: Resume, How to Play, Settings, and Abandon Run.
+- At the station, Esc puts back a held cargo first (Section 8.3). With no held cargo, it opens the pause menu. It has these buttons: Resume, How to Play, Settings, and Abandon Run.
 - Abandon Run asks the player to confirm. Then it goes to the title screen.
 
 ### 20.8 Event
