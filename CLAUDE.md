@@ -64,7 +64,7 @@ task shots        # Take screenshots of each screen into shots/ (a window opens)
 task i18n         # Collect the text for translation into project/locale/
 task sfx          # Make the placeholder sounds in project/audio/sfx
 task fx           # Make the effect sheets in project/art/fx with pixelfx (tools/fx/fx.json)
-task art          # Make the cargo images in project/art/cargo from FreePixel images (tools/art/cargo_art.json)
+task art          # Make the cargo images in project/art/cargo and project/icon.png from FreePixel images (tools/art/cargo_art.json)
 task fmt          # Format the GDScript code and the JSON data (tab indentation)
 task lint         # Lint the GDScript code, and check the format
 task check        # Run lint, test, test:ui, and smoke

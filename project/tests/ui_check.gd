@@ -80,22 +80,29 @@ func _play_run(main: Control) -> void:
 	var new_run: Button = main.screen().find_child("NewRunButton", true, false)
 	_check(new_run != null, "the title shows first (SPEC Section 20.1)")
 	await get_tree().process_frame
-	var title_hold: TitleHold = main.screen().find_child("TitleHold", true, false)
-	_check(
-		title_hold != null and title_hold.cells().size() >= 4,
-		"a small hold with cargo is behind the title (SPEC Section 20.1)"
-	)
-	if title_hold != null:
-		var before := title_hold.cells()
-		await get_tree().create_timer(3.0).timeout
-		_check(
-			title_hold.cells() != before, "the cargo behind the title slides (SPEC Section 20.1)"
-		)
+	# The title, the tagline, and the buttons are in the center (SPEC Section 20.1).
 	var mid := new_run.get_global_rect().get_center()
+	var view := get_viewport().get_visible_rect().size
+	_check(
+		absf(mid.x - view.x / 2.0) < 2.0,
+		"the menu is in the center: %s of %s (SPEC Section 20.1)" % [mid, view]
+	)
+	_check(
+		main.screen().find_child("TitleHold", true, false) == null,
+		"the title has no moving hold (SPEC Section 20.1)"
+	)
+	var tagline: Label = main.screen().find_child("Tagline", true, false)
+	_check(tagline != null and tagline.text != "", "the title has a tagline (SPEC Section 20.1)")
+	var version: Label = main.screen().find_child("Version", true, false)
 	var screen := get_viewport().get_visible_rect().size
 	_check(
-		absf(mid.x - screen.x / 2.0) < 2.0 and absf(mid.y - screen.y / 2.0) < 120.0,
-		"the title is in the center: %s of %s (SPEC Section 20.1)" % [mid, screen]
+		(
+			version != null
+			and version.text.begins_with("v")
+			and version.get_global_rect().get_center().x > screen.x * 0.8
+			and version.get_global_rect().get_center().y > screen.y * 0.8
+		),
+		"the version is at the bottom right (SPEC Section 20.1)"
 	)
 	state.new_run(11)
 	await get_tree().process_frame
@@ -213,19 +220,7 @@ func _play_warp(main: Control) -> void:
 	_check(
 		hits == 0 or warp._fx.played.has("hit"), "a hit plays the spark sheet (SPEC Section 21.2)"
 	)
-	var lines := warp._report_text.get_parsed_text().split("\n", false)
-	var seen := {}
-	var repeated := PackedStringArray()
-	for line in lines:
-		# A line with no indent starts a contract: the rule is for each contract.
-		if not line.begins_with(" "):
-			seen = {}
-		if seen.has(line):
-			repeated.append(line)
-		seen[line] = true
-	_check(
-		repeated.is_empty(), "the report has no repeated line: %s (SPEC Section 20.4)" % [repeated]
-	)
+	_check_report(warp)
 	await get_tree().process_frame
 	if GameState.view()["run"]["arrival"]["total"] != 0:
 		var report := warp._report.get_global_rect()
@@ -239,6 +234,14 @@ func _play_warp(main: Control) -> void:
 		)
 	# The hold moves in 0.4 seconds.
 	await get_tree().create_timer(0.7).timeout
+	# The fade of delivered freight ends at half alpha, not at 0.
+	for k: Dictionary in GameState.view()["run"]["arrival"]["contracts"]:
+		for p: Dictionary in k["pieces"]:
+			if p["state"] == Defs.PIECE_DELIVERED:
+				_check(
+					warp._hold.fades.get(p["id"], 1.0) > 0.2,
+					"delivered freight stays in the hold at half alpha (SPEC Section 20.4)"
+				)
 	var hold := warp._hold
 	var grid_right := hold.global_position.x + hold.grid_origin().x + hold.columns * hold.cell
 	_check(
@@ -251,37 +254,75 @@ func _play_warp(main: Control) -> void:
 
 ## The mouse on a line of pieces marks those pieces in the hold (SPEC Section 20.4).
 func _check_report_marks(warp: WarpScreen) -> void:
-	var contracts: Array = GameState.view()["run"]["arrival"]["contracts"]
-	if contracts.is_empty() or contracts[0]["pieces"].is_empty():
+	if warp._report.items.is_empty():
 		return
-	var first: Dictionary = contracts[0]["pieces"][0]
-	var ids := []
-	for p: Dictionary in contracts[0]["pieces"]:
-		if p["name"] == first["name"] and p["state"] == first["state"]:
-			ids.append(p["id"])
-	var meta := WarpScreen.piece_meta(ids)
+	var item: Dictionary = warp._report.items[0]
+	var control: Control = item["control"]
+	control.mouse_entered.emit()
 	_check(
-		warp._report_text.text.contains("[url=%s]" % meta),
-		"a line of pieces has the IDs of its pieces (SPEC Section 20.4)"
+		warp._hold.marked == item["ids"],
+		"the mouse on a group marks its pieces in the hold: %s (SPEC Section 20.4)" % [item["ids"]]
 	)
-	warp._report_text.meta_hover_started.emit(meta)
+	control.mouse_exited.emit()
+	_check(warp._hold.marked.is_empty(), "the marks go when the mouse leaves the group")
+
+
+## The cards, the ledger, the credits, the pilot, and the delivered freight (SPEC Section 20.4).
+func _check_report(warp: WarpScreen) -> void:
+	var a: Dictionary = GameState.view()["run"]["arrival"]
+	var report := warp._report
+	var groups := 0
+	for k: Dictionary in a["contracts"]:
+		groups += k["groups"].size()
 	_check(
-		warp._hold.marked == ids,
-		"the mouse on a line marks its pieces in the hold: %s (SPEC Section 20.4)" % [ids]
+		report._cards.get_child_count() == a["contracts"].size(),
+		"the report shows a card for each contract (SPEC Section 20.4)"
 	)
-	warp._report_text.meta_hover_ended.emit(meta)
-	_check(warp._hold.marked.is_empty(), "the marks go when the mouse leaves the line")
+	_check(
+		report.items.size() == groups,
+		"each group of the same freight and state shows one time (SPEC Section 20.4)"
+	)
+	var ledger: Dictionary = a["ledger"]
+	for key: String in ["deliveries", "bonuses", "sold", "net"]:
+		_check(
+			ReportPanel.amount(ledger[key]) in report.ledger_text,
+			"the ledger shows %s: %d (SPEC Section 20.4)" % [key, ledger[key]]
+		)
+	for key: String in ["breaches", "fuel_fee"]:
+		_check(
+			ReportPanel.amount(-ledger[key]) in report.ledger_text,
+			"the ledger shows %s as a cost (SPEC Section 20.4)" % key
+		)
+	_check(
+		(
+			str(a["credits_before"]) in report._credits.text
+			and str(a["credits_after"]) in report._credits.text
+		),
+		"the report shows the credits before and after (SPEC Section 20.4)"
+	)
+	_check(
+		report.pilot_face != null and report.pilot_face.is_visible_in_tree(),
+		"the pilot speaks with the portrait (SPEC Section 20.4)"
+	)
+	for k: Dictionary in a["contracts"]:
+		for p: Dictionary in k["pieces"]:
+			if p["state"] != Defs.PIECE_DELIVERED:
+				continue
+			_check(
+				warp._hold.checks.has(p["id"]),
+				"delivered freight has a check mark (SPEC Section 20.4)"
+			)
 
 
 ## The Replay button plays the warp again at half speed (SPEC Section 20.4).
 func _check_replay(warp: WarpScreen) -> void:
 	_check(
-		warp._replay != null and warp._replay.visible,
+		warp._report.replay != null and warp._report.replay.visible,
 		"the arrival report has a Replay button (SPEC Section 20.4)"
 	)
-	if warp._replay == null:
+	if warp._report.replay == null:
 		return
-	warp._replay.pressed.emit()
+	warp._report.replay.pressed.emit()
 	await get_tree().process_frame
 	_check(
 		not warp.finished and not warp._report.visible,
@@ -319,6 +360,12 @@ func _check_overlays(main: Control) -> void:
 	await get_tree().process_frame
 	for i in 4:
 		help._show(i)
+	for page: Array in TutorialPicture.PAGE_CARGO:
+		for id: String in page:
+			_check(
+				CargoArt.texture(id) != null,
+				"a How to Play picture shows the image of %s (SPEC Section 23.2)" % id
+			)
 	pause.close()
 	await get_tree().process_frame
 	_check(not get_tree().paused, "Resume ends the pause (SPEC Section 20.7)")

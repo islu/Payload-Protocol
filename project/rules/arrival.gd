@@ -2,7 +2,10 @@ class_name Arrival
 ## The arrival and the cold chain (SPEC Sections 12.1 and 16).
 ##
 ## The report for the UI: {spoiled: [id], sold, total, contracts: [{client_name,
-## pieces: [{id, name, state}], pay, bonus, has_bonus, bonus_met, breach}]}.
+## pieces: [{id, def_id, name, state, shape, weight_value}], groups: [{def_id, name,
+## state, count, ids, shape, weight_value}],
+## pay, bonus, has_bonus, bonus_met, breach}], ledger: {deliveries, bonuses, breaches,
+## sold, fuel_fee, net}, credits_before, credits_after} (SPEC Section 20.4).
 
 
 ## Does the arrival: spoil, delivery, bonus, breach, and the report (SPEC Section 16).
@@ -46,8 +49,19 @@ static func arrive(run: Run) -> void:
 				state = Defs.PIECE_DELIVERED
 				res["pay"] += k.template.pay
 				delivered.append(c)
-			res["pieces"].append(
-				{"id": id, "name": run.cat.cargo[k.template.freight[i]].name, "state": state}
+			var def: CargoDef = run.cat.cargo[k.template.freight[i]]
+			(
+				res["pieces"]
+				. append(
+					{
+						"id": id,
+						"def_id": def.id,
+						"name": def.name,
+						"state": state,
+						"shape": Shapes.to_view(def.shape),
+						"weight_value": run.cat.weight_value(def.weight),
+					}
+				)
 			)
 		if bonus_met(run, k, delivered):
 			res["bonus_met"] = true
@@ -56,6 +70,7 @@ static func arrive(run: Run) -> void:
 			leaving.append(c.id)
 		run.stats["delivered"] += delivered.size()
 		report["total"] += res["pay"] + res["bonus"] - res["breach"]
+		res["groups"] = groups(res["pieces"])
 		report["contracts"].append(res)
 	for id in leaving:
 		run.remove_cargo(id)
@@ -63,6 +78,7 @@ static func arrive(run: Run) -> void:
 		c.contract = 0
 		c.spoiled = false
 	run.credits += report["total"]
+	_ledger(run, report)
 	run.last_arrival = report
 	run.phase = Defs.PHASE_ARRIVAL
 	run.say(_line_event(run, report))
@@ -141,3 +157,48 @@ static func _line_event(run: Run, report: Dictionary) -> String:
 	if pieces == 0:
 		return Defs.LINE_EMPTY
 	return Defs.LINE_ALL_INTACT
+
+
+## Returns the pieces in groups of the same freight and the same state, in the order
+## of the pieces: [{def_id, name, state, count, ids}] (SPEC Section 20.4).
+static func groups(pieces: Array) -> Array:
+	var out := []
+	for p: Dictionary in pieces:
+		var found := false
+		for g: Dictionary in out:
+			if g["def_id"] == p["def_id"] and g["state"] == p["state"]:
+				g["ids"].append(p["id"])
+				g["count"] += 1
+				found = true
+				break
+		if not found:
+			(
+				out
+				. append(
+					{
+						"def_id": p["def_id"],
+						"name": p["name"],
+						"shape": p.get("shape", []),
+						"weight_value": p.get("weight_value", 0),
+						"state": p["state"],
+						"count": 1,
+						"ids": [p["id"]],
+					}
+				)
+			)
+	return out
+
+
+## Adds the ledger and the credits before and after to the report (SPEC Section 20.4).
+static func _ledger(run: Run, report: Dictionary) -> void:
+	var ledger := {"deliveries": 0, "bonuses": 0, "breaches": 0}
+	for res: Dictionary in report["contracts"]:
+		ledger["deliveries"] += res["pay"]
+		ledger["bonuses"] += res["bonus"]
+		ledger["breaches"] += res["breach"]
+	ledger["sold"] = report["sold"]
+	ledger["fuel_fee"] = run.last_warp.get("fuel_fee", 0)
+	report["credits_before"] = run.last_warp.get("credits", run.credits)
+	report["credits_after"] = run.credits
+	ledger["net"] = report["credits_after"] - report["credits_before"]
+	report["ledger"] = ledger

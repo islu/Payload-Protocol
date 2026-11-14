@@ -3,7 +3,8 @@ extends Control
 ## the title, the station, the warp with the arrival report, and PhasePanel for
 ## the toll gate and the run end. Esc opens the pause menu (SPEC Section 20.7).
 
-const TITLE_TEXT := "PAYLOAD PROTOCOL"
+const TITLE_TEXT := "PAYLOAD\nPROTOCOL"
+const TAGLINE_TEXT := "Pack the hold. Survive the warp."
 const NEW_RUN_TEXT := "New Run"
 const HOW_TO_PLAY_TEXT := "How to Play"
 const SETTINGS_TEXT := "Settings"
@@ -164,31 +165,51 @@ func _title() -> Control:
 	var root := Control.new()
 	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	root.add_child(Starfield.new())
-	# The small hold behind the title shows the idea of the game (SPEC Section 20.1).
-	var title_hold := TitleHold.new()
-	title_hold.name = "TitleHold"
-	title_hold.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	root.add_child(title_hold)
-	# A CenterContainer keeps the box in the center at each window size.
+	# The title, the tagline, and the buttons are in the center (SPEC Section 20.1).
 	var center := CenterContainer.new()
 	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	root.add_child(center)
 	var box := VBoxContainer.new()
+	box.name = "TitleMenu"
 	box.alignment = BoxContainer.ALIGNMENT_CENTER
-	box.add_theme_constant_override("separation", 24)
+	box.add_theme_constant_override("separation", 20)
 	center.add_child(box)
 	var title := Label.new()
 	title.text = tr(TITLE_TEXT)
-	title.add_theme_font_size_override("font_size", 72)
+	title.add_theme_font_size_override("font_size", 96)
 	title.add_theme_color_override("font_color", Palette.ACCENT)
+	title.add_theme_color_override("font_shadow_color", Color(Palette.ACCENT, 0.35))
+	title.add_theme_constant_override("shadow_offset_x", 0)
+	title.add_theme_constant_override("shadow_offset_y", 0)
+	title.add_theme_constant_override("shadow_outline_size", 18)
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	box.add_child(title)
+	var tagline := Label.new()
+	tagline.name = "Tagline"
+	tagline.text = tr(TAGLINE_TEXT)
+	tagline.add_theme_font_size_override("font_size", 30)
+	tagline.add_theme_color_override("font_color", Palette.TEXT_DIM)
+	tagline.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	box.add_child(tagline)
+	var gap := Control.new()
+	gap.custom_minimum_size.y = 24
+	box.add_child(gap)
 	var new_run := _title_button(box, NEW_RUN_TEXT, start_run)
 	new_run.name = "NewRunButton"
 	_title_button(box, HOW_TO_PLAY_TEXT, func() -> void: open_overlay(HowToPlay.new()))
 	_title_button(box, SETTINGS_TEXT, func() -> void: open_overlay(SettingsPanel.new()))
 	if not OS.has_feature("web"):
 		_title_button(box, QUIT_TEXT, func() -> void: get_tree().quit())
+	var version := Label.new()
+	version.name = "Version"
+	version.text = "v" + str(ProjectSettings.get_setting("application/config/version", "0.1.0"))
+	version.add_theme_font_size_override("font_size", TextSize.SMALL)
+	version.add_theme_color_override("font_color", Palette.TEXT_DIM)
+	version.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
+	version.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+	version.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	version.position -= Vector2(24, 16)
+	root.add_child(version)
 	new_run.grab_focus.call_deferred()
 	return root
 
@@ -196,7 +217,7 @@ func _title() -> Control:
 func _title_button(box: VBoxContainer, text: String, action: Callable) -> Button:
 	var b := Button.new()
 	b.text = tr(text)
-	b.custom_minimum_size = Vector2(320, 64)
+	b.custom_minimum_size = Vector2(360, 64)
 	b.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	b.pressed.connect(action)
 	box.add_child(b)

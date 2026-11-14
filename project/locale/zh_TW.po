@@ -200,8 +200,16 @@ msgstr ""
 "• 每個星區結束時要付通行費，付不出來就結束。"
 
 #: project/scenes/main/main.gd
-msgid "PAYLOAD PROTOCOL"
-msgstr "酬載協議"
+msgid ""
+"PAYLOAD\n"
+"PROTOCOL"
+msgstr ""
+"酬載\n"
+"協議"
+
+#: project/scenes/main/main.gd
+msgid "Pack the hold. Survive the warp."
+msgstr "裝好貨艙，撐過跳躍。"
 
 #: project/scenes/main/main.gd
 #: project/scenes/main/phase_panel.gd
@@ -235,7 +243,7 @@ msgid "Abandon this run? Its progress is lost."
 msgstr "要放棄這趟航程嗎？目前的進度會消失。"
 
 #: project/scenes/main/phase_panel.gd
-#: project/scenes/warp/warp_screen.gd
+#: project/scenes/warp/report_panel.gd
 msgid "Continue"
 msgstr "繼續"
 
@@ -316,6 +324,7 @@ msgid "Cancel"
 msgstr "取消"
 
 #: project/scenes/station/contract_card.gd
+#: project/scenes/warp/report_panel.gd
 msgid "×{count}"
 msgstr "×{count}"
 
@@ -545,6 +554,74 @@ msgstr "載重 {mass}"
 msgid "Load all"
 msgstr "全部裝入"
 
+#: project/scenes/warp/report_panel.gd
+msgid "Arrival"
+msgstr "抵達"
+
+#: project/scenes/warp/report_panel.gd
+msgid "Replay (slow)"
+msgstr "慢速重播"
+
+#: project/scenes/warp/report_panel.gd
+msgid "Bonus +{bonus}"
+msgstr "獎金 +{bonus}"
+
+#: project/scenes/warp/report_panel.gd
+msgid "Bonus missed"
+msgstr "沒拿到獎金"
+
+#: project/scenes/warp/report_panel.gd
+msgid "Breach -{breach}"
+msgstr "違約金 -{breach}"
+
+#: project/scenes/warp/report_panel.gd
+msgid "delivered"
+msgstr "已交貨"
+
+#: project/scenes/warp/report_panel.gd
+msgid "scrap"
+msgstr "變成廢鐵"
+
+#: project/scenes/warp/report_panel.gd
+msgid "spoiled"
+msgstr "腐爛"
+
+#: project/scenes/warp/report_panel.gd
+msgid "lost"
+msgstr "炸毀"
+
+#: project/scenes/warp/report_panel.gd
+msgid "breached"
+msgstr "違約"
+
+#: project/scenes/warp/report_panel.gd
+msgid "Deliveries"
+msgstr "交貨"
+
+#: project/scenes/warp/report_panel.gd
+msgid "Bonuses"
+msgstr "獎金"
+
+#: project/scenes/warp/report_panel.gd
+msgid "Breach fees"
+msgstr "違約金"
+
+#: project/scenes/warp/report_panel.gd
+msgid "Kit sold from the dock"
+msgstr "碼頭裝備賣出"
+
+#: project/scenes/warp/report_panel.gd
+msgid "Fuel fee"
+msgstr "燃料費"
+
+#: project/scenes/warp/report_panel.gd
+msgid "Net"
+msgstr "淨收入"
+
+#: project/scenes/warp/report_panel.gd
+msgid "Credits {before} → {after}"
+msgstr "信用點 {before} → {after}"
+
 #: project/scenes/warp/warp_screen.gd
 msgid "Shift {n}: {arrow} {direction}"
 msgstr "位移 {n}：{arrow} {direction}"
@@ -554,60 +631,8 @@ msgid "Shift {n}: {options} ...?"
 msgstr "位移 {n}：{options}……？"
 
 #: project/scenes/warp/warp_screen.gd
-msgid "Fuel fee: -{fee}"
-msgstr "燃料費：-{fee}"
-
-#: project/scenes/warp/warp_screen.gd
-msgid "Arrival"
-msgstr "抵達"
-
-#: project/scenes/warp/warp_screen.gd
-msgid "Total: {total} credits"
-msgstr "合計：{total} 點"
-
-#: project/scenes/warp/warp_screen.gd
-msgid "Kit sold from the dock: +{credits}"
-msgstr "碼頭上的裝備已賣出：+{credits}"
-
-#: project/scenes/warp/warp_screen.gd
-msgid "Replay (slow)"
-msgstr "慢速重播"
-
-#: project/scenes/warp/warp_screen.gd
 msgid "Click or press Space to speed up."
 msgstr "按一下滑鼠或空白鍵可以加速。"
-
-#: project/scenes/warp/warp_screen.gd
-msgid "Bonus +{bonus}"
-msgstr "獎金 +{bonus}"
-
-#: project/scenes/warp/warp_screen.gd
-msgid "Bonus missed"
-msgstr "沒拿到獎金"
-
-#: project/scenes/warp/warp_screen.gd
-msgid "Breach -{breach}"
-msgstr "違約金 -{breach}"
-
-#: project/scenes/warp/warp_screen.gd
-msgid "delivered"
-msgstr "已交貨"
-
-#: project/scenes/warp/warp_screen.gd
-msgid "scrap"
-msgstr "變成廢鐵"
-
-#: project/scenes/warp/warp_screen.gd
-msgid "spoiled"
-msgstr "腐爛"
-
-#: project/scenes/warp/warp_screen.gd
-msgid "lost"
-msgstr "炸毀"
-
-#: project/scenes/warp/warp_screen.gd
-msgid "breached"
-msgstr "違約"
 
 #: project/data/cargo/ammo_crate.json
 msgid "Ammo Crate"

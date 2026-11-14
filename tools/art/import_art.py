@@ -14,6 +14,8 @@ For each cargo, the tool:
    1 or 0.5 when the image fits, so that the pixels stay clean.
 4. Writes <id>.png (the image over the box of the shape), <id>_scrap.png (the same
    image in dark gray, for scrap), and <id>.json ({"shape": the cells of the shape}).
+
+It also makes the project icon project/icon.png from the "_icon" entry of the table.
 """
 
 import json
@@ -30,6 +32,8 @@ TABLE = ROOT / "tools/art/cargo_art.json"
 CARGO = ROOT / "project/data/cargo"
 RAW = ROOT / ".local/art"
 OUT = ROOT / "project/art/cargo"
+ICON = ROOT / "project/icon.png"
+ICON_SIZE = 256
 
 
 def download(source: str) -> Path:
@@ -78,8 +82,22 @@ def make(cargo_id: str, entry: dict) -> None:
     print(f"art: {cargo_id} {size[0]}x{size[1]} in {box_w}x{box_h}, scale {scale:g}")
 
 
+def make_icon(entry: dict) -> None:
+    """The project icon: the image in the center of a square, at scale 1 when it fits."""
+    img = Image.open(download(entry["source"])).convert("RGBA")
+    img = img.crop(img.getbbox())
+    fit = (ICON_SIZE - 16) / max(img.width, img.height)
+    if fit < 1.0:
+        img = img.resize((round(img.width * fit), round(img.height * fit)), Image.Resampling.LANCZOS)
+    canvas = Image.new("RGBA", (ICON_SIZE, ICON_SIZE), (0, 0, 0, 0))
+    canvas.alpha_composite(img, ((ICON_SIZE - img.width) // 2, (ICON_SIZE - img.height) // 2))
+    canvas.save(ICON)
+    print(f"art: icon {img.width}x{img.height} in {ICON_SIZE}x{ICON_SIZE}")
+
+
 def main() -> int:
     table = json.loads(TABLE.read_text())
+    make_icon(table.pop("_icon"))
     OUT.mkdir(parents=True, exist_ok=True)
     known = set()
     for cargo_id, entry in table.items():

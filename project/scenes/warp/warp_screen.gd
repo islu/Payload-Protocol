@@ -10,23 +10,7 @@ signal playback_finished
 const STEP_TEXT := "Shift {n}: {arrow} {direction}"
 const FORK_TEXT := "Shift {n}: {options} ...?"
 const OR_TEXT := "or"
-const FUEL_TEXT := "Fuel fee: -{fee}"
-const ARRIVAL_TEXT := "Arrival"
-const TOTAL_TEXT := "Total: {total} credits"
-const SOLD_TEXT := "Kit sold from the dock: +{credits}"
-const CONTINUE_TEXT := "Continue"
-const REPLAY_TEXT := "Replay (slow)"
 const SKIP_TEXT := "Click or press Space to speed up."
-const BONUS_TEXT := "Bonus +{bonus}"
-const BONUS_MISSED_TEXT := "Bonus missed"
-const BREACH_TEXT := "Breach -{breach}"
-const PIECE_STATE_TEXT := {
-	Defs.PIECE_DELIVERED: "delivered",
-	Defs.PIECE_SCRAP: "scrap",
-	Defs.PIECE_SPOILED: "spoiled",
-	Defs.PIECE_LOST: "lost",
-	Defs.PIECE_BREACHED: "breached",
-}
 const ARROWS := {Defs.DIR_LEFT: "←", Defs.DIR_RIGHT: "→", Defs.DIR_UP: "↑", Defs.DIR_DOWN: "↓"}
 ## The space between the hold and the report, in pixels.
 const REPORT_GAP := 40.0
@@ -36,6 +20,8 @@ const CELLS_PER_SECOND := 8.0
 const REACTION_GAP := 0.15
 ## The speed of a replay, against the warp speed setting (SPEC Section 20.4).
 const REPLAY_SPEED := 0.5
+## The alpha of delivered freight that stays in the hold during the report (SPEC Section 20.4).
+const DELIVERED_ALPHA := 0.35
 
 ## The play speed: the warp speed setting, and 4 times faster after a click (SPEC Section 20.3).
 var speed := 1.0
@@ -51,11 +37,7 @@ var _fx: FxLayer
 var _top_fx: FxLayer
 var _banner: Label
 var _skip_label: Label
-var _report_head: Label
-var _report: PanelContainer
-var _report_text: RichTextLabel
-var _continue: Button
-var _replay: Button
+var _report: ReportPanel
 ## True while the warp plays again: no coin sound (SPEC Section 20.4).
 var _replaying := false
 var _shake := 0.0
@@ -100,61 +82,26 @@ func _ready() -> void:
 
 
 func _build_report() -> void:
-	_report = PanelContainer.new()
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(Palette.PANEL, 0.95)
-	style.border_color = Palette.ACCENT
-	style.set_border_width_all(2)
-	style.set_corner_radius_all(8)
-	style.set_content_margin_all(24)
-	_report.add_theme_stylebox_override("panel", style)
+	_report = ReportPanel.new()
 	_report.set_anchors_and_offsets_preset(Control.PRESET_RIGHT_WIDE)
-	_report.offset_left = -620
+	_report.offset_left = -640
 	_report.offset_right = -30
-	_report.offset_top = 60
-	_report.offset_bottom = -60
+	_report.offset_top = 40
+	_report.offset_bottom = -40
 	_report.visible = false
+	# The mouse on a group of pieces marks them in the hold (SPEC Section 20.4).
+	_report.pieces_hovered.connect(_mark_pieces)
+	_report.replay.pressed.connect(_start_replay)
 	add_child(_report)
-	var box := VBoxContainer.new()
-	box.add_theme_constant_override("separation", 16)
-	_report.add_child(box)
-	_report_head = Label.new()
-	_report_head.text = tr(ARRIVAL_TEXT)
-	_report_head.add_theme_font_size_override("font_size", 44)
-	_report_head.add_theme_color_override("font_color", Palette.ACCENT)
-	box.add_child(_report_head)
-	_report_text = RichTextLabel.new()
-	_report_text.bbcode_enabled = true
-	# Each line of pieces is a link: the mouse on it marks its pieces (SPEC Section 20.4).
-	_report_text.meta_underlined = false
-	_report_text.meta_hover_started.connect(_on_piece_hover)
-	_report_text.meta_hover_ended.connect(func(_meta: Variant) -> void: _mark_pieces([]))
-	_report_text.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	_report_text.add_theme_font_size_override("normal_font_size", 21)
-	_report_text.add_theme_font_size_override("bold_font_size", 22)
-	box.add_child(_report_text)
-	_replay = Button.new()
-	_replay.text = tr(REPLAY_TEXT)
-	_replay.add_theme_font_size_override("font_size", TextSize.BUTTON)
-	_replay.pressed.connect(_start_replay)
-	box.add_child(_replay)
-	_continue = Button.new()
-	_continue.text = tr(CONTINUE_TEXT)
-	_continue.custom_minimum_size = Vector2(0, 70)
-	_continue.add_theme_font_size_override("font_size", 28)
-	_continue.pressed.connect(func() -> void: GameState.continue_run())
-	box.add_child(_continue)
 
 
 ## Shows the text in the new language (SPEC Section 23.1). The banner of the step
 ## changes at the next step.
 func retranslate() -> void:
 	_skip_label.text = tr(SKIP_TEXT)
-	_report_head.text = tr(ARRIVAL_TEXT)
-	_continue.text = tr(CONTINUE_TEXT)
-	_replay.text = tr(REPLAY_TEXT)
+	_report.retranslate()
 	if finished:
-		_report_text.text = _report_lines(_view["run"])
+		_report.show_report(_view["run"])
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -378,20 +325,22 @@ func _finish(run: Dictionary) -> void:
 	var fade: Tween = null
 	for id: int in _cargo.keys():
 		if not stays.has(id) and _hold.fades.get(id, 1.0) > 0.0:
+			# Delivered freight stays at half alpha with a check mark (SPEC Section 20.4).
 			if fade == null:
 				fade = create_tween().set_parallel(true)
 			_hold.fades[id] = 1.0
-			fade.tween_method(func(a: float) -> void: _fade(id, a), 1.0, 0.0, 0.6)
+			_hold.checks[id] = true
+			fade.tween_method(func(a: float) -> void: _fade(id, a), 1.0, DELIVERED_ALPHA, 0.6)
 	if run["arrival"]["total"] != 0 and not _replaying:
 		Sound.play(self, "coin")
 		_coin_on_report.call_deferred()
-	_report_text.text = _report_lines(run)
+	_report.show_report(run)
 	_report.visible = true
 	_make_room_for_report.call_deferred()
 	_skip_label.visible = false
 	_banner.text = ""
 	finished = true
-	_continue.grab_focus()
+	_report.continue_button.grab_focus()
 	playback_finished.emit()
 
 
@@ -406,20 +355,12 @@ func _start_replay() -> void:
 	_mark_pieces([])
 	_cargo.clear()
 	_hold.fades.clear()
+	_hold.checks.clear()
 	_hold.offsets.clear()
 	speed = float(Settings.get_value("warp_speed")) * REPLAY_SPEED
 	_fx.speed = speed
 	_stars.speed = 30.0
 	_play()
-
-
-## Returns the meta of a line of pieces: the IDs of its cargo (SPEC Section 20.4).
-static func piece_meta(ids: Array) -> String:
-	return ",".join(ids.map(func(id: int) -> String: return str(id)))
-
-
-func _on_piece_hover(meta: Variant) -> void:
-	_mark_pieces(Array(str(meta).split(",", false)).map(func(id: String) -> int: return int(id)))
 
 
 func _mark_pieces(ids: Array) -> void:
@@ -430,7 +371,7 @@ func _mark_pieces(ids: Array) -> void:
 ## The report has its place after one frame: the containers sort it then.
 func _coin_on_report() -> void:
 	await get_tree().process_frame
-	_top_fx.coin(_report_head.get_global_rect().get_center())
+	_top_fx.coin(_report.head.get_global_rect().get_center())
 
 
 ## Moves the hold to the left when the report covers it (SPEC Section 20.4).
@@ -445,54 +386,6 @@ func _make_room_for_report() -> void:
 func _fade(id: int, a: float) -> void:
 	_hold.fades[id] = a
 	_hold.queue_redraw()
-
-
-func _report_lines(run: Dictionary) -> String:
-	var a: Dictionary = run["arrival"]
-	var lines := PackedStringArray()
-	for k: Dictionary in a["contracts"]:
-		lines.append("[b]%s[/b]  +%d" % [tr(k["client_name"]), k["pay"]])
-		# Pieces with the same name and state share one line with a count (SPEC Section 20.4).
-		var groups: Array[Dictionary] = []
-		for p: Dictionary in k["pieces"]:
-			var found := false
-			for g in groups:
-				if g["name"] == p["name"] and g["state"] == p["state"]:
-					g["ids"].append(p["id"])
-					found = true
-			if not found:
-				groups.append({"name": p["name"], "state": p["state"], "ids": [p["id"]]})
-		for g in groups:
-			var color: Color = Palette.GOOD if g["state"] == Defs.PIECE_DELIVERED else Palette.BAD
-			var piece: String = tr(g["name"])
-			if g["ids"].size() > 1:
-				piece += " ×%d" % g["ids"].size()
-			lines.append(
-				(
-					"   [url=%s][color=#%s]%s: %s[/color][/url]"
-					% [
-						piece_meta(g["ids"]),
-						color.to_html(false),
-						piece,
-						tr(PIECE_STATE_TEXT.get(g["state"], g["state"]))
-					]
-				)
-			)
-		if k["has_bonus"]:
-			lines.append(
-				"   " + (tr(BONUS_TEXT).format(k) if k["bonus_met"] else tr(BONUS_MISSED_TEXT))
-			)
-		if k["breach"] > 0:
-			lines.append("   " + tr(BREACH_TEXT).format(k))
-	if a.get("sold", 0) > 0:
-		lines.append(tr(SOLD_TEXT).format({"credits": a["sold"]}))
-	if run["warp"].get("fuel_fee", 0) > 0:
-		lines.append(tr(FUEL_TEXT).format({"fee": run["warp"]["fuel_fee"]}))
-	lines.append("")
-	lines.append("[b]%s[/b]" % tr(TOTAL_TEXT).format(a))
-	lines.append("")
-	lines.append(GameText.PILOT_NAME + ": " + tr(run["line"]))
-	return "\n".join(lines)
 
 
 # --- Shake (SPEC Section 21.2) ---

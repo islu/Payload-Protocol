@@ -34,7 +34,7 @@ To open the project in the Godot Project Manager, import `project/project.godot`
 | `task export:web` | Export the web build to `build/web` |
 | `task serve:web` | Serve `build/web` at http://localhost:8060 |
 | `task fx` | Make the effect sheets with pixelfx |
-| `task art` | Make the cargo images from FreePixel images |
+| `task art` | Make the cargo images and the project icon from FreePixel images |
 | `task fmt` | Format the GDScript code |
 | `task lint` | Lint the GDScript code, and check the format |
 | `task check` | Run lint, the tests, and smoke |

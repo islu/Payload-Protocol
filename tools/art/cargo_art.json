@@ -1,4 +1,7 @@
 {
+ "_icon": {
+  "source": "sorted/space/spaceship-repair-vessel-crane-arms-tools_20260217_043622.png"
+ },
  "ammo_crate": {
   "source": "sorted/space/space-ammo-crate-military-green-box_20260217_053740.png"
  },

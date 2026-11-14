@@ -40,6 +40,8 @@ var show_jolts := true
 var offsets: Dictionary = {}
 ## The fade of each cargo, by ID (1 is opaque). The arrival fades out delivered freight.
 var fades: Dictionary = {}
+## The cargo with a check mark, by ID: the freight that the arrival delivered (SPEC Section 20.4).
+var checks: Dictionary = {}
 
 var _hover := -1
 
@@ -116,6 +118,20 @@ static func rotate_grab(shape: Array, grab: Vector2) -> Vector2:
 	for c: Dictionary in shape:
 		low = Vector2(minf(low.x, -c["y"]), minf(low.y, c["x"]))
 	return Vector2(-grab.y, grab.x) - low
+
+
+## A green check mark at the middle of a cell: the freight is delivered.
+func _draw_check(top_left: Vector2) -> void:
+	var c := top_left + Vector2(cell, cell) / 2.0
+	draw_circle(c, cell * 0.22, Color(Palette.BACKGROUND, 0.8))
+	var k := cell * 0.12
+	draw_polyline(
+		PackedVector2Array(
+			[c + Vector2(-k, 0), c + Vector2(-k * 0.3, k * 0.8), c + Vector2(k, -k)]
+		),
+		Palette.GOOD,
+		5.0
+	)
 
 
 func is_over(global_pos: Vector2) -> bool:
@@ -201,6 +217,8 @@ func _draw() -> void:
 				_draw_warning(at + _first_cell_offset(c))
 			if show_jolts and c.get("jolt_risk", false):
 				_draw_jolt(at + _first_cell_offset(c))
+			if checks.has(c["id"]):
+				_draw_check(at + _first_cell_offset(c))
 	for id: int in marked:
 		var c := _cargo(id)
 		if not c.is_empty() and c["in_hold"]:

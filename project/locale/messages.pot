@@ -179,7 +179,13 @@ msgid ""
 msgstr ""
 
 #: project/scenes/main/main.gd
-msgid "PAYLOAD PROTOCOL"
+msgid ""
+"PAYLOAD\n"
+"PROTOCOL"
+msgstr ""
+
+#: project/scenes/main/main.gd
+msgid "Pack the hold. Survive the warp."
 msgstr ""
 
 #: project/scenes/main/main.gd
@@ -214,7 +220,7 @@ msgid "Abandon this run? Its progress is lost."
 msgstr ""
 
 #: project/scenes/main/phase_panel.gd
-#: project/scenes/warp/warp_screen.gd
+#: project/scenes/warp/report_panel.gd
 msgid "Continue"
 msgstr ""
 
@@ -295,6 +301,7 @@ msgid "Cancel"
 msgstr ""
 
 #: project/scenes/station/contract_card.gd
+#: project/scenes/warp/report_panel.gd
 msgid "×{count}"
 msgstr ""
 
@@ -520,6 +527,74 @@ msgstr ""
 msgid "Load all"
 msgstr ""
 
+#: project/scenes/warp/report_panel.gd
+msgid "Arrival"
+msgstr ""
+
+#: project/scenes/warp/report_panel.gd
+msgid "Replay (slow)"
+msgstr ""
+
+#: project/scenes/warp/report_panel.gd
+msgid "Bonus +{bonus}"
+msgstr ""
+
+#: project/scenes/warp/report_panel.gd
+msgid "Bonus missed"
+msgstr ""
+
+#: project/scenes/warp/report_panel.gd
+msgid "Breach -{breach}"
+msgstr ""
+
+#: project/scenes/warp/report_panel.gd
+msgid "delivered"
+msgstr ""
+
+#: project/scenes/warp/report_panel.gd
+msgid "scrap"
+msgstr ""
+
+#: project/scenes/warp/report_panel.gd
+msgid "spoiled"
+msgstr ""
+
+#: project/scenes/warp/report_panel.gd
+msgid "lost"
+msgstr ""
+
+#: project/scenes/warp/report_panel.gd
+msgid "breached"
+msgstr ""
+
+#: project/scenes/warp/report_panel.gd
+msgid "Deliveries"
+msgstr ""
+
+#: project/scenes/warp/report_panel.gd
+msgid "Bonuses"
+msgstr ""
+
+#: project/scenes/warp/report_panel.gd
+msgid "Breach fees"
+msgstr ""
+
+#: project/scenes/warp/report_panel.gd
+msgid "Kit sold from the dock"
+msgstr ""
+
+#: project/scenes/warp/report_panel.gd
+msgid "Fuel fee"
+msgstr ""
+
+#: project/scenes/warp/report_panel.gd
+msgid "Net"
+msgstr ""
+
+#: project/scenes/warp/report_panel.gd
+msgid "Credits {before} → {after}"
+msgstr ""
+
 #: project/scenes/warp/warp_screen.gd
 msgid "Shift {n}: {arrow} {direction}"
 msgstr ""
@@ -529,59 +604,7 @@ msgid "Shift {n}: {options} ...?"
 msgstr ""
 
 #: project/scenes/warp/warp_screen.gd
-msgid "Fuel fee: -{fee}"
-msgstr ""
-
-#: project/scenes/warp/warp_screen.gd
-msgid "Arrival"
-msgstr ""
-
-#: project/scenes/warp/warp_screen.gd
-msgid "Total: {total} credits"
-msgstr ""
-
-#: project/scenes/warp/warp_screen.gd
-msgid "Kit sold from the dock: +{credits}"
-msgstr ""
-
-#: project/scenes/warp/warp_screen.gd
-msgid "Replay (slow)"
-msgstr ""
-
-#: project/scenes/warp/warp_screen.gd
 msgid "Click or press Space to speed up."
-msgstr ""
-
-#: project/scenes/warp/warp_screen.gd
-msgid "Bonus +{bonus}"
-msgstr ""
-
-#: project/scenes/warp/warp_screen.gd
-msgid "Bonus missed"
-msgstr ""
-
-#: project/scenes/warp/warp_screen.gd
-msgid "Breach -{breach}"
-msgstr ""
-
-#: project/scenes/warp/warp_screen.gd
-msgid "delivered"
-msgstr ""
-
-#: project/scenes/warp/warp_screen.gd
-msgid "scrap"
-msgstr ""
-
-#: project/scenes/warp/warp_screen.gd
-msgid "spoiled"
-msgstr ""
-
-#: project/scenes/warp/warp_screen.gd
-msgid "lost"
-msgstr ""
-
-#: project/scenes/warp/warp_screen.gd
-msgid "breached"
 msgstr ""
 
 #: project/data/cargo/ammo_crate.json

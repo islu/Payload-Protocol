@@ -8,7 +8,7 @@ This file is part of the [game specification](../spec.md). The section numbers a
 
 - The title screen has these buttons: New Run, How to Play, Settings, and Quit.
 - The background shows a starfield that moves slowly.
-- Behind the title, a faint small hold shows the idea of the game: every 2.5 seconds, its cargo slides in a random direction and hits.
+- The title, a tagline, and the buttons are in the center. The version is at the bottom right.
 
 ### 20.2 Station
 
@@ -52,9 +52,10 @@ The station screen has these areas:
 ### 20.4 Arrival Report
 
 - The report shows each contract: its pieces (delivered, scrap, spoiled, lost, or breached), its pay, and its bonus. A lost piece is a piece that an explosion removed.
-- Pieces of a contract with the same name and the same state share one line with a count, for example "Ration Crate ×6: delivered".
-- It shows the total credits that the jump gave.
-- The pilot speaks a line about the result.
+- The report shows a card for each contract: the client, its pay, and its pieces. Pieces with the same freight and the same state share one image, with "×N" and an icon of the state.
+- Below the cards, a ledger shows the deliveries, the bonuses, the breach fees, the kit sold from the dock, the fuel fee, and the net. Then it shows the credits before the warp and after the arrival.
+- The pilot speaks a line about the result, with the portrait of the pilot.
+- Delivered freight stays in the hold at half alpha, with a check mark, until Continue.
 - A Continue button goes to the next station, or to the toll gate.
 - When the report covers the hold, the hold moves to the left.
 - When the mouse is on a line of pieces, the hold marks those pieces at their place at the end of the warp.
@@ -136,6 +137,7 @@ The station screen has these areas:
   2. The warp: the slide, distance, weight, and force.
   3. Traits and reactions.
   4. Links, clamps, the shop, and tolls.
+- Each picture shows the cargo images of Section 4.2.
 
 ### 23.3 Hints
 

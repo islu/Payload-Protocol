@@ -127,7 +127,9 @@ func warp() -> String:
 		return NOT_AT_STATION_TEXT
 	if hold_mass() > max_mass():
 		return OVERWEIGHT_TEXT
-	var warp_log := {"sold": [], "sold_credits": 0, "fuel_fee": 0, "before": [], "steps": []}
+	var warp_log := {
+		"sold": [], "sold_credits": 0, "fuel_fee": 0, "before": [], "steps": [], "credits": credits
+	}
 	_leave_dock(warp_log)
 	# The fuel fee comes first (SPEC Sections 9 and 25). The credits can go below 0.
 	warp_log["fuel_fee"] = fuel_fee()
