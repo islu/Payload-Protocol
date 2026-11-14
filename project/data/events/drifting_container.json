@@ -1,0 +1,24 @@
+{
+	"id": "drifting_container",
+	"name": "Drifting Container",
+	"text": "A lost container drifts past. Some of it is still good.",
+	"choices": [
+		{
+			"text": "Haul it in.",
+			"effects": [
+				{
+					"type": "credits",
+					"amount": 12
+				},
+				{
+					"type": "scrap",
+					"cargo": "steel_ingot"
+				}
+			]
+		},
+		{
+			"text": "Leave it.",
+			"effects": []
+		}
+	]
+}

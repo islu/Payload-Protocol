@@ -21,6 +21,8 @@ This file keeps each problem that is found and not fixed yet. Each item is in on
 
 ## To Decide
 
+- **[Balance · Data] Events and mods** (found 2026-11-14, by /game-design). The first values of SPEC Sections 26 and 27: the costs 8, 10, 15, and 20, the drifting container +12, and the audit payment -15. Check in a playtest: are Padded Walls and Array Power always the best mod, and do 1 or 2 events in each leg make the run too slow?
+
 - **[Balance · Data] The length of a run** (found 2026-11-11, by Claude). 3 legs × 3 jumps is the first value. The target is 20 to 30 minutes.
   Waiting on a trigger  Waits for: the station events of phase 2 (SPEC Section 24).
                         Fix then: measure the time of one run in a playtest.
@@ -56,8 +58,8 @@ This file keeps each problem that is found and not fixed yet. Each item is in on
 
 ## To Do
 
-- **[Spec · Rules] Phase 2 and phase 3 of the game loop** (found 2026-11-14, by /game-design). The user approved the direction: station events and ship mods (phase 2), then route conditions, incident steps, and special contracts (phase 3). SPEC Section 24 has the ideas.
-  To do                 Fix: design each phase with /game-design (the cards, the mods, and the values), then implement it with /change.
+- **[Spec · Rules] Phase 3 of the game loop** (found 2026-11-14, by /game-design). The user approved the direction: route conditions, incident steps, and special contracts. SPEC Section 24 has the ideas.
+  To do                 Fix: design phase 3 with /game-design, then implement it with /change.
 
 - **[UX · Scenes] A glyph that the font does not have** (found 2026-11-14, by Claude). The pilot box of the station shows "▸" (U+25B8). The font jf open huninn does not have it. On the desktop a system font shows it, but the web build can show a box.
   To do                 Fix: use a glyph of the font (for example ":" or "→"), or draw the mark. Check the other symbols of the text with the font too.

@@ -1,0 +1,11 @@
+{
+	"id": "rescue_supplies",
+	"legs": [],
+	"client_name": "Stranded Freighter",
+	"freight": ["medkit", "medkit", "ration_crate", "ration_crate"],
+	"pay": 9,
+	"bonus": {
+		"type": "all_intact",
+		"pay": 10
+	}
+}

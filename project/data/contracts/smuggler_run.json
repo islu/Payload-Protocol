@@ -1,0 +1,11 @@
+{
+	"id": "smuggler_run",
+	"legs": [],
+	"client_name": "Black Market",
+	"freight": ["liquor_bottle", "cigarette_pack", "cigarette_pack", "plasma_cell"],
+	"pay": 14,
+	"bonus": {
+		"type": "all_intact",
+		"pay": 12
+	}
+}

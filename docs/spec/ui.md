@@ -16,7 +16,7 @@ The station screen has these areas:
 
 | Area | Position | Content |
 | --- | --- | --- |
-| Top bar | Top | The leg and the jump ("Leg 2 · Jump 1"), the credits, the payment of this leg, and the jumps before the payment. A gear button at the right opens the pause menu (Section 20.7). |
+| Top bar | Top | The leg and the jump ("Leg 2 · Jump 1"), the credits, the payment of this leg, and the jumps before the payment. A tag with the name of each mod, with its rule when the mouse is on it (Section 27). A gear button at the right opens the pause menu (Section 20.7). |
 | Hazard panel | Center, at the left of the hold, from top to bottom | The shift steps of the next jump in order (Section 18). Each step is a card with a large arrow, its number, and its direction. A fork step shows its two directions and a question mark. |
 | Dock | Left | The cargo on the dock (Section 8.1). |
 | Contract board | Left, below the dock | The 3 contracts, with Accept and Cancel buttons (Section 15). |
@@ -53,7 +53,7 @@ The station screen has these areas:
 
 - The report shows each contract: its pieces (delivered, scrap, spoiled, lost, or breached), its pay, and its bonus. A lost piece is a piece that an explosion removed.
 - The report shows a card for each contract: the client, its pay, and its pieces. Pieces with the same freight and the same state share one image, with "×N" and an icon of the state.
-- Below the cards, a ledger shows the deliveries, the bonuses, the breach fees, the kit sold from the dock, the fuel fee, and the net. Then it shows the credits before the warp and after the arrival.
+- Below the cards, a ledger shows the deliveries, the bonuses, the insurance (Section 27.2), the breach fees, the kit sold from the dock, the scrap cleared from the dock (Section 26.3), the fuel fee, and the net. Then it shows the credits before the warp and after the arrival.
 - The pilot speaks a line about the result, with the portrait of the pilot.
 - Delivered freight stays in the hold at half alpha, with a check mark, until Continue.
 - A Continue button goes to the next station, or to the payment screen.
@@ -74,6 +74,18 @@ The station screen has these areas:
 
 - Esc opens the pause menu at the station and during the warp. A gear button at the top right of the station and the warp opens it too. It has these buttons: Resume, How to Play, Settings, and Abandon Run.
 - Abandon Run asks the player to confirm. Then it goes to the title screen.
+
+### 20.8 Event
+
+- When a station with an event opens, the event shows in a panel at the center, above the station (Section 26).
+- The panel shows the name, the text, and a button for each choice. Each button shows the text of the choice, its cost, and its effects.
+- A choice with a cost more than the credits is disabled.
+- The player cannot use the station until the player selects a choice.
+
+### 20.9 Mod Choice
+
+- The mod choice shows a card for each mod: its icon, its name, and its rule. A click on a card selects the mod (Section 27.1).
+- The player must select a mod.
 
 ## 21. Feedback
 

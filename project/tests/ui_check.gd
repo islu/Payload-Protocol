@@ -6,6 +6,8 @@ extends Node
 
 const MAIN_SCENE := preload("res://scenes/main/main.tscn")
 
+## The number of mods that the run selected. The UI check of SPEC Section 20.9 needs one.
+var mods_seen := 0
 var _failures := 0
 var _language_checked := false
 var _undo_checked := false
@@ -125,11 +127,14 @@ func _play_run(main: Control) -> void:
 				state.continue_run()
 			Defs.PHASE_PAYMENT:
 				state.make_payment()
+			Defs.PHASE_EVENT, Defs.PHASE_MOD:
+				await UiCheckLoop.choose(self, main)
 		await get_tree().process_frame
 	_check(
 		state.view()["run"]["phase"] == Defs.PHASE_END,
 		"the run reaches its end (SPEC Section 19.2)"
 	)
+	_check(mods_seen > 0, "the run has a mod choice, for the checks of SPEC Section 20.9")
 	_check(_losses_seen > 0, "the run has a warp with a loss, for the checks of SPEC Section 21.5")
 	state.abandon_run()
 	await get_tree().process_frame

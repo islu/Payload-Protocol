@@ -29,6 +29,9 @@ const CANNOT_SELL_TEXT := "You can sell only kit."
 const NOT_SCRAP_TEXT := "That cargo is not scrap."
 const NOT_ARRIVED_TEXT := "The ship has not arrived yet."
 const NOT_AT_PAYMENT_TEXT := "No payment is due now."
+const NO_EVENT_TEXT := "No event is open."
+const NO_CHOICE_TEXT := "There is no such choice."
+const NO_MOD_CHOICE_TEXT := "No mod choice is open."
 const OVERWEIGHT_TEXT := "The hold is too heavy to warp. Take cargo out, or reinforce the hull."
 
 ## The places that a rotation in place tries, in order, when the new shape does not
@@ -86,6 +89,17 @@ var line: String = ""
 ## The charges of the Shields in this jump, by ID (SPEC Section 12.2).
 var charges: Dictionary = {}
 
+## The event of the station now, or null (SPEC Section 26).
+var event: EventDef = null
+## The IDs of the events that the run showed (SPEC Section 26.1).
+var events_seen: PackedStringArray = []
+## The credits that events took off the payment of this leg (SPEC Section 26.2).
+var payment_cut: int = 0
+## The IDs of the mods of the ship (SPEC Section 27).
+var mods: PackedStringArray = []
+## The IDs of the mods of the open mod choice (SPEC Section 27.1).
+var mod_offer: PackedStringArray = []
+
 var _next_cargo: int = 0
 var _next_contract: int = 0
 var _last_line: Dictionary = {}
@@ -119,6 +133,7 @@ func _open_station() -> void:
 	_offer_kit()
 	hazard = _make_hazard()
 	say(Defs.LINE_HAZARD)
+	_start_event()
 
 
 ## Starts the jump: the dock, each shift step, and the arrival (SPEC Sections 9 and 16).
@@ -128,7 +143,13 @@ func warp() -> String:
 	if hold_mass() > max_mass():
 		return OVERWEIGHT_TEXT
 	var warp_log := {
-		"sold": [], "sold_credits": 0, "fuel_fee": 0, "before": [], "steps": [], "credits": credits
+		"sold": [],
+		"sold_credits": 0,
+		"scrap_cleared": 0,
+		"fuel_fee": 0,
+		"before": [],
+		"steps": [],
+		"credits": credits
 	}
 	_leave_dock(warp_log)
 	# The fuel fee comes first (SPEC Sections 9 and 25). The credits can go below 0.
@@ -171,7 +192,7 @@ func continue_run() -> String:
 
 ## Returns the payment of the leg now (SPEC Section 19.1).
 func payment() -> int:
-	return cat.legs[leg - 1]["payment"]
+	return maxi(0, cat.legs[leg - 1]["payment"] - payment_cut)
 
 
 ## Pays the payment. If the credits are less than the payment, the run ends in a loss
@@ -188,8 +209,106 @@ func make_payment() -> String:
 		return ""
 	leg += 1
 	jump = 1
+	payment_cut = 0
 	_open_station()
+	# A mod choice after the payment of each leg but the last (SPEC Section 27.1).
+	offer_mods()
 	return ""
+
+
+# --- Events and mods (SPEC Sections 26 and 27) ---
+
+
+## Selects the event of a new station, if it has one (SPEC Section 26.1).
+func _start_event() -> void:
+	event = null
+	var due := jump == cat.event_station
+	if jump == cat.chance_station:
+		due = rng.randi_range(1, 100) <= cat.chance_percent
+	if not due:
+		return
+	var pool: Array = []
+	for e in cat.events:
+		if not e.id in events_seen:
+			pool.append(e)
+	if pool.is_empty():
+		return
+	event = pool[rng.randi_range(0, pool.size() - 1)]
+	events_seen.append(event.id)
+	phase = Defs.PHASE_EVENT
+
+
+## Selects a choice of the event. It pays the cost, then does the effects in order
+## (SPEC Section 26.2).
+func choose_event(index: int) -> String:
+	if phase != Defs.PHASE_EVENT or event == null:
+		return NO_EVENT_TEXT
+	if index < 0 or index >= event.choices.size():
+		return NO_CHOICE_TEXT
+	var choice: Dictionary = event.choices[index]
+	if choice["cost"] > 0:
+		var err := _pay(choice["cost"])
+		if err != "":
+			return err
+	event = null
+	phase = Defs.PHASE_STATION
+	var mod := false
+	for f: Dictionary in choice["effects"]:
+		mod = _do_effect(f) or mod
+	if mod:
+		offer_mods()
+	return ""
+
+
+## Does one effect of an event choice. It returns true for a mod effect.
+func _do_effect(f: Dictionary) -> bool:
+	match f["type"]:
+		Defs.EFFECT_CREDITS:
+			credits += f["amount"]
+		Defs.EFFECT_KIT:
+			new_cargo(cat.cargo[f["cargo"]])
+		Defs.EFFECT_CLAMP:
+			clamps = mini(clamps + 1, cat.price("clamp_max"))
+		Defs.EFFECT_SCRAP:
+			new_cargo(cat.cargo[f["cargo"]]).kind = Defs.KIND_SCRAP
+		Defs.EFFECT_CONTRACT:
+			_next_contract += 1
+			contracts.append(Contract.new(_next_contract, cat.contract(f["contract"])))
+		Defs.EFFECT_PAYMENT:
+			payment_cut += f["amount"]
+		Defs.EFFECT_MOD:
+			return true
+	return false
+
+
+## Starts a mod choice with the mods that the ship does not have. With no mod left,
+## nothing happens (SPEC Section 27.1).
+func offer_mods() -> void:
+	var pool: Array = []
+	for id in Defs.MODS:
+		if cat.mods.has(id) and not id in mods:
+			pool.append(id)
+	if pool.is_empty():
+		return
+	mod_offer = PackedStringArray(pick_n(rng, pool, cat.mod_offers))
+	phase = Defs.PHASE_MOD
+
+
+## Selects a mod of the mod choice. Then the event of the station shows, or the
+## station opens (SPEC Section 27.1).
+func choose_mod(index: int) -> String:
+	if phase != Defs.PHASE_MOD:
+		return NO_MOD_CHOICE_TEXT
+	if index < 0 or index >= mod_offer.size():
+		return NO_CHOICE_TEXT
+	mods.append(mod_offer[index])
+	mod_offer = []
+	phase = Defs.PHASE_EVENT if event != null else Defs.PHASE_STATION
+	return ""
+
+
+func has_mod(id: String) -> bool:
+	return id in mods
 
 
 ## Returns the pay of a freight: the pay of its contract, or 0 (SPEC Section 21.5).
@@ -700,6 +819,10 @@ func _leave_dock(warp_log: Dictionary) -> void:
 			credits += p
 			warp_log["sold"].append({"name": c.def.name, "price": p})
 			warp_log["sold_credits"] += p
+		elif c.kind == Defs.KIND_SCRAP:
+			# Scrap on the dock is cleared at its clear price (SPEC Section 26.3).
+			credits -= clear_price(c)
+			warp_log["scrap_cleared"] += clear_price(c)
 		remove_cargo(id)
 
 

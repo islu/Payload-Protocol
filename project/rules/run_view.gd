@@ -7,6 +7,17 @@ class_name RunView
 ## The help of a kit offer for the freight on the dock and in the hold (SPEC Section 20.2).
 const HELPS_TEXT := "Helps {count} of your freight"
 const FORK_HELP_TEXT := "The next jump has a fork step"
+## The texts of the effects of an event choice (SPEC Sections 20.8 and 26.2).
+const EFFECT_TEXT := {
+	"gain": "+{amount} credits",
+	"loss": "{amount} credits",
+	Defs.EFFECT_KIT: "Kit on the dock: {name}",
+	Defs.EFFECT_CLAMP: "+1 clamp",
+	Defs.EFFECT_SCRAP: "Scrap on the dock: {name}",
+	Defs.EFFECT_CONTRACT: "New contract: {name}",
+	Defs.EFFECT_MOD: "Select a ship mod",
+	Defs.EFFECT_PAYMENT: "Payment of this leg -{amount}",
+}
 
 
 ## Returns the name, the rule, and the break limit of each trait (SPEC Section 8.4).
@@ -36,7 +47,9 @@ static func jolt_risks(run: Run) -> Dictionary:
 				at_wall = true
 		if not at_wall:
 			continue
-		var f := 0 if c.has(Defs.TRAIT_CUSHION) else run.cat.weight_value(c.weight())
+		if run.has_mod(Defs.MOD_PADDED_WALLS):
+			continue
+		var f := Shift.taken(run, c, 0 if c.has(Defs.TRAIT_CUSHION) else Shift.force_weight(run, c))
 		for t in Defs.LIMIT_TRAITS:
 			if c.has(t) and f >= run.cat.break_limit(t):
 				out[c.id] = true
@@ -150,6 +163,10 @@ static func view(run: Run) -> Dictionary:
 		"payment_screen": {},
 		"end": {},
 		"line": run.line,
+		"mods": mods(run, run.mods),
+		"mod_offer": mods(run, run.mod_offer),
+		"mod_areas": mod_areas(run),
+		"event": event(run),
 	}
 	var ids := run.cargo.keys()
 	ids.sort()
@@ -250,8 +267,14 @@ static func _cargo(run: Run, c: Cargo, hold: Array[Cargo], powered: Dictionary) 
 		"pay": 0,
 		"sell_price": run.sell_price(c.def) if c.kind == Defs.KIND_KIT else 0,
 		"clear_price": run.clear_price(c) if c.kind == Defs.KIND_SCRAP else 0,
-		# The warnings of SPEC Section 12.3.
-		"no_cooler": c.in_hold and c.has(Defs.TRAIT_PERISHABLE) and not Arrival.cooled(c, hold),
+		"no_cooler":
+		(
+			# The warnings of SPEC Section 12.3.
+			c.in_hold
+			and c.has(Defs.TRAIT_PERISHABLE)
+			and not Arrival.cooled(c, hold)
+			and not Arrival.cryo(run, c)
+		),
 		"no_power": c.in_hold and c.has(Defs.TRAIT_SHIELD) and not powered.has(c.id),
 	}
 	for i in run.contracts.size():
@@ -376,3 +399,62 @@ static func _contract(run: Run, i: int, k: Contract) -> Dictionary:
 				bv["text"] = text(key, {"trait": run.cat.term_name("traits", b["trait"])})
 		kv["bonus"] = bv
 	return kv
+
+
+## Returns the name and the rule of each mod of a list (SPEC Section 27).
+static func mods(run: Run, ids: PackedStringArray) -> Array:
+	var out := []
+	for id in ids:
+		var m: Dictionary = run.cat.mods.get(id, {})
+		out.append({"id": id, "name": m.get("name", id), "text": m.get("text", "")})
+	return out
+
+
+## Returns the area of each mod that has one: {mod, cells}. Shock Floor has the bottom
+## row, and Cryo Line has the left column (SPEC Section 27.2).
+static func mod_areas(run: Run) -> Array:
+	var out := []
+	if run.has_mod(Defs.MOD_SHOCK_FLOOR):
+		var cells := []
+		for x in run.columns:
+			cells.append({"x": x, "y": run.rows - 1})
+		out.append({"mod": Defs.MOD_SHOCK_FLOOR, "cells": cells})
+	if run.has_mod(Defs.MOD_CRYO_LINE):
+		var cells := []
+		for y in run.rows:
+			cells.append({"x": 0, "y": y})
+		out.append({"mod": Defs.MOD_CRYO_LINE, "cells": cells})
+	return out
+
+
+## Returns the open event: {name, text, choices: [{index, text, cost, can, effects}]},
+## or {}. Each effect is a text {key, args} (SPEC Section 20.8).
+static func event(run: Run) -> Dictionary:
+	if run.phase != Defs.PHASE_EVENT or run.event == null:
+		return {}
+	var choices := []
+	for i in run.event.choices.size():
+		var c: Dictionary = run.event.choices[i]
+		var effects := []
+		for f: Dictionary in c["effects"]:
+			effects.append(_effect(run, f))
+		var can: bool = c["cost"] == 0 or (run.credits >= 0 and c["cost"] <= run.credits)
+		choices.append(
+			{"index": i, "text": c["text"], "cost": c["cost"], "can": can, "effects": effects}
+		)
+	return {"id": run.event.id, "name": run.event.name, "text": run.event.text, "choices": choices}
+
+
+static func _effect(run: Run, f: Dictionary) -> Dictionary:
+	match f["type"]:
+		Defs.EFFECT_CREDITS:
+			var key: String = EFFECT_TEXT["gain"] if f["amount"] > 0 else EFFECT_TEXT["loss"]
+			return text(key, {"amount": f["amount"]})
+		Defs.EFFECT_KIT, Defs.EFFECT_SCRAP:
+			return text(EFFECT_TEXT[f["type"]], {"name": run.cat.cargo[f["cargo"]].name})
+		Defs.EFFECT_CONTRACT:
+			var name := run.cat.contract(f["contract"]).client_name
+			return text(EFFECT_TEXT[f["type"]], {"name": name})
+		Defs.EFFECT_PAYMENT:
+			return text(EFFECT_TEXT[f["type"]], {"amount": f["amount"]})
+	return text(EFFECT_TEXT.get(f["type"], ""), {})

@@ -1,0 +1,5 @@
+{
+	"id": "shock_floor",
+	"name": "Shock Floor",
+	"text": "Cargo with a cell in the bottom row takes each hit with a force 1 less."
+}

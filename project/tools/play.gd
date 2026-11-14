@@ -33,6 +33,7 @@ const ACTIONS := {
 	"warp": "warp",
 	"continue": "continue",
 	"pay": "pay",
+	"choose": "choose <choice> (an event choice or a mod)",
 	"undo": "undo (takes back the last action at this station)",
 }
 
@@ -160,6 +161,9 @@ func _act(run: Run, parts: Array) -> String:
 			return run.continue_run()
 		"pay":
 			return run.make_payment()
+		"choose":
+			var i: int = n.call(1)
+			return run.choose_mod(i) if run.phase == Defs.PHASE_MOD else run.choose_event(i)
 	return "unknown command %s" % parts[0]
 
 
@@ -207,7 +211,26 @@ func _render(run: Run) -> void:
 	_say("Mass %d/%d (max %d)%s" % [m["hold"], m["limit"], m["max"], over])
 	if v["line"] != "":
 		_say(GameText.PILOT_NAME + ": " + v["line"])
+	if not v["mods"].is_empty():
+		_say(
+			(
+				"Mods: "
+				+ "; ".join(
+					v["mods"].map(
+						func(m: Dictionary) -> String: return "%s (%s)" % [m["name"], m["text"]]
+					)
+				)
+			)
+		)
 	match v["phase"]:
+		Defs.PHASE_EVENT:
+			_render_event(v["event"])
+			_render_station(run, v)
+		Defs.PHASE_MOD:
+			_say("Select a ship mod. Command: choose <n>")
+			for i in v["mod_offer"].size():
+				var mo: Dictionary = v["mod_offer"][i]
+				_say("  %d: %s: %s" % [i, mo["name"], mo["text"]])
 		Defs.PHASE_STATION:
 			_render_station(run, v)
 		Defs.PHASE_ARRIVAL:
@@ -234,6 +257,18 @@ func _render(run: Run) -> void:
 					% ["WIN" if e["won"] else "LOSS", e["score"], e["seed"], e["stats"]]
 				)
 			)
+
+
+func _render_event(e: Dictionary) -> void:
+	_say("EVENT: %s. %s Command: choose <n>" % [e["name"], e["text"]])
+	for c: Dictionary in e["choices"]:
+		var notes := PackedStringArray()
+		if c["cost"] > 0:
+			notes.append("cost %d" % c["cost"])
+		for f: Dictionary in c["effects"]:
+			notes.append(GameText.format(f))
+		var off := "" if c["can"] else " (not enough credits)"
+		_say("  %d: %s [%s]%s" % [c["index"], c["text"], ", ".join(notes), off])
 
 
 func _render_station(run: Run, v: Dictionary) -> void:
@@ -398,6 +433,8 @@ func _render_warp(run: Run) -> void:
 		_say("  fuel fee -%d" % w["fuel_fee"])
 	for s in w.get("sold", []):
 		_say("  sold %s from the dock for %d" % [s["name"], s["price"]])
+	if w.get("scrap_cleared", 0) > 0:
+		_say("  scrap cleared from the dock -%d" % w["scrap_cleared"])
 	var i := 0
 	for step: Dictionary in w["steps"]:
 		i += 1
@@ -435,8 +472,15 @@ func _render_arrival(v: Dictionary) -> void:
 			bonus = " · bonus %s" % (str(k["bonus"]) if k["bonus_met"] else "missed")
 		_say(
 			(
-				"  %s: %s · pay %d%s · breach %d"
-				% [k["client_name"], ", ".join(pieces), k["pay"], bonus, k["breach"]]
+				"  %s: %s · pay %d%s · insurance %d · breach %d"
+				% [
+					k["client_name"],
+					", ".join(pieces),
+					k["pay"],
+					bonus,
+					k["insurance"],
+					k["breach"]
+				]
 			)
 		)
 	_say("  total %+d credits. Command: continue" % a["total"])

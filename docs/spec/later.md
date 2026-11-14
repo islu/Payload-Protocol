@@ -6,8 +6,6 @@ This file is part of the [game specification](../spec.md). The section numbers a
 
 The user approved the direction of these ideas on 2026-11-14. Design each one with /game-design before it goes into the other sections.
 
-- **Phase 2: station events.** One or two times in each leg, a station shows an event card before the packing. The player selects one of two or three choices, for example a rescue, a pirate demand, or a smuggling offer. The events are JSON data.
-- **Phase 2: ship mods.** A mod is a permanent part of the ship. It uses no cell of the hold. After the payments of leg 1 and leg 2, the player selects one of three mods. An event can give a mod too. A run has about 2 to 4 mods.
 - **Phase 3: route conditions** (the phase environments of the first draft). Each leg has one condition, for example a radiation zone or low gravity. The station shows it for all jumps of the leg. The condition changes the values of traits or of the slide.
 - **Phase 3: incident steps.** A new kind of shift step, for example a meteor that breaks the top cargo of one column. The station shows the step and its column before the warp (Section 1.1).
 - **Phase 3: special contracts.** A VIP contract with high pay, a contract for more than one jump, and a large freight.

@@ -55,6 +55,10 @@ func test_bot_runs_end() -> void:
 					eq(r.continue_run(), "", "the bot continues")
 				Defs.PHASE_PAYMENT:
 					eq(r.make_payment(), "", "the bot pays")
+				Defs.PHASE_EVENT:
+					eq(r.choose_event(r.event.choices.size() - 1), "", "the bot selects a choice")
+				Defs.PHASE_MOD:
+					eq(r.choose_mod(0), "", "the bot selects a mod")
 		eq(r.phase, Defs.PHASE_END, "a run ends, seed %d (SPEC Section 19)" % run_seed)
 
 

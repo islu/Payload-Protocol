@@ -1,0 +1,25 @@
+{
+	"id": "pirate_demand",
+	"name": "Pirate Demand",
+	"text": "Pirates block the route. They want credits, or they shoot.",
+	"choices": [
+		{
+			"text": "Pay them.",
+			"cost": 15,
+			"effects": []
+		},
+		{
+			"text": "Refuse. They shoot the cargo bay.",
+			"effects": [
+				{
+					"type": "scrap",
+					"cargo": "steel_ingot"
+				},
+				{
+					"type": "scrap",
+					"cargo": "steel_ingot"
+				}
+			]
+		}
+	]
+}

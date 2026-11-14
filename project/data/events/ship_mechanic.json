@@ -1,0 +1,29 @@
+{
+	"id": "ship_mechanic",
+	"name": "Ship Mechanic",
+	"text": "A mechanic at the dock offers a quick job.",
+	"choices": [
+		{
+			"text": "Fit a clamp.",
+			"cost": 10,
+			"effects": [
+				{
+					"type": "clamp"
+				}
+			]
+		},
+		{
+			"text": "Fit a ship part.",
+			"cost": 20,
+			"effects": [
+				{
+					"type": "mod"
+				}
+			]
+		},
+		{
+			"text": "Leave.",
+			"effects": []
+		}
+	]
+}

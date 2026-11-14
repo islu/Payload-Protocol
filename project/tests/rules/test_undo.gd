@@ -56,7 +56,14 @@ func test_undo_stops_at_station() -> void:
 	eq(rec.can_undo(), false, "the warp cannot be undone (SPEC Section 20.2)")
 	eq(rec.undo(), RunRecord.NOTHING_TEXT, "undo gives an error after the warp")
 	eq(rec.act(func(r: Run) -> String: return r.continue_run()), "", "go to the next station")
-	eq(rec.run.phase, Defs.PHASE_STATION, "the next station opens")
+	eq(rec.run.phase, Defs.PHASE_EVENT, "the next station opens with its event (SPEC Section 26.1)")
+	eq(rec.act(func(r: Run) -> String: return r.choose_event(0)), "", "select a choice")
+	eq(rec.run.phase, Defs.PHASE_STATION, "the station opens")
+	eq(
+		rec.can_undo(),
+		false,
+		"undo does not go back past the choice of an event (SPEC Section 20.2)"
+	)
 	eq(
 		rec.can_undo(),
 		false,

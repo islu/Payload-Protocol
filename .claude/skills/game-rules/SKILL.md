@@ -24,8 +24,9 @@ description: Conventions of the Payload Protocol rules layer (project/rules) and
 | `shapes.gd` | `Shapes`: rotation, size, cells at a place, connected, JSON and view forms |
 | `cargo_def.gd`, `cargo.gd` | `CargoDef` (data) and `Cargo` (one cargo in a run): `cells()`, `has()`, `weight()`, `Cargo.next_to()` |
 | `contract_template.gd`, `contract.gd` | Contract data, the zone of a bonus, and an offered contract |
+| `event_def.gd` | `EventDef`: an event of `data/events/`, its choices and effects (SPEC Section 26) |
 | `catalog.gd` | `Catalog.from_data()`: reads the parsed JSON and checks it (content.md). `errors` has the problems |
-| `run.gd` | `Run`: the state, the phases, placement (`ROTATE_KICKS`), clamps, contracts, the shop, the mass (`cargo_mass`, `hold_mass`, `max_mass`, `fuel_fee`, `reinforce_hull`), the hazard with its fork step (`fork_options`), the dock at the warp, the pilot lines |
+| `run.gd` | `Run`: the state, the phases, placement (`ROTATE_KICKS`), clamps, contracts, the shop, the mass (`cargo_mass`, `hold_mass`, `max_mass`, `fuel_fee`, `reinforce_hull`), the hazard with its fork step (`fork_options`), the dock at the warp, the events (`event`, `choose_event`, the effects, `payment_cut`) and the mods (`mods`, `offer_mods`, `choose_mod`, `has_mod`; the rules of each mod are in `Shift.force_weight`, `Shift.taken`, `Shift.power_check`, `Shift._jolt`, `Arrival.cryo`, and `Arrival._insurance`), the pilot lines |
 | `shift.gd` | `Shift.step()`: power, slide, hits (with the wall jolt of SPEC Section 10.4: a hit with `jolt: true`), reactions (each with its lost pay `loss` and its number in the chain `chain`, SPEC Section 21.5), blast area, shields. It returns the event log of the step |
 | `arrival.gd` | `Arrival.arrive()`: spoil, delivery, bonus, breach, the report, the line event |
 | `run_record.gd` | `RunRecord`: the seed and each action that worked (a `Callable` on the `Run`). `undo()` plays the run again from the seed with no last action, back to the arrival at the station (SPEC Section 20.2). |

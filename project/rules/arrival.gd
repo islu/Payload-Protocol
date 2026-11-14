@@ -4,8 +4,9 @@ class_name Arrival
 ## The report for the UI: {spoiled: [id], sold, total, contracts: [{client_name,
 ## pieces: [{id, def_id, name, state, shape, weight_value}], groups: [{def_id, name,
 ## state, count, ids, shape, weight_value}],
-## pay, bonus, has_bonus, bonus_met, breach}], ledger: {deliveries, bonuses, breaches,
-## sold, fuel_fee, net}, credits_before, credits_after} (SPEC Section 20.4).
+## pay, bonus, has_bonus, bonus_met, breach, insurance}], ledger: {deliveries, bonuses,
+## insurance, breaches, sold, scrap_cleared, fuel_fee, net}, credits_before,
+## credits_after} (SPEC Section 20.4).
 
 
 ## Does the arrival: spoil, delivery, bonus, breach, and the report (SPEC Section 16).
@@ -30,6 +31,7 @@ static func arrive(run: Run) -> void:
 			"has_bonus": k.template.has_bonus(),
 			"bonus_met": false,
 			"breach": 0,
+			"insurance": 0,
 		}
 		var delivered: Array[Cargo] = []
 		for i in k.cargo.size():
@@ -41,10 +43,13 @@ static func arrive(run: Run) -> void:
 				res["breach"] += run.cat.price("breach_fee")
 			elif c == null:
 				state = Defs.PIECE_LOST
+				res["insurance"] += _insurance(run, k)
 			elif c.spoiled:
 				state = Defs.PIECE_SPOILED
+				res["insurance"] += _insurance(run, k)
 			elif c.kind == Defs.KIND_SCRAP:
 				state = Defs.PIECE_SCRAP
+				res["insurance"] += _insurance(run, k)
 			else:
 				state = Defs.PIECE_DELIVERED
 				res["pay"] += k.template.pay
@@ -69,7 +74,7 @@ static func arrive(run: Run) -> void:
 		for c in delivered:
 			leaving.append(c.id)
 		run.stats["delivered"] += delivered.size()
-		report["total"] += res["pay"] + res["bonus"] - res["breach"]
+		report["total"] += res["pay"] + res["bonus"] + res["insurance"] - res["breach"]
 		res["groups"] = groups(res["pieces"])
 		report["contracts"].append(res)
 	for id in leaving:
@@ -89,9 +94,26 @@ static func spoil_check(run: Run) -> Array[Cargo]:
 	var out: Array[Cargo] = []
 	var hold := run.hold_cargo()
 	for c in hold:
-		if c.has(Defs.TRAIT_PERISHABLE) and not cooled(c, hold):
+		if c.has(Defs.TRAIT_PERISHABLE) and not cooled(c, hold) and not cryo(run, c):
 			out.append(c)
 	return out
+
+
+## Reports whether the Cryo Line mod cools a cargo: a cell in the left column
+## (SPEC Section 27.2).
+static func cryo(run: Run, c: Cargo) -> bool:
+	if not run.has_mod(Defs.MOD_CRYO_LINE):
+		return false
+	for cell in c.cells():
+		if cell.x == 0:
+			return true
+	return false
+
+
+## Returns the insurance of a lost piece: half of its pay, rounded down, with the
+## Insurance mod (SPEC Section 27.2).
+static func _insurance(run: Run, k: Contract) -> int:
+	return k.template.pay / 2 if run.has_mod(Defs.MOD_INSURANCE) else 0
 
 
 static func cooled(c: Cargo, hold: Array[Cargo]) -> bool:
@@ -191,12 +213,14 @@ static func groups(pieces: Array) -> Array:
 
 ## Adds the ledger and the credits before and after to the report (SPEC Section 20.4).
 static func _ledger(run: Run, report: Dictionary) -> void:
-	var ledger := {"deliveries": 0, "bonuses": 0, "breaches": 0}
+	var ledger := {"deliveries": 0, "bonuses": 0, "insurance": 0, "breaches": 0}
 	for res: Dictionary in report["contracts"]:
 		ledger["deliveries"] += res["pay"]
 		ledger["bonuses"] += res["bonus"]
+		ledger["insurance"] += res["insurance"]
 		ledger["breaches"] += res["breach"]
 	ledger["sold"] = report["sold"]
+	ledger["scrap_cleared"] = run.last_warp.get("scrap_cleared", 0)
 	ledger["fuel_fee"] = run.last_warp.get("fuel_fee", 0)
 	report["credits_before"] = run.last_warp.get("credits", run.credits)
 	report["credits_after"] = run.credits

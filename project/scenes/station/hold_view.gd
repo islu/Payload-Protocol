@@ -16,6 +16,11 @@ const CELL := 100.0
 const MARGIN := 0.8
 ## The width of the frame around the grid, in pixels.
 const FRAME := 14.0
+## The color of the area of each mod.
+const MOD_COLORS := {
+	Defs.MOD_SHOCK_FLOOR: Color(0.55, 0.75, 1.0, 0.16),
+	Defs.MOD_CRYO_LINE: Color(0.45, 0.95, 1.0, 0.16)
+}
 
 ## The size of a cell in pixels.
 var cell := CELL
@@ -42,6 +47,8 @@ var offsets: Dictionary = {}
 var fades: Dictionary = {}
 ## The cargo with a check mark, by ID: the freight that the arrival delivered (SPEC Section 20.4).
 var checks: Dictionary = {}
+## The areas of the mods of the ship: [{mod, cells}] (SPEC Section 27.2).
+var mod_areas: Array = []
 
 var _hover := -1
 
@@ -55,6 +62,7 @@ func set_view(run: Dictionary) -> void:
 	rows = run["hold"]["rows"]
 	cargo = run["cargo"]
 	links = run["links"]
+	mod_areas = run.get("mod_areas", [])
 	front_walls = PackedStringArray([run.get("front_wall", "")])
 	show_jolts = true
 	custom_minimum_size = Vector2(columns + MARGIN, rows + MARGIN) * CELL
@@ -203,6 +211,10 @@ func _draw() -> void:
 			var r := Rect2(o + Vector2(x, y) * cell, Vector2(cell, cell))
 			draw_rect(r, Palette.GRID)
 			draw_rect(r, Palette.GRID_LINE, false, 1.0)
+	for a: Dictionary in mod_areas:
+		for c: Dictionary in a["cells"]:
+			var r := Rect2(o + Vector2(c["x"], c["y"]) * cell, Vector2(cell, cell)).grow(-3)
+			draw_rect(r, MOD_COLORS.get(a["mod"], Palette.ZONE))
 	for z: Dictionary in zone:
 		draw_rect(Rect2(o + Vector2(z["x"], z["y"]) * cell, Vector2(cell, cell)), Palette.ZONE)
 	for c: Dictionary in cargo:

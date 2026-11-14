@@ -54,6 +54,44 @@ const PHASE_STATION := "station"
 const PHASE_ARRIVAL := "arrival"
 const PHASE_PAYMENT := "payment"
 const PHASE_END := "end"
+## A station that shows its event first (SPEC Section 26).
+const PHASE_EVENT := "event"
+## A mod choice (SPEC Section 27.1).
+const PHASE_MOD := "mod"
+
+# Effects of an event choice (SPEC Section 26.2)
+const EFFECT_CREDITS := "credits"
+const EFFECT_KIT := "kit"
+const EFFECT_CLAMP := "clamp"
+const EFFECT_SCRAP := "scrap"
+const EFFECT_CONTRACT := "contract"
+const EFFECT_MOD := "mod"
+const EFFECT_PAYMENT := "payment"
+const EFFECTS: PackedStringArray = [
+	EFFECT_CREDITS,
+	EFFECT_KIT,
+	EFFECT_CLAMP,
+	EFFECT_SCRAP,
+	EFFECT_CONTRACT,
+	EFFECT_MOD,
+	EFFECT_PAYMENT,
+]
+
+# Mods (SPEC Section 27.2)
+const MOD_SHOCK_FLOOR := "shock_floor"
+const MOD_CRYO_LINE := "cryo_line"
+const MOD_PADDED_WALLS := "padded_walls"
+const MOD_GRAVITY_DAMPER := "gravity_damper"
+const MOD_ARRAY_POWER := "array_power"
+const MOD_INSURANCE := "insurance"
+const MODS: PackedStringArray = [
+	MOD_SHOCK_FLOOR,
+	MOD_CRYO_LINE,
+	MOD_PADDED_WALLS,
+	MOD_GRAVITY_DAMPER,
+	MOD_ARRAY_POWER,
+	MOD_INSURANCE,
+]
 
 # Reactions (SPEC Section 11)
 const REACT_BREAK := "break"

@@ -96,6 +96,18 @@ msgid "No payment is due now."
 msgstr ""
 
 #: project/rules/run.gd
+msgid "No event is open."
+msgstr ""
+
+#: project/rules/run.gd
+msgid "There is no such choice."
+msgstr ""
+
+#: project/rules/run.gd
+msgid "No mod choice is open."
+msgstr ""
+
+#: project/rules/run.gd
 msgid "The hold is too heavy to warp. Take cargo out, or reinforce the hull."
 msgstr ""
 
@@ -111,12 +123,49 @@ msgstr ""
 msgid "The next jump has a fork step"
 msgstr ""
 
+#: project/rules/run_view.gd
+msgid "+{amount} credits"
+msgstr ""
+
+#: project/rules/run_view.gd
+msgid "{amount} credits"
+msgstr ""
+
+#: project/rules/run_view.gd
+msgid "Kit on the dock: {name}"
+msgstr ""
+
+#: project/rules/run_view.gd
+msgid "+1 clamp"
+msgstr ""
+
+#: project/rules/run_view.gd
+msgid "Scrap on the dock: {name}"
+msgstr ""
+
+#: project/rules/run_view.gd
+msgid "New contract: {name}"
+msgstr ""
+
+#: project/rules/run_view.gd
+#: project/scenes/main/choice_panel.gd
+msgid "Select a ship mod"
+msgstr ""
+
+#: project/rules/run_view.gd
+msgid "Payment of this leg -{amount}"
+msgstr ""
+
 #: project/scenes/common/game_state.gd
 msgid "The game data did not load."
 msgstr ""
 
 #: project/scenes/common/game_state.gd
 msgid "No run is in progress."
+msgstr ""
+
+#: project/scenes/main/choice_panel.gd
+msgid "Cost {cost}"
 msgstr ""
 
 #: project/scenes/main/gear_button.gd
@@ -580,11 +629,20 @@ msgid "Bonuses"
 msgstr ""
 
 #: project/scenes/warp/report_panel.gd
+#: project/data/mods/insurance.json
+msgid "Insurance"
+msgstr ""
+
+#: project/scenes/warp/report_panel.gd
 msgid "Breach fees"
 msgstr ""
 
 #: project/scenes/warp/report_panel.gd
 msgid "Kit sold from the dock"
+msgstr ""
+
+#: project/scenes/warp/report_panel.gd
+msgid "Scrap cleared from the dock"
 msgstr ""
 
 #: project/scenes/warp/report_panel.gd
@@ -913,8 +971,116 @@ msgstr ""
 msgid "Helix Power"
 msgstr ""
 
+#: project/data/contracts/rescue_supplies.json
+msgid "Stranded Freighter"
+msgstr ""
+
 #: project/data/contracts/sculpture.json
 msgid "Museum of Nowhere"
+msgstr ""
+
+#: project/data/events/company_audit.json
+msgid "Pay early."
+msgstr ""
+
+#: project/data/events/company_audit.json
+msgid "Ignore it."
+msgstr ""
+
+#: project/data/events/company_audit.json
+msgid "Company Audit"
+msgstr ""
+
+#: project/data/events/company_audit.json
+msgid "The company checks your books. An early payment makes it happy."
+msgstr ""
+
+#: project/data/events/distress_call.json
+msgid "Give them fuel. They give you a ship part."
+msgstr ""
+
+#: project/data/events/distress_call.json
+msgid "Carry their supplies to the next station."
+msgstr ""
+
+#: project/data/events/distress_call.json
+msgid "Fly on."
+msgstr ""
+
+#: project/data/events/distress_call.json
+msgid "Distress Call"
+msgstr ""
+
+#: project/data/events/distress_call.json
+msgid "A stranded freighter calls for help. Its crew offers what it can."
+msgstr ""
+
+#: project/data/events/drifting_container.json
+msgid "Haul it in."
+msgstr ""
+
+#: project/data/events/drifting_container.json
+msgid "Leave it."
+msgstr ""
+
+#: project/data/events/drifting_container.json
+msgid "Drifting Container"
+msgstr ""
+
+#: project/data/events/drifting_container.json
+msgid "A lost container drifts past. Some of it is still good."
+msgstr ""
+
+#: project/data/events/pirate_demand.json
+msgid "Pay them."
+msgstr ""
+
+#: project/data/events/pirate_demand.json
+msgid "Refuse. They shoot the cargo bay."
+msgstr ""
+
+#: project/data/events/pirate_demand.json
+msgid "Pirate Demand"
+msgstr ""
+
+#: project/data/events/pirate_demand.json
+msgid "Pirates block the route. They want credits, or they shoot."
+msgstr ""
+
+#: project/data/events/ship_mechanic.json
+msgid "Fit a clamp."
+msgstr ""
+
+#: project/data/events/ship_mechanic.json
+msgid "Fit a ship part."
+msgstr ""
+
+#: project/data/events/ship_mechanic.json
+msgid "Leave."
+msgstr ""
+
+#: project/data/events/ship_mechanic.json
+msgid "Ship Mechanic"
+msgstr ""
+
+#: project/data/events/ship_mechanic.json
+msgid "A mechanic at the dock offers a quick job."
+msgstr ""
+
+#: project/data/events/smuggler_offer.json
+msgid "Take the job."
+msgstr ""
+
+#: project/data/events/smuggler_offer.json
+msgid "Say no."
+msgstr ""
+
+#: project/data/events/smuggler_offer.json
+msgid "Smuggler's Offer"
+msgstr ""
+
+#: project/data/events/smuggler_offer.json
+msgid "A smuggler needs a quiet ship. The pay is good. The cargo is not."
 msgstr ""
 
 #: project/data/lines/all_intact.json
@@ -1119,6 +1285,50 @@ msgstr ""
 
 #: project/data/lines/win.json
 msgid "Full circle, and the captain is alive. That is more than my namesake managed."
+msgstr ""
+
+#: project/data/mods/array_power.json
+msgid "Array Power"
+msgstr ""
+
+#: project/data/mods/array_power.json
+msgid "Each Shield has power with no Battery."
+msgstr ""
+
+#: project/data/mods/cryo_line.json
+msgid "Cryo Line"
+msgstr ""
+
+#: project/data/mods/cryo_line.json
+msgid "Perishable cargo with a cell in the left column stays fresh with no Cooler."
+msgstr ""
+
+#: project/data/mods/gravity_damper.json
+msgid "Gravity Damper"
+msgstr ""
+
+#: project/data/mods/gravity_damper.json
+msgid "Heavy cargo hits with the force of standard cargo. Its mass does not change."
+msgstr ""
+
+#: project/data/mods/insurance.json
+msgid "Each scrap, spoiled, or lost piece of a contract pays half of its pay."
+msgstr ""
+
+#: project/data/mods/padded_walls.json
+msgid "Padded Walls"
+msgstr ""
+
+#: project/data/mods/padded_walls.json
+msgid "No cargo takes a wall jolt."
+msgstr ""
+
+#: project/data/mods/shock_floor.json
+msgid "Shock Floor"
+msgstr ""
+
+#: project/data/mods/shock_floor.json
+msgid "Cargo with a cell in the bottom row takes each hit with a force 1 less."
 msgstr ""
 
 #: project/data/terms.json

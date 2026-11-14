@@ -45,6 +45,7 @@ func _run() -> void:
 	await _wait(0.8)
 	await _shot("09_station_zh")
 	TranslationServer.set_locale("en")
+	await _mod_choice()
 	GameState.abandon_run()
 	DirAccess.remove_absolute(Settings.PATH)
 	if saved != "":
@@ -117,6 +118,20 @@ func _station() -> void:
 
 
 ## The warp, image by image, and the arrival report.
+## The mod choice (SPEC Section 20.9), and the station with the tag of the mod.
+func _mod_choice() -> void:
+	var run: Dictionary = GameState.view()["run"]
+	if run["phase"] == Defs.PHASE_EVENT:
+		GameState.choose_event(run["event"]["choices"].size() - 1)
+	GameState._record.run.offer_mods()
+	GameState.state_changed.emit()
+	await _wait(0.6)
+	await _shot("10_mod_choice")
+	GameState.choose_mod(0)
+	await _wait(0.6)
+	await _shot("11_station_mod")
+
+
 func _warp() -> void:
 	GameState.warp()
 	for i in WARP_SHOTS:

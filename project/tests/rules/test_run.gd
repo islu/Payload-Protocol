@@ -260,6 +260,8 @@ func test_hazard() -> void:
 
 func test_payments() -> void:
 	for jump in 3:
+		if run.phase == Defs.PHASE_EVENT:
+			run.choose_event(run.event.choices.size() - 1)
 		eq(run.warp(), "", "warp")
 		eq(run.continue_run(), "", "continue")
 	eq(
@@ -271,8 +273,8 @@ func test_payments() -> void:
 	eq(run.make_payment(), "", "pay the payment (SPEC Section 19.1)")
 	eq(
 		[run.credits, run.leg, run.jump, run.phase],
-		[40, 2, 1, Defs.PHASE_STATION],
-		"the next leg starts (SPEC Section 19.1)"
+		[40, 2, 1, Defs.PHASE_MOD],
+		"the next leg starts, with a mod choice first (SPEC Sections 19.1 and 27.1)"
 	)
 
 

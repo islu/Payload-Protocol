@@ -22,13 +22,15 @@ const PIECE_STATE_TEXT := {
 const LEDGER_TEXT := {
 	"deliveries": "Deliveries",
 	"bonuses": "Bonuses",
+	"insurance": "Insurance",
 	"breaches": "Breach fees",
 	"sold": "Kit sold from the dock",
+	"scrap_cleared": "Scrap cleared from the dock",
 	"fuel_fee": "Fuel fee",
 	"net": "Net",
 }
 ## The lines of the ledger that take credits away.
-const LEDGER_COSTS: PackedStringArray = ["breaches", "fuel_fee"]
+const LEDGER_COSTS: PackedStringArray = ["breaches", "scrap_cleared", "fuel_fee"]
 const CREDITS_TEXT := "Credits {before} → {after}"
 const CELL := 40.0
 

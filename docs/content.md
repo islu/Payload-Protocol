@@ -6,11 +6,13 @@ This file has the design rules of the game content. The data files in `project/d
 
 | Content | Folder or file |
 | --- | --- |
-| Balance values: start values, break limits, prices, payments, hazard steps, hold size | `rules.json` |
+| Balance values: start values, break limits, prices, payments, hazard steps, hold size, the event stations, the mod offers | `rules.json` |
 | Names and rules text of traits, kinds, weights, and directions | `terms.json` |
 | Freight and kit definitions | `cargo/` |
 | Contract templates, by leg | `contracts/` |
 | Pilot lines, by event | `lines/` |
+| Station events and their choices | `events/` |
+| The name and the rule text of each mod. The rule is in the code (SPEC Section 27.2). | `mods/` |
 
 - Use one file for each definition. The `id` is snake_case and is the same as the file name.
 - New content must not need a code change. Do not hard-code balance values.
@@ -94,6 +96,13 @@ The first content has 38 freight and 6 kit. The freight has themes: supplies, te
 - An Earth Heritage Museum or Old Town Collectors contract carries Earth relics: everyday things of old Earth.
 - Each freight is in one contract at least.
 - The 4 offers of a station must have a total mass of 1.3 times the mass limit or more (SPEC Section 25). Then the player must select.
+
+## Event Rules
+
+- Each event has 2 or 3 choices. One choice has no cost. Most events have one choice with no bad effect too.
+- A choice text tells what the player does. The screen shows the cost and the effects next to it.
+- A contract that only an event gives has `"legs": []`. Give it more pay than an offered contract of the same size: the player did not plan for it.
+- Use the effects of SPEC Section 26.2 only. A new kind of effect needs a code change.
 
 ## Pilot Lines
 

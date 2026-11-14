@@ -59,6 +59,7 @@ The arrival has these steps, in this order:
 5. **Report:** the arrival report shows the result (Section 20.4).
 
 - Scrap stays in the hold. Kit stays in the hold.
+- The Insurance mod pays for lost freight at the arrival (Section 27.2).
 - Credits can go below 0 after a breach fee. Then the player cannot buy until the credits are 0 or more.
 
 ## 17. The Shop
@@ -121,7 +122,7 @@ The arrival has these steps, in this order:
 ### 19.1 Payments
 
 - After the arrival of the last jump of a leg, the freight company takes the payment of that leg.
-- The payments are 70, 180, and 350 credits.
+- The payments are 70, 180, and 350 credits. An event can make the payment of a leg smaller (Section 26.2).
 - If the credits are less than the payment, the run ends in a loss.
 - If not, the game takes the payment, and the next leg starts at a new station.
 
@@ -131,3 +132,60 @@ The arrival has these steps, in this order:
 - The **score** is the credits after the last payment.
 - The run end screen shows: win or loss, the score, the delivered freight, the scrap made, the explosions, and the seed.
 - The run end screen has two buttons: New Run and Title.
+
+## 26. Events
+
+### 26.1 When Events Happen
+
+- The second station of each leg has an event. The third station of each leg has an event with a chance of one half.
+- The seed selects the event of a station from the event templates in `project/data/events/`. A run does not show the same event two times.
+- The event shows when the station opens, before the player can act (Section 20.8).
+
+### 26.2 Event Contents
+
+- Each event has a name, a text, and 2 or 3 **choices**.
+- Each choice has a text, an optional cost in credits, and a list of **effects**.
+- One choice of each event has no cost.
+- The player must select one choice. The player cannot select a choice when its cost is more than the credits.
+- The effects happen in the order of the list:
+
+| Effect | Result |
+| --- | --- |
+| `credits` | Adds a number of credits. The number can be less than 0. |
+| `kit` | Puts a kit of a definition on the dock, at no cost. |
+| `clamp` | Adds 1 clamp, up to the maximum (Section 17.2). |
+| `scrap` | Puts a scrap of a cargo definition on the dock. It has the shape of that definition. |
+| `contract` | Adds the contract of a template to the contract board. The player can accept it or not (Section 15). |
+| `mod` | Starts a mod choice (Section 27.1). |
+| `payment` | Makes the payment of this leg smaller by a number of credits. |
+
+- A contract that only events give has no leg. The station does not offer it at other times.
+
+### 26.3 Scrap on the Dock
+
+- The player can move a scrap from the dock into the hold.
+- At the warp, each scrap on the dock is cleared. The player pays its clear price (Section 17.4).
+
+## 27. Mods
+
+A **mod** is a permanent part of the ship. It uses no cell of the hold. The player keeps each mod until the end of the run.
+
+### 27.1 Mod Choice
+
+- After the payment of leg 1 and the payment of leg 2, the player gets a mod choice. An event can give a mod choice too (Section 26.2).
+- A mod choice shows 3 mods that the player does not have. The seed selects them. When fewer than 3 are left, it shows the mods that are left.
+- The player selects one mod (Section 20.9). When no mod is left, the mod choice does not happen.
+- A run has no maximum number of mods.
+
+### 27.2 The Mods
+
+| Mod | Rule |
+| --- | --- |
+| **Shock Floor** | A cargo with a cell in the bottom row takes each hit with a force 1 less, and 0 at least. This includes the wall jolt. |
+| **Cryo Line** | At the arrival, a Perishable cargo with a cell in the left column counts as next to a Cooler (Section 12.1). |
+| **Padded Walls** | No cargo takes a wall jolt (Section 10.4). |
+| **Gravity Damper** | The weight value of heavy cargo is 2 for the force of its hits and its wall jolt. Its mass does not change. |
+| **Array Power** | Each Shield has power in each shift step. It does not need a Battery (Section 12.2). |
+| **Insurance** | At the arrival, each piece of an accepted contract that is scrap, spoiled, or lost pays half of its pay, rounded down. A breached piece does not pay. |
+
+- The hold shows the area of a mod with an area: the bottom row for Shock Floor, and the left column for Cryo Line.

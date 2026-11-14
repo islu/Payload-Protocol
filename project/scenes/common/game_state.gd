@@ -140,6 +140,16 @@ func make_payment() -> String:
 	return _act(func(r: Run) -> String: return r.make_payment())
 
 
+## Selects a choice of the event of the station (SPEC Section 26.2).
+func choose_event(index: int) -> String:
+	return _act(func(r: Run) -> String: return r.choose_event(index))
+
+
+## Selects a mod of the mod choice (SPEC Section 27.1).
+func choose_mod(index: int) -> String:
+	return _act(func(r: Run) -> String: return r.choose_mod(index))
+
+
 ## Reports whether the player can take back an action at this station (SPEC Section 20.2).
 func can_undo() -> bool:
 	return _record != null and _record.can_undo()

@@ -1,0 +1,20 @@
+{
+	"id": "smuggler_offer",
+	"name": "Smuggler's Offer",
+	"text": "A smuggler needs a quiet ship. The pay is good. The cargo is not.",
+	"choices": [
+		{
+			"text": "Take the job.",
+			"effects": [
+				{
+					"type": "contract",
+					"contract": "smuggler_run"
+				}
+			]
+		},
+		{
+			"text": "Say no.",
+			"effects": []
+		}
+	]
+}

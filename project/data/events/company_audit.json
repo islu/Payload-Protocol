@@ -1,0 +1,21 @@
+{
+	"id": "company_audit",
+	"name": "Company Audit",
+	"text": "The company checks your books. An early payment makes it happy.",
+	"choices": [
+		{
+			"text": "Pay early.",
+			"cost": 10,
+			"effects": [
+				{
+					"type": "payment",
+					"amount": 15
+				}
+			]
+		},
+		{
+			"text": "Ignore it.",
+			"effects": []
+		}
+	]
+}

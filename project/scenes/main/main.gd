@@ -15,6 +15,10 @@ const MUSIC_PATH := "res://audio/music/vintage_menu.ogg"
 
 ## The gear button of the station and the warp (SPEC Section 20.7).
 var gear: GearButton
+## The event or the mod choice on top of the station (SPEC Sections 20.8 and 20.9).
+var choice: ChoicePanel
+## The phase and the event of the choice now, so that a new choice builds a new panel.
+var _choice_key := ""
 var _screen: Control
 var _screen_kind := ""
 var _overlays: CanvasLayer
@@ -50,7 +54,10 @@ func _update() -> void:
 		Hints.run_won()
 	if kind == Defs.PHASE_PAYMENT or kind == Defs.PHASE_END:
 		kind = "gate"
-	gear.visible = kind == Defs.PHASE_STATION or kind == Defs.PHASE_ARRIVAL
+	_update_choice(run)
+	if kind == Defs.PHASE_EVENT or kind == Defs.PHASE_MOD:
+		kind = Defs.PHASE_STATION
+	gear.visible = choice == null and (kind == Defs.PHASE_STATION or kind == Defs.PHASE_ARRIVAL)
 	if kind == _screen_kind:
 		return
 	_screen_kind = kind
@@ -68,6 +75,25 @@ func _update() -> void:
 	_screen.process_mode = Node.PROCESS_MODE_PAUSABLE
 	add_child(_screen)
 	move_child(_screen, 0)
+
+
+## Shows the event or the mod choice of the run, or closes it (SPEC Sections 20.8 and 20.9).
+func _update_choice(run: Dictionary) -> void:
+	var phase: String = run.get("phase", "")
+	var key := ""
+	if phase == Defs.PHASE_EVENT:
+		key = phase + str(run["event"].get("id", ""))
+	elif phase == Defs.PHASE_MOD:
+		key = phase + ",".join(run["mod_offer"].map(func(m: Dictionary) -> String: return m["id"]))
+	if key == _choice_key:
+		return
+	_choice_key = key
+	if choice != null:
+		choice.queue_free()
+		choice = null
+	if key != "":
+		choice = ChoicePanel.new()
+		open_overlay(choice)
 
 
 func _notification(what: int) -> void:

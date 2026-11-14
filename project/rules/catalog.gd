@@ -30,6 +30,13 @@ var offer_mass_percent: int
 ## Each leg: {payment: int, hazard_steps: Array of Vector2i(min, max), kit_pool: PackedStringArray,
 ## fork: bool}. fork is true when the last step of each jump is a fork step (SPEC Section 18).
 var legs: Array[Dictionary] = []
+## The station of each leg that always has an event, the station with a chance, and
+## the chance in percent (SPEC Section 26.1).
+var event_station: int
+var chance_station: int
+var chance_percent: int
+## The number of mods in a mod choice (SPEC Section 27.1).
+var mod_offers: int
 
 ## terms.json: the words of the rules.
 var terms: Dictionary = {}
@@ -38,6 +45,10 @@ var cargo: Dictionary = {}
 var contracts: Array[ContractTemplate] = []
 ## The lines of each event: PackedStringArray by event.
 var lines: Dictionary = {}
+## The events of the stations, in the order of the IDs (SPEC Section 26).
+var events: Array[EventDef] = []
+## The name and the rule text of each mod: {name, text} by ID (SPEC Section 27).
+var mods: Dictionary = {}
 
 
 ## Makes a catalog from the parsed data: {rules, terms, cargo, contracts, lines}.
@@ -65,6 +76,16 @@ static func from_data(data: Dictionary) -> Catalog:
 		for line in line_set.get("lines", []):
 			texts.append(str(line.get("text", "")))
 		cat.lines[name] = texts
+	files = data.get("events", {})
+	for name: String in _sorted(files):
+		var e := EventDef.from_dict(files[name])
+		cat._check_id(e.id, name, "event")
+		cat.events.append(e)
+	files = data.get("mods", {})
+	for name: String in _sorted(files):
+		var m: Dictionary = files[name]
+		cat._check_id(str(m.get("id", "")), name, "mod")
+		cat.mods[name] = {"name": str(m.get("name", "")), "text": str(m.get("text", ""))}
 	cat._check()
 	return cat
 
@@ -97,6 +118,11 @@ func _read_rules(r: Dictionary) -> void:
 	fuel_fee = int(mass.get("fuel_fee", 0))
 	reinforce_amount = int(mass.get("reinforce", 0))
 	offer_mass_percent = int(mass.get("offer_percent", 0))
+	var ev: Dictionary = r.get("events", {})
+	event_station = int(ev.get("station", 0))
+	chance_station = int(ev.get("chance_station", 0))
+	chance_percent = int(ev.get("chance_percent", 0))
+	mod_offers = int(r.get("mod_offers", 0))
 	for s: Dictionary in r.get("legs", []):
 		var steps: Array[Vector2i] = []
 		for span in s.get("hazard_steps", []):
@@ -166,6 +192,14 @@ func _check() -> void:
 	for e in Defs.LINE_EVENTS:
 		if lines.get(e, PackedStringArray()).size() < MIN_LINES:
 			_fail("lines: the event %s needs %d lines at least" % [e, MIN_LINES])
+	for e in events:
+		_check_event(e)
+	for id in Defs.MODS:
+		if mods.get(id, {}).get("name", "") == "" or mods.get(id, {}).get("text", "") == "":
+			_fail("mods: the mod %s needs a name and a text" % id)
+	for id: String in mods:
+		if not id in Defs.MODS:
+			_fail("mods: %s is not a mod of the code" % id)
 
 
 func _check_rules() -> void:
@@ -183,8 +217,10 @@ func _check_rules() -> void:
 		_fail("rules: sell_divisor must be 1 or more")
 	if mass_limit < 1 or fuel_fee < 0 or reinforce_amount < 1 or over_percent < 0:
 		_fail("rules: the mass values are not valid")
-	if offer_contracts < 1 or offer_kit < 1:
+	if offer_contracts < 1 or offer_kit < 1 or mod_offers < 1:
 		_fail("rules: the offers must be 1 or more")
+	if chance_percent < 0 or chance_percent > 100:
+		_fail("rules: the chance of an event must be 0 to 100")
 	for i in legs.size():
 		var s: Dictionary = legs[i]
 		if s["hazard_steps"].is_empty():
@@ -244,8 +280,6 @@ func _check_cargo(d: CargoDef) -> void:
 func _check_contract(t: ContractTemplate) -> void:
 	if t.client_name == "" or t.pay < 1 or t.freight.is_empty():
 		_fail("contract %s: it needs a client_name, a pay, and freight" % t.id)
-	if t.legs.is_empty():
-		_fail("contract %s: no legs" % t.id)
 	for s in t.legs:
 		if s < 1 or s > legs.size():
 			_fail("contract %s: the leg %d is not valid" % [t.id, s])
@@ -267,3 +301,48 @@ func _check_contract(t: ContractTemplate) -> void:
 				_fail("contract %s: the bonus trait %s is not valid" % [t.id, t.bonus["trait"]])
 		_:
 			_fail("contract %s: the bonus type %s is not valid" % [t.id, t.bonus["type"]])
+
+
+## Checks an event: 2 or 3 choices, one free choice, and valid effects (SPEC Section 26.2).
+func _check_event(e: EventDef) -> void:
+	if e.name == "" or e.text == "":
+		_fail("event %s: it needs a name and a text" % e.id)
+	if e.choices.size() < 2 or e.choices.size() > 3:
+		_fail("event %s: 2 or 3 choices" % e.id)
+	var free := false
+	for c: Dictionary in e.choices:
+		if c["text"] == "":
+			_fail("event %s: each choice needs a text" % e.id)
+		free = free or c["cost"] == 0
+		for f: Dictionary in c["effects"]:
+			_check_effect(e.id, f)
+	if not free:
+		_fail("event %s: one choice must have no cost" % e.id)
+
+
+func _check_effect(event_id: String, f: Dictionary) -> void:
+	match f["type"]:
+		Defs.EFFECT_KIT:
+			if not cargo.has(f["cargo"]) or cargo[f["cargo"]].kind != Defs.KIND_KIT:
+				_fail("event %s: %s is not a kit" % [event_id, f["cargo"]])
+		Defs.EFFECT_SCRAP:
+			if not cargo.has(f["cargo"]):
+				_fail("event %s: %s is not a cargo" % [event_id, f["cargo"]])
+		Defs.EFFECT_CONTRACT:
+			if contract(f["contract"]) == null:
+				_fail("event %s: %s is not a contract" % [event_id, f["contract"]])
+		Defs.EFFECT_CREDITS, Defs.EFFECT_PAYMENT:
+			if f["amount"] == 0:
+				_fail("event %s: the %s effect needs an amount" % [event_id, f["type"]])
+		Defs.EFFECT_CLAMP, Defs.EFFECT_MOD:
+			pass
+		_:
+			_fail("event %s: the effect %s is not valid" % [event_id, f["type"]])
+
+
+## Returns the contract template with an ID, or null.
+func contract(id: String) -> ContractTemplate:
+	for t in contracts:
+		if t.id == id:
+			return t
+	return null

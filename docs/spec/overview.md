@@ -105,3 +105,5 @@ Use these terms in the spec, the code, the data, and the text of the game. Do no
 | **payment** | The credits that the freight company takes at the end of a leg (Section 19). |
 | **clamp** | A lock that stops a cargo from a slide (Section 13). |
 | **pilot** | The ship AI that speaks lines (Section 22). |
+| **event** | A card at a station with choices. Each choice has effects (Section 26). |
+| **mod** | A permanent part of the ship that changes a rule (Section 27). |

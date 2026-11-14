@@ -5,6 +5,8 @@ extends Control
 ## the Warp button. It reads GameState.view() and calls the actions of GameState.
 
 const DOCK_TEXT := "Dock"
+## The phases that show the station (SPEC Sections 20.2, 20.8, and 20.9).
+const STATION_PHASES: PackedStringArray = [Defs.PHASE_STATION, Defs.PHASE_EVENT, Defs.PHASE_MOD]
 const DOCK_COUNT_TEXT := "Dock ({count})"
 const CONTRACTS_TEXT := "Contracts"
 const SHOP_TEXT := "Shop"
@@ -66,6 +68,7 @@ var _hold: HoldView
 var _top_label: Label
 var _credits_label: Label
 var _payment_label: Label
+var _mods_box: HBoxContainer
 var _mass_label: Label
 var _hazard_box: VBoxContainer
 var _dock_title: Label
@@ -125,6 +128,11 @@ func _build() -> void:
 	_credits_label = _label(top, "", TextSize.HEADING, Palette.GOOD)
 	_payment_label = _label(top, "", TextSize.BODY, Palette.TEXT_DIM)
 	_mass_label = _label(top, "", TextSize.HEADING, Palette.TEXT)
+	# An icon for each mod of the ship, with its rule (SPEC Section 20.2).
+	_mods_box = HBoxContainer.new()
+	_mods_box.name = "Mods"
+	_mods_box.add_theme_constant_override("separation", 8)
+	top.add_child(_mods_box)
 
 	var body := HBoxContainer.new()
 	body.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -307,7 +315,8 @@ static func _clear(node: Node) -> void:
 func refresh() -> void:
 	_view = GameState.view()
 	_run = _view["run"]
-	if _run.is_empty() or _run["phase"] != Defs.PHASE_STATION:
+	# The station shows behind an event and a mod choice (SPEC Sections 20.8 and 20.9).
+	if _run.is_empty() or not _run["phase"] in STATION_PHASES:
 		return
 	_top_label.text = tr(TOP_BAR_TEXT).format(_run)
 	_count_credits(_run["credits"])
@@ -315,6 +324,7 @@ func refresh() -> void:
 		{"payment": _run["payment"], "jumps": _run["jumps_to_payment"]}
 	)
 	_show_mass()
+	_show_mods()
 	_show_pilot()
 	_undo_button.disabled = not GameState.can_undo()
 	_hold.set_view(_run)
@@ -324,6 +334,24 @@ func refresh() -> void:
 	_shop.refresh()
 	_refresh_clamps()
 	_update_marks()
+
+
+## Shows a tag for each mod of the ship. The mouse on it shows the rule (SPEC Section 20.2).
+func _show_mods() -> void:
+	_clear(_mods_box)
+	for m: Dictionary in _run.get("mods", []):
+		var tag := PanelContainer.new()
+		tag.mouse_filter = Control.MOUSE_FILTER_STOP
+		tag.tooltip_text = "%s: %s" % [tr(m["name"]), tr(m["text"])]
+		var style := StyleBoxFlat.new()
+		style.bg_color = Palette.PANEL
+		style.border_color = Palette.ACCENT
+		style.set_border_width_all(1)
+		style.set_corner_radius_all(4)
+		style.set_content_margin_all(6)
+		tag.add_theme_stylebox_override("panel", style)
+		_label(tag, "", TextSize.SMALL, Palette.ACCENT).text = tr(m["name"])
+		_mods_box.add_child(tag)
 
 
 ## Shows the hint of the first runs in the pilot box, or the line of the pilot (SPEC Section 23.3).

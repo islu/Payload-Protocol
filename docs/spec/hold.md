@@ -78,7 +78,7 @@ A cargo can have more than one trait.
 
 - The dock is an area at the left of the station screen. It has cargo that is not in the hold.
 - The dock has no size limit. The dock shows its cargo in a list.
-- New freight and new kit go to the dock first.
+- New freight and new kit go to the dock first. A scrap that an event gives goes to the dock too (Section 26.3).
 - The **Load all** button puts each cargo on the dock into the hold, in the order of the dock. Each cargo goes to the first place where it fits: the cells are tried row by row from (0, 0), first in its rotation now, then in the next rotations. A cargo that does not fit stays on the dock.
 
 ### 8.2 Move and Rotate

@@ -83,6 +83,10 @@ static func data() -> Dictionary:
 			"bonus": {"type": "not_next_to", "pay": 4, "trait": "fluid"},
 		},
 	}
+	# A contract that only an event gives: no leg (SPEC Section 26.2).
+	contracts["k_event"] = {
+		"id": "k_event", "legs": [], "client_name": "E", "freight": ["box"], "pay": 9
+	}
 	var lines := {}
 	for e in Defs.LINE_EVENTS:
 		lines[e] = {
@@ -128,6 +132,8 @@ static func data() -> Dictionary:
 				"reinforce_first": 12,
 				"reinforce_step": 8,
 			},
+			"events": {"station": 2, "chance_station": 3, "chance_percent": 50},
+			"mod_offers": 3,
 			"mass":
 			{"limit": 40, "over_percent": 25, "fuel_fee": 2, "reinforce": 8, "offer_percent": 130},
 			"legs":
@@ -151,4 +157,46 @@ static func data() -> Dictionary:
 		"cargo": cargo,
 		"contracts": contracts,
 		"lines": lines,
+		"events": events(),
+		"mods": mods(),
 	}
+
+
+## Two events. e_one has each effect but mod in its first choice, and mod in its second.
+static func events() -> Dictionary:
+	var all := [
+		{"type": "credits", "amount": 10},
+		{"type": "kit", "cargo": "foam"},
+		{"type": "clamp"},
+		{"type": "scrap", "cargo": "bar"},
+		{"type": "contract", "contract": "k_event"},
+		{"type": "payment", "amount": 15},
+	]
+	return {
+		"e_one":
+		{
+			"id": "e_one",
+			"name": "One",
+			"text": "Event one",
+			"choices":
+			[
+				{"text": "All", "cost": 5, "effects": all},
+				{"text": "Mod", "effects": [{"type": "mod"}]},
+				{"text": "Ignore", "effects": []},
+			],
+		},
+		"e_two":
+		{
+			"id": "e_two",
+			"name": "Two",
+			"text": "Event two",
+			"choices": [{"text": "Ignore", "effects": []}, {"text": "Ignore too", "effects": []}],
+		},
+	}
+
+
+static func mods() -> Dictionary:
+	var out := {}
+	for id in Defs.MODS:
+		out[id] = {"id": id, "name": id, "text": "rule of " + id}
+	return out

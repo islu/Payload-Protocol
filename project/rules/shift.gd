@@ -108,7 +108,7 @@ static func _hits(run: Run, direction: String, dist: Dictionary, out: Dictionary
 		if d < 1:
 			_jolt(run, c, delta, out, forces)
 			continue
-		var force := run.cat.weight_value(c.weight()) * d
+		var force := force_weight(run, c) * d
 		var wall: Array = []
 		var others := {}
 		for cell in c.cells():
@@ -121,7 +121,7 @@ static func _hits(run: Run, direction: String, dist: Dictionary, out: Dictionary
 				others[occ[n]].append(_cell(cell))
 		# A Thruster that stops by itself has no wall and no cargo in front: no hit.
 		if not wall.is_empty():
-			var f := 0 if c.has(Defs.TRAIT_CUSHION) else force
+			var f := taken(run, c, 0 if c.has(Defs.TRAIT_CUSHION) else force)
 			out["hits"].append(
 				{
 					"cargo": c.id,
@@ -144,12 +144,12 @@ static func _hits(run: Run, direction: String, dist: Dictionary, out: Dictionary
 					"other": id,
 					"wall": false,
 					"jolt": false,
-					"force": f,
+					"force": taken(run, c, f),
 					"contact": others[id]
 				}
 			)
-			_take(forces, c.id, f)
-			_take(forces, id, f)
+			_take(forces, c.id, taken(run, c, f))
+			_take(forces, id, taken(run, run.cargo[id], f))
 	return forces
 
 
@@ -161,13 +161,32 @@ static func _jolt(run: Run, c: Cargo, delta: Vector2i, out: Dictionary, forces: 
 	for cell in c.cells():
 		if not run.inside(cell + delta):
 			contact.append(_cell(cell))
-	if contact.is_empty():
+	# The Padded Walls mod stops each wall jolt (SPEC Section 27.2).
+	if contact.is_empty() or run.has_mod(Defs.MOD_PADDED_WALLS):
 		return
-	var f := 0 if c.has(Defs.TRAIT_CUSHION) else run.cat.weight_value(c.weight())
+	var f := taken(run, c, 0 if c.has(Defs.TRAIT_CUSHION) else force_weight(run, c))
 	out["hits"].append(
 		{"cargo": c.id, "other": 0, "wall": true, "jolt": true, "force": f, "contact": contact}
 	)
 	_take(forces, c.id, f)
+
+
+## Returns the weight value of a cargo for the force of its hits. With the Gravity
+## Damper mod, heavy cargo has the value of standard cargo (SPEC Section 27.2).
+static func force_weight(run: Run, c: Cargo) -> int:
+	if c.weight() == Defs.WEIGHT_HEAVY and run.has_mod(Defs.MOD_GRAVITY_DAMPER):
+		return run.cat.weight_value(Defs.WEIGHT_STANDARD)
+	return run.cat.weight_value(c.weight())
+
+
+## Returns the force that a cargo takes from a hit. With the Shock Floor mod, a cargo
+## with a cell in the bottom row takes 1 less, and 0 at least (SPEC Section 27.2).
+static func taken(run: Run, c: Cargo, force: int) -> int:
+	if run.has_mod(Defs.MOD_SHOCK_FLOOR):
+		for cell in c.cells():
+			if cell.y == run.rows - 1:
+				return maxi(0, force - 1)
+	return force
 
 
 static func _take(forces: Dictionary, id: int, force: int) -> void:
@@ -308,6 +327,10 @@ static func power_check(run: Run) -> Dictionary:
 	var hold := run.hold_cargo()
 	for s in hold:
 		if not s.has(Defs.TRAIT_SHIELD):
+			continue
+		# The Array Power mod gives power to each Shield (SPEC Section 27.2).
+		if run.has_mod(Defs.MOD_ARRAY_POWER):
+			powered[s.id] = true
 			continue
 		for b in hold:
 			if b.has(Defs.TRAIT_BATTERY) and Cargo.next_to(s, b):

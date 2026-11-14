@@ -21,6 +21,12 @@
 		"volatile": 3,
 		"fluid": 2
 	},
+	"events": {
+		"station": 2,
+		"chance_station": 3,
+		"chance_percent": 50
+	},
+	"mod_offers": 3,
 	"offers": {
 		"contracts": 4,
 		"kit": 3

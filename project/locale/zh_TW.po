@@ -97,6 +97,18 @@ msgid "No payment is due now."
 msgstr "現在沒有要還的款。"
 
 #: project/rules/run.gd
+msgid "No event is open."
+msgstr "現在沒有事件。"
+
+#: project/rules/run.gd
+msgid "There is no such choice."
+msgstr "沒有這個選項。"
+
+#: project/rules/run.gd
+msgid "No mod choice is open."
+msgstr "現在沒有要選的改裝模組。"
+
+#: project/rules/run.gd
 msgid "The hold is too heavy to warp. Take cargo out, or reinforce the hull."
 msgstr "貨艙太重，無法跳躍。請卸下貨物，或強化船體。"
 
@@ -112,6 +124,39 @@ msgstr "可幫助你 {count} 件貨物"
 msgid "The next jump has a fork step"
 msgstr "下一次跳躍有二選一位移"
 
+#: project/rules/run_view.gd
+msgid "+{amount} credits"
+msgstr "+{amount} 信用點"
+
+#: project/rules/run_view.gd
+msgid "{amount} credits"
+msgstr "{amount} 信用點"
+
+#: project/rules/run_view.gd
+msgid "Kit on the dock: {name}"
+msgstr "裝備送到碼頭：{name}"
+
+#: project/rules/run_view.gd
+msgid "+1 clamp"
+msgstr "+1 卡榫"
+
+#: project/rules/run_view.gd
+msgid "Scrap on the dock: {name}"
+msgstr "廢鐵送到碼頭：{name}"
+
+#: project/rules/run_view.gd
+msgid "New contract: {name}"
+msgstr "新合約：{name}"
+
+#: project/rules/run_view.gd
+#: project/scenes/main/choice_panel.gd
+msgid "Select a ship mod"
+msgstr "選一個改裝模組"
+
+#: project/rules/run_view.gd
+msgid "Payment of this leg -{amount}"
+msgstr "本期還款 -{amount}"
+
 #: project/scenes/common/game_state.gd
 msgid "The game data did not load."
 msgstr "遊戲資料載入失敗。"
@@ -119,6 +164,10 @@ msgstr "遊戲資料載入失敗。"
 #: project/scenes/common/game_state.gd
 msgid "No run is in progress."
 msgstr "目前沒有進行中的航程。"
+
+#: project/scenes/main/choice_panel.gd
+msgid "Cost {cost}"
+msgstr "花費 {cost}"
 
 #: project/scenes/main/gear_button.gd
 msgid "Menu (Esc)"
@@ -607,12 +656,21 @@ msgid "Bonuses"
 msgstr "獎金"
 
 #: project/scenes/warp/report_panel.gd
+#: project/data/mods/insurance.json
+msgid "Insurance"
+msgstr "保險"
+
+#: project/scenes/warp/report_panel.gd
 msgid "Breach fees"
 msgstr "違約金"
 
 #: project/scenes/warp/report_panel.gd
 msgid "Kit sold from the dock"
 msgstr "碼頭裝備賣出"
+
+#: project/scenes/warp/report_panel.gd
+msgid "Scrap cleared from the dock"
+msgstr "清除碼頭廢鐵"
 
 #: project/scenes/warp/report_panel.gd
 msgid "Fuel fee"
@@ -940,9 +998,117 @@ msgstr "深空監測站"
 msgid "Helix Power"
 msgstr "螺旋能源"
 
+#: project/data/contracts/rescue_supplies.json
+msgid "Stranded Freighter"
+msgstr "拋錨貨船"
+
 #: project/data/contracts/sculpture.json
 msgid "Museum of Nowhere"
 msgstr "無處博物館"
+
+#: project/data/events/company_audit.json
+msgid "Pay early."
+msgstr "提前還款。"
+
+#: project/data/events/company_audit.json
+msgid "Ignore it."
+msgstr "不理它。"
+
+#: project/data/events/company_audit.json
+msgid "Company Audit"
+msgstr "公司稽核"
+
+#: project/data/events/company_audit.json
+msgid "The company checks your books. An early payment makes it happy."
+msgstr "公司來查帳了。提前還一點款，它會很開心。"
+
+#: project/data/events/distress_call.json
+msgid "Give them fuel. They give you a ship part."
+msgstr "分他們燃料，換一個船艇零件。"
+
+#: project/data/events/distress_call.json
+msgid "Carry their supplies to the next station."
+msgstr "幫他們把物資送到下一站。"
+
+#: project/data/events/distress_call.json
+msgid "Fly on."
+msgstr "繼續飛。"
+
+#: project/data/events/distress_call.json
+msgid "Distress Call"
+msgstr "求救訊號"
+
+#: project/data/events/distress_call.json
+msgid "A stranded freighter calls for help. Its crew offers what it can."
+msgstr "一艘拋錨的貨船發出求救。船員願意拿出能給的東西。"
+
+#: project/data/events/drifting_container.json
+msgid "Haul it in."
+msgstr "拖進來。"
+
+#: project/data/events/drifting_container.json
+msgid "Leave it."
+msgstr "不管它。"
+
+#: project/data/events/drifting_container.json
+msgid "Drifting Container"
+msgstr "漂流貨櫃"
+
+#: project/data/events/drifting_container.json
+msgid "A lost container drifts past. Some of it is still good."
+msgstr "一個失落的貨櫃漂了過來，裡面有些東西還能用。"
+
+#: project/data/events/pirate_demand.json
+msgid "Pay them."
+msgstr "付錢。"
+
+#: project/data/events/pirate_demand.json
+msgid "Refuse. They shoot the cargo bay."
+msgstr "拒絕。他們會朝貨艙開火。"
+
+#: project/data/events/pirate_demand.json
+msgid "Pirate Demand"
+msgstr "海盜勒索"
+
+#: project/data/events/pirate_demand.json
+msgid "Pirates block the route. They want credits, or they shoot."
+msgstr "海盜擋住航線。不給信用點，他們就開火。"
+
+#: project/data/events/ship_mechanic.json
+msgid "Fit a clamp."
+msgstr "裝一個卡榫。"
+
+#: project/data/events/ship_mechanic.json
+msgid "Fit a ship part."
+msgstr "裝一個船艇零件。"
+
+#: project/data/events/ship_mechanic.json
+msgid "Leave."
+msgstr "離開。"
+
+#: project/data/events/ship_mechanic.json
+msgid "Ship Mechanic"
+msgstr "船艇技師"
+
+#: project/data/events/ship_mechanic.json
+msgid "A mechanic at the dock offers a quick job."
+msgstr "碼頭的技師說可以幫你快速改裝。"
+
+#: project/data/events/smuggler_offer.json
+msgid "Take the job."
+msgstr "接下這份工作。"
+
+#: project/data/events/smuggler_offer.json
+msgid "Say no."
+msgstr "拒絕。"
+
+#: project/data/events/smuggler_offer.json
+msgid "Smuggler's Offer"
+msgstr "走私邀約"
+
+#: project/data/events/smuggler_offer.json
+msgid "A smuggler needs a quiet ship. The pay is good. The cargo is not."
+msgstr "走私客需要一艘低調的船。報酬很好，貨就不太好了。"
 
 #: project/data/lines/all_intact.json
 msgid "Everything arrived in one piece. I am as surprised as you are."
@@ -1147,6 +1313,50 @@ msgstr "我們贏了。我會告訴其他太空船，它們不會相信的。"
 #: project/data/lines/win.json
 msgid "Full circle, and the captain is alive. That is more than my namesake managed."
 msgstr "繞了一整圈，船長還活著。這點我的同名前輩可沒做到。"
+
+#: project/data/mods/array_power.json
+msgid "Array Power"
+msgstr "陣列供電"
+
+#: project/data/mods/array_power.json
+msgid "Each Shield has power with no Battery."
+msgstr "每個護盾不用電池也有電。"
+
+#: project/data/mods/cryo_line.json
+msgid "Cryo Line"
+msgstr "冷凍管線"
+
+#: project/data/mods/cryo_line.json
+msgid "Perishable cargo with a cell in the left column stays fresh with no Cooler."
+msgstr "有格子在最左欄的生鮮貨物，沒有冷藏也能保鮮。"
+
+#: project/data/mods/gravity_damper.json
+msgid "Gravity Damper"
+msgstr "重力阻尼器"
+
+#: project/data/mods/gravity_damper.json
+msgid "Heavy cargo hits with the force of standard cargo. Its mass does not change."
+msgstr "重貨的撞擊力和中貨一樣。載重不變。"
+
+#: project/data/mods/insurance.json
+msgid "Each scrap, spoiled, or lost piece of a contract pays half of its pay."
+msgstr "合約貨物變成廢鐵、腐壞或炸毀時，每件賠一半報酬。"
+
+#: project/data/mods/padded_walls.json
+msgid "Padded Walls"
+msgstr "軟墊牆"
+
+#: project/data/mods/padded_walls.json
+msgid "No cargo takes a wall jolt."
+msgstr "貨物不會受到前牆震動。"
+
+#: project/data/mods/shock_floor.json
+msgid "Shock Floor"
+msgstr "減震底板"
+
+#: project/data/mods/shock_floor.json
+msgid "Cargo with a cell in the bottom row takes each hit with a force 1 less."
+msgstr "有格子在最底列的貨物，每次承受的撞擊力 -1。"
 
 #: project/data/terms.json
 msgid "All Intact"

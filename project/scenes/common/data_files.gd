@@ -3,7 +3,7 @@ class_name DataFiles
 ## the game state and the tools read them here.
 
 const DATA_DIR := "res://data"
-const DIRS: PackedStringArray = ["cargo", "contracts", "lines"]
+const DIRS: PackedStringArray = ["cargo", "contracts", "lines", "events", "mods"]
 
 
 ## Returns the parsed data for Catalog.from_data(), from a data folder.
