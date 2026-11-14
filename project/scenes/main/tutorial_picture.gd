@@ -113,7 +113,7 @@ func _draw_reactions() -> void:
 	var broken := _cargo("energy_crystal", [], Defs.WEIGHT_LIGHT, Defs.KIND_SCRAP)
 	CargoDraw.draw(self, broken, _one(), _at(2, 0), CELL)
 	var soda := _cargo("antique_soda", [Defs.TRAIT_FLUID], Defs.WEIGHT_LIGHT)
-	CargoDraw.draw(self, soda, _line(2, false), _at(4, 0), CELL)
+	CargoDraw.draw(self, soda, _one(), _at(4, 1), CELL)
 	var bot := _cargo("helper_bot", [], Defs.WEIGHT_STANDARD, Defs.KIND_SCRAP)
 	CargoDraw.draw(self, bot, _one(), _at(5, 1), CELL)
 	CargoDraw.draw_icon(
@@ -123,7 +123,9 @@ func _draw_reactions() -> void:
 
 ## Page 4: a Cooler and Perishable cargo, a Battery and a Shield, and a clamp.
 func _draw_links() -> void:
-	CargoDraw.draw(self, _cargo("cooler_unit", [Defs.TRAIT_COOLER]), _one(), _at(0, 0), CELL)
+	CargoDraw.draw(
+		self, _cargo("cooler_unit", [Defs.TRAIT_COOLER]), _line(2, false), _at(0, 0), CELL
+	)
 	CargoDraw.draw(self, _cargo("space_cheese", [Defs.TRAIT_PERISHABLE]), _one(), _at(1, 0), CELL)
 	draw_line(_at(0.5, 0.5), _at(1.5, 0.5), Palette.TRAIT_COLORS["cooler"], 3.0)
 	CargoDraw.draw(self, _cargo("battery_pack", [Defs.TRAIT_BATTERY]), _one(), _at(3, 0), CELL)

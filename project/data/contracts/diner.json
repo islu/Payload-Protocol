@@ -3,7 +3,7 @@
 	"sectors": [2, 3],
 	"client_name": "Neon Diner",
 	"freight": ["burger", "burger", "burger", "antique_soda", "antique_soda"],
-	"pay": 7,
+	"pay": 6,
 	"bonus": {
 		"type": "all_intact",
 		"pay": 8

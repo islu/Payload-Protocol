@@ -9,7 +9,7 @@
 		"circuit_boards",
 		"energy_crystal"
 	],
-	"pay": 11,
+	"pay": 10,
 	"bonus": {
 		"type": "all_intact",
 		"pay": 20

@@ -4,5 +4,5 @@
 	"kind": "freight",
 	"weight": "light",
 	"traits": ["fragile"],
-	"shape": [[0, 0], [0, 1]]
+	"shape": [[0, 0]]
 }

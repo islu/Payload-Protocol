@@ -9,7 +9,7 @@
 		"antique_soda",
 		"antique_soda"
 	],
-	"pay": 10,
+	"pay": 7,
 	"bonus": {
 		"type": "not_next_to",
 		"pay": 10,

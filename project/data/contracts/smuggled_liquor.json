@@ -3,7 +3,7 @@
 	"sectors": [2, 3],
 	"client_name": "Black Market",
 	"freight": ["liquor_bottle", "liquor_bottle", "liquor_bottle", "liquor_bottle"],
-	"pay": 14,
+	"pay": 10,
 	"bonus": {
 		"type": "all_intact",
 		"pay": 10

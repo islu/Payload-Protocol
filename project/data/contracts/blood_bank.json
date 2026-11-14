@@ -3,5 +3,5 @@
 	"sectors": [2],
 	"client_name": "Red Ring Relief",
 	"freight": ["blood_sample", "blood_sample", "blood_sample"],
-	"pay": 12
+	"pay": 8
 }

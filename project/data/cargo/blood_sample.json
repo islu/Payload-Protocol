@@ -4,5 +4,5 @@
 	"kind": "freight",
 	"weight": "standard",
 	"traits": ["perishable", "fragile"],
-	"shape": [[0, 0], [0, 1]]
+	"shape": [[0, 0]]
 }

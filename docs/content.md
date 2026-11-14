@@ -22,7 +22,9 @@ This file has the design rules of the game content. The data files in `project/d
 - A large shape (4 or 5 cells) is hard to pack. Give it more pay, or make it a good wall.
 - Heavy cargo makes strong hits. It is a danger for its neighbors and a safe wall when it is clamped.
 - Kit helps freight. A kit is never a target of a contract.
-- Each cargo has an image (SPEC Section 4.2). Select the image first, then give the cargo the shape of the image. Add the image to `tools/art/cargo_art.json` and run `task art`.
+- One cell is one standard cargo crate, about 1 m. Give each cargo the size of the real object, relative to the crate and to the other cargo.
+- Small goods travel in one crate: 1 cell. Examples are a phone, a can of soda, a bottle, and a sample.
+- Each cargo has an image (SPEC Section 4.2). Select an image that fits the shape. Add the image to `tools/art/cargo_art.json` and run `task art`.
 
 ## First Content (Version 1)
 
@@ -38,7 +40,7 @@ The first content has 38 freight and 6 kit. The freight has themes: supplies, te
 | `energy_crystal` | Energy Crystal | light | Fragile | 1 cell |
 | `specimen_tube` | Specimen Tube | standard | Fragile | 2 cells, a line |
 | `radar_dish` | Radar Dish | standard | Fragile, Electronic | 4 cells, a square |
-| `circuit_boards` | Circuit Boards | light | Electronic | 2 cells, a line |
+| `circuit_boards` | Circuit Boards | light | Electronic | 1 cell |
 | `coolant_pipe` | Coolant Pipe | standard | Fluid | 3 cells, an L |
 | `plasma_cell` | Plasma Cell | light | Volatile | 1 cell |
 | `fuel_drum` | Fuel Drum | standard | Fluid, Volatile | 1 cell |
@@ -48,10 +50,10 @@ The first content has 38 freight and 6 kit. The freight has themes: supplies, te
 | `courier_drone` | Courier Drone | light | Thruster, Electronic | 1 cell |
 | `pill_bottle` | Pill Bottle | light | — | 1 cell |
 | `vaccine_vial` | Vaccine Vial | light | Perishable | 1 cell |
-| `blood_sample` | Blood Sample | standard | Perishable, Fragile | 2 cells, a line |
-| `artificial_heart` | Artificial Heart | standard | Perishable, Electronic | 2 cells, a line |
+| `blood_sample` | Blood Sample | standard | Perishable, Fragile | 1 cell |
+| `artificial_heart` | Artificial Heart | standard | Perishable, Electronic | 1 cell |
 | `medkit` | Medkit | standard | — | 1 cell |
-| `liquor_bottle` | Liquor Bottle | light | Fragile | 2 cells, a line |
+| `liquor_bottle` | Liquor Bottle | light | Fragile | 1 cell |
 | `cigarette_pack` | Cigarette Pack | light | — | 1 cell |
 | `stim_pack` | Stim Pack | light | Fragile | 1 cell |
 | `laser_rifle` | Laser Rifle | standard | Electronic | 2 cells, a line |
@@ -62,8 +64,8 @@ The first content has 38 freight and 6 kit. The freight has themes: supplies, te
 | `service_android` | Service Android | heavy | Electronic | 2 cells, a line |
 | `mining_bot` | Mining Bot | heavy | Electronic | 4 cells, a square |
 | `mech_suit` | Mech Suit | heavy | Thruster | 4 cells, a square |
-| `antique_phone` | Antique Phone | light | Fragile, Electronic | 2 cells, a line |
-| `antique_soda` | Antique Soda | light | Fluid | 2 cells, a line |
+| `antique_phone` | Antique Phone | light | Fragile, Electronic | 1 cell |
+| `antique_soda` | Antique Soda | light | Fluid | 1 cell |
 | `fire_hydrant` | Fire Hydrant | heavy | — | 2 cells, a line |
 | `parking_meter` | Parking Meter | standard | Electronic | 2 cells, a line |
 | `mailbox` | Mailbox | standard | — | 2 cells, a line |
@@ -76,7 +78,7 @@ The first content has 38 freight and 6 kit. The freight has themes: supplies, te
 | ID | Name | Weight | Traits | Shape idea |
 | --- | --- | --- | --- | --- |
 | `foam_pad` | Foam Pad | light | Cushion | 2 cells, a line |
-| `cooler_unit` | Cooler Unit | standard | Cooler | 1 cell |
+| `cooler_unit` | Cooler Unit | standard | Cooler | 2 cells, a line |
 | `battery_pack` | Battery Pack | standard | Battery, Electronic | 1 cell |
 | `shield_generator` | Shield Generator | standard | Shield | 1 cell |
 | `inertia_anchor` | Inertia Anchor | heavy | Thruster | 1 cell |

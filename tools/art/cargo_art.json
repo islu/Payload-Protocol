@@ -43,7 +43,8 @@
   "source": "sorted/scifi-items/coolant-pipe-curved-metal-tube-joint_20260225_124150.png"
  },
  "cooler_unit": {
-  "source": "sorted/cyberpunk-assets/interior_items/cyber-fridge-food-storage-kitchen-008-2026-03-07T18-21-35.png"
+  "source": "sorted/cyberpunk-assets/interior_items/cyber-fridge-food-storage-kitchen-008-2026-03-07T18-21-35.png",
+  "scale": "fit"
  },
  "courier_drone": {
   "source": "sorted/scifi-objects/drone-delivery-box-carrying-flying_20260225_032705.png"
