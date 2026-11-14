@@ -18,20 +18,20 @@ func test_contract_rules() -> void:
 			in_contract[id] = true
 			for tr in cat.cargo[id].traits:
 				traits[tr] = true
-		for s in t.sectors:
+		for s in t.legs:
 			var n := t.freight.size()
 			var hi := 6 if s == 1 else 5
 			check(
 				n >= 1 and n <= hi,
-				"contract %s: sector %d has 1 to %d pieces (content.md)" % [t.id, s, hi]
+				"contract %s: leg %d has 1 to %d pieces (content.md)" % [t.id, s, hi]
 			)
 			check(
 				s != 1 or traits.size() <= 1,
-				"contract %s: a sector 1 contract has one trait at most (content.md)" % t.id
+				"contract %s: a leg 1 contract has one trait at most (content.md)" % t.id
 			)
 			check(
 				s != 1 or not traits.has(Defs.TRAIT_PERISHABLE),
-				"contract %s: Perishable freight is only in sectors 2 and 3 (content.md)" % t.id
+				"contract %s: Perishable freight is only in legs 2 and 3 (content.md)" % t.id
 			)
 	for id: String in cat.cargo:
 		if cat.cargo[id].kind == Defs.KIND_FREIGHT:
@@ -53,8 +53,8 @@ func test_bot_runs_end() -> void:
 					eq(r.warp(), "", "the bot warps")
 				Defs.PHASE_ARRIVAL:
 					eq(r.continue_run(), "", "the bot continues")
-				Defs.PHASE_TOLL:
-					eq(r.pay_toll(), "", "the bot pays")
+				Defs.PHASE_PAYMENT:
+					eq(r.make_payment(), "", "the bot pays")
 		eq(r.phase, Defs.PHASE_END, "a run ends, seed %d (SPEC Section 19)" % run_seed)
 
 

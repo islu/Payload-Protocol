@@ -1,6 +1,6 @@
 {
 	"id": "night_market",
-	"sectors": [1],
+	"legs": [1],
 	"client_name": "Night Market",
 	"freight": [
 		"flashlight",

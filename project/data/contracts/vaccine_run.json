@@ -1,6 +1,6 @@
 {
 	"id": "vaccine_run",
-	"sectors": [2, 3],
+	"legs": [2, 3],
 	"client_name": "Red Ring Relief",
 	"freight": [
 		"vaccine_vial",

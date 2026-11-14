@@ -1,6 +1,6 @@
 {
 	"id": "heavy_glass",
-	"sectors": [2, 3],
+	"legs": [2, 3],
 	"client_name": "Ironworks Guild",
 	"freight": ["steel_ingot", "steel_ingot", "energy_crystal", "energy_crystal"],
 	"pay": 9,

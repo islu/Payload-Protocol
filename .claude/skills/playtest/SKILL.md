@@ -15,7 +15,7 @@ Tell the user these limits in the report.
 
 | Lens | Covered | Why |
 | --- | --- | --- |
-| Balance, economy | Yes | The agents play to the end and see the credits, the tolls, and the scrap. |
+| Balance, economy | Yes | The agents play to the end and see the credits, the payments, and the scrap. |
 | Decisions, dominant plays | Yes | The agents find the safe placement, for example a tight corner. |
 | Clarity of the rules | Partly | The agents read the text view, not the screen. |
 | UI, feel, timing | No | The agents do not see the screen. |

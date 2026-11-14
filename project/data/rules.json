@@ -38,9 +38,9 @@
 		"reinforce_first": 12,
 		"reinforce_step": 8
 	},
-	"sectors": [
+	"legs": [
 		{
-			"toll": 70,
+			"payment": 70,
 			"hazard_steps": [[1, 1], [2, 2], [2, 2]],
 			"kit_pool": [
 				"foam_pad",
@@ -52,7 +52,7 @@
 			]
 		},
 		{
-			"toll": 180,
+			"payment": 180,
 			"hazard_steps": [[2, 2], [2, 2], [2, 2]],
 			"kit_pool": [
 				"foam_pad",
@@ -65,7 +65,7 @@
 			"fork": true
 		},
 		{
-			"toll": 350,
+			"payment": 350,
 			"hazard_steps": [[2, 3], [2, 3], [2, 3]],
 			"kit_pool": [
 				"foam_pad",

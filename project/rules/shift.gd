@@ -204,22 +204,34 @@ static func _apply(
 		return []
 	if c.kind == Defs.KIND_SCRAP and kind != Defs.REACT_CLEAR:
 		return []
+	var index: int = out["reactions"].size()
+	# The number of the reaction in its chain (SPEC Section 21.5).
+	var chain := (
+		1 if cause < 0 else _chain_size(out["reactions"], _root(out["reactions"], cause)) + 1
+	)
 	if kind != Defs.REACT_CLEAR:
 		var s := protector(run, c, powered)
 		if s != null:
 			run.charges[s.id] -= 1
-			out["reactions"].append(
-				{
-					"kind": Defs.REACT_SHIELD,
-					"cargo": id,
-					"cause": cause,
-					"shield": s.id,
-					"canceled": kind
-				}
+			(
+				out["reactions"]
+				. append(
+					{
+						"kind": Defs.REACT_SHIELD,
+						"cargo": id,
+						"cause": cause,
+						"shield": s.id,
+						"canceled": kind,
+						"loss": 0,
+						"chain": chain,
+					}
+				)
 			)
 			return []
-	var index: int = out["reactions"].size()
-	var rec := {"kind": kind, "cargo": id, "cause": cause}
+	var loss := 0
+	if kind != Defs.REACT_CLEAR and c.kind == Defs.KIND_FREIGHT:
+		loss = run.pay_of(c)
+	var rec := {"kind": kind, "cargo": id, "cause": cause, "loss": loss, "chain": chain}
 	var next: Array = []
 	match kind:
 		Defs.REACT_BREAK, Defs.REACT_SHORT, Defs.REACT_BLAST:
@@ -250,6 +262,22 @@ static func _apply(
 					next.append([Defs.REACT_BLAST, o.id, index])
 	out["reactions"].append(rec)
 	return next
+
+
+## Returns the number of reactions in the log of the chain that starts at "root".
+static func _chain_size(reactions: Array, root: int) -> int:
+	var n := 0
+	for i in reactions.size():
+		if _root(reactions, i) == root:
+			n += 1
+	return n
+
+
+## Returns the index of the first reaction of the chain of a reaction.
+static func _root(reactions: Array, i: int) -> int:
+	while reactions[i]["cause"] >= 0:
+		i = reactions[i]["cause"]
+	return i
 
 
 ## Turns a cargo into scrap (SPEC Section 6.4).

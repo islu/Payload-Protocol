@@ -1,6 +1,6 @@
 {
 	"id": "blood_bank",
-	"sectors": [2],
+	"legs": [2],
 	"client_name": "Red Ring Relief",
 	"freight": ["blood_sample", "blood_sample", "blood_sample"],
 	"pay": 8

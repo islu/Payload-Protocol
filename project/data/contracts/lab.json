@@ -1,6 +1,6 @@
 {
 	"id": "lab",
-	"sectors": [3],
+	"legs": [3],
 	"client_name": "Frostline Labs",
 	"freight": [
 		"coolant_pipe",

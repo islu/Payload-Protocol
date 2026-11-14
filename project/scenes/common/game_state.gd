@@ -136,8 +136,8 @@ func continue_run() -> String:
 	return _act(func(r: Run) -> String: return r.continue_run())
 
 
-func pay_toll() -> String:
-	return _act(func(r: Run) -> String: return r.pay_toll())
+func make_payment() -> String:
+	return _act(func(r: Run) -> String: return r.make_payment())
 
 
 ## Reports whether the player can take back an action at this station (SPEC Section 20.2).

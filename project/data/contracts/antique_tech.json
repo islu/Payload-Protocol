@@ -1,6 +1,6 @@
 {
 	"id": "antique_tech",
-	"sectors": [2, 3],
+	"legs": [2, 3],
 	"client_name": "Earth Heritage Museum",
 	"freight": [
 		"antique_phone",

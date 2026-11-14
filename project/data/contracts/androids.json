@@ -1,6 +1,6 @@
 {
 	"id": "androids",
-	"sectors": [2, 3],
+	"legs": [2, 3],
 	"client_name": "Cogwork Robotics",
 	"freight": ["service_android", "service_android"],
 	"pay": 10,

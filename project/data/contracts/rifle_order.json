@@ -1,6 +1,6 @@
 {
 	"id": "rifle_order",
-	"sectors": [1],
+	"legs": [1],
 	"client_name": "Militia Supply",
 	"freight": ["laser_rifle", "laser_rifle"],
 	"pay": 7

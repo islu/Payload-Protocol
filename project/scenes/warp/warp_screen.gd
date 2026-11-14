@@ -11,6 +11,8 @@ const STEP_TEXT := "Shift {n}: {arrow} {direction}"
 const FORK_TEXT := "Shift {n}: {options} ...?"
 const OR_TEXT := "or"
 const SKIP_TEXT := "Click or press Space to speed up."
+const CHAIN_TEXT := "Chain ×{count}"
+const LOST_TEXT := "Lost -{loss}"
 const ARROWS := {Defs.DIR_LEFT: "←", Defs.DIR_RIGHT: "→", Defs.DIR_UP: "↑", Defs.DIR_DOWN: "↓"}
 ## The space between the hold and the report, in pixels.
 const REPORT_GAP := 40.0
@@ -26,6 +28,10 @@ const DELIVERED_ALPHA := 0.35
 ## The play speed: the warp speed setting, and 4 times faster after a click (SPEC Section 20.3).
 var speed := 1.0
 var finished := false
+## The largest chain count that the warp showed, and the text of the total loss
+## (SPEC Section 21.5). The UI check reads them.
+var chain_shown := 0
+var loss_text := ""
 
 var _view: Dictionary = {}
 var _cargo: Dictionary = {}
@@ -37,6 +43,8 @@ var _fx: FxLayer
 var _top_fx: FxLayer
 var _banner: Label
 var _skip_label: Label
+## The chain count and the total loss, below the banner (SPEC Section 21.5).
+var _loss_label: Label
 var _report: ReportPanel
 ## True while the warp plays again: no coin sound (SPEC Section 20.4).
 var _replaying := false
@@ -67,6 +75,15 @@ func _ready() -> void:
 	_banner.grow_horizontal = Control.GROW_DIRECTION_BOTH
 	_banner.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	add_child(_banner)
+	_loss_label = Label.new()
+	_loss_label.add_theme_font_size_override("font_size", 48)
+	_loss_label.add_theme_color_override("font_color", Palette.BAD)
+	_loss_label.set_anchors_and_offsets_preset(Control.PRESET_CENTER_TOP)
+	_loss_label.offset_top = 130
+	_loss_label.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	_loss_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_loss_label.modulate.a = 0.0
+	add_child(_loss_label)
 	_skip_label = Label.new()
 	_skip_label.text = tr(SKIP_TEXT)
 	_skip_label.add_theme_color_override("font_color", Palette.TEXT_DIM)
@@ -86,7 +103,8 @@ func _build_report() -> void:
 	_report.set_anchors_and_offsets_preset(Control.PRESET_RIGHT_WIDE)
 	_report.offset_left = -640
 	_report.offset_right = -30
-	_report.offset_top = 40
+	# Below the gear button of the main scene (SPEC Section 20.7).
+	_report.offset_top = GearButton.SIZE + 40
 	_report.offset_bottom = -40
 	_report.visible = false
 	# The mouse on a group of pieces marks them in the hold (SPEC Section 20.4).
@@ -141,6 +159,12 @@ func _play() -> void:
 		await _play_step(n, step, run)
 	_stars.speed = 1.0
 	_stage.rotation = 0.0
+	var loss: int = warp_log.get("loss", 0)
+	if loss > 0:
+		# The total lost pay, before the report (SPEC Section 21.5).
+		loss_text = tr(LOST_TEXT).format({"loss": loss})
+		_pop(loss_text)
+		await _wait(0.9)
 	await _play_spoils(run)
 	_finish(run)
 
@@ -198,6 +222,7 @@ func _play_step(n: int, step: Dictionary, run: Dictionary) -> void:
 	await _wait(0.3)
 	for r: Dictionary in step["reactions"]:
 		_play_reaction(r)
+		_play_loss(r)
 		_show_hold(run)
 		await _wait(REACTION_GAP)
 		if r["kind"] == Defs.REACT_EXPLOSION:
@@ -290,6 +315,30 @@ func _play_reaction(r: Dictionary) -> void:
 		Defs.REACT_SHIELD:
 			_fx.bubble(at)
 			Sound.play(self, "shield")
+
+
+## Shows the lost pay of a reaction, and the chain count from the second
+## reaction of a chain (SPEC Section 21.5).
+func _play_loss(r: Dictionary) -> void:
+	var c: Dictionary = _cargo.get(r["cargo"], {})
+	if r.get("loss", 0) > 0 and not c.is_empty():
+		_fx.loss(_hold.cargo_center(c), r["loss"])
+	var chain: int = r.get("chain", 1)
+	if chain >= 2:
+		chain_shown = maxi(chain_shown, chain)
+		_pop(tr(CHAIN_TEXT).format({"count": chain}))
+
+
+## Shows a text below the banner with a small pop, then fades it.
+func _pop(text: String) -> void:
+	_loss_label.text = text
+	_loss_label.modulate.a = 1.0
+	_loss_label.pivot_offset = _loss_label.size / 2.0
+	_loss_label.scale = Vector2.ONE * 1.3
+	var t := create_tween()
+	t.tween_property(_loss_label, "scale", Vector2.ONE, 0.15 / speed)
+	t.tween_interval(0.6 / speed)
+	t.tween_property(_loss_label, "modulate:a", 0.0, 0.3 / speed)
 
 
 ## Hides a cargo that a reaction removed. It stays in the view, so that the report

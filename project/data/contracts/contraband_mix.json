@@ -1,6 +1,6 @@
 {
 	"id": "contraband_mix",
-	"sectors": [3],
+	"legs": [3],
 	"client_name": "Black Market",
 	"freight": ["liquor_bottle", "liquor_bottle", "stim_pack", "stim_pack", "ammo_crate"],
 	"pay": 14,

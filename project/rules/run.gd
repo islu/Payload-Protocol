@@ -28,7 +28,7 @@ const BAD_AXIS_TEXT := "Select a column or a row."
 const CANNOT_SELL_TEXT := "You can sell only kit."
 const NOT_SCRAP_TEXT := "That cargo is not scrap."
 const NOT_ARRIVED_TEXT := "The ship has not arrived yet."
-const NOT_AT_TOLL_TEXT := "You are not at a toll gate."
+const NOT_AT_PAYMENT_TEXT := "No payment is due now."
 const OVERWEIGHT_TEXT := "The hold is too heavy to warp. Take cargo out, or reinforce the hull."
 
 ## The places that a rotation in place tries, in order, when the new shape does not
@@ -51,7 +51,7 @@ var line_rng := RandomNumberGenerator.new()
 
 var seed_value: int
 var phase: String
-var sector: int = 1
+var leg: int = 1
 var jump: int = 1
 var credits: int
 var clamps: int
@@ -145,46 +145,59 @@ func warp() -> String:
 		if i == hazard.size() - 1 and not fork_options.is_empty():
 			step["options"] = Array(fork_options)
 		warp_log["steps"].append(step)
+	# The total lost pay of the warp (SPEC Section 21.5).
+	warp_log["loss"] = 0
+	for step: Dictionary in warp_log["steps"]:
+		for r: Dictionary in step["reactions"]:
+			warp_log["loss"] += r["loss"]
 	last_warp = warp_log
 	Arrival.arrive(self)
 	return ""
 
 
-## Leaves the arrival report: to the next station, or to the toll gate after
-## the last jump of a sector (SPEC Sections 19.1 and 20.4).
+## Leaves the arrival report: to the next station, or to the payment screen after
+## the last jump of a leg (SPEC Sections 19.1 and 20.4).
 func continue_run() -> String:
 	if phase != Defs.PHASE_ARRIVAL:
 		return NOT_ARRIVED_TEXT
-	if jump >= cat.jumps(sector):
-		phase = Defs.PHASE_TOLL
-		say(Defs.LINE_TOLL)
+	if jump >= cat.jumps(leg):
+		phase = Defs.PHASE_PAYMENT
+		say(Defs.LINE_PAYMENT)
 		return ""
 	jump += 1
 	_open_station()
 	return ""
 
 
-## Returns the toll of the sector now (SPEC Section 19.1).
-func toll() -> int:
-	return cat.sectors[sector - 1]["toll"]
+## Returns the payment of the leg now (SPEC Section 19.1).
+func payment() -> int:
+	return cat.legs[leg - 1]["payment"]
 
 
-## Pays the toll. If the credits are less than the toll, the run ends in a loss
+## Pays the payment. If the credits are less than the payment, the run ends in a loss
 ## (SPEC Section 19).
-func pay_toll() -> String:
-	if phase != Defs.PHASE_TOLL:
-		return NOT_AT_TOLL_TEXT
-	if credits < toll():
+func make_payment() -> String:
+	if phase != Defs.PHASE_PAYMENT:
+		return NOT_AT_PAYMENT_TEXT
+	if credits < payment():
 		_end(false)
 		return ""
-	credits -= toll()
-	if sector >= cat.sectors.size():
+	credits -= payment()
+	if leg >= cat.legs.size():
 		_end(true)
 		return ""
-	sector += 1
+	leg += 1
 	jump = 1
 	_open_station()
 	return ""
+
+
+## Returns the pay of a freight: the pay of its contract, or 0 (SPEC Section 21.5).
+func pay_of(c: Cargo) -> int:
+	for k in contracts:
+		if k.id == c.contract:
+			return k.template.pay
+	return 0
 
 
 func _end(win: bool) -> void:
@@ -193,7 +206,7 @@ func _end(win: bool) -> void:
 	say(Defs.LINE_WIN if win else Defs.LINE_LOSE)
 
 
-## The score is the credits after the last toll (SPEC Section 19.2).
+## The score is the credits after the last payment (SPEC Section 19.2).
 func score() -> int:
 	return credits if won else 0
 
@@ -427,12 +440,12 @@ func contract_by_id(id: int) -> Contract:
 	return null
 
 
-## Selects the contracts of a new station from the templates of the sector. The
+## Selects the contracts of a new station from the templates of the leg. The
 ## offers must fit together in an empty hold (content.md).
 func _offer_contracts() -> void:
 	var pool: Array = []
 	for t in cat.contracts:
-		if sector in t.sectors:
+		if leg in t.legs:
 			pool.append(t)
 	var n := mini(cat.offer_contracts, pool.size())
 	var picked: Array = []
@@ -508,7 +521,7 @@ func reinforce_hull() -> String:
 
 func _offer_kit() -> void:
 	shop.clear()
-	for id: String in pick_n(rng, Array(cat.sectors[sector - 1]["kit_pool"]), cat.offer_kit):
+	for id: String in pick_n(rng, Array(cat.legs[leg - 1]["kit_pool"]), cat.offer_kit):
 		shop.append({"def": cat.cargo[id], "bought": false})
 
 
@@ -646,11 +659,11 @@ func clear_scrap(id: int) -> String:
 
 ## Selects the shift steps of the next jump (SPEC Section 18). Two steps next
 ## to each other have different directions.
-## In a sector with fork steps, the last step is a fork step (SPEC Section 18): two
+## In a leg with fork steps, the last step is a fork step (SPEC Section 18): two
 ## directions that are not the step before it and not opposite to each other. The
 ## seed selects the direction that happens now.
 func _make_hazard() -> PackedStringArray:
-	var s: Dictionary = cat.sectors[sector - 1]
+	var s: Dictionary = cat.legs[leg - 1]
 	var span: Vector2i = s["hazard_steps"][jump - 1]
 	var n := rng.randi_range(span.x, span.y)
 	var steps: PackedStringArray = []

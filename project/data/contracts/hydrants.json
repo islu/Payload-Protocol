@@ -1,6 +1,6 @@
 {
 	"id": "hydrants",
-	"sectors": [1, 2],
+	"legs": [1, 2],
 	"client_name": "Old Town Collectors",
 	"freight": ["fire_hydrant", "fire_hydrant"],
 	"pay": 7,

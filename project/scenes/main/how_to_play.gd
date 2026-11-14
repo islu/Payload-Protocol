@@ -18,17 +18,17 @@ const PAGE_2_TEXT := """[b]The warp[/b]
 
 • Each shift step slides all cargo to a wall or a stopped cargo.
 • Force = weight × cells slid. Light {light}, standard {standard}, heavy {heavy}.
-• Cargo at the front wall takes a jolt. From sector 2, the last step is a fork."""
+• Cargo at the front wall takes a jolt. From leg 2, the last step is a fork."""
 const PAGE_3_TEXT := """[b]Traits and reactions[/b]
 
 • Fragile breaks at force {fragile}. Broken cargo becomes scrap and stays.
 • Volatile explodes at force {volatile} and breaks the cargo around it.
 • Fluid leaks at force {fluid} and shorts the Electronic cargo next to it."""
-const PAGE_4_TEXT := """[b]Links, the shop, and tolls[/b]
+const PAGE_4_TEXT := """[b]Links, the shop, and payments[/b]
 
 • Perishable needs a Cooler next to it. A Shield next to a Battery stops one reaction.
 • Clamps stop a slide. Over the mass limit, the warp costs a fuel fee.
-• Pay the toll at the end of each sector, or the run ends."""
+• Make the payment at the end of each leg, or the run ends."""
 const PAGES: Array[String] = [PAGE_1_TEXT, PAGE_2_TEXT, PAGE_3_TEXT, PAGE_4_TEXT]
 
 var _page := 0

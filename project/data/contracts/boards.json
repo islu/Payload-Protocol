@@ -1,6 +1,6 @@
 {
 	"id": "boards",
-	"sectors": [1, 2],
+	"legs": [1, 2],
 	"client_name": "Kessler Electronics",
 	"freight": ["circuit_boards", "circuit_boards", "circuit_boards", "circuit_boards"],
 	"pay": 4,

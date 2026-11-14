@@ -159,7 +159,7 @@ func _act(run: Run, parts: Array) -> String:
 		"continue":
 			return run.continue_run()
 		"pay":
-			return run.pay_toll()
+			return run.make_payment()
 	return "unknown command %s" % parts[0]
 
 
@@ -183,16 +183,16 @@ func _render(run: Run) -> void:
 	_say("")
 	_say(
 		(
-			"== Sector %d/%d · Jump %d/%d · %s · credits %d · toll %d after %d jump(s) · clamps %d/%d free"
+			"== Leg %d/%d · Jump %d/%d · %s · credits %d · payment %d after %d jump(s) · clamps %d/%d free"
 			% [
-				v["sector"],
-				v["sectors"],
+				v["leg"],
+				v["legs"],
 				v["jump"],
 				v["jumps"],
 				v["phase"],
 				v["credits"],
-				v["toll"],
-				v["jumps_to_toll"],
+				v["payment"],
+				v["jumps_to_payment"],
 				v["free_clamps"],
 				v["clamps"]
 			]
@@ -213,13 +213,13 @@ func _render(run: Run) -> void:
 		Defs.PHASE_ARRIVAL:
 			_render_arrival(v)
 			_render_hold(run, v)
-		Defs.PHASE_TOLL:
-			var t: Dictionary = v["toll_gate"]
+		Defs.PHASE_PAYMENT:
+			var t: Dictionary = v["payment_screen"]
 			_say(
 				(
-					"Toll gate: toll %d, credits %d, after %d. %s"
+					"Payment: payment %d, credits %d, after %d. %s"
 					% [
-						t["toll"],
+						t["payment"],
 						t["credits"],
 						t["after"],
 						"Command: pay" if t["can_pay"] else "You cannot pay: pay ends the run."

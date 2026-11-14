@@ -1,6 +1,6 @@
 {
 	"id": "heavy_metal",
-	"sectors": [1, 2],
+	"legs": [1, 2],
 	"client_name": "Ironworks Guild",
 	"freight": ["steel_ingot", "steel_ingot"],
 	"pay": 6,

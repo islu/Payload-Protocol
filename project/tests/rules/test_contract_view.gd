@@ -6,7 +6,7 @@ extends RuleTest
 ## Puts one contract with this freight on the board, not accepted, and returns its view.
 func _board(freight: Array, pay := 4) -> Dictionary:
 	var t := ContractTemplate.from_dict(
-		{"id": "k_test", "sectors": [1], "client_name": "T", "freight": freight, "pay": pay}
+		{"id": "k_test", "legs": [1], "client_name": "T", "freight": freight, "pay": pay}
 	)
 	run.contracts.clear()
 	run.contracts.append(Contract.new(200, t))

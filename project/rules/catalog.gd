@@ -27,9 +27,9 @@ var fuel_fee: int
 var reinforce_amount: int
 ## The offers of a station have this percent of the mass limit or more (content.md).
 var offer_mass_percent: int
-## Each sector: {toll: int, hazard_steps: Array of Vector2i(min, max), kit_pool: PackedStringArray,
+## Each leg: {payment: int, hazard_steps: Array of Vector2i(min, max), kit_pool: PackedStringArray,
 ## fork: bool}. fork is true when the last step of each jump is a fork step (SPEC Section 18).
-var sectors: Array[Dictionary] = []
+var legs: Array[Dictionary] = []
 
 ## terms.json: the words of the rules.
 var terms: Dictionary = {}
@@ -97,7 +97,7 @@ func _read_rules(r: Dictionary) -> void:
 	fuel_fee = int(mass.get("fuel_fee", 0))
 	reinforce_amount = int(mass.get("reinforce", 0))
 	offer_mass_percent = int(mass.get("offer_percent", 0))
-	for s: Dictionary in r.get("sectors", []):
+	for s: Dictionary in r.get("legs", []):
 		var steps: Array[Vector2i] = []
 		for span in s.get("hazard_steps", []):
 			steps.append(Vector2i(int(span[0]), int(span[1])))
@@ -105,10 +105,10 @@ func _read_rules(r: Dictionary) -> void:
 		for id in s.get("kit_pool", []):
 			pool.append(str(id))
 		(
-			sectors
+			legs
 			. append(
 				{
-					"toll": int(s.get("toll", 0)),
+					"payment": int(s.get("payment", 0)),
 					"hazard_steps": steps,
 					"kit_pool": pool,
 					"fork": bool(s.get("fork", false)),
@@ -132,9 +132,9 @@ func price(key: String) -> int:
 	return prices.get(key, 0)
 
 
-## Returns the number of jumps of a sector (1-based).
-func jumps(sector: int) -> int:
-	return sectors[sector - 1]["hazard_steps"].size()
+## Returns the number of jumps of a leg (1-based).
+func jumps(leg: int) -> int:
+	return legs[leg - 1]["hazard_steps"].size()
 
 
 ## Returns the name of a term: terms[group][id].name.
@@ -169,8 +169,8 @@ func _check() -> void:
 
 
 func _check_rules() -> void:
-	if sectors.is_empty():
-		_fail("rules: no sectors")
+	if legs.is_empty():
+		_fail("rules: no legs")
 	if start_columns < 1 or start_rows < 1 or max_columns < start_columns or max_rows < start_rows:
 		_fail("rules: the hold sizes are not valid")
 	for w in Defs.WEIGHTS:
@@ -185,18 +185,18 @@ func _check_rules() -> void:
 		_fail("rules: the mass values are not valid")
 	if offer_contracts < 1 or offer_kit < 1:
 		_fail("rules: the offers must be 1 or more")
-	for i in sectors.size():
-		var s: Dictionary = sectors[i]
+	for i in legs.size():
+		var s: Dictionary = legs[i]
 		if s["hazard_steps"].is_empty():
-			_fail("rules: sector %d has no jumps" % (i + 1))
+			_fail("rules: leg %d has no jumps" % (i + 1))
 		for span: Vector2i in s["hazard_steps"]:
 			if span.x < 1 or span.y < span.x or span.y > 3:
-				_fail("rules: sector %d: the hazard steps are not 1 to 3" % (i + 1))
+				_fail("rules: leg %d: the hazard steps are not 1 to 3" % (i + 1))
 		if s["kit_pool"].is_empty():
-			_fail("rules: sector %d has no kit pool" % (i + 1))
+			_fail("rules: leg %d has no kit pool" % (i + 1))
 		for id: String in s["kit_pool"]:
 			if not cargo.has(id) or cargo[id].kind != Defs.KIND_KIT:
-				_fail("rules: sector %d: %s is not a kit" % [i + 1, id])
+				_fail("rules: leg %d: %s is not a kit" % [i + 1, id])
 
 
 func _check_terms() -> void:
@@ -244,11 +244,11 @@ func _check_cargo(d: CargoDef) -> void:
 func _check_contract(t: ContractTemplate) -> void:
 	if t.client_name == "" or t.pay < 1 or t.freight.is_empty():
 		_fail("contract %s: it needs a client_name, a pay, and freight" % t.id)
-	if t.sectors.is_empty():
-		_fail("contract %s: no sectors" % t.id)
-	for s in t.sectors:
-		if s < 1 or s > sectors.size():
-			_fail("contract %s: the sector %d is not valid" % [t.id, s])
+	if t.legs.is_empty():
+		_fail("contract %s: no legs" % t.id)
+	for s in t.legs:
+		if s < 1 or s > legs.size():
+			_fail("contract %s: the leg %d is not valid" % [t.id, s])
 	for id in t.freight:
 		if not cargo.has(id) or cargo[id].kind != Defs.KIND_FREIGHT:
 			_fail("contract %s: %s is not a freight" % [t.id, id])

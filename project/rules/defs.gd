@@ -52,7 +52,7 @@ const DIRECTIONS: PackedStringArray = [DIR_LEFT, DIR_RIGHT, DIR_UP, DIR_DOWN]
 # Phases (SPEC Section 3)
 const PHASE_STATION := "station"
 const PHASE_ARRIVAL := "arrival"
-const PHASE_TOLL := "toll"
+const PHASE_PAYMENT := "payment"
 const PHASE_END := "end"
 
 # Reactions (SPEC Section 11)
@@ -105,7 +105,7 @@ const LINE_CHAIN := "chain"
 const LINE_LEAK := "leak"
 const LINE_SPOIL := "spoil"
 const LINE_EMPTY := "empty"
-const LINE_TOLL := "toll"
+const LINE_PAYMENT := "payment"
 const LINE_WIN := "win"
 const LINE_LOSE := "lose"
 const LINE_EVENTS: PackedStringArray = [
@@ -117,7 +117,7 @@ const LINE_EVENTS: PackedStringArray = [
 	LINE_LEAK,
 	LINE_SPOIL,
 	LINE_EMPTY,
-	LINE_TOLL,
+	LINE_PAYMENT,
 	LINE_WIN,
 	LINE_LOSE,
 ]

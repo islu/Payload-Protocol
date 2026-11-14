@@ -92,7 +92,7 @@ msgid "The ship has not arrived yet."
 msgstr ""
 
 #: project/rules/run.gd
-msgid "You are not at a toll gate."
+msgid "No payment is due now."
 msgstr ""
 
 #: project/rules/run.gd
@@ -117,6 +117,10 @@ msgstr ""
 
 #: project/scenes/common/game_state.gd
 msgid "No run is in progress."
+msgstr ""
+
+#: project/scenes/main/gear_button.gd
+msgid "Menu (Esc)"
 msgstr ""
 
 #: project/scenes/main/how_to_play.gd
@@ -157,7 +161,7 @@ msgid ""
 "\n"
 "• Each shift step slides all cargo to a wall or a stopped cargo.\n"
 "• Force = weight × cells slid. Light {light}, standard {standard}, heavy {heavy}.\n"
-"• Cargo at the front wall takes a jolt. From sector 2, the last step is a fork."
+"• Cargo at the front wall takes a jolt. From leg 2, the last step is a fork."
 msgstr ""
 
 #: project/scenes/main/how_to_play.gd
@@ -171,11 +175,11 @@ msgstr ""
 
 #: project/scenes/main/how_to_play.gd
 msgid ""
-"[b]Links, the shop, and tolls[/b]\n"
+"[b]Links, the shop, and payments[/b]\n"
 "\n"
 "• Perishable needs a Cooler next to it. A Shield next to a Battery stops one reaction.\n"
 "• Clamps stop a slide. Over the mass limit, the warp costs a fuel fee.\n"
-"• Pay the toll at the end of each sector, or the run ends."
+"• Make the payment at the end of each leg, or the run ends."
 msgstr ""
 
 #: project/scenes/main/main.gd
@@ -225,11 +229,11 @@ msgid "Continue"
 msgstr ""
 
 #: project/scenes/main/phase_panel.gd
-msgid "Toll gate"
+msgid "Payment"
 msgstr ""
 
 #: project/scenes/main/phase_panel.gd
-msgid "Toll {toll} · credits {credits} · after {after}"
+msgid "Payment {payment} · credits {credits} · after {after}"
 msgstr ""
 
 #: project/scenes/main/phase_panel.gd
@@ -237,7 +241,7 @@ msgid "Pay"
 msgstr ""
 
 #: project/scenes/main/phase_panel.gd
-msgid "You cannot pay the toll."
+msgid "You cannot make the payment."
 msgstr ""
 
 #: project/scenes/main/phase_panel.gd
@@ -434,7 +438,7 @@ msgid "WARP"
 msgstr ""
 
 #: project/scenes/station/station_screen.gd
-msgid "Sector {sector}/{sectors} · Jump {jump}/{jumps}"
+msgid "Leg {leg}/{legs} · Jump {jump}/{jumps}"
 msgstr ""
 
 #: project/scenes/station/station_screen.gd
@@ -442,7 +446,7 @@ msgid "Credits: {credits}"
 msgstr ""
 
 #: project/scenes/station/station_screen.gd
-msgid "Toll {toll} after {jumps} jump(s)"
+msgid "Payment {payment} after {jumps} jump(s)"
 msgstr ""
 
 #: project/scenes/station/station_screen.gd
@@ -605,6 +609,14 @@ msgstr ""
 
 #: project/scenes/warp/warp_screen.gd
 msgid "Click or press Space to speed up."
+msgstr ""
+
+#: project/scenes/warp/warp_screen.gd
+msgid "Chain ×{count}"
+msgstr ""
+
+#: project/scenes/warp/warp_screen.gd
+msgid "Lost -{loss}"
 msgstr ""
 
 #: project/data/cargo/ammo_crate.json
@@ -1034,11 +1046,11 @@ msgid "We have a leak. I recommend boots. And new circuits."
 msgstr ""
 
 #: project/data/lines/lose.json
-msgid "No credits for the toll. We live here now."
+msgid "No credits for the payment. We live here now."
 msgstr ""
 
 #: project/data/lines/lose.json
-msgid "The gate stays closed. So does our business."
+msgid "The company took the ship back. And our business with it."
 msgstr ""
 
 #: project/data/lines/lose.json
@@ -1051,6 +1063,26 @@ msgstr ""
 
 #: project/data/lines/lose.json
 msgid "The first Magellan did not finish his trip either. You are in good company."
+msgstr ""
+
+#: project/data/lines/payment.json
+msgid "Payment day. The company wants its credits. All of them, if it can."
+msgstr ""
+
+#: project/data/lines/payment.json
+msgid "Pay up, or we sleep out here with the space dust."
+msgstr ""
+
+#: project/data/lines/payment.json
+msgid "Payment time. Please tell me we have the credits."
+msgstr ""
+
+#: project/data/lines/payment.json
+msgid "The company called. It says that it misses our credits."
+msgstr ""
+
+#: project/data/lines/payment.json
+msgid "My namesake paid for his voyage with his life. You only pay credits."
 msgstr ""
 
 #: project/data/lines/spoil.json
@@ -1069,32 +1101,12 @@ msgstr ""
 msgid "A Cooler would have helped. A nose plug would help now."
 msgstr ""
 
-#: project/data/lines/toll.json
-msgid "Toll gate. The sector wants its credits. All of them, if it can."
-msgstr ""
-
-#: project/data/lines/toll.json
-msgid "Pay up, or we sleep out here with the space dust."
-msgstr ""
-
-#: project/data/lines/toll.json
-msgid "Toll time. Please tell me we have the credits."
-msgstr ""
-
-#: project/data/lines/toll.json
-msgid "The gate is open. Our wallet is about to be too."
-msgstr ""
-
-#: project/data/lines/toll.json
-msgid "My namesake paid for his voyage with his life. You only pay credits."
+#: project/data/lines/win.json
+msgid "We made it. All three legs. I am framing this log."
 msgstr ""
 
 #: project/data/lines/win.json
-msgid "We made it. All three sectors. I am framing this log."
-msgstr ""
-
-#: project/data/lines/win.json
-msgid "Final toll paid. You are a real freight pilot now. Almost."
+msgid "Final payment made. The ship is ours now. Almost."
 msgstr ""
 
 #: project/data/lines/win.json

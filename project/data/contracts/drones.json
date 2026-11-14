@@ -1,6 +1,6 @@
 {
 	"id": "drones",
-	"sectors": [2, 3],
+	"legs": [2, 3],
 	"client_name": "Swift Courier",
 	"freight": [
 		"courier_drone",

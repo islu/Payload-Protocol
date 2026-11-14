@@ -22,14 +22,14 @@ description: Conventions of the Payload Protocol scenes and UI (project/scenes) 
 - Translate each text for the player: `tr("...")` for a literal, `tr(view_value)` for a data name.
 - A text with arguments in the view is `{key, args}`. Translate the key and each string argument, then fill in the placeholders.
 - Keep constants with text for the player named `*_TEXT`, so that the i18n tool finds them. A `_TEXT` constant can be a string, a triple-quoted string, or a dictionary of strings.
-- After a text change, run `task i18n` and translate each new entry in `project/locale/zh_TW.po`. Keep each `{placeholder}` and each `[b]` tag. Use the glossary: hold 貨艙, cargo 貨物, kit 裝備, scrap 廢鐵, dock 碼頭, contract 合約, toll 通行費, clamp 卡榫, sector 星區, shift step 位移, force 撞擊力, credits 信用點.
+- After a text change, run `task i18n` and translate each new entry in `project/locale/zh_TW.po`. Keep each `{placeholder}` and each `[b]` tag. Use the glossary: hold 貨艙, cargo 貨物, kit 裝備, scrap 廢鐵, dock 碼頭, contract 合約, payment 還款, leg 還款期, clamp 卡榫, shift step 位移, force 撞擊力, credits 信用點.
 - Draw a game icon with `CargoDraw.draw_icon()`. Take each color from `Palette`.
 
 ## 3. Files
 
 | Folder | Content |
 | --- | --- |
-| `scenes/main/` | `main.gd`: the title, the screen of each phase, and Esc for the pause. `PhasePanel`: the toll gate and the run end. `Overlay` (the base of a panel on top), `PauseMenu`, `SettingsPanel`, `HowToPlay`, `TutorialPicture` (the picture of each How to Play page, with the cargo images of `PAGE_CARGO`) |
+| `scenes/main/` | `main.gd`: the title, the screen of each phase, and Esc and `GearButton` for the pause. `PhasePanel`: the payment screen and the run end. `Overlay` (the base of a panel on top), `PauseMenu`, `SettingsPanel`, `HowToPlay`, `TutorialPicture` (the picture of each How to Play page, with the cargo images of `PAGE_CARGO`) |
 | `scenes/common/` | `GameState` (autoload), `DataFiles`, `Settings` (`user://settings.cfg`), `Sound` (plays `audio/sfx/<name>`), `Palette` (all colors), `GameText` (`{key, args}` text), `CargoDraw` (draws a cargo: its image, or a drawn shape), `CargoArt` (loads `art/cargo/<id>`, and turns the image upright when the cells allow it), `CargoChip` (a cargo in a list), `Starfield`, `FxSheets` (loads `art/fx/<name>`), `TextSize` (the four text sizes of SPEC Section 4.2: use them, not numbers) |
 | `scenes/warp/` | `WarpScreen` (plays the event log, then the arrival report; delivered freight stays with `HoldView.checks`), `ReportPanel` (the arrival report: the cards, the ledger, the credits before and after, the pilot), `FxLayer` (the effects of Section 21: pixel art sheets, force numbers, the blast glow, the flash) |
 | `scenes/station/` | `StationScreen` (the layout, the drag, the drops, the tooltip, the sell area), `ContractCard` (a contract card: the freight groups ×N, the totals, the mass after, Loaded N/M), `ShopPanel` (the kit cards with their rules and `helps`, Reroll, and the services with the values now and after), `HoldView` (the grid, the cargo, the links, the preview, the hover frame; a cell is `HoldView.CELL`, 100 pixels: use `hold.cell`), `DragLayer`, `PilotFace` (the pixel portrait of the pilot), `ClampChip`, `Hints` (the hints of the first runs, SPEC Section 23.3) |

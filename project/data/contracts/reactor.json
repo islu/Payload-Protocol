@@ -1,6 +1,6 @@
 {
 	"id": "reactor",
-	"sectors": [3],
+	"legs": [3],
 	"client_name": "Helix Power",
 	"freight": ["reactor_core"],
 	"pay": 45

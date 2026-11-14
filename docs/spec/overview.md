@@ -10,11 +10,11 @@ Payload Protocol is a single-player puzzle game about cargo in the hold of a spa
 - Then the player warps to the next station. The warp shifts the hold: all cargo slides in one direction, then in the next direction.
 - Cargo that slides hits walls and other cargo. Hits break fragile cargo, explode volatile cargo, and make fluid cargo leak.
 - At the next station, intact freight leaves the hold and pays credits. Broken cargo stays in the hold as scrap.
-- At the end of each sector, the player pays a toll. A player who cannot pay loses the run.
+- The player flies a ship that a freight company lent. At the end of each leg, the company takes a payment. A player who cannot pay loses the run.
 
 ### 1.1 Design Pillars
 
-- **The player can read each risk before the warp.** The station shows each shift step of the next warp, in order. In sector 1, each step is known. From sector 2, the last step is a fork: one of two directions that the station shows (Section 18). A shift has no other random parts. The same hold and the same directions always give the same result.
+- **The player can read each risk before the warp.** The station shows each shift step of the next warp, in order. In leg 1, each step is known. From leg 2, the last step is a fork: one of two directions that the station shows (Section 18). A shift has no other random parts. The same hold and the same directions always give the same result.
 - **Space is always tight.** The contracts of a station have more mass than the ship can carry, so the player selects (Section 25). Freight leaves at each station, but scrap stays. Kit stays too. The player must decide what to keep.
 - **A disaster is a show.** A break, a chain of explosions, or a leak has strong feedback and a line from the pilot. A loss must be funny, not only a loss.
 - **A run is short.** A run takes about 20 to 30 minutes.
@@ -28,13 +28,13 @@ These games are references for mechanics only. Do not copy their art, names, ite
 
 ## 3. Game Structure
 
-- A **run** has 3 **sectors**. Each sector has 3 **jumps**. A run has 9 jumps.
+- A **run** has 3 **legs**. Each leg has 3 **jumps**. A run has 9 jumps.
 - Each jump has three phases, in this order:
   1. **Station:** the player accepts contracts, uses the shop, and packs the hold (Sections 15 and 17).
   2. **Warp:** the shift steps of the jump play (Sections 9 to 12).
   3. **Arrival:** freight is delivered and pays (Section 16).
-- After the arrival of the last jump of a sector, the player pays the toll of that sector (Section 19).
-- The run ends in a win when the player pays the toll of the last sector. It ends in a loss when the player cannot pay a toll.
+- After the arrival of the last jump of a leg, the player makes the payment of that leg (Section 19).
+- The run ends in a win when the player makes the payment of the last leg. It ends in a loss when the player cannot make a payment.
 - Nothing stays after a run. Version 1 has no unlocks between runs (Section 24).
 - Each run has a **seed**. The seed sets the contracts, the shop offers, and the hazards. Two runs with the same seed and the same player actions have the same result.
 - The game uses no random numbers in a shift step.
@@ -87,7 +87,7 @@ Use these terms in the spec, the code, the data, and the text of the game. Do no
 | **dock** | The area at a station for cargo that is not in the hold (Section 8.1). |
 | **station** | The place between two jumps. |
 | **jump** | One travel from a station to the next station. |
-| **sector** | A group of 3 jumps that ends with a toll. |
+| **leg** | A group of 3 jumps that ends with a payment. |
 | **hazard** | The list of shift steps of a jump (Section 18). |
 | **fork step** | A shift step with two possible directions. The warp shows which one happens (Section 18). |
 | **mass** | The load of a cargo: its weight value multiplied by its cells (Section 25). |
@@ -102,6 +102,6 @@ Use these terms in the spec, the code, the data, and the text of the game. Do no
 | **next to** | Two cargo are next to each other when a cell of one shares an edge with a cell of the other. Diagonal cells are not next to each other. |
 | **credits** | The money of the player. |
 | **contract** | An order to carry freight to the next station for pay (Section 15). |
-| **toll** | The credits that the player pays at the end of a sector (Section 19). |
+| **payment** | The credits that the freight company takes at the end of a leg (Section 19). |
 | **clamp** | A lock that stops a cargo from a slide (Section 13). |
 | **pilot** | The ship AI that speaks lines (Section 22). |

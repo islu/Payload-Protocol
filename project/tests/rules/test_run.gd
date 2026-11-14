@@ -151,7 +151,7 @@ func test_lost_freight() -> void:
 		Contract.new(
 			1,
 			ContractTemplate.from_dict(
-				{"id": "x", "sectors": [1], "client_name": "X", "freight": ["bomb"], "pay": 9}
+				{"id": "x", "legs": [1], "client_name": "X", "freight": ["bomb"], "pay": 9}
 			)
 		)
 	]
@@ -250,55 +250,55 @@ func test_hazard() -> void:
 	eq(run.hazard.size(), 1, "the first jump has 1 step (SPEC Section 18)")
 	for i in 30:
 		var r := Run.new(run.cat, i + 1)
-		r.sector = 3
+		r.leg = 3
 		r.jump = 2
 		var h := r._make_hazard()
-		check(h.size() >= 2 and h.size() <= 3, "sector 3 has 2 or 3 steps (SPEC Section 18)")
+		check(h.size() >= 2 and h.size() <= 3, "leg 3 has 2 or 3 steps (SPEC Section 18)")
 		for k in range(1, h.size()):
 			check(h[k] != h[k - 1], "two steps next to each other differ (SPEC Section 18)")
 
 
-func test_tolls() -> void:
+func test_payments() -> void:
 	for jump in 3:
 		eq(run.warp(), "", "warp")
 		eq(run.continue_run(), "", "continue")
 	eq(
 		run.phase,
-		Defs.PHASE_TOLL,
-		"the toll gate comes after the last jump of a sector (SPEC Section 19.1)"
+		Defs.PHASE_PAYMENT,
+		"the payment screen comes after the last jump of a leg (SPEC Section 19.1)"
 	)
 	run.credits = 100
-	eq(run.pay_toll(), "", "pay the toll (SPEC Section 19.1)")
+	eq(run.make_payment(), "", "pay the payment (SPEC Section 19.1)")
 	eq(
-		[run.credits, run.sector, run.jump, run.phase],
+		[run.credits, run.leg, run.jump, run.phase],
 		[40, 2, 1, Defs.PHASE_STATION],
-		"the next sector starts (SPEC Section 19.1)"
+		"the next leg starts (SPEC Section 19.1)"
 	)
 
 
-func test_toll_loss() -> void:
-	run.phase = Defs.PHASE_TOLL
+func test_payment_loss() -> void:
+	run.phase = Defs.PHASE_PAYMENT
 	run.credits = 59
-	run.pay_toll()
+	run.make_payment()
 	eq(
 		run.phase,
 		Defs.PHASE_END,
-		"the run ends when the credits are less than the toll (SPEC Section 19.1)"
+		"the run ends when the credits are less than the payment (SPEC Section 19.1)"
 	)
 	check(not run.won, "it is a loss (SPEC Section 19.1)")
 	eq(run.score(), 0, "a loss has no score (SPEC Section 19.2)")
 
 
 func test_win() -> void:
-	run.phase = Defs.PHASE_TOLL
-	run.sector = 3
+	run.phase = Defs.PHASE_PAYMENT
+	run.leg = 3
 	run.credits = 300
-	run.pay_toll()
+	run.make_payment()
 	check(
 		run.won and run.phase == Defs.PHASE_END,
-		"paying the last toll wins the run (SPEC Section 19.2)"
+		"making the last payment wins the run (SPEC Section 19.2)"
 	)
-	eq(run.score(), 40, "the score is the credits after the last toll (SPEC Section 19.2)")
+	eq(run.score(), 40, "the score is the credits after the last payment (SPEC Section 19.2)")
 
 
 func test_same_seed_same_run() -> void:

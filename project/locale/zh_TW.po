@@ -93,8 +93,8 @@ msgid "The ship has not arrived yet."
 msgstr "太空船還沒抵達。"
 
 #: project/rules/run.gd
-msgid "You are not at a toll gate."
-msgstr "目前不在收費站。"
+msgid "No payment is due now."
+msgstr "現在沒有要還的款。"
 
 #: project/rules/run.gd
 msgid "The hold is too heavy to warp. Take cargo out, or reinforce the hull."
@@ -119,6 +119,10 @@ msgstr "遊戲資料載入失敗。"
 #: project/scenes/common/game_state.gd
 msgid "No run is in progress."
 msgstr "目前沒有進行中的航程。"
+
+#: project/scenes/main/gear_button.gd
+msgid "Menu (Esc)"
+msgstr "選單 (Esc)"
 
 #: project/scenes/main/how_to_play.gd
 #: project/scenes/main/main.gd
@@ -163,13 +167,13 @@ msgid ""
 "\n"
 "• Each shift step slides all cargo to a wall or a stopped cargo.\n"
 "• Force = weight × cells slid. Light {light}, standard {standard}, heavy {heavy}.\n"
-"• Cargo at the front wall takes a jolt. From sector 2, the last step is a fork."
+"• Cargo at the front wall takes a jolt. From leg 2, the last step is a fork."
 msgstr ""
 "[b]跳躍[/b]\n"
 "\n"
 "• 每一次位移，所有貨物會滑到撞上牆壁或停住的貨物為止。\n"
 "• 撞擊力 = 重量 × 滑動格數。輕 {light}、中 {standard}、重 {heavy}。\n"
-"• 貼著前牆的貨物會受到震動。從星區 2 開始，最後一步是二選一位移。"
+"• 貼著前牆的貨物會受到震動。從第 2 期開始，最後一步是二選一位移。"
 
 #: project/scenes/main/how_to_play.gd
 msgid ""
@@ -187,17 +191,17 @@ msgstr ""
 
 #: project/scenes/main/how_to_play.gd
 msgid ""
-"[b]Links, the shop, and tolls[/b]\n"
+"[b]Links, the shop, and payments[/b]\n"
 "\n"
 "• Perishable needs a Cooler next to it. A Shield next to a Battery stops one reaction.\n"
 "• Clamps stop a slide. Over the mass limit, the warp costs a fuel fee.\n"
-"• Pay the toll at the end of each sector, or the run ends."
+"• Make the payment at the end of each leg, or the run ends."
 msgstr ""
-"[b]連結、商店與通行費[/b]\n"
+"[b]連結、商店與還款[/b]\n"
 "\n"
 "• 生鮮旁邊要有冷藏。護盾旁邊有電池時，能擋下一次反應。\n"
 "• 卡榫能讓貨物不滑動。載重超過上限時，跳躍要付燃料費。\n"
-"• 每個星區結束時要付通行費，付不出來就結束。"
+"• 每一期結束時要還款給貨運公司，還不出來就結束。"
 
 #: project/scenes/main/main.gd
 msgid ""
@@ -248,20 +252,20 @@ msgid "Continue"
 msgstr "繼續"
 
 #: project/scenes/main/phase_panel.gd
-msgid "Toll gate"
-msgstr "收費站"
+msgid "Payment"
+msgstr "還款"
 
 #: project/scenes/main/phase_panel.gd
-msgid "Toll {toll} · credits {credits} · after {after}"
-msgstr "通行費 {toll} · 信用點 {credits} · 付款後 {after}"
+msgid "Payment {payment} · credits {credits} · after {after}"
+msgstr "還款 {payment} · 信用點 {credits} · 還款後 {after}"
 
 #: project/scenes/main/phase_panel.gd
 msgid "Pay"
 msgstr "付款"
 
 #: project/scenes/main/phase_panel.gd
-msgid "You cannot pay the toll."
-msgstr "付不出通行費。"
+msgid "You cannot make the payment."
+msgstr "還不出這期的款。"
 
 #: project/scenes/main/phase_panel.gd
 msgid "Route complete!"
@@ -457,16 +461,16 @@ msgid "WARP"
 msgstr "跳躍"
 
 #: project/scenes/station/station_screen.gd
-msgid "Sector {sector}/{sectors} · Jump {jump}/{jumps}"
-msgstr "星區 {sector}/{sectors} · 跳躍 {jump}/{jumps}"
+msgid "Leg {leg}/{legs} · Jump {jump}/{jumps}"
+msgstr "還款期 {leg}/{legs} · 跳躍 {jump}/{jumps}"
 
 #: project/scenes/station/station_screen.gd
 msgid "Credits: {credits}"
 msgstr "信用點：{credits}"
 
 #: project/scenes/station/station_screen.gd
-msgid "Toll {toll} after {jumps} jump(s)"
-msgstr "再 {jumps} 次跳躍後付通行費 {toll}"
+msgid "Payment {payment} after {jumps} jump(s)"
+msgstr "再 {jumps} 次跳躍後還款 {payment}"
 
 #: project/scenes/station/station_screen.gd
 msgid "{free} of {total} free. Drag a clamp onto a cargo. Click a clamp to take it off."
@@ -633,6 +637,14 @@ msgstr "位移 {n}：{options}……？"
 #: project/scenes/warp/warp_screen.gd
 msgid "Click or press Space to speed up."
 msgstr "按一下滑鼠或空白鍵可以加速。"
+
+#: project/scenes/warp/warp_screen.gd
+msgid "Chain ×{count}"
+msgstr "連鎖 ×{count}"
+
+#: project/scenes/warp/warp_screen.gd
+msgid "Lost -{loss}"
+msgstr "損失 -{loss}"
 
 #: project/data/cargo/ammo_crate.json
 msgid "Ammo Crate"
@@ -1061,12 +1073,12 @@ msgid "We have a leak. I recommend boots. And new circuits."
 msgstr "漏水了。建議穿雨鞋，再換新電路。"
 
 #: project/data/lines/lose.json
-msgid "No credits for the toll. We live here now."
-msgstr "付不出通行費。我們以後就住這裡了。"
+msgid "No credits for the payment. We live here now."
+msgstr "還不出錢。我們以後就住這裡了。"
 
 #: project/data/lines/lose.json
-msgid "The gate stays closed. So does our business."
-msgstr "閘門不開。我們的生意也關門了。"
+msgid "The company took the ship back. And our business with it."
+msgstr "公司把船收回去了，我們的生意也一起。"
 
 #: project/data/lines/lose.json
 msgid "Out of credits. I will start selling your chair."
@@ -1079,6 +1091,26 @@ msgstr "航程結束。下次也許少炸一點。"
 #: project/data/lines/lose.json
 msgid "The first Magellan did not finish his trip either. You are in good company."
 msgstr "初代麥哲倫也沒跑完全程。你並不孤單。"
+
+#: project/data/lines/payment.json
+msgid "Payment day. The company wants its credits. All of them, if it can."
+msgstr "還款日。公司要它的信用點，能拿多少就拿多少。"
+
+#: project/data/lines/payment.json
+msgid "Pay up, or we sleep out here with the space dust."
+msgstr "付錢，不然我們就跟太空塵埃一起睡外面。"
+
+#: project/data/lines/payment.json
+msgid "Payment time. Please tell me we have the credits."
+msgstr "還款時間。拜託告訴我錢夠。"
+
+#: project/data/lines/payment.json
+msgid "The company called. It says that it misses our credits."
+msgstr "公司打來了。它說它很想念我們的信用點。"
+
+#: project/data/lines/payment.json
+msgid "My namesake paid for his voyage with his life. You only pay credits."
+msgstr "我的同名前輩用性命付了航程。你只需要付錢。"
 
 #: project/data/lines/spoil.json
 msgid "The food went bad. The smell is now a crew member."
@@ -1096,33 +1128,13 @@ msgstr "貨艙裡有東西在長大。不是利潤。"
 msgid "A Cooler would have helped. A nose plug would help now."
 msgstr "有冷藏機就好了。現在有鼻塞也好。"
 
-#: project/data/lines/toll.json
-msgid "Toll gate. The sector wants its credits. All of them, if it can."
-msgstr "收費站。星區要收錢，能收多少就收多少。"
-
-#: project/data/lines/toll.json
-msgid "Pay up, or we sleep out here with the space dust."
-msgstr "付錢，不然我們就跟太空塵埃一起睡外面。"
-
-#: project/data/lines/toll.json
-msgid "Toll time. Please tell me we have the credits."
-msgstr "繳費時間。拜託告訴我錢夠。"
-
-#: project/data/lines/toll.json
-msgid "The gate is open. Our wallet is about to be too."
-msgstr "閘門開了。我們的錢包也快被打開了。"
-
-#: project/data/lines/toll.json
-msgid "My namesake paid for his voyage with his life. You only pay credits."
-msgstr "我的同名前輩用性命付了航程。你只需要付錢。"
+#: project/data/lines/win.json
+msgid "We made it. All three legs. I am framing this log."
+msgstr "我們辦到了，三期全部還清。我要把這份紀錄裱框。"
 
 #: project/data/lines/win.json
-msgid "We made it. All three sectors. I am framing this log."
-msgstr "我們辦到了，三個星區全部通過。我要把這份紀錄裱框。"
-
-#: project/data/lines/win.json
-msgid "Final toll paid. You are a real freight pilot now. Almost."
-msgstr "最後的通行費付清了。你現在是真正的貨運駕駛了。差不多啦。"
+msgid "Final payment made. The ship is ours now. Almost."
+msgstr "最後一期還清了。這艘船現在是我們的了。大概吧。"
 
 #: project/data/lines/win.json
 msgid "Route complete. The cargo survived. Mostly. Good work."

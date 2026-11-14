@@ -1,18 +1,18 @@
 extends RuleTest
 
 
-func _run_at(sector: int, run_seed: int) -> Run:
+func _run_at(leg: int, run_seed: int) -> Run:
 	var r := Run.new(run.cat, run_seed)
-	r.sector = sector
+	r.leg = leg
 	r.jump = 1
 	r._open_station()
 	return r
 
 
-func test_sector_1_has_no_fork() -> void:
+func test_leg_1_has_no_fork() -> void:
 	for s in range(1, 30):
 		var r := _run_at(1, s)
-		check(r.fork_options.is_empty(), "sector 1 has no fork step (SPEC Section 18)")
+		check(r.fork_options.is_empty(), "leg 1 has no fork step (SPEC Section 18)")
 
 
 func test_fork_step_rules() -> void:
@@ -23,10 +23,10 @@ func test_fork_step_rules() -> void:
 		Defs.DIR_DOWN: Defs.DIR_UP,
 	}
 	for s in range(1, 60):
-		for sector in [2, 3]:
-			var r := _run_at(sector, s)
+		for leg in [2, 3]:
+			var r := _run_at(leg, s)
 			var o: PackedStringArray = r.fork_options
-			eq(o.size(), 2, "the last step of sectors 2 and 3 is a fork step (SPEC Section 18)")
+			eq(o.size(), 2, "the last step of legs 2 and 3 is a fork step (SPEC Section 18)")
 			if o.size() != 2:
 				return
 			var before: String = r.hazard[r.hazard.size() - 2]
@@ -93,9 +93,9 @@ func test_warp_log_shows_the_fork() -> void:
 func test_offers_have_more_mass_than_the_limit() -> void:
 	var cat := DataFiles.catalog()
 	for s in range(1, 30):
-		for sector in [1, 2, 3]:
+		for leg in [1, 2, 3]:
 			var r := Run.new(cat, s)
-			r.sector = sector
+			r.leg = leg
 			r._offer_contracts()
 			var total := 0
 			for k in r.contracts:
@@ -105,7 +105,7 @@ func test_offers_have_more_mass_than_the_limit() -> void:
 			check(
 				total * 100 >= r.mass_limit * 130,
 				(
-					"the offers have 1.3 times the mass limit or more, seed %d sector %d: %d (content.md)"
-					% [s, sector, total]
+					"the offers have 1.3 times the mass limit or more, seed %d leg %d: %d (content.md)"
+					% [s, leg, total]
 				)
 			)

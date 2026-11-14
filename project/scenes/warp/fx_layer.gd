@@ -12,6 +12,8 @@ const NAMES: PackedStringArray = [
 
 ## The font size of a force number.
 const NUMBER_SIZE := 56
+## The font size of a lost pay (SPEC Section 21.5).
+const LOSS_SIZE := 40
 
 var hold: HoldView
 var speed := 1.0
@@ -39,6 +41,21 @@ func number(at: Vector2, force: int) -> void:
 		Palette.TEXT_DIM if force == 0 else (Palette.BAD if force >= 3 else Palette.WARN)
 	)
 	_add({"kind": "number", "at": at, "time": 1.1, "color": color, "text": str(force)})
+
+
+## The lost pay of a freight that becomes scrap, below the force number (SPEC Section 21.5).
+func loss(at: Vector2, amount: int) -> void:
+	played["loss"] = true
+	_add(
+		{
+			"kind": "number",
+			"at": at + Vector2(0, 50),
+			"time": 1.4,
+			"color": Palette.BAD,
+			"text": "-%d" % amount,
+			"size": LOSS_SIZE,
+		}
+	)
 
 
 func shards(at: Vector2) -> void:
@@ -113,11 +130,12 @@ func _draw() -> void:
 				color.a = 1.0 - k
 				# Large digits with a dark outline, so that they read on each cargo color (SPEC Section 21.2).
 				var font := get_theme_default_font()
-				var pos := at + Vector2(-NUMBER_SIZE * 0.3, -24 - 70 * k)
+				var font_size: int = fx.get("size", NUMBER_SIZE)
+				var pos := at + Vector2(-font_size * 0.3, -24 - 70 * k)
 				var outline := Color(Palette.BACKGROUND, color.a)
 				var align := HORIZONTAL_ALIGNMENT_LEFT
-				draw_string_outline(font, pos, fx["text"], align, -1, NUMBER_SIZE, 10, outline)
-				draw_string(font, pos, fx["text"], align, -1, NUMBER_SIZE, color)
+				draw_string_outline(font, pos, fx["text"], align, -1, font_size, 10, outline)
+				draw_string(font, pos, fx["text"], align, -1, font_size, color)
 			"area":
 				var color: Color = fx["color"]
 				for c: Vector2i in fx["cells"]:

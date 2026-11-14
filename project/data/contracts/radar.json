@@ -1,6 +1,6 @@
 {
 	"id": "radar",
-	"sectors": [2],
+	"legs": [2],
 	"client_name": "Deep Watch Array",
 	"freight": ["radar_dish"],
 	"pay": 22,

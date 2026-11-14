@@ -1,6 +1,6 @@
 {
 	"id": "parking_meters",
-	"sectors": [2],
+	"legs": [2],
 	"client_name": "Old Town Collectors",
 	"freight": ["parking_meter", "parking_meter", "parking_meter"],
 	"pay": 7,

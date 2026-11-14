@@ -1,6 +1,6 @@
 {
 	"id": "drone_swarm",
-	"sectors": [3],
+	"legs": [3],
 	"client_name": "Swift Courier",
 	"freight": [
 		"courier_drone",

@@ -1,6 +1,6 @@
 {
 	"id": "fuel_depot",
-	"sectors": [3],
+	"legs": [3],
 	"client_name": "Redline Fuel",
 	"freight": ["fuel_drum", "fuel_drum", "fuel_drum", "plasma_cell"],
 	"pay": 14,

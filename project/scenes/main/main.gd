@@ -1,7 +1,8 @@
 extends Control
 ## The main scene. It shows the screen of the phase of the run (SPEC Section 20):
 ## the title, the station, the warp with the arrival report, and PhasePanel for
-## the toll gate and the run end. Esc opens the pause menu (SPEC Section 20.7).
+## the payment screen and the run end. Esc and the gear button open the pause menu
+## (SPEC Section 20.7).
 
 const TITLE_TEXT := "PAYLOAD\nPROTOCOL"
 const TAGLINE_TEXT := "Pack the hold. Survive the warp."
@@ -12,6 +13,8 @@ const QUIT_TEXT := "Quit"
 ## The music loop (SPEC Section 4.3). docs/assets.md has its source.
 const MUSIC_PATH := "res://audio/music/vintage_menu.ogg"
 
+## The gear button of the station and the warp (SPEC Section 20.7).
+var gear: GearButton
 var _screen: Control
 var _screen_kind := ""
 var _overlays: CanvasLayer
@@ -27,6 +30,9 @@ func _ready() -> void:
 	_overlays = CanvasLayer.new()
 	_overlays.layer = 10
 	add_child(_overlays)
+	gear = GearButton.new()
+	gear.pressed.connect(open_pause)
+	add_child(gear)
 	_add_crt()
 	_add_music()
 	GameState.state_changed.connect(_update)
@@ -42,8 +48,9 @@ func _update() -> void:
 	var kind := "title" if run.is_empty() else str(run["phase"])
 	if kind == Defs.PHASE_END and run["end"]["won"]:
 		Hints.run_won()
-	if kind == Defs.PHASE_TOLL or kind == Defs.PHASE_END:
+	if kind == Defs.PHASE_PAYMENT or kind == Defs.PHASE_END:
 		kind = "gate"
+	gear.visible = kind == Defs.PHASE_STATION or kind == Defs.PHASE_ARRIVAL
 	if kind == _screen_kind:
 		return
 	_screen_kind = kind
@@ -142,8 +149,14 @@ func _unhandled_input(event: InputEvent) -> void:
 	if _overlays.get_child_count() > 0:
 		return
 	if _screen_kind == Defs.PHASE_STATION or _screen_kind == Defs.PHASE_ARRIVAL:
-		open_overlay(PauseMenu.new())
+		open_pause()
 		get_viewport().set_input_as_handled()
+
+
+## Opens the pause menu, if no overlay is open (SPEC Section 20.7).
+func open_pause() -> void:
+	if _overlays.get_child_count() == 0:
+		open_overlay(PauseMenu.new())
 
 
 ## Maximizes the window at startup, as Regalia does. The screen scales with the

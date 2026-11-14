@@ -50,7 +50,7 @@ static func data() -> Dictionary:
 		"k_boxes":
 		{
 			"id": "k_boxes",
-			"sectors": [1, 2, 3],
+			"legs": [1, 2, 3],
 			"client_name": "A",
 			"freight": ["box", "box"],
 			"pay": 5
@@ -58,7 +58,7 @@ static func data() -> Dictionary:
 		"k_vases":
 		{
 			"id": "k_vases",
-			"sectors": [1, 2, 3],
+			"legs": [1, 2, 3],
 			"client_name": "B",
 			"freight": ["vase", "vase"],
 			"pay": 8,
@@ -67,7 +67,7 @@ static func data() -> Dictionary:
 		"k_bars":
 		{
 			"id": "k_bars",
-			"sectors": [1, 2, 3],
+			"legs": [1, 2, 3],
 			"client_name": "C",
 			"freight": ["bar"],
 			"pay": 7,
@@ -76,7 +76,7 @@ static func data() -> Dictionary:
 		"k_chips":
 		{
 			"id": "k_chips",
-			"sectors": [1, 2, 3],
+			"legs": [1, 2, 3],
 			"client_name": "D",
 			"freight": ["chip", "chip"],
 			"pay": 5,
@@ -130,17 +130,17 @@ static func data() -> Dictionary:
 			},
 			"mass":
 			{"limit": 40, "over_percent": 25, "fuel_fee": 2, "reinforce": 8, "offer_percent": 130},
-			"sectors":
+			"legs":
 			[
-				{"toll": 60, "hazard_steps": [[1, 1], [2, 2], [2, 2]], "kit_pool": KIT_POOL},
+				{"payment": 60, "hazard_steps": [[1, 1], [2, 2], [2, 2]], "kit_pool": KIT_POOL},
 				{
-					"toll": 140,
+					"payment": 140,
 					"hazard_steps": [[2, 2], [2, 2], [2, 2]],
 					"kit_pool": KIT_POOL,
 					"fork": true
 				},
 				{
-					"toll": 260,
+					"payment": 260,
 					"hazard_steps": [[2, 3], [2, 3], [2, 3]],
 					"kit_pool": KIT_POOL,
 					"fork": true

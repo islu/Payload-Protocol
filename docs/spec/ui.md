@@ -16,7 +16,7 @@ The station screen has these areas:
 
 | Area | Position | Content |
 | --- | --- | --- |
-| Top bar | Top | The sector and the jump ("Sector 2 · Jump 1"), the credits, the toll of this sector, and the jumps before the toll. |
+| Top bar | Top | The leg and the jump ("Leg 2 · Jump 1"), the credits, the payment of this leg, and the jumps before the payment. A gear button at the right opens the pause menu (Section 20.7). |
 | Hazard panel | Center, at the left of the hold, from top to bottom | The shift steps of the next jump in order (Section 18). Each step is a card with a large arrow, its number, and its direction. A fork step shows its two directions and a question mark. |
 | Dock | Left | The cargo on the dock (Section 8.1). |
 | Contract board | Left, below the dock | The 3 contracts, with Accept and Cancel buttons (Section 15). |
@@ -56,14 +56,14 @@ The station screen has these areas:
 - Below the cards, a ledger shows the deliveries, the bonuses, the breach fees, the kit sold from the dock, the fuel fee, and the net. Then it shows the credits before the warp and after the arrival.
 - The pilot speaks a line about the result, with the portrait of the pilot.
 - Delivered freight stays in the hold at half alpha, with a check mark, until Continue.
-- A Continue button goes to the next station, or to the toll gate.
+- A Continue button goes to the next station, or to the payment screen.
 - When the report covers the hold, the hold moves to the left.
 - When the mouse is on a line of pieces, the hold marks those pieces at their place at the end of the warp.
 - A Replay button plays the warp again from the start, at half speed. A click or the Space key during the replay makes it faster (Section 20.3). The replay plays no coin sound.
 
-### 20.5 Toll Gate
+### 20.5 Payment
 
-- The toll gate shows the credits, the toll, and the credits after the toll.
+- The payment screen shows the credits, the payment, and the credits after the payment.
 - When the player can pay, the button is Pay. When the player cannot pay, the screen shows the loss, and the button goes to the run end screen.
 
 ### 20.6 Run End
@@ -72,7 +72,7 @@ The station screen has these areas:
 
 ### 20.7 Pause
 
-- Esc opens the pause menu at the station and during the warp. It has these buttons: Resume, How to Play, Settings, and Abandon Run.
+- Esc opens the pause menu at the station and during the warp. A gear button at the top right of the station and the warp opens it too. It has these buttons: Resume, How to Play, Settings, and Abandon Run.
 - Abandon Run asks the player to confirm. Then it goes to the title screen.
 
 ## 21. Feedback
@@ -109,6 +109,12 @@ The station screen has these areas:
 - The credits count up or down in the top bar.
 - The link lines glow and move slowly.
 
+### 21.5 Losses
+
+- When a freight becomes scrap in the warp, its lost pay shows above it ("−8"). The event log gives the lost pay. A kit shows no number.
+- From the second reaction of a chain, the warp shows "Chain ×N". N is the number of reactions of that chain so far.
+- At the end of the warp, the warp shows the total lost pay ("Lost −24") before the arrival report.
+
 ## 22. The Pilot
 
 - The pilot is the AI of the ship. Its name is **MAGELLAN**. The name does not change with the language. The pilot box shows its pixel art portrait and one line.
@@ -116,7 +122,7 @@ The station screen has these areas:
 - The pilot speaks at these events:
   - The station opens: a line about the hazard.
   - The arrival: a line about the result (all intact, a break, an explosion, a chain of explosions, a leak, a spoil).
-  - The toll gate: a line about the toll.
+  - The payment screen: a line about the payment.
   - The run end: a line about the win or the loss.
 - `project/data/lines/` has the lines for each event. The game selects one line with the seed. It does not select the same line two times in a row.
 - The lines are funny and short. A line has 90 characters at most in English.
@@ -136,7 +142,7 @@ The station screen has these areas:
   1. Contracts and the hold: accept, drag, and rotate.
   2. The warp: the slide, distance, weight, and force.
   3. Traits and reactions.
-  4. Links, clamps, the shop, and tolls.
+  4. Links, clamps, the shop, and payments.
 - Each picture shows the cargo images of Section 4.2.
 
 ### 23.3 Hints

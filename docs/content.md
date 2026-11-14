@@ -6,10 +6,10 @@ This file has the design rules of the game content. The data files in `project/d
 
 | Content | Folder or file |
 | --- | --- |
-| Balance values: start values, break limits, prices, tolls, hazard steps, hold size | `rules.json` |
+| Balance values: start values, break limits, prices, payments, hazard steps, hold size | `rules.json` |
 | Names and rules text of traits, kinds, weights, and directions | `terms.json` |
 | Freight and kit definitions | `cargo/` |
-| Contract templates, by sector | `contracts/` |
+| Contract templates, by leg | `contracts/` |
 | Pilot lines, by event | `lines/` |
 
 - Use one file for each definition. The `id` is snake_case and is the same as the file name.
@@ -86,10 +86,10 @@ The first content has 38 freight and 6 kit. The freight has themes: supplies, te
 
 ## Contract Rules
 
-- A sector 1 contract has 1 to 6 pieces, and one trait at most.
-- A sector 2 contract has 1 to 5 pieces, and can mix two traits.
-- A sector 3 contract has 1 to 5 pieces. It can have Volatile and Fluid freight together.
-- Put Perishable freight only in the contracts of sectors 2 and 3. The player can buy a Cooler Unit in sector 1 first.
+- A leg 1 contract has 1 to 6 pieces, and one trait at most.
+- A leg 2 contract has 1 to 5 pieces, and can mix two traits.
+- A leg 3 contract has 1 to 5 pieces. It can have Volatile and Fluid freight together.
+- Put Perishable freight only in the contracts of legs 2 and 3. The player can buy a Cooler Unit in leg 1 first.
 - A Black Market contract carries contraband or weapons. It pays about 1.5 times a contract with freight of the same size and risk.
 - An Earth Heritage Museum or Old Town Collectors contract carries Earth relics: everyday things of old Earth.
 - Each freight is in one contract at least.

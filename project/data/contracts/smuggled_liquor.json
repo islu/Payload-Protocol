@@ -1,6 +1,6 @@
 {
 	"id": "smuggled_liquor",
-	"sectors": [2, 3],
+	"legs": [2, 3],
 	"client_name": "Black Market",
 	"freight": ["liquor_bottle", "liquor_bottle", "liquor_bottle", "liquor_bottle"],
 	"pay": 10,

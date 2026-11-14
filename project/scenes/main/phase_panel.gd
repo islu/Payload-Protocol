@@ -1,12 +1,12 @@
 class_name PhasePanel
 extends Control
-## The toll gate and the run end (SPEC Sections 19.2, 20.5, and 20.6).
+## The payment screen and the run end (SPEC Sections 19.2, 20.5, and 20.6).
 
 const CONTINUE_TEXT := "Continue"
-const TOLL_TITLE_TEXT := "Toll gate"
-const TOLL_BODY_TEXT := "Toll {toll} · credits {credits} · after {after}"
+const PAYMENT_TITLE_TEXT := "Payment"
+const PAYMENT_BODY_TEXT := "Payment {payment} · credits {credits} · after {after}"
 const PAY_TEXT := "Pay"
-const CANNOT_PAY_TEXT := "You cannot pay the toll."
+const CANNOT_PAY_TEXT := "You cannot make the payment."
 const WIN_TEXT := "Route complete!"
 const LOSS_TEXT := "Run over."
 # gdlint:ignore = max-line-length
@@ -57,16 +57,17 @@ func refresh() -> void:
 		b.queue_free()
 	var lines := PackedStringArray()
 	match run["phase"]:
-		Defs.PHASE_TOLL:
-			_heading.text = tr(TOLL_TITLE_TEXT)
-			var t: Dictionary = run["toll_gate"]
-			lines.append(tr(TOLL_BODY_TEXT).format(t))
+		Defs.PHASE_PAYMENT:
+			_heading.text = tr(PAYMENT_TITLE_TEXT)
+			var t: Dictionary = run["payment_screen"]
+			lines.append(tr(PAYMENT_BODY_TEXT).format(t))
 			if not t["can_pay"]:
 				lines.append(
 					"[color=#%s]%s[/color]" % [Palette.BAD.to_html(false), tr(CANNOT_PAY_TEXT)]
 				)
 			_add_button(
-				PAY_TEXT if t["can_pay"] else CONTINUE_TEXT, func() -> void: GameState.pay_toll()
+				PAY_TEXT if t["can_pay"] else CONTINUE_TEXT,
+				func() -> void: GameState.make_payment()
 			)
 		Defs.PHASE_END:
 			var e: Dictionary = run["end"]

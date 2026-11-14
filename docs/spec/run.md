@@ -19,8 +19,8 @@ This file is part of the [game specification](../spec.md). The section numbers a
 - At each station, the contract board offers 4 contracts. Together they have more mass than the ship can carry, so the player cannot take all of them with no fuel fee (Section 25).
 - The player can accept 0 to 4 contracts. When the player accepts a contract, its freight goes to the dock.
 - The player can cancel an accepted contract before the warp. Then its freight leaves the hold and the dock, with no fee.
-- The seed and the sector select the contracts from the templates in `project/data/contracts/`.
-- The contracts of a later sector have more freight, more traits, and more pay.
+- The seed and the leg select the contracts from the templates in `project/data/contracts/`.
+- The contracts of a later leg have more freight, more traits, and more pay.
 
 ### 15.2 Contract Contents
 
@@ -65,7 +65,7 @@ The arrival has these steps, in this order:
 
 ### 17.1 Kit Offers
 
-- At each station, the shop offers 3 kit definitions. The seed and the sector select them from the kit pool in `rules.json`.
+- At each station, the shop offers 3 kit definitions. The seed and the leg select them from the kit pool in `rules.json`.
 - A purchase puts the kit on the dock. Each offer can be bought one time.
 - **Reroll** replaces the 3 offers. The first reroll at a station costs 2 credits. Each next reroll at the same station costs 2 credits more.
 
@@ -96,9 +96,9 @@ The arrival has these steps, in this order:
 
 - The station shows the hazard of the next jump: each shift step in order, with an arrow and a direction name.
 - The hazard is fixed when the station opens. It does not change at the station.
-- The number of shift steps depends on the sector:
+- The number of shift steps depends on the leg:
 
-| Sector | Shift steps |
+| Leg | Shift steps |
 | --- | --- |
 | 1 | 1 at the first jump, 2 at the second and third jumps |
 | 2 | 2. The second step is a fork step. |
@@ -116,18 +116,18 @@ The arrival has these steps, in this order:
 - When the player takes the Sensor out of the hold, the station shows the fork step as two directions again.
 - The pilot speaks a line about the hazard when the station opens (Section 22).
 
-## 19. Tolls and the End of the Run
+## 19. Payments and the End of the Run
 
-### 19.1 Tolls
+### 19.1 Payments
 
-- After the arrival of the last jump of a sector, the toll gate takes the toll of that sector.
-- The tolls are 70, 180, and 350 credits.
-- If the credits are less than the toll, the run ends in a loss.
-- If not, the game takes the toll, and the next sector starts at a new station.
+- After the arrival of the last jump of a leg, the freight company takes the payment of that leg.
+- The payments are 70, 180, and 350 credits.
+- If the credits are less than the payment, the run ends in a loss.
+- If not, the game takes the payment, and the next leg starts at a new station.
 
 ### 19.2 The End of the Run
 
-- The run ends in a win when the player pays the toll of sector 3.
-- The **score** is the credits after the last toll.
+- The run ends in a win when the player makes the payment of leg 3.
+- The **score** is the credits after the last payment.
 - The run end screen shows: win or loss, the score, the delivered freight, the scrap made, the explosions, and the seed.
 - The run end screen has two buttons: New Run and Title.

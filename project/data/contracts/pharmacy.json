@@ -1,6 +1,6 @@
 {
 	"id": "pharmacy",
-	"sectors": [1],
+	"legs": [1],
 	"client_name": "Orbital Pharmacy",
 	"freight": [
 		"pill_bottle",

@@ -12,6 +12,8 @@ var _undo_checked := false
 var _shop_checked := false
 var _contracts_checked := false
 var _snap_checked := false
+## The number of warps with a loss or a chain. The checks of SPEC Section 21.5 need one.
+var _losses_seen := 0
 
 
 func _ready() -> void:
@@ -106,6 +108,7 @@ func _play_run(main: Control) -> void:
 	)
 	state.new_run(11)
 	await get_tree().process_frame
+	await UiCheckLoop.gear(self, main)
 	await _check_overlays(main)
 	_check(main.screen() is StationScreen, "a new run opens the station (SPEC Section 20.2)")
 	var station: StationScreen = main.screen()
@@ -120,13 +123,14 @@ func _play_run(main: Control) -> void:
 			Defs.PHASE_ARRIVAL:
 				await _play_warp(main)
 				state.continue_run()
-			Defs.PHASE_TOLL:
-				state.pay_toll()
+			Defs.PHASE_PAYMENT:
+				state.make_payment()
 		await get_tree().process_frame
 	_check(
 		state.view()["run"]["phase"] == Defs.PHASE_END,
 		"the run reaches its end (SPEC Section 19.2)"
 	)
+	_check(_losses_seen > 0, "the run has a warp with a loss, for the checks of SPEC Section 21.5")
 	state.abandon_run()
 	await get_tree().process_frame
 
@@ -204,6 +208,7 @@ func _play_warp(main: Control) -> void:
 	await get_tree().process_frame
 	var warp: WarpScreen = main.screen()
 	_check(warp is WarpScreen, "the warp plays after the Warp button (SPEC Section 20.3)")
+	_check(main.gear.is_visible_in_tree(), "the warp has the gear button (SPEC Section 20.7)")
 	warp.speed_up()
 	warp.speed = 200.0
 	var frames := 0
@@ -220,6 +225,8 @@ func _play_warp(main: Control) -> void:
 	_check(
 		hits == 0 or warp._fx.played.has("hit"), "a hit plays the spark sheet (SPEC Section 21.2)"
 	)
+	if UiCheckLoop.losses(self, warp):
+		_losses_seen += 1
 	_check_report(warp)
 	await get_tree().process_frame
 	if GameState.view()["run"]["arrival"]["total"] != 0:

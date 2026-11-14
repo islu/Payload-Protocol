@@ -1,6 +1,6 @@
 {
 	"id": "helper_bots",
-	"sectors": [1, 2],
+	"legs": [1, 2],
 	"client_name": "Cogwork Robotics",
 	"freight": ["helper_bot", "helper_bot", "helper_bot", "helper_bot"],
 	"pay": 5,

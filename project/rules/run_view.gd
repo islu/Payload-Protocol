@@ -115,13 +115,13 @@ static func view(run: Run) -> Dictionary:
 	var v := {
 		"seed": str(run.seed_value),
 		"phase": run.phase,
-		"sector": run.sector,
-		"sectors": cat.sectors.size(),
+		"leg": run.leg,
+		"legs": cat.legs.size(),
 		"jump": run.jump,
-		"jumps": cat.jumps(run.sector),
-		"jumps_to_toll": cat.jumps(run.sector) - run.jump + 1,
+		"jumps": cat.jumps(run.leg),
+		"jumps_to_payment": cat.jumps(run.leg) - run.jump + 1,
 		"credits": run.credits,
-		"toll": run.toll(),
+		"payment": run.payment(),
 		"clamps": run.clamps,
 		"free_clamps": run.free_clamps(),
 		"hold":
@@ -147,7 +147,7 @@ static func view(run: Run) -> Dictionary:
 		},
 		"warp": run.last_warp,
 		"arrival": run.last_arrival,
-		"toll_gate": {},
+		"payment_screen": {},
 		"end": {},
 		"line": run.line,
 	}
@@ -203,13 +203,13 @@ static func view(run: Run) -> Dictionary:
 		"mass_limit": run.mass_limit,
 		"mass_limit_after": run.mass_limit + cat.reinforce_amount,
 	}
-	if run.phase == Defs.PHASE_TOLL:
-		v["toll_gate"] = {
-			"toll": run.toll(),
+	if run.phase == Defs.PHASE_PAYMENT:
+		v["payment_screen"] = {
+			"payment": run.payment(),
 			"credits": run.credits,
-			"after": run.credits - run.toll(),
-			"can_pay": run.credits >= run.toll(),
-			"last": run.sector >= cat.sectors.size(),
+			"after": run.credits - run.payment(),
+			"can_pay": run.credits >= run.payment(),
+			"last": run.leg >= cat.legs.size(),
 		}
 	if run.phase == Defs.PHASE_END:
 		v["end"] = {

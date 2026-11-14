@@ -1,6 +1,6 @@
 {
 	"id": "field_hospital",
-	"sectors": [1, 2],
+	"legs": [1, 2],
 	"client_name": "Red Ring Relief",
 	"freight": ["medkit", "medkit", "medkit", "medkit"],
 	"pay": 5,

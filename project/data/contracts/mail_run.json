@@ -1,6 +1,6 @@
 {
 	"id": "mail_run",
-	"sectors": [1],
+	"legs": [1],
 	"client_name": "Orbital Post",
 	"freight": [
 		"ration_crate",

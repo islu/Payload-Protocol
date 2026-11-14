@@ -15,9 +15,9 @@ const SELL_KIT_TEXT := "Sell {name}: +{price} cr"
 const CLEAR_SCRAP_TEXT := "Clear the scrap: -{price} cr"
 const NO_SELL_TEXT := "Freight cannot be sold"
 const WARP_TEXT := "WARP"
-const TOP_BAR_TEXT := "Sector {sector}/{sectors} · Jump {jump}/{jumps}"
+const TOP_BAR_TEXT := "Leg {leg}/{legs} · Jump {jump}/{jumps}"
 const CREDITS_TEXT := "Credits: {credits}"
-const TOLL_TEXT := "Toll {toll} after {jumps} jump(s)"
+const PAYMENT_TEXT := "Payment {payment} after {jumps} jump(s)"
 # gdlint:ignore = max-line-length
 const FREE_CLAMPS_TEXT := "{free} of {total} free. Drag a clamp onto a cargo. Click a clamp to take it off."
 const EMPTY_DOCK_TEXT := "Empty. Accept a contract or buy kit."
@@ -65,7 +65,7 @@ var _shown_credits := -1
 var _hold: HoldView
 var _top_label: Label
 var _credits_label: Label
-var _toll_label: Label
+var _payment_label: Label
 var _mass_label: Label
 var _hazard_box: VBoxContainer
 var _dock_title: Label
@@ -123,7 +123,7 @@ func _build() -> void:
 	root.add_child(top)
 	_top_label = _label(top, "", TextSize.HEADING)
 	_credits_label = _label(top, "", TextSize.HEADING, Palette.GOOD)
-	_toll_label = _label(top, "", TextSize.BODY, Palette.TEXT_DIM)
+	_payment_label = _label(top, "", TextSize.BODY, Palette.TEXT_DIM)
 	_mass_label = _label(top, "", TextSize.HEADING, Palette.TEXT)
 
 	var body := HBoxContainer.new()
@@ -311,7 +311,9 @@ func refresh() -> void:
 		return
 	_top_label.text = tr(TOP_BAR_TEXT).format(_run)
 	_count_credits(_run["credits"])
-	_toll_label.text = tr(TOLL_TEXT).format({"toll": _run["toll"], "jumps": _run["jumps_to_toll"]})
+	_payment_label.text = tr(PAYMENT_TEXT).format(
+		{"payment": _run["payment"], "jumps": _run["jumps_to_payment"]}
+	)
 	_show_mass()
 	_show_pilot()
 	_undo_button.disabled = not GameState.can_undo()

@@ -4,7 +4,7 @@ extends RefCounted
 ## data/contracts/<id>.json.
 
 var id: String
-var sectors: Array[int] = []
+var legs: Array[int] = []
 var client_name: String
 var freight: PackedStringArray = []
 var pay: int = 0
@@ -15,8 +15,8 @@ var bonus: Dictionary = {}
 static func from_dict(d: Dictionary) -> ContractTemplate:
 	var t := ContractTemplate.new()
 	t.id = str(d.get("id", ""))
-	for s in d.get("sectors", []):
-		t.sectors.append(int(s))
+	for s in d.get("legs", []):
+		t.legs.append(int(s))
 	t.client_name = str(d.get("client_name", ""))
 	for f in d.get("freight", []):
 		t.freight.append(str(f))
