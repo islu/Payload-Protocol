@@ -15,6 +15,14 @@ var catalog: Catalog
 var run: Run
 ## The seed and the actions of the run, for an undo (SPEC Section 20.2).
 var _record: RunRecord
+## The view of the state now, or {} after a change. view() builds it one time for
+## each change: each scene that reads it gets the same copy. Do not change it.
+var _view: Dictionary = {}
+
+
+func _init() -> void:
+	# The first listener: each other listener reads a new view.
+	state_changed.connect(func() -> void: _view = {})
 
 
 func _ready() -> void:
@@ -28,15 +36,19 @@ func is_loaded() -> bool:
 
 
 ## Returns the visible game state: {version, terms, names, run}. run is {} with no run.
+## The scenes must not change it: the next call returns the same copy until the state
+## changes.
 func view() -> Dictionary:
 	if not is_loaded():
 		return {"version": VERSION, "terms": [], "names": {}, "run": {}}
-	return {
-		"version": VERSION,
-		"terms": RunView.terms(catalog, run),
-		"names": RunView.names(catalog, run),
-		"run": RunView.view(run) if run != null else {},
-	}
+	if _view.is_empty():
+		_view = {
+			"version": VERSION,
+			"terms": RunView.terms(catalog, run),
+			"names": RunView.names(catalog, run),
+			"run": RunView.view(run) if run != null else {},
+		}
+	return _view
 
 
 ## Starts a new run. A seed of 0 gets a random seed (SPEC Section 14).

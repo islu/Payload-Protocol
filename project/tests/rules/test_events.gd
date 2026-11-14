@@ -199,7 +199,7 @@ func test_mod_after_payment() -> void:
 func test_offers_only_new_mods() -> void:
 	for id in ["shock_floor", "cryo_line", "padded_walls", "gravity_damper"]:
 		run.mods.append(id)
-	run.offer_mods()
+	StationEvents.offer_mods(run)
 	var offer := Array(run.mod_offer)
 	offer.sort()
 	eq(
@@ -210,7 +210,7 @@ func test_offers_only_new_mods() -> void:
 	run.mods.append("array_power")
 	run.mods.append("insurance")
 	run.phase = Defs.PHASE_STATION
-	run.offer_mods()
+	StationEvents.offer_mods(run)
 	eq(run.phase, Defs.PHASE_STATION, "with no mod left, no mod choice happens (SPEC Section 27.1)")
 
 

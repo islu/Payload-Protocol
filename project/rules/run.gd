@@ -137,10 +137,10 @@ func _open_station() -> void:
 	last_arrival = {}
 	_offer_contracts()
 	_offer_kit()
-	hazard = _make_hazard()
-	incident = _make_incident()
+	hazard = Route.make_hazard(self)
+	incident = Route.make_incident(self)
 	say(Defs.LINE_HAZARD)
-	_start_event()
+	StationEvents.start_event(self)
 
 
 ## Starts the jump: the dock, each shift step, and the arrival (SPEC Sections 9 and 16).
@@ -225,51 +225,14 @@ func make_payment() -> String:
 	leg += 1
 	jump = 1
 	payment_cut = 0
-	_pick_environment()
+	Route.pick_environment(self)
 	_open_station()
 	# A mod choice after the payment of each leg but the last (SPEC Section 27.1).
-	offer_mods()
+	StationEvents.offer_mods(self)
 	return ""
 
 
-# --- Environments (SPEC Section 28) ---
-
-
-## Selects the environment of a new leg. Two legs do not have the same one
-## (SPEC Section 28.1).
-func _pick_environment() -> void:
-	var last := environment
-	environment = ""
-	if not cat.legs[leg - 1].get("environment", false):
-		return
-	var pool: Array = []
-	for id in Defs.ENVIRONMENTS:
-		if id != last and cat.environments.has(id):
-			pool.append(id)
-	if not pool.is_empty():
-		environment = pool[rng.randi_range(0, pool.size() - 1)]
-
-
-## Selects the incident of the next jump, with its place (SPEC Section 29.1). The
-## place has a cargo when the hold has one.
-func _make_incident() -> Dictionary:
-	var percent: int = cat.legs[leg - 1].get("incident_percent", 0)
-	if percent <= 0 or rng.randi_range(1, 100) > percent:
-		return {}
-	var kind: String = Defs.INCIDENTS[rng.randi_range(0, Defs.INCIDENTS.size() - 1)]
-	var cells: Array = occupancy().keys()
-	cells.sort()
-	if cells.is_empty():
-		for y in rows:
-			for x in columns:
-				cells.append(Vector2i(x, y))
-	var cell: Vector2i = cells[rng.randi_range(0, cells.size() - 1)]
-	match kind:
-		Defs.INCIDENT_METEOR:
-			return {"kind": kind, "x": cell.x}
-		Defs.INCIDENT_ION_PULSE:
-			return {"kind": kind, "y": cell.y}
-	return {"kind": kind, "x": cell.x, "y": cell.y}
+# --- Environments (SPEC Section 28). Route selects them. ---
 
 
 ## Returns a number of the environment now, or the default (SPEC Section 28.2).
@@ -284,26 +247,7 @@ func break_limit(trait_id: String) -> int:
 	return env_value(Defs.ENV_HEAT_ZONE, trait_id, cat.break_limit(trait_id))
 
 
-# --- Events and mods (SPEC Sections 26 and 27) ---
-
-
-## Selects the event of a new station, if it has one (SPEC Section 26.1).
-func _start_event() -> void:
-	event = null
-	var due := jump == cat.event_station
-	if jump == cat.chance_station:
-		due = rng.randi_range(1, 100) <= cat.chance_percent
-	if not due:
-		return
-	var pool: Array = []
-	for e in cat.events:
-		if not e.id in events_seen:
-			pool.append(e)
-	if pool.is_empty():
-		return
-	event = pool[rng.randi_range(0, pool.size() - 1)]
-	events_seen.append(event.id)
-	phase = Defs.PHASE_EVENT
+# --- Events and mods (SPEC Sections 26 and 27). StationEvents has their rules. ---
 
 
 ## Selects a choice of the event. It pays the cost, then does the effects in order
@@ -313,7 +257,7 @@ func choose_event(index: int) -> String:
 		return NO_EVENT_TEXT
 	if index < 0 or index >= event.choices.size():
 		return NO_CHOICE_TEXT
-	var err := choice_error(index)
+	var err := StationEvents.choice_error(self, index)
 	if err != "":
 		return err
 	var choice: Dictionary = event.choices[index]
@@ -322,69 +266,10 @@ func choose_event(index: int) -> String:
 	phase = Defs.PHASE_STATION
 	var mod := false
 	for f: Dictionary in choice["effects"]:
-		mod = _do_effect(f) or mod
+		mod = StationEvents.do_effect(self, f) or mod
 	if mod:
-		offer_mods()
+		StationEvents.offer_mods(self)
 	return ""
-
-
-## Returns why the player cannot select a choice of the open event, or "". A choice
-## with a cost needs the credits, and each of its effects must be able to happen
-## (SPEC Section 26.2).
-func choice_error(index: int) -> String:
-	var choice: Dictionary = event.choices[index]
-	if choice["cost"] == 0:
-		return ""
-	if credits < 0:
-		return IN_DEBT_TEXT
-	if choice["cost"] > credits:
-		return NOT_ENOUGH_TEXT
-	for f: Dictionary in choice["effects"]:
-		if f["type"] == Defs.EFFECT_CLAMP and clamps >= cat.price("clamp_max"):
-			return CLAMPS_MAXED_TEXT
-		if f["type"] == Defs.EFFECT_MOD and _mod_pool().is_empty():
-			return NO_MOD_LEFT_TEXT
-	return ""
-
-
-## Does one effect of an event choice. It returns true for a mod effect.
-func _do_effect(f: Dictionary) -> bool:
-	match f["type"]:
-		Defs.EFFECT_CREDITS:
-			credits += f["amount"]
-		Defs.EFFECT_KIT:
-			new_cargo(cat.cargo[f["cargo"]])
-		Defs.EFFECT_CLAMP:
-			clamps = mini(clamps + 1, cat.price("clamp_max"))
-		Defs.EFFECT_SCRAP:
-			new_cargo(cat.cargo[f["cargo"]]).kind = Defs.KIND_SCRAP
-		Defs.EFFECT_CONTRACT:
-			_next_contract += 1
-			contracts.append(Contract.new(_next_contract, cat.contract(f["contract"])))
-		Defs.EFFECT_PAYMENT:
-			payment_cut += f["amount"]
-		Defs.EFFECT_MOD:
-			return true
-	return false
-
-
-## Returns the IDs of the mods that the ship does not have.
-func _mod_pool() -> Array:
-	var pool: Array = []
-	for id in Defs.MODS:
-		if cat.mods.has(id) and not id in mods:
-			pool.append(id)
-	return pool
-
-
-## Starts a mod choice with the mods that the ship does not have. With no mod left,
-## nothing happens (SPEC Section 27.1).
-func offer_mods() -> void:
-	var pool := _mod_pool()
-	if pool.is_empty():
-		return
-	mod_offer = PackedStringArray(pick_n(rng, pool, cat.mod_offers))
-	phase = Defs.PHASE_MOD
 
 
 ## Selects a mod of the mod choice. Then the event of the station shows, or the
@@ -676,8 +561,7 @@ func _offer_contracts() -> void:
 			kept.append(k)
 	contracts = kept
 	for t: ContractTemplate in picked:
-		_next_contract += 1
-		contracts.append(Contract.new(_next_contract, t))
+		add_contract(t)
 
 
 ## Returns the jumps that are left in the run, with the jump of this station.
@@ -686,6 +570,14 @@ func jumps_left() -> int:
 	for l in range(leg + 1, cat.legs.size() + 1):
 		left += cat.jumps(l)
 	return left
+
+
+## Adds a contract of a template to the board.
+func add_contract(t: ContractTemplate) -> Contract:
+	_next_contract += 1
+	var k := Contract.new(_next_contract, t)
+	contracts.append(k)
+	return k
 
 
 ## Returns the mass of all freight of the templates (content.md).
@@ -883,36 +775,7 @@ func clear_scrap(id: int) -> String:
 	return ""
 
 
-# --- Warp helpers (SPEC Sections 9 and 18) ---
-
-
-## Selects the shift steps of the next jump (SPEC Section 18). Two steps next
-## to each other have different directions.
-## In a leg with fork steps, the last step is a fork step (SPEC Section 18): two
-## directions that are not the step before it and not opposite to each other. The
-## seed selects the direction that happens now.
-func _make_hazard() -> PackedStringArray:
-	var s: Dictionary = cat.legs[leg - 1]
-	var span: Vector2i = s["hazard_steps"][jump - 1]
-	var n := rng.randi_range(span.x, span.y)
-	var steps: PackedStringArray = []
-	fork_options = PackedStringArray()
-	for i in n:
-		var choices: PackedStringArray = []
-		for d in Defs.DIRECTIONS:
-			if steps.is_empty() or steps[-1] != d:
-				choices.append(d)
-		if i == n - 1 and s["fork"]:
-			var pairs: Array = []
-			for a in choices.size():
-				for b in range(a + 1, choices.size()):
-					if Defs.delta(choices[a]) != -Defs.delta(choices[b]):
-						pairs.append(PackedStringArray([choices[a], choices[b]]))
-			fork_options = pairs[rng.randi_range(0, pairs.size() - 1)]
-			steps.append(fork_options[rng.randi_range(0, 1)])
-		else:
-			steps.append(choices[rng.randi_range(0, choices.size() - 1)])
-	return steps
+# --- Warp helpers (SPEC Section 9) ---
 
 
 ## Handles the cargo on the dock at the warp (SPEC Sections 9 and 15.4): freight

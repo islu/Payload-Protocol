@@ -376,6 +376,34 @@ msgstr "語言"
 msgid "{weight} × {cells} = {force}"
 msgstr "{weight} × {cells} = {force}"
 
+#: project/scenes/station/cargo_tip.gd
+msgid "{kind} · {weight} (weight {value})"
+msgstr "{kind} · {weight}（重量 {value}）"
+
+#: project/scenes/station/cargo_tip.gd
+msgid "Pays {pay} at the arrival"
+msgstr "抵達時付 {pay} 點"
+
+#: project/scenes/station/cargo_tip.gd
+msgid "Sells for {price}"
+msgstr "賣價 {price} 點"
+
+#: project/scenes/station/cargo_tip.gd
+msgid "Clear for {price}"
+msgstr "清除費 {price} 點"
+
+#: project/scenes/station/cargo_tip.gd
+msgid "No Cooler next to it: it spoils at the arrival."
+msgstr "旁邊沒有冷藏機：抵達時會腐爛。"
+
+#: project/scenes/station/cargo_tip.gd
+msgid "No Battery next to it: no power."
+msgstr "旁邊沒有電池：沒有電力。"
+
+#: project/scenes/station/cargo_tip.gd
+msgid "Mass {mass}"
+msgstr "載重 {mass}"
+
 #: project/scenes/station/contract_card.gd
 msgid "Accept"
 msgstr "接下"
@@ -582,30 +610,6 @@ msgid "Drag cargo, or click to pick it up and click to drop it. Right click or R
 msgstr "拖曳貨物，或點一下拿起、再點一下放下。右鍵或 R 旋轉。"
 
 #: project/scenes/station/station_screen.gd
-msgid "{kind} · {weight} (weight {value})"
-msgstr "{kind} · {weight}（重量 {value}）"
-
-#: project/scenes/station/station_screen.gd
-msgid "Pays {pay} at the arrival"
-msgstr "抵達時付 {pay} 點"
-
-#: project/scenes/station/station_screen.gd
-msgid "Sells for {price}"
-msgstr "賣價 {price} 點"
-
-#: project/scenes/station/station_screen.gd
-msgid "Clear for {price}"
-msgstr "清除費 {price} 點"
-
-#: project/scenes/station/station_screen.gd
-msgid "No Cooler next to it: it spoils at the arrival."
-msgstr "旁邊沒有冷藏機：抵達時會腐爛。"
-
-#: project/scenes/station/station_screen.gd
-msgid "No Battery next to it: no power."
-msgstr "旁邊沒有電池：沒有電力。"
-
-#: project/scenes/station/station_screen.gd
 msgid "Mass {hold}/{limit}"
 msgstr "載重 {hold}/{limit}"
 
@@ -630,10 +634,6 @@ msgstr "復原 (Ctrl+Z)"
 #: project/data/terms.json
 msgid "Sensor"
 msgstr "感測器"
-
-#: project/scenes/station/station_screen.gd
-msgid "Mass {mass}"
-msgstr "載重 {mass}"
 
 #: project/scenes/station/station_screen.gd
 msgid "Load all"

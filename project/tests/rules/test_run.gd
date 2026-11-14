@@ -252,7 +252,7 @@ func test_hazard() -> void:
 		var r := Run.new(run.cat, i + 1)
 		r.leg = 3
 		r.jump = 2
-		var h := r._make_hazard()
+		var h := Route.make_hazard(r)
 		check(h.size() >= 2 and h.size() <= 3, "leg 3 has 2 or 3 steps (SPEC Section 18)")
 		for k in range(1, h.size()):
 			check(h[k] != h[k - 1], "two steps next to each other differ (SPEC Section 18)")

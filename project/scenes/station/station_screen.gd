@@ -28,12 +28,6 @@ const CONFIRM_TITLE_TEXT := "Cargo on the dock"
 const CONFIRM_TEXT := "Cargo on the dock stays at the station.\nEach freight on the dock pays a breach fee of {fee} credits.\nEach kit on the dock is sold at half price.\nWarp now?"
 # gdlint:ignore = max-line-length
 const HINT_TEXT := "Drag cargo, or click to pick it up and click to drop it. Right click or R rotates it."
-const TIP_WEIGHT_TEXT := "{kind} · {weight} (weight {value})"
-const TIP_PAY_TEXT := "Pays {pay} at the arrival"
-const TIP_SELL_TEXT := "Sells for {price}"
-const TIP_CLEAR_TEXT := "Clear for {price}"
-const NO_COOLER_TEXT := "No Cooler next to it: it spoils at the arrival."
-const NO_POWER_TEXT := "No Battery next to it: no power."
 const MASS_TEXT := "Mass {hold}/{limit}"
 const FUEL_TEXT := "Fuel fee {fee}"
 const OVER_MAX_TEXT := "Too heavy: {max} at most"
@@ -44,22 +38,16 @@ const SENSOR_TEXT := "Sensor"
 ## The characters of a pilot line that type out in each second (SPEC Section 22).
 const TYPE_SPEED := 40.0
 const ARROWS := {Defs.DIR_LEFT: "←", Defs.DIR_RIGHT: "→", Defs.DIR_UP: "↑", Defs.DIR_DOWN: "↓"}
-const TIP_MASS_TEXT := "Mass {mass}"
 const LOAD_ALL_TEXT := "Load all"
 const SIDE_WIDTH := 470.0
 const SELL_HEIGHT := 48.0
 ## The cell of the cargo on the dock (SPEC Section 20.2).
 const DOCK_CELL := 48.0
-## A press and a release closer than this are a click: a pick up (SPEC Section 8.2).
-const CLICK_DISTANCE := 8.0
 
 var _view: Dictionary = {}
 var _run: Dictionary = {}
-## The drag now: {kind: "cargo" or "clamp", id, rot, grab: Vector2, press: Vector2,
-## held: bool}, or empty. held is true after a click: a pick up (SPEC Section 8.2).
-var _drag: Dictionary = {}
-## True after the click that drops a picked-up cargo, so that its release does nothing.
-var _ignore_release := false
+## The drag of a cargo or a clamp (SPEC Sections 8.2, 8.3, and 13).
+var _drag := StationDrag.new(self)
 var _hover_contract := -1
 ## The credits that the top bar shows now. They count to the view (SPEC Section 21.4).
 var _shown_credits := -1
@@ -88,8 +76,7 @@ var _undo_button: Button
 var _pilot_label: Label
 var _pilot_face: PilotFace
 var _type_tween: Tween
-var _tip: PanelContainer
-var _tip_label: RichTextLabel
+var _tip: CargoTip
 var _toast: Label
 var _confirm: ConfirmationDialog
 var _drag_layer: DragLayer
@@ -248,18 +235,7 @@ func _build() -> void:
 	_fx.hold = _hold
 	add_child(_fx)
 
-	_tip = PanelContainer.new()
-	_tip.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_tip.visible = false
-	_tip.z_index = 10
-	_tip_label = RichTextLabel.new()
-	_tip_label.bbcode_enabled = true
-	_tip_label.fit_content = true
-	_tip_label.custom_minimum_size.x = 360
-	_tip_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	for key in ["normal_font_size", "bold_font_size"]:
-		_tip_label.add_theme_font_size_override(key, TextSize.BODY)
-	_tip.add_child(_tip_label)
+	_tip = CargoTip.new()
 	add_child(_tip)
 
 	_toast = Label.new()
@@ -506,7 +482,7 @@ func _refresh_dock() -> void:
 			continue
 		var chip := CargoChip.new().setup(c, DOCK_CELL)
 		chip.pressed.connect(
-			func(chip: CargoChip) -> void: _begin_cargo_drag(c["id"], Vector2(chip.press_cell))
+			func(chip: CargoChip) -> void: _drag.begin_cargo(c["id"], Vector2(chip.press_cell))
 		)
 		chip.mouse_entered.connect(func() -> void: _show_tip(c))
 		chip.mouse_exited.connect(_hide_tip)
@@ -556,7 +532,7 @@ func _refresh_clamps() -> void:
 	_clear(_clamp_box)
 	for i in _run["free_clamps"]:
 		var chip := ClampChip.new()
-		chip.pressed.connect(func() -> void: _begin_clamp_drag())
+		chip.pressed.connect(func() -> void: _drag.begin_clamp())
 		_clamp_box.add_child(chip)
 	_clamp_label.text = tr(FREE_CLAMPS_TEXT).format(
 		{"free": _run["free_clamps"], "total": _run["clamps"]}
@@ -580,8 +556,8 @@ func _update_marks() -> void:
 		if not b.is_empty():
 			zone = b["zone"]
 	# A drag of the freight of a zone contract shows the zone (SPEC Section 15.3).
-	if not _drag.is_empty() and _drag["kind"] == "cargo":
-		var c := _cargo(_drag["id"])
+	if _drag.is_active() and _drag.state["kind"] == "cargo":
+		var c := _cargo(_drag.state["id"])
 		if c.get("contract", -1) >= 0:
 			var b: Dictionary = _run["contracts"][c["contract"]]["bonus"]
 			if not b.is_empty():
@@ -636,7 +612,7 @@ func _on_warp_pressed() -> void:
 
 
 func _on_hold_pressed(id: int, grab: Vector2i, button: int) -> void:
-	if not _drag.is_empty():
+	if _drag.is_active():
 		return
 	if button == MOUSE_BUTTON_RIGHT:
 		var err := GameState.rotate_cargo(id)
@@ -644,247 +620,36 @@ func _on_hold_pressed(id: int, grab: Vector2i, button: int) -> void:
 		if err == "":
 			Hints.done(Hints.ROTATE)
 	elif button == MOUSE_BUTTON_LEFT:
-		_begin_cargo_drag(id, Vector2(grab))
+		_drag.begin_cargo(id, Vector2(grab))
 
 
-# --- Drag (SPEC Sections 8.2, 8.3, and 13) ---
-
-
-func _begin_cargo_drag(id: int, grab: Vector2) -> void:
-	var c := _cargo(id)
-	if c.is_empty():
-		return
-	_hide_tip()
-	_drag = {
-		"kind": "cargo",
-		"id": id,
-		"rot": c["rot"],
-		"grab": grab,
-		"press": get_global_mouse_position(),
-		"held": false,
-		"from_dock": not c["in_hold"],
-	}
-	_hold.dragging = id
-	_show_sell(c)
-	_drag_layer.start(c, c["rotations"][c["rot"]], grab)
-	_update_drag()
-	_update_marks()
-
-
-func _begin_clamp_drag() -> void:
-	_drag = {"kind": "clamp", "press": get_global_mouse_position(), "held": false}
-	_drag_layer.start_clamp()
+# --- Input ---
 
 
 func _input(event: InputEvent) -> void:
-	var left_release: bool = (
-		event is InputEventMouseButton
-		and event.button_index == MOUSE_BUTTON_LEFT
-		and not event.pressed
-	)
-	if _ignore_release and left_release:
-		_ignore_release = false
+	if _drag.handle_input(event):
 		get_viewport().set_input_as_handled()
-		return
-	if _drag.is_empty():
-		if event.is_action_pressed(&"ui_undo"):
-			_undo()
-			get_viewport().set_input_as_handled()
-		return
-	if event is InputEventMouseMotion:
-		_update_drag()
-	elif event is InputEventMouseButton:
-		if event.button_index == MOUSE_BUTTON_LEFT:
-			_on_left_button(event.pressed)
-			get_viewport().set_input_as_handled()
-		elif event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
-			_rotate_drag()
-			get_viewport().set_input_as_handled()
-	elif event is InputEventKey and event.pressed and not event.echo:
-		if event.keycode == KEY_R:
-			_rotate_drag()
-		elif event.keycode == KEY_ESCAPE:
-			_end_drag()
+	elif not _drag.is_active() and event.is_action_pressed(&"ui_undo"):
+		_undo()
 		get_viewport().set_input_as_handled()
-
-
-## The left button while the player holds a cargo or a clamp (SPEC Section 8.2):
-## a release after a drag drops it, a release after a click picks it up, and the
-## next press drops a picked-up cargo.
-func _on_left_button(pressed: bool) -> void:
-	if pressed:
-		if _drag["held"]:
-			_ignore_release = true
-			_drop()
-		return
-	if (
-		not _drag["held"]
-		and get_global_mouse_position().distance_to(_drag["press"]) < CLICK_DISTANCE
-	):
-		_drag["held"] = true
-	else:
-		_drop()
-
-
-func _rotate_drag() -> void:
-	if _drag["kind"] != "cargo":
-		return
-	var c := _cargo(_drag["id"])
-	# The same cell of the cargo stays under the cursor (SPEC Section 8.2).
-	_drag["grab"] = HoldView.rotate_grab(c["rotations"][_drag["rot"]], _drag["grab"])
-	_drag["rot"] = (_drag["rot"] + 1) % 4
-	Hints.done(Hints.ROTATE)
-	_show_pilot()
-	_drag_layer.start(c, c["rotations"][_drag["rot"]], _drag["grab"])
-	_update_drag()
-
-
-func _update_drag() -> void:
-	var mouse := get_global_mouse_position()
-	_drag_layer.queue_redraw()
-	if _drag["kind"] != "cargo" or not _hold.is_over(mouse):
-		_hold.preview = {}
-		_hold.queue_redraw()
-		return
-	var origin := _hold.snap_origin(mouse, _drag["grab"])
-	var c := _cargo(_drag["id"])
-	var cells: Array[Vector2i] = []
-	for s: Dictionary in c["rotations"][_drag["rot"]]:
-		cells.append(origin + Vector2i(s["x"], s["y"]))
-	_hold.preview = {
-		"cells": cells,
-		"ok": GameState.can_place(_drag["id"], origin.x, origin.y, _drag["rot"]),
-		"links": GameState.preview_links(_drag["id"], origin.x, origin.y, _drag["rot"]),
-		"id": _drag["id"],
-	}
-	_hold.queue_redraw()
-
-
-func _drop() -> void:
-	_drop_at(get_global_mouse_position())
-
-
-## Drops the held cargo or clamp at a global position (SPEC Sections 8.2 and 13).
-func _drop_at(mouse: Vector2) -> void:
-	var drag := _drag
-	_end_drag()
-	if drag["kind"] == "clamp":
-		if _hold.is_over(mouse):
-			var target := _hold.cargo_at(_hold.cell_at(mouse))
-			if target >= 0:
-				_act(GameState.clamp_cargo(target), "clack")
-		return
-	var id: int = drag["id"]
-	var c := _cargo(id)
-	if _sell_area.get_global_rect().has_point(mouse):
-		if c["kind"] == Defs.KIND_SCRAP:
-			_act(GameState.clear_scrap(id), "coin")
-		else:
-			_act(GameState.sell_kit(id), "coin")
-	elif _dock_panel.get_global_rect().has_point(mouse):
-		if c["in_hold"]:
-			_act(GameState.dock_cargo(id))
-	elif _hold.is_over(mouse):
-		var origin := _hold.snap_origin(mouse, drag["grab"])
-		var err := GameState.place_cargo(id, origin.x, origin.y, drag["rot"])
-		_act(err, "clack")
-		# A picked-up cargo from the dock: pick up the next one (SPEC Section 8.2).
-		if err == "" and drag["held"] and drag["from_dock"]:
-			_pick_next()
-	# A drop anywhere else leaves the cargo in its last place (SPEC Section 8.3).
-
-
-## Picks up the next cargo on the dock after a placement by clicks (SPEC Section 8.2).
-func _pick_next() -> void:
-	# refresh() set _run for this action already.
-	var dock: Array = _run["dock"]
-	if dock.is_empty():
-		return
-	# Grab a real cell of the shape: cell (0, 0) of the box can be empty (SPEC Section 8.3).
-	var c := _cargo(dock[0])
-	var first: Dictionary = c["rotations"][c["rot"]][0]
-	_begin_cargo_drag(dock[0], Vector2(first["x"], first["y"]))
-	_drag["held"] = true
-
-
-func _end_drag() -> void:
-	_drag = {}
-	_show_sell({})
-	_hold.dragging = -1
-	_hold.preview = {}
-	_drag_layer.stop()
-	_update_marks()
 
 
 # --- Tooltip (SPEC Section 8.4) ---
 
 
 func _on_hold_hovered(id: int) -> void:
-	if id < 0 or not _drag.is_empty():
+	if id < 0 or _drag.is_active():
 		_hide_tip()
 	else:
 		_show_tip(_cargo(id))
 
 
+## Shows the tooltip of a cargo view, unless a drag is on (SPEC Section 8.4). The
+## contract cards and the shop call it too.
 func _show_tip(c: Dictionary) -> void:
-	if c.is_empty() or not _drag.is_empty():
-		return
-	var names: Dictionary = _view["names"]
-	var lines := PackedStringArray()
-	lines.append("[b]%s[/b]" % tr(c["name"]))
-	var kind: String = c.get("kind", Defs.KIND_FREIGHT)
-	(
-		lines
-		. append(
-			(
-				tr(TIP_WEIGHT_TEXT)
-				. format(
-					{
-						"kind": tr(names["kinds"].get(kind, kind)),
-						"weight": tr(names["weights"].get(c["weight"], c["weight"])),
-						"value": c["weight_value"],
-					}
-				)
-			)
-		)
-	)
-	for t: String in c.get("traits", []):
-		for term: Dictionary in _view["terms"]:
-			if term["id"] == t:
-				var color: Color = Palette.TRAIT_COLORS.get(t, Palette.TEXT)
-				lines.append(
-					(
-						"[color=#%s]%s[/color]: %s"
-						% [color.to_html(false), tr(term["name"]), GameText.format(term["rule"])]
-					)
-				)
-	lines.append(tr(TIP_MASS_TEXT).format({"mass": c["mass"]}))
-	if c.get("pay", 0) > 0:
-		lines.append(tr(TIP_PAY_TEXT).format({"pay": c["pay"]}))
-	if c.get("sell_price", 0) > 0:
-		lines.append(tr(TIP_SELL_TEXT).format({"price": c["sell_price"]}))
-	if c.get("clear_price", 0) > 0:
-		lines.append(tr(TIP_CLEAR_TEXT).format({"price": c["clear_price"]}))
-	if c.get("no_cooler", false):
-		lines.append("[color=#%s]%s[/color]" % [Palette.WARN.to_html(false), tr(NO_COOLER_TEXT)])
-	if c.get("no_power", false):
-		lines.append("[color=#%s]%s[/color]" % [Palette.WARN.to_html(false), tr(NO_POWER_TEXT)])
-	_tip_label.text = "\n".join(lines)
-	_tip.visible = true
-	_tip.reset_size()
-	_place_tip()
-
-
-func _place_tip() -> void:
-	var p := get_global_mouse_position() + Vector2(18, 18)
-	var max_p := size - _tip.size - Vector2(8, 8)
-	_tip.position = Vector2(minf(p.x, max_p.x), minf(p.y, max_p.y))
+	if not _drag.is_active():
+		_tip.show_cargo(c, _view)
 
 
 func _hide_tip() -> void:
 	_tip.visible = false
-
-
-func _process(_delta: float) -> void:
-	if _tip.visible:
-		_place_tip()

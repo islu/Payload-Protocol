@@ -71,12 +71,6 @@ This file keeps each problem that is found and not fixed yet. Each item is in on
 
 - **[Art · Data] A new image for the Foam Pad** (found 2026-11-14, by the user). The Foam Pad uses a rolled yoga mat (`tools/art/cargo_art.json`). The image does not look like a cushion kit, and the "fit" scale makes it a little soft.
   To do                 Fix: find a FreePixel image of a foam pad or a cushion that fits a line of 2 cells. Change its `source` and run `task art`.
-- **[Refactor · Rules] Split run.gd** (found 2026-11-14, by /code-review). `run.gd` has 955 lines and 66 functions: placement, contracts, the shop, the mass, the hazard, the events, the mods, the environments, the incidents, and the lines.
-  To do                 Fix: move the events and the mods, and the route (hazard, environment, incident), into static classes, as `Shift` and `Arrival` are. Keep the actions on `Run`.
-- **[Refactor · Scenes] Split station_screen.gd** (found 2026-11-14, by /code-review). `station_screen.gd` has 890 lines: the layout, the drag, the drops, the tooltip, and the sell area.
-  To do                 Fix: move the drag and the drops into a class of their own. Update the `godot-ui` skill.
-- **[Refactor · Scenes] One view for each state change** (found 2026-11-14, by /code-review). `GameState.view()` builds the full view at each call. Each `state_changed` makes `main`, `StationScreen`, and `PhasePanel` build it one time each.
-  To do                 Fix: build the view one time at each `state_changed`, and return that copy until the next change.
 - **[UX · Scenes] Icons on the mod choice** (found 2026-11-14, by /code-review). The mod choice shows buttons with a name and a rule. An icon for each mod helps the player find a mod again on the top bar.
   To do                 Fix: draw an icon for each mod, and show it on the button and on the tag of the top bar. Add it to SPEC Section 20.9.
 - **[Docs · Docs] A README for players** (found 2026-11-12, by the first plan). The itch.io page needs a short text for players: how to start, the controls, and where to send feedback.

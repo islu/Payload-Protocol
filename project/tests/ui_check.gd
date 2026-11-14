@@ -514,62 +514,65 @@ func _check_chain(station: StationScreen) -> void:
 	if run["dock"].size() < 2:
 		return
 	var first: int = run["dock"][0]
-	station._begin_cargo_drag(first, Vector2.ZERO)
+	station._drag.begin_cargo(first, Vector2.ZERO)
 	var release := InputEventMouseButton.new()
 	release.button_index = MOUSE_BUTTON_LEFT
 	station._input(release)
 	var hold := station._hold
 	for y in run["hold"]["rows"]:
 		for x in run["hold"]["columns"]:
-			if not station._drag.get("id", -1) == first:
+			if not station._drag.state.get("id", -1) == first:
 				continue
-			if GameState.can_place(first, x, y, station._drag["rot"]):
+			if GameState.can_place(first, x, y, station._drag.state["rot"]):
 				var at := (
 					hold.global_position
 					+ hold.grid_origin()
 					+ (Vector2(x, y) + Vector2(0.7, 0.7)) * hold.cell
 				)
-				station._drop_at(at)
+				station._drag.drop_at(at)
 	var placed: Array = GameState.view()["run"]["cargo"].filter(
 		func(c: Dictionary) -> bool: return c["id"] == first
 	)
 	_check(placed[0]["in_hold"], "a click drops the cargo in the hold (SPEC Section 8.2)")
 	_check(
 		(
-			not station._drag.is_empty()
-			and station._drag["held"]
-			and station._drag["id"] == run["dock"][1]
+			not station._drag.state.is_empty()
+			and station._drag.state["held"]
+			and station._drag.state["id"] == run["dock"][1]
 		),
 		"the next dock cargo is picked up (SPEC Section 8.2)"
 	)
-	station._end_drag()
+	station._drag.end()
 
 
 ## Picks up a cargo with a click, rotates it with R, and drops it with a click (SPEC Section 8.2).
 func _check_pick_up(station: StationScreen, id: int) -> void:
-	station._begin_cargo_drag(id, Vector2.ZERO)
+	station._drag.begin_cargo(id, Vector2.ZERO)
 	var release := InputEventMouseButton.new()
 	release.button_index = MOUSE_BUTTON_LEFT
 	release.pressed = false
 	station._input(release)
 	_check(
-		not station._drag.is_empty() and station._drag["held"],
+		not station._drag.state.is_empty() and station._drag.state["held"],
 		"a click picks up a cargo (SPEC Section 8.2)"
 	)
-	var rot: int = station._drag["rot"]
+	var rot: int = station._drag.state["rot"]
 	var r := InputEventKey.new()
 	r.keycode = KEY_R
 	r.pressed = true
 	station._input(r)
-	_check(station._drag["rot"] == (rot + 1) % 4, "R rotates a picked-up cargo (SPEC Section 8.2)")
+	_check(
+		station._drag.state["rot"] == (rot + 1) % 4,
+		"R rotates a picked-up cargo (SPEC Section 8.2)"
+	)
 	var press := InputEventMouseButton.new()
 	press.button_index = MOUSE_BUTTON_LEFT
 	press.pressed = true
 	station._input(press)
-	_check(station._drag.is_empty(), "the next click drops it (SPEC Section 8.2)")
+	_check(station._drag.state.is_empty(), "the next click drops it (SPEC Section 8.2)")
 	station._input(release)
 	_check(
-		not station._ignore_release,
+		not station._drag.ignore_release,
 		"the release of the drop click does nothing more (SPEC Section 8.2)"
 	)
 
@@ -631,11 +634,11 @@ func _play_station(state: Node, station: StationScreen) -> void:
 	if not run["cargo"].is_empty():
 		_check_pick_up(station, run["cargo"][0]["id"])
 		var c: Dictionary = run["cargo"][0]
-		station._begin_cargo_drag(c["id"], Vector2.ZERO)
-		station._rotate_drag()
-		station._end_drag()
-	station._begin_clamp_drag()
-	station._end_drag()
+		station._drag.begin_cargo(c["id"], Vector2.ZERO)
+		station._drag.rotate()
+		station._drag.end()
+	station._drag.begin_clamp()
+	station._drag.end()
 	station._act("", "coin")
 	_check(station._fx.played.has("coin"), "a coin sound shows a gold sparkle (SPEC Section 21.4)")
 	_check(
@@ -660,6 +663,9 @@ func _check_undo(state: Node, station: StationScreen) -> void:
 	var before: Array = accepted.call()
 	if before.is_empty():
 		return
+	# GameState builds the view one time for each state change.
+	var first: Dictionary = state.view()
+	_check(is_same(first, state.view()), "with no change, the view is the same copy")
 	_check(not station._undo_button.disabled, "after an action, Undo is on (SPEC Section 20.2)")
 	var key := InputEventKey.new()
 	key.keycode = KEY_Z
@@ -668,6 +674,7 @@ func _check_undo(state: Node, station: StationScreen) -> void:
 	station._input(key)
 	await get_tree().process_frame
 	var after: Array = accepted.call()
+	_check(not is_same(first, state.view()), "after a change, the view is new")
 	_check(
 		after.size() == before.size() - 1,
 		"Ctrl+Z takes back the last contract: %s, then %s (SPEC Section 20.2)" % [before, after]
@@ -839,9 +846,9 @@ func _check_shop(station: StationScreen) -> void:
 		"a drag of a scrap makes the sell area red (SPEC Section 20.2)"
 	)
 	if not run["cargo"].is_empty():
-		station._begin_cargo_drag(run["cargo"][0]["id"], Vector2.ZERO)
+		station._drag.begin_cargo(run["cargo"][0]["id"], Vector2.ZERO)
 		_check(station._sell_mode != "idle", "a drag changes the sell area (SPEC Section 20.2)")
-		station._end_drag()
+		station._drag.end()
 	_check(
 		station._sell_mode == "idle",
 		"the end of a drag makes the sell area idle (SPEC Section 20.2)"
@@ -969,11 +976,11 @@ func _check_snap(station: StationScreen) -> void:
 		if shape.size() < 2:
 			continue
 		var grab := Vector2(shape[-1]["x"], shape[-1]["y"])
-		station._begin_cargo_drag(c["id"], grab)
-		station._rotate_drag()
+		station._drag.begin_cargo(c["id"], grab)
+		station._drag.rotate()
 		_check(
-			station._drag["grab"] == HoldView.rotate_grab(shape, grab),
+			station._drag.state["grab"] == HoldView.rotate_grab(shape, grab),
 			"R keeps the grab cell under the mouse (SPEC Section 8.2)"
 		)
-		station._end_drag()
+		station._drag.end()
 		break

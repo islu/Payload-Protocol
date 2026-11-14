@@ -450,7 +450,7 @@ static func event(run: Run) -> Dictionary:
 		var effects := []
 		for f: Dictionary in c["effects"]:
 			effects.append(_effect(run, f))
-		var why := run.choice_error(i)
+		var why := StationEvents.choice_error(run, i)
 		(
 			choices
 			. append(

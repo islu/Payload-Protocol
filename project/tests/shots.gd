@@ -97,7 +97,7 @@ func _station() -> void:
 	var station: StationScreen = _main.screen()
 	run = GameState.view()["run"]
 	if not run["dock"].is_empty():
-		station._begin_cargo_drag(run["dock"][0], Vector2.ZERO)
+		station._drag.begin_cargo(run["dock"][0], Vector2.ZERO)
 		var release := InputEventMouseButton.new()
 		release.button_index = MOUSE_BUTTON_LEFT
 		station._input(release)
@@ -107,7 +107,7 @@ func _station() -> void:
 			break
 	await _wait(0.4)
 	await _shot("05_station_loaded")
-	station._end_drag()
+	station._drag.end()
 	station._hide_tip()
 	var pause: Overlay = _main.open_overlay(PauseMenu.new())
 	pause.add_child(SettingsPanel.new())
@@ -123,7 +123,7 @@ func _mod_choice() -> void:
 	var run: Dictionary = GameState.view()["run"]
 	if run["phase"] == Defs.PHASE_EVENT:
 		GameState.choose_event(run["event"]["choices"].size() - 1)
-	GameState._record.run.offer_mods()
+	StationEvents.offer_mods(GameState._record.run)
 	GameState.state_changed.emit()
 	await _wait(0.6)
 	await _shot("10_mod_choice")

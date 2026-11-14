@@ -353,6 +353,34 @@ msgstr ""
 msgid "{weight} × {cells} = {force}"
 msgstr ""
 
+#: project/scenes/station/cargo_tip.gd
+msgid "{kind} · {weight} (weight {value})"
+msgstr ""
+
+#: project/scenes/station/cargo_tip.gd
+msgid "Pays {pay} at the arrival"
+msgstr ""
+
+#: project/scenes/station/cargo_tip.gd
+msgid "Sells for {price}"
+msgstr ""
+
+#: project/scenes/station/cargo_tip.gd
+msgid "Clear for {price}"
+msgstr ""
+
+#: project/scenes/station/cargo_tip.gd
+msgid "No Cooler next to it: it spoils at the arrival."
+msgstr ""
+
+#: project/scenes/station/cargo_tip.gd
+msgid "No Battery next to it: no power."
+msgstr ""
+
+#: project/scenes/station/cargo_tip.gd
+msgid "Mass {mass}"
+msgstr ""
+
 #: project/scenes/station/contract_card.gd
 msgid "Accept"
 msgstr ""
@@ -555,30 +583,6 @@ msgid "Drag cargo, or click to pick it up and click to drop it. Right click or R
 msgstr ""
 
 #: project/scenes/station/station_screen.gd
-msgid "{kind} · {weight} (weight {value})"
-msgstr ""
-
-#: project/scenes/station/station_screen.gd
-msgid "Pays {pay} at the arrival"
-msgstr ""
-
-#: project/scenes/station/station_screen.gd
-msgid "Sells for {price}"
-msgstr ""
-
-#: project/scenes/station/station_screen.gd
-msgid "Clear for {price}"
-msgstr ""
-
-#: project/scenes/station/station_screen.gd
-msgid "No Cooler next to it: it spoils at the arrival."
-msgstr ""
-
-#: project/scenes/station/station_screen.gd
-msgid "No Battery next to it: no power."
-msgstr ""
-
-#: project/scenes/station/station_screen.gd
 msgid "Mass {hold}/{limit}"
 msgstr ""
 
@@ -602,10 +606,6 @@ msgstr ""
 #: project/scenes/station/station_screen.gd
 #: project/data/terms.json
 msgid "Sensor"
-msgstr ""
-
-#: project/scenes/station/station_screen.gd
-msgid "Mass {mass}"
 msgstr ""
 
 #: project/scenes/station/station_screen.gd
