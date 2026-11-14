@@ -32,7 +32,7 @@ Each cargo has these properties:
 ### 6.2 Freight
 
 - Freight comes only from contracts (Section 15).
-- Freight goes to the next station. Each contract ends at the arrival of the jump after the player accepts it.
+- Freight goes to the next station. Each contract ends at the arrival of the jump after the player accepts it. A long contract ends after 2 jumps (Section 30.2).
 - At the arrival, intact freight leaves the hold (Section 16).
 
 ### 6.3 Kit
@@ -60,7 +60,7 @@ A cargo can have more than one trait.
 | **Fragile** | Breaks at a hit with a force of 2 or more. | 11.1 |
 | **Volatile** | Explodes at a hit with a force of 3 or more. The explosion breaks cargo around it. | 11.2 |
 | **Fluid** | Leaks at a hit with a force of 2 or more. The leak shorts each Electronic cargo next to it. | 11.3 |
-| **Electronic** | Shorts when a Fluid cargo next to it leaks. | 11.3 |
+| **Electronic** | Shorts when a Fluid cargo next to it leaks. A Radiation Belt and an Ion Pulse can short it too. | 11.3, 28.2, 29.2 |
 | **Perishable** | Spoils at the arrival if it is not next to a Cooler. | 12.1 |
 | **Thruster** | Slides 1 cell at most in each shift step. | 10.2 |
 | **Cushion** | Each hit on it or by it has a force of 0. | 10.3 |
@@ -70,7 +70,7 @@ A cargo can have more than one trait.
 | **Sensor** | At the station, it shows the direction of the fork step. | 18.1 |
 
 - A **break limit** is the force at which a trait reacts: Fragile 2, Volatile 3, Fluid 2. `rules.json` has the values.
-- A cargo with no Fragile, Volatile, or Fluid trait never breaks from a hit. It can break only from an explosion, a short, or a spoil.
+- A cargo with no Fragile, Volatile, or Fluid trait does not break from a hit. It can become scrap only from an explosion, a short, a spoil, or a Hull Breach (Section 29.2).
 
 ## 8. Placement
 

@@ -39,7 +39,6 @@ This file keeps each problem that is found and not fixed yet. Each item is in on
   - The text player does not show the Reinforce hull price.
   - With Padded Walls, the station still says that the front wall gives a jolt, and the log still says "hits the wall with force 2".
   - A contract offer does not show its mass in the text player (SPEC Section 20 shows it on the screen).
-  - A 2-jump contract (`long_colony`) is offered at the last jump of the run, so it cannot arrive.
   - The hull breach debris has the name "Cargo Crate".
   - Nothing in the text player tells the force that breaks each trait.
 
@@ -64,8 +63,6 @@ This file keeps each problem that is found and not fixed yet. Each item is in on
 
 ## To Do
 
-- **[Bug · Locale] zh-TW text in the English event tags** (found 2026-11-14, by /playtest seed 22). With the English locale, the event choices show `[新合約：黑市]` and `[cost 10, 本期還款 -15]`. Find where the effect text is translated and why it does not follow the locale.
-  To do                 Fix: make the effect tags follow the locale. Add a check to the test of the event view.
 - **[Balance · Data] The offer rate of the new contracts** (found 2026-11-14, by /playtest seed 22). The 3 personas saw 27 stations, and only `greenhouse` was offered (once). `prosthetics` and `warp_core` were not offered. The pay of `prosthetics` (now 4 each) and `greenhouse` (now 13 each) changed from the data, not from play. `warp_core` (24 + 10) pays 5.7 for each point of mass, more than the leg 3 median 4.7, but a wall jolt explodes it.
   To do                 Fix: count the offers of each contract over many seeds, and play the 3 contracts in a playtest.
 
@@ -74,6 +71,14 @@ This file keeps each problem that is found and not fixed yet. Each item is in on
 
 - **[Art · Data] A new image for the Foam Pad** (found 2026-11-14, by the user). The Foam Pad uses a rolled yoga mat (`tools/art/cargo_art.json`). The image does not look like a cushion kit, and the "fit" scale makes it a little soft.
   To do                 Fix: find a FreePixel image of a foam pad or a cushion that fits a line of 2 cells. Change its `source` and run `task art`.
+- **[Refactor · Rules] Split run.gd** (found 2026-11-14, by /code-review). `run.gd` has 955 lines and 66 functions: placement, contracts, the shop, the mass, the hazard, the events, the mods, the environments, the incidents, and the lines.
+  To do                 Fix: move the events and the mods, and the route (hazard, environment, incident), into static classes, as `Shift` and `Arrival` are. Keep the actions on `Run`.
+- **[Refactor · Scenes] Split station_screen.gd** (found 2026-11-14, by /code-review). `station_screen.gd` has 890 lines: the layout, the drag, the drops, the tooltip, and the sell area.
+  To do                 Fix: move the drag and the drops into a class of their own. Update the `godot-ui` skill.
+- **[Refactor · Scenes] One view for each state change** (found 2026-11-14, by /code-review). `GameState.view()` builds the full view at each call. Each `state_changed` makes `main`, `StationScreen`, and `PhasePanel` build it one time each.
+  To do                 Fix: build the view one time at each `state_changed`, and return that copy until the next change.
+- **[UX · Scenes] Icons on the mod choice** (found 2026-11-14, by /code-review). The mod choice shows buttons with a name and a rule. An icon for each mod helps the player find a mod again on the top bar.
+  To do                 Fix: draw an icon for each mod, and show it on the button and on the tag of the top bar. Add it to SPEC Section 20.9.
 - **[Docs · Docs] A README for players** (found 2026-11-12, by the first plan). The itch.io page needs a short text for players: how to start, the controls, and where to send feedback.
   To do                 Fix: write the text. Keep README.md for developers.
 - **[Build · Build] Builds for macOS and Windows** (found 2026-11-12, by the first plan). Only the web build exists. These builds are optional.

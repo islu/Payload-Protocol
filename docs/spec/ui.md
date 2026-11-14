@@ -19,8 +19,8 @@ The station screen has these areas:
 | Top bar | Top | The leg and the jump ("Leg 2 · Jump 1"), the credits, the payment of this leg, and the jumps before the payment. A tag with the name of each mod, with its rule when the mouse is on it (Section 27). The environment of the leg, with its rule when the mouse is on it (Section 28). A gear button at the right opens the pause menu (Section 20.7). |
 | Hazard panel | Center, at the left of the hold, from top to bottom | The shift steps of the next jump in order (Section 18). Each step is a card with a large arrow, its number, and its direction. A fork step shows its two directions and a question mark. |
 | Dock | Left | The cargo on the dock (Section 8.1). |
-| Contract board | Left, below the dock | The 3 contracts, with Accept and Cancel buttons (Section 15). |
-| Hold | Center | The grid and its cargo, the links, and the clamps. Each cell is 100 pixels, so that the cargo images show at half their size (Section 4.2). |
+| Contract board | Left, below the dock | The 4 contracts, with Accept and Cancel buttons (Section 15). |
+| Hold | Center | The grid and its cargo, the links, and the clamps. Each cell is 100 pixels, the size of the cargo images (Section 4.2). |
 | Shop | Right | The kit offers, Reroll, the services, and the sell area (Section 17). |
 | Clamp panel | Right, below the shop | The free clamps (Section 13). |
 | Warp button | Bottom right | Starts the warp (Section 9). |
@@ -85,7 +85,7 @@ The station screen has these areas:
 
 ### 20.9 Mod Choice
 
-- The mod choice shows a card for each mod: its icon, its name, and its rule. A click on a card selects the mod (Section 27.1).
+- The mod choice shows a button for each mod: its name and its rule. A click on a button selects the mod (Section 27.1).
 - The player must select a mod.
 
 ## 21. Feedback
@@ -134,7 +134,7 @@ The station screen has these areas:
 - The portrait blinks. A new line types out at 40 characters each second, and the mouth of the portrait moves while it types.
 - The pilot speaks at these events:
   - The station opens: a line about the hazard.
-  - The arrival: a line about the result (all intact, a break, an explosion, a chain of explosions, a leak, a spoil).
+  - The arrival: a line about the result (all intact, a break, an explosion, a chain of explosions, a leak, a spoil, or no freight).
   - The payment screen: a line about the payment.
   - The run end: a line about the win or the loss.
 - `project/data/lines/` has the lines for each event. The game selects one line with the seed. It does not select the same line two times in a row.

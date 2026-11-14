@@ -1,8 +1,6 @@
 # Payload Protocol: Game Specification (Version 1)
 
-**Status:** Draft. It waits for the approval of the user. After approval, the version does not change while the game is in development.
-
-The rules that the code added on 2026-11-12 to fill gaps are in Sections 4.1, 10.2, 10.3, 11, 12.2, and 20.4. They wait for the approval of the user too ([BACKLOG.md](BACKLOG.md)).
+**Status:** Approved. A change needs the approval of the user.
 
 The spec is the design of the game. Each rule in it has the approval of the user, and the code follows it. A rule that is in the spec and not in the code yet has a **To Do** item in [BACKLOG.md](BACKLOG.md). An idea that is not ready goes in Section 24, not in the other sections.
 

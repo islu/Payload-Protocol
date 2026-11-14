@@ -8,8 +8,10 @@ This file is part of the [game specification](../spec.md). The section numbers a
 - If cargo is on the dock, a dialog asks the player to confirm. It shows what happens to that cargo (Section 15.4):
   - Freight on the dock stays at the station. Its contract pays a breach fee.
   - Kit on the dock is sold at the sell price (Section 17.3).
+  - Scrap on the dock is cleared at the clear price (Section 26.3).
 - The warp does not start when the hold mass is more than the maximum (Section 25).
 - The warp takes the fuel fee first (Section 25).
+- The incident of the jump plays before the first shift step (Section 29).
 - The hazard of the jump has 1 to 3 shift steps (Section 18). The warp plays them in order. A fork step shows its direction when the warp reaches it.
 - After a shift step, each cargo stays where it stopped. The next shift step starts from there.
 - Each shift step has these parts, in this order:
@@ -65,7 +67,7 @@ This file is part of the [game specification](../spec.md). The section numbers a
 - A reaction turns cargo into scrap, or removes it. The game does the reactions after all hits of a shift step.
 - A reaction can start more reactions. The game does them until no new reaction starts. Then the next shift step starts.
 - A Shield can cancel a reaction (Section 12.2).
-- A cargo has one reaction at most from its hits. When it has more than one trait that reacts, only the first in this order happens: explosion, leak, break.
+- A cargo has one reaction at most from its hits. When it has more than one trait that reacts, only the first in this order happens: explosion, leak, break, short (a Radiation Belt, Section 28.2).
   - Example: a Fuel Drum (Fluid, Volatile) leaks at a force of 2. At a force of 3 or more, it explodes and does not leak.
 - A cargo that became scrap has no traits, so it does not react again.
 - A route environment can change a break limit (Section 28.2).

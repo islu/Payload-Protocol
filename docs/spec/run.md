@@ -116,7 +116,6 @@ The arrival has these steps, in this order:
 
 - When a Sensor that is not scrap is in the hold, the station shows the direction of the fork step that will happen.
 - When the player takes the Sensor out of the hold, the station shows the fork step as two directions again.
-- The pilot speaks a line about the hazard when the station opens (Section 22).
 
 ## 19. Payments and the End of the Run
 
@@ -205,6 +204,7 @@ A special contract is a contract template with more fields. The contract board o
 ### 30.2 Long Contract
 
 - A long contract has a number of jumps: 2.
+- The contract board does not offer a long contract when the run has fewer jumps left than the contract needs. The jump of the station counts.
 - Its freight stays in the hold at the arrival of each jump but the last. It is not delivered, and it does not pay.
 - At the arrival of the last jump, the contract is delivered as other contracts (Section 16).
 - The contract stays accepted at the stations between. The player can move its freight in the hold. Freight of the contract on the dock at the warp is breached (Section 15.4).

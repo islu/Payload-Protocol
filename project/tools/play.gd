@@ -41,6 +41,9 @@ var _out: PackedStringArray = []
 
 
 func _initialize() -> void:
+	# The text player is in English, the source language (SPEC Section 4.1). Without
+	# this, a translated text follows the locale of the system.
+	TranslationServer.set_locale("en")
 	var args := Array(OS.get_cmdline_user_args())
 	var path := DEFAULT_SESSION
 	if args.size() >= 2 and args[0] == "-s":

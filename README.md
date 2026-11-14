@@ -28,15 +28,19 @@ To open the project in the Godot Project Manager, import `project/project.godot`
 | `task run` | Run the game |
 | `task editor` | Open the Godot editor |
 | `task test` | Run the rule tests |
+| `task test:ui` | Play a full run through the screens, headless |
 | `task play -- help` | The text player |
 | `task smoke` | Run the game headless for 5 frames |
 | `task shots` | Take screenshots of each screen into `shots/` |
 | `task export:web` | Export the web build to `build/web` |
 | `task serve:web` | Serve `build/web` at http://localhost:8060 |
+| `task i18n` | Collect the text for translation into `project/locale/` |
+| `task sfx` | Make the placeholder sounds |
 | `task fx` | Make the effect sheets with pixelfx |
 | `task art` | Make the cargo images and the project icon from FreePixel images |
 | `task fmt` | Format the GDScript code |
 | `task lint` | Lint the GDScript code, and check the format |
-| `task check` | Run lint, the tests, and smoke |
+| `task check` | Run lint, the tests, the UI check, and smoke |
+| `task check:quiet` | Run `task check`. Print only the failures. |
 
 Run `task check` before each commit.

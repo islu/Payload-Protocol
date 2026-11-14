@@ -658,8 +658,10 @@ func contract_by_id(id: int) -> Contract:
 ## offers must fit together in an empty hold (content.md).
 func _offer_contracts() -> void:
 	var pool: Array = []
+	var left := jumps_left()
 	for t in cat.contracts:
-		if leg in t.legs:
+		# A long contract needs its jumps before the run ends (SPEC Section 30.2).
+		if leg in t.legs and t.jumps <= left:
 			pool.append(t)
 	var n := mini(cat.offer_contracts, pool.size())
 	var picked: Array = []
@@ -676,6 +678,14 @@ func _offer_contracts() -> void:
 	for t: ContractTemplate in picked:
 		_next_contract += 1
 		contracts.append(Contract.new(_next_contract, t))
+
+
+## Returns the jumps that are left in the run, with the jump of this station.
+func jumps_left() -> int:
+	var left := cat.jumps(leg) - jump + 1
+	for l in range(leg + 1, cat.legs.size() + 1):
+		left += cat.jumps(l)
+	return left
 
 
 ## Returns the mass of all freight of the templates (content.md).

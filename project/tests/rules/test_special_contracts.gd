@@ -107,3 +107,31 @@ func test_long_on_dock_is_breached() -> void:
 		run.cat.price("breach_fee"),
 		"freight of a long contract on the dock at the warp is breached (SPEC Section 30.2)"
 	)
+
+
+## Returns the template IDs that the station of a jump offers, over many seeds. The
+## long contract is in each leg, so that only the jumps left decide.
+func _offers_at(leg: int, jump: int) -> Dictionary:
+	var d := Fixture.data()
+	d["contracts"]["k_long"]["legs"] = [1, 2, 3]
+	var cat := Catalog.from_data(d)
+	var seen := {}
+	for s in 30:
+		var r := Run.new(cat, s)
+		r.leg = leg
+		r.jump = jump
+		r._offer_contracts()
+		for k in r.contracts:
+			seen[k.template.id] = true
+	return seen
+
+
+func test_no_long_contract_at_the_last_jump() -> void:
+	check(
+		_offers_at(3, 2).has("k_long"),
+		"the board offers a long contract with 2 jumps left (SPEC Section 30.2)"
+	)
+	check(
+		not _offers_at(3, 3).has("k_long"),
+		"the board does not offer a long contract at the last jump of the run (SPEC Section 30.2)"
+	)

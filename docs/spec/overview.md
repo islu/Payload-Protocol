@@ -30,13 +30,13 @@ These games are references for mechanics only. Do not copy their art, names, ite
 
 - A **run** has 3 **legs**. Each leg has 3 **jumps**. A run has 9 jumps.
 - Each jump has three phases, in this order:
-  1. **Station:** the player accepts contracts, uses the shop, and packs the hold (Sections 15 and 17).
-  2. **Warp:** the shift steps of the jump play (Sections 9 to 12).
+  1. **Station:** the player accepts contracts, uses the shop, and packs the hold (Sections 15 and 17). Some stations open with an event first (Section 26).
+  2. **Warp:** the incident and the shift steps of the jump play (Sections 9 to 12, and 29).
   3. **Arrival:** freight is delivered and pays (Section 16).
-- After the arrival of the last jump of a leg, the player makes the payment of that leg (Section 19).
+- After the arrival of the last jump of a leg, the player makes the payment of that leg (Section 19). After the payments of legs 1 and 2, the player selects a mod (Section 27.1).
 - The run ends in a win when the player makes the payment of the last leg. It ends in a loss when the player cannot make a payment.
 - Nothing stays after a run. Version 1 has no unlocks between runs (Section 24).
-- Each run has a **seed**. The seed sets the contracts, the shop offers, and the hazards. Two runs with the same seed and the same player actions have the same result.
+- Each run has a **seed**. The seed sets the contracts, the shop offers, the hazards, the events, the mod offers, the environments, and the incidents. Two runs with the same seed and the same player actions have the same result.
 - The game uses no random numbers in a shift step.
 
 ## 4. Platform, Art, and Sound
@@ -83,6 +83,7 @@ Use these terms in the spec, the code, the data, and the text of the game. Do no
 | **freight** | Cargo of a contract. It leaves the hold at the arrival (Section 6.2). |
 | **kit** | Cargo that the player buys. It stays in the hold until the player sells it (Section 6.3). |
 | **scrap** | Broken cargo. It stays in the hold until the player clears it (Section 6.4). |
+| **debris** | A scrap of 1 cell that a Hull Breach puts in an empty cell (Section 29.2). |
 | **trait** | A property of cargo that gives it a rule (Section 7). |
 | **dock** | The area at a station for cargo that is not in the hold (Section 8.1). |
 | **station** | The place between two jumps. |
@@ -103,6 +104,8 @@ Use these terms in the spec, the code, the data, and the text of the game. Do no
 | **credits** | The money of the player. |
 | **contract** | An order to carry freight to the next station for pay (Section 15). |
 | **payment** | The credits that the freight company takes at the end of a leg (Section 19). |
+| **lost** | The state of a freight that an explosion removed. It is not delivered (Section 11.2). |
+| **breached** | The state of a freight that stayed on the dock at the warp (Section 15.4). |
 | **clamp** | A lock that stops a cargo from a slide (Section 13). |
 | **pilot** | The ship AI that speaks lines (Section 22). |
 | **event** | A card at a station with choices. Each choice has effects (Section 26). |
