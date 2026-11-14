@@ -118,6 +118,6 @@ A cargo can have more than one trait.
 - The ship has a **mass limit**. A run starts with a mass limit of 24. The **Reinforce hull** service adds to it (Section 17.2).
 - The hold mass can be more than the mass limit by 25% at most, rounded down. Example: with a mass limit of 24, the maximum is 30.
 - When the hold mass is more than the maximum, the Warp button does not work. The top bar shows the mass in red.
-- When the hold mass is more than the mass limit, the warp takes the **fuel fee**: 2 credits for each point of mass over the limit. The credits can go below 0 (Section 16).
+- When the hold mass is more than the mass limit, the warp takes the **fuel fee**: 3 credits for each point of mass over the limit. The credits can go below 0 (Section 16).
 - The top bar shows the hold mass, the mass limit, and the fuel fee of the warp now.
 - The tooltip of a cargo shows its mass (Section 8.4).

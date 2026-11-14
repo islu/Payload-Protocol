@@ -39,12 +39,12 @@ func test_fuel_fee() -> void:
 	eq(run.hold_mass(), 45, "the hold has a mass of 45")
 	eq(
 		run.fuel_fee(),
-		10,
-		"the fuel fee is 2 credits for each point over the limit (SPEC Section 25)"
+		15,
+		"the fuel fee is 3 credits for each point over the limit (SPEC Section 25)"
 	)
 	warp_with([Defs.DIR_DOWN])
-	eq(run.last_warp["fuel_fee"], 10, "the warp takes the fuel fee (SPEC Section 9)")
-	eq(run.credits, 30, "40 credits minus the fee of 10 (SPEC Section 25)")
+	eq(run.last_warp["fuel_fee"], 15, "the warp takes the fuel fee (SPEC Section 9)")
+	eq(run.credits, 25, "40 credits minus the fee of 15 (SPEC Section 25)")
 
 
 func test_no_fee_at_the_limit() -> void:
@@ -56,7 +56,7 @@ func test_fee_can_go_below_zero() -> void:
 	run.credits = 4
 	_fill(45)
 	warp_with([Defs.DIR_DOWN])
-	eq(run.credits, -6, "the credits can go below 0 after the fuel fee (SPEC Section 25)")
+	eq(run.credits, -11, "the credits can go below 0 after the fuel fee (SPEC Section 25)")
 
 
 func test_overweight_stops_the_warp() -> void:
@@ -82,7 +82,7 @@ func test_mass_view() -> void:
 	var m: Dictionary = RunView.view(run)["mass"]
 	eq(
 		[m["hold"], m["limit"], m["max"], m["fee"]],
-		[45, 40, 50, 10],
+		[45, 40, 50, 15],
 		"the top bar shows the mass and the fee (SPEC Section 25)"
 	)
 	eq(

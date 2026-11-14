@@ -123,7 +123,7 @@ The arrival has these steps, in this order:
 ### 19.1 Payments
 
 - After the arrival of the last jump of a leg, the freight company takes the payment of that leg.
-- The payments are 70, 180, and 350 credits. An event can make the payment of a leg smaller (Section 26.2).
+- The payments are 100, 240, and 420 credits. An event can make the payment of a leg smaller (Section 26.2).
 - If the credits are less than the payment, the run ends in a loss.
 - If not, the game takes the payment, and the next leg starts at a new station.
 

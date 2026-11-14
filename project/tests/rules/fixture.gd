@@ -154,7 +154,7 @@ static func data() -> Dictionary:
 			},
 			"incidents": {"meteor_force": 3, "debris": "box"},
 			"mass":
-			{"limit": 40, "over_percent": 25, "fuel_fee": 2, "reinforce": 8, "offer_percent": 130},
+			{"limit": 40, "over_percent": 25, "fuel_fee": 3, "reinforce": 8, "offer_percent": 130},
 			"legs":
 			[
 				{"payment": 60, "hazard_steps": [[1, 1], [2, 2], [2, 2]], "kit_pool": KIT_POOL},

@@ -23,21 +23,25 @@ This file keeps each problem that is found and not fixed yet. Each item is in on
 
 - **[Balance · Data] Environments, incidents, and special contracts** (found 2026-11-14, by /game-design). The first values of SPEC Sections 28 to 30: Low Gravity 2 cells, the meteor force 3, the incident chance 50% in leg 2 and 100% in leg 3, the VIP penalty, and the long contract pay. Check in a playtest: is leg 3 too hard with an incident at each jump, and does Low Gravity make leg 2 too easy?
 
-- **[Balance · Data] Events and mods** (found 2026-11-14, by /game-design). The first values of SPEC Sections 26 and 27: the costs 8, 10, 15, and 20, the drifting container +12, and the audit payment -15. Check in a playtest: are Padded Walls and Array Power always the best mod, and do 1 or 2 events in each leg make the run too slow?
+- **[Balance · Data] Events and mods** (found 2026-11-14, by /game-design). The first values of SPEC Sections 26 and 27: the costs 8, 10, 15, and 20, the drifting container +12, and the audit payment -15. Check in a playtest: are Padded Walls and Array Power always the best mod, and do 1 or 2 events in each leg make the run too slow? Playtest seed 22 (2026-11-14) found choices that are always best: Company Audit (pay 10 to cut the payment by 15), Pirate Demand (refuse for 8 of scrap cleanup, not a bribe of 15), and Ship Mechanic (a clamp for 10, but the shop sells one for 8). The event contracts pay much more than others: Smuggler Run 68 for 4 mass, Rescue Supplies 46 for 6 mass.
 
 - **[Balance · Data] The length of a run** (found 2026-11-11, by Claude). 3 legs × 3 jumps is the first value. The target is 20 to 30 minutes.
   Waiting on a trigger  Waits for: the station events of phase 2 (SPEC Section 24).
                         Fix then: measure the time of one run in a playtest.
 - **[Spec · Rules] Heavy cargo in an explosion** (found 2026-11-11, by Claude). Section 11.2 says that heavy cargo is not affected. A Reactor Core is heavy and Volatile: a different explosion does not break it, but it explodes in a chain. Check that this reads clearly in the first playtest.
 
-- **[Balance · Data] The numbers of mass, fork steps, and payments** (found 2026-11-12, by /playtest seed 2026). The first values: mass limit 24, the maximum 125%, fuel fee 2, Reinforce hull +6 for 12 (+8), payments 70 / 180 / 350. Check them in the next playtest: can the player make each payment, and does each jump have a real choice?
-- **[Balance · Rules] Full rows of light cargo** (found 2026-11-12, by /game-design). With the mass limit, a player can still fill a few full rows (wall to wall) with light cargo. Those rows are safe for each direction. The light freight pays little, so it can be a fair choice. Check it in the next playtest.
-- **[UX · Tests] The text player log** (found 2026-11-12, by /playtest seed 2026). A hit line does not say if it caused a reaction. A Thruster stop has no line. Each cargo has a letter and an ID.
-
-- **[Balance · Data] The free clamp and the payments after the wall jolt** (found 2026-11-12, by /playtest round 2). Round 2 (before the wall jolt) found: the free clamp comes back each jump and fills the last gap of a tight pack; zero-risk income was about 140 for each jump, so the payments 70 / 180 / 350 were easy. The agents suggest payments of about 120 / 350 / 650, and 1 free clamp for each leg.
-  Waiting on a trigger  Waits for: a playtest with the wall jolt (SPEC Section 10.4).
-                        Fix then: set the payments from the income that the playtest measures.
-- **[UX · Scenes] Small issues from round 2** (found 2026-11-12, by /playtest round 2). The end screen of the text player still shows "payment 350 after 1 jump(s)". The text player does not show the Reinforce hull price.
+- **[Balance · Data] The numbers of mass, fork steps, and payments** (found 2026-11-12, by /playtest seed 2026). Playtest seed 22 (2026-11-14) had no pressure: each persona paid each leg by jump 1 or 2, and the fuel fee 2 was less than the pay per mass. The values are now payments 100 / 240 / 420 and fuel fee 3. Other values: mass limit 24, the maximum 125%, Reinforce hull +6 for 12 (+8). Check in the next playtest: can a newcomer make each payment, and is overload still always best?
+- **[Balance · Rules] Full rows make the hold safe** (found 2026-11-12, by /game-design; confirmed 2026-11-14, by /playtest seed 22). All 3 personas filled full rows or columns against the known walls. Then no cargo slides, and no trait matters. Padded Walls removes the wall jolt, and the free clamp fills the last gap. The run had 0 scrap for each persona.
+  To decide             Options: (a) a hidden step or a hidden fork direction, so one block cannot answer each jump. (b) A shear step that moves only some rows. (c) Incidents that open gaps in a full row. (d) 1 free clamp for each leg, not for each jump. Needs a change of the spec.
+- **[UX · Tests] The text player log** (found 2026-11-12, by /playtest seed 2026). A hit line does not say if it caused a reaction. A Thruster stop has no line. Each cargo has a letter and an ID. Playtest seed 22 found: `place A 5 0` fails with "There is no such cargo" (only the ID works), and the letters are used again later. The meteor line "r hits z with force 3" reads as if one cargo hit another.
+- **[UX · Scenes] Small issues of the playtests** (found 2026-11-12, by /playtest round 2; more on 2026-11-14, by /playtest seed 22).
+  - The end screen of the text player still shows "payment 350 after 1 jump(s)".
+  - The text player does not show the Reinforce hull price.
+  - With Padded Walls, the station still says that the front wall gives a jolt, and the log still says "hits the wall with force 2".
+  - A contract offer does not show its mass in the text player (SPEC Section 20 shows it on the screen).
+  - A 2-jump contract (`long_colony`) is offered at the last jump of the run, so it cannot arrive.
+  - The hull breach debris has the name "Cargo Crate".
+  - Nothing in the text player tells the force that breaks each trait.
 
 - **[UX · Scenes] Shaders for the effects** (found 2026-11-13, by Claude). The pixelfx sheets are flat sprites. Three options can make them stronger:
   (a) Light with additive blend: `make_fx.mjs` exports the light buffer of pixelfx as a second sheet, and `FxLayer` draws it with `BLEND_MODE_ADD`. Low cost. The best first step.
@@ -60,6 +64,10 @@ This file keeps each problem that is found and not fixed yet. Each item is in on
 
 ## To Do
 
+- **[Bug · Locale] zh-TW text in the English event tags** (found 2026-11-14, by /playtest seed 22). With the English locale, the event choices show `[新合約：黑市]` and `[cost 10, 本期還款 -15]`. Find where the effect text is translated and why it does not follow the locale.
+  To do                 Fix: make the effect tags follow the locale. Add a check to the test of the event view.
+- **[Balance · Data] The offer rate of the new contracts** (found 2026-11-14, by /playtest seed 22). The 3 personas saw 27 stations, and only `greenhouse` was offered (once). `prosthetics` and `warp_core` were not offered. The pay of `prosthetics` (now 4 each) and `greenhouse` (now 13 each) changed from the data, not from play. `warp_core` (24 + 10) pays 5.7 for each point of mass, more than the leg 3 median 4.7, but a wall jolt explodes it.
+  To do                 Fix: count the offers of each contract over many seeds, and play the 3 contracts in a playtest.
 
 - **[UX · Scenes] A glyph that the font does not have** (found 2026-11-14, by Claude). The pilot box of the station shows "▸" (U+25B8). The font jf open huninn does not have it. On the desktop a system font shows it, but the web build can show a box.
   To do                 Fix: use a glyph of the font (for example ":" or "→"), or draw the mark. Check the other symbols of the text with the font too.

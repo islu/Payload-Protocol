@@ -46,7 +46,7 @@
 	},
 	"legs": [
 		{
-			"payment": 70,
+			"payment": 100,
 			"hazard_steps": [[1, 1], [2, 2], [2, 2]],
 			"kit_pool": [
 				"foam_pad",
@@ -58,7 +58,7 @@
 			]
 		},
 		{
-			"payment": 180,
+			"payment": 240,
 			"hazard_steps": [[2, 2], [2, 2], [2, 2]],
 			"kit_pool": [
 				"foam_pad",
@@ -73,7 +73,7 @@
 			"incident_percent": 50
 		},
 		{
-			"payment": 350,
+			"payment": 420,
 			"hazard_steps": [[2, 3], [2, 3], [2, 3]],
 			"kit_pool": [
 				"foam_pad",
@@ -91,7 +91,7 @@
 	"mass": {
 		"limit": 24,
 		"over_percent": 25,
-		"fuel_fee": 2,
+		"fuel_fee": 3,
 		"reinforce": 6,
 		"offer_percent": 130
 	},
