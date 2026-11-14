@@ -8,9 +8,10 @@ const REROLL_TEXT := "Reroll ({price} cr)"
 const SERVICES_TEXT := "Services"
 const PRICE_TEXT := "{price} cr"
 const CLAMP_SERVICE_TEXT := "Clamps {now}/{max} → {after}/{max}"
-const HOLD_SERVICE_TEXT := "Hold {columns}×{rows}"
-const COLUMN_SERVICE_TEXT := "+Column → {columns}×{rows} · {price} cr"
-const ROW_SERVICE_TEXT := "+Row → {columns}×{rows} · {price} cr"
+const BAY_SERVICE_TEXT := "Shock bay {now} → {after}"
+const BAY_SIZE_TEXT := "{columns}×{rows}"
+const BAY_NONE_TEXT := "none"
+const BAY_MAX_TEXT := "Shock bay {now} (maximum)"
 const HULL_SERVICE_TEXT := "Mass limit {now} → {after}"
 ## The cell of a kit image in the shop (SPEC Section 20.2).
 const OFFER_CELL := 56.0
@@ -58,22 +59,20 @@ func refresh() -> void:
 		func() -> void: screen._act(GameState.buy_clamp(), "coin"),
 		s["clamps"] < max_clamps
 	)
-	_service_row(list, "hold", tr(HOLD_SERVICE_TEXT).format(s["hold"]))
-	var grow := HBoxContainer.new()
-	grow.add_theme_constant_override("separation", 6)
-	list.add_child(grow)
-	for axis: String in [Defs.AXIS_COLUMN, Defs.AXIS_ROW]:
-		var col := axis == Defs.AXIS_COLUMN
-		var after: Dictionary = (s["column_after"] if col else s["row_after"]).duplicate()
-		after["price"] = s["upgrade_price"]
-		var b := _price_button(
-			grow,
-			tr(COLUMN_SERVICE_TEXT if col else ROW_SERVICE_TEXT).format(after),
-			s["upgrade_price"],
-			func() -> void: screen._act(GameState.upgrade_hold(axis), "coin"),
-			s["can_column"] if col else s["can_row"]
+	# The shock bay: none → 2×2 → 2×3 (SPEC Sections 17.2 and 31).
+	var bay: Dictionary = s["bay"]
+	if bay["after"].is_empty():
+		_service_row(list, "bay", tr(BAY_MAX_TEXT).format({"now": _bay_size(bay["now"])}))
+	else:
+		var bay_text := tr(BAY_SERVICE_TEXT).format(
+			{"now": _bay_size(bay["now"]), "after": _bay_size(bay["after"])}
 		)
-		b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		_price_button(
+			_service_row(list, "bay", bay_text),
+			tr(PRICE_TEXT).format({"price": bay["price"]}),
+			bay["price"],
+			func() -> void: screen._act(GameState.buy_shock_bay(), "coin")
+		)
 	var hull_text := tr(HULL_SERVICE_TEXT).format(
 		{"now": s["mass_limit"], "after": s["mass_limit_after"]}
 	)
@@ -84,6 +83,10 @@ func refresh() -> void:
 		s["reinforce_price"],
 		func() -> void: screen._act(GameState.reinforce_hull(), "coin")
 	)
+
+
+func _bay_size(size: Dictionary) -> String:
+	return tr(BAY_NONE_TEXT) if size.is_empty() else tr(BAY_SIZE_TEXT).format(size)
 
 
 ## A kit offer: its image, its traits with their rules, how it helps, and Buy (SPEC Section 20.2).

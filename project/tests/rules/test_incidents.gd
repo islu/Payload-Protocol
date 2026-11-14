@@ -131,8 +131,9 @@ func test_ion_pulse() -> void:
 
 
 func test_ion_pulse_shield() -> void:
-	run.mods.append(Defs.MOD_ARRAY_POWER)
+	# The Battery is in row 1, out of the row of the pulse, so it does not short.
 	run.charges = {}
+	put("battery", 2, 1)
 	var shield := put("shield", 2, 2)
 	run.charges[shield.id] = 1
 	var chip := put("chip", 1, 2)

@@ -61,7 +61,7 @@ static func _done(id: String, run: Dictionary) -> bool:
 					return true
 		DRAG:
 			for c: Dictionary in run["cargo"]:
-				if c["in_hold"] and c["kind"] != Defs.KIND_SCRAP:
+				if (c["in_hold"] or c["in_bay"]) and c["kind"] != Defs.KIND_SCRAP:
 					return true
 	return false
 

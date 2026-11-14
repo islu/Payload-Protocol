@@ -40,6 +40,7 @@ var _cargo: Dictionary = {}
 var _stars: Starfield
 var _stage: Control
 var _hold: HoldView
+var _bay: HoldView
 var _fx: FxLayer
 ## The effects above the report: the gold sparkle (SPEC Section 21.4).
 var _top_fx: FxLayer
@@ -66,6 +67,14 @@ func _ready() -> void:
 	_hold.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_hold.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	_stage.add_child(_hold)
+	# The shock bay hangs above the hold and moves with it (SPEC Section 31.2).
+	_bay = HoldView.new()
+	_bay.bay = true
+	_bay.visible = false
+	_bay.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_bay.fades = _hold.fades
+	_bay.checks = _hold.checks
+	_hold.add_child(_bay)
 	_fx = FxLayer.new()
 	_fx.hold = _hold
 	_hold.add_child(_fx)
@@ -151,7 +160,7 @@ func _wait(seconds: float) -> void:
 func _play() -> void:
 	var run: Dictionary = _view["run"]
 	var warp_log: Dictionary = run["warp"]
-	for c: Dictionary in warp_log.get("before", []):
+	for c: Dictionary in warp_log.get("before", []) + warp_log.get("bay", []):
 		_cargo[c["id"]] = c.duplicate(true)
 	_show_hold(run)
 	await _wait(0.4)
@@ -177,6 +186,17 @@ func _show_hold(run: Dictionary) -> void:
 	for id: int in _sorted_ids():
 		cargo.append(_cargo[id])
 	_hold.set_view({"hold": run["hold"], "cargo": cargo, "links": []})
+	_bay.set_view({"shock_bay": run["shock_bay"], "cargo": cargo, "links": []})
+	if _bay.visible:
+		# Room above the hold for the shock bay: the grid of the hold moves down.
+		_hold.offset_top = _bay.custom_minimum_size.y
+		_place_bay.call_deferred()
+
+
+## Puts the shock bay above the grid of the hold, after the hold has its new size.
+func _place_bay() -> void:
+	_bay.size = _bay.custom_minimum_size
+	_bay.position = Vector2((_hold.size.x - _bay.size.x) / 2.0, _hold.grid_origin().y - _bay.size.y)
 
 
 func _sorted_ids() -> Array:
@@ -280,7 +300,8 @@ func _apply_after(step: Dictionary, run: Dictionary) -> void:
 			c["y"] = spot["y"]
 			c["kind"] = spot["kind"]
 	for id: int in _cargo.keys():
-		if not kept.has(id):
+		# The log of a step has the hold only: the shock bay does not change (SPEC Section 31.1).
+		if not kept.has(id) and not _cargo[id].get("in_bay", false):
 			_remove(id)
 	_show_hold(run)
 
@@ -398,7 +419,7 @@ func _to_scrap(c: Dictionary) -> void:
 func _play_spoils(run: Dictionary) -> void:
 	for id: int in run["arrival"].get("spoiled", []):
 		if _cargo.has(id):
-			_fx.cloud(_hold.cargo_center(_cargo[id]))
+			_fx.cloud(_center_of(_cargo[id]))
 			_to_scrap(_cargo[id])
 			Sound.play(self, "squelch")
 	_show_hold(run)
@@ -455,6 +476,8 @@ func _start_replay() -> void:
 func _mark_pieces(ids: Array) -> void:
 	_hold.marked = ids
 	_hold.queue_redraw()
+	_bay.marked = ids
+	_bay.queue_redraw()
 
 
 ## The report has its place after one frame: the containers sort it then.
@@ -472,9 +495,18 @@ func _make_room_for_report() -> void:
 		create_tween().tween_property(_hold, "position:x", _hold.position.x - overlap, 0.4)
 
 
+## Returns the center of a cargo in the coordinates of the hold, also for a cargo in
+## the shock bay.
+func _center_of(c: Dictionary) -> Vector2:
+	if c.get("in_bay", false):
+		return _bay.position + _bay.cargo_center(c)
+	return _hold.cargo_center(c)
+
+
 func _fade(id: int, a: float) -> void:
 	_hold.fades[id] = a
 	_hold.queue_redraw()
+	_bay.queue_redraw()
 
 
 # --- Shake (SPEC Section 21.2) ---

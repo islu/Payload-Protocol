@@ -37,9 +37,10 @@ func begin_cargo(id: int, grab: Vector2) -> void:
 		"grab": grab,
 		"press": _screen.get_global_mouse_position(),
 		"held": false,
-		"from_dock": not c["in_hold"],
+		"from_dock": not c["in_hold"] and not c["in_bay"],
 	}
 	_screen._hold.dragging = id
+	_screen._bay.dragging = id
 	_screen._show_sell(c)
 	_screen._drag_layer.start(c, c["rotations"][c["rot"]], grab)
 	update()
@@ -110,27 +111,43 @@ func rotate() -> void:
 	update()
 
 
-## Moves the drag to the mouse, and shows the preview over the hold (SPEC Section 8.3).
+## Moves the drag to the mouse, and shows the preview over the hold or the shock bay
+## (SPEC Sections 8.3 and 31.1).
 func update() -> void:
-	var hold := _screen._hold
 	var mouse := _screen.get_global_mouse_position()
 	_screen._drag_layer.queue_redraw()
-	if state["kind"] != "cargo" or not hold.is_over(mouse):
-		hold.preview = {}
-		hold.queue_redraw()
+	var target := _target(mouse)
+	for view: HoldView in [_screen._hold, _screen._bay]:
+		if view != target:
+			view.preview = {}
+			view.queue_redraw()
+	if state["kind"] != "cargo" or target == null:
 		return
-	var origin := hold.snap_origin(mouse, state["grab"])
+	var to_bay := target.bay
+	var origin := target.snap_origin(mouse, state["grab"])
 	var c := _screen._cargo(state["id"])
 	var cells: Array[Vector2i] = []
 	for s: Dictionary in c["rotations"][state["rot"]]:
 		cells.append(origin + Vector2i(s["x"], s["y"]))
-	hold.preview = {
+	var id: int = state["id"]
+	var rot: int = state["rot"]
+	target.preview = {
 		"cells": cells,
-		"ok": GameState.can_place(state["id"], origin.x, origin.y, state["rot"]),
-		"links": GameState.preview_links(state["id"], origin.x, origin.y, state["rot"]),
-		"id": state["id"],
+		"ok": GameState.can_place(id, origin.x, origin.y, rot, to_bay),
+		"links": GameState.preview_links(id, origin.x, origin.y, rot, to_bay),
+		"id": id,
 	}
-	hold.queue_redraw()
+	target.queue_redraw()
+
+
+## Returns the area under the mouse: the shock bay, the hold, or null. The shock bay
+## is first: it is small, and it is above the margin of the hold.
+func _target(mouse: Vector2) -> HoldView:
+	if _screen._bay.visible and _screen._bay.is_over(mouse):
+		return _screen._bay
+	if _screen._hold.is_over(mouse):
+		return _screen._hold
+	return null
 
 
 func _drop() -> void:
@@ -141,12 +158,13 @@ func _drop() -> void:
 func drop_at(mouse: Vector2) -> void:
 	var drag := state
 	var hold := _screen._hold
+	var target := _target(mouse)
 	end()
 	if drag["kind"] == "clamp":
-		if hold.is_over(mouse):
-			var target := hold.cargo_at(hold.cell_at(mouse))
-			if target >= 0:
-				_screen._act(GameState.clamp_cargo(target), "clack")
+		if target == hold:
+			var clamped := hold.cargo_at(hold.cell_at(mouse))
+			if clamped >= 0:
+				_screen._act(GameState.clamp_cargo(clamped), "clack")
 		return
 	var id: int = drag["id"]
 	var c := _screen._cargo(id)
@@ -156,11 +174,11 @@ func drop_at(mouse: Vector2) -> void:
 		else:
 			_screen._act(GameState.sell_kit(id), "coin")
 	elif _screen._dock_panel.get_global_rect().has_point(mouse):
-		if c["in_hold"]:
+		if c["in_hold"] or c["in_bay"]:
 			_screen._act(GameState.dock_cargo(id))
-	elif hold.is_over(mouse):
-		var origin := hold.snap_origin(mouse, drag["grab"])
-		var err := GameState.place_cargo(id, origin.x, origin.y, drag["rot"])
+	elif target != null:
+		var origin := target.snap_origin(mouse, drag["grab"])
+		var err := GameState.place_cargo(id, origin.x, origin.y, drag["rot"], target.bay)
 		_screen._act(err, "clack")
 		# A picked-up cargo from the dock: pick up the next one (SPEC Section 8.2).
 		if err == "" and drag["held"] and drag["from_dock"]:
@@ -184,7 +202,8 @@ func _pick_next() -> void:
 func end() -> void:
 	state = {}
 	_screen._show_sell({})
-	_screen._hold.dragging = -1
-	_screen._hold.preview = {}
+	for view: HoldView in [_screen._hold, _screen._bay]:
+		view.dragging = -1
+		view.preview = {}
 	_screen._drag_layer.stop()
 	_screen._update_marks()

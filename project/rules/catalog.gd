@@ -13,8 +13,9 @@ var start_credits: int
 var start_clamps: int
 var start_columns: int
 var start_rows: int
-var max_columns: int
-var max_rows: int
+## The sizes of the shock bay after each purchase, and their prices (SPEC Section 31.1).
+var bay_sizes: Array[Vector2i] = []
+var bay_prices: Array[int] = []
 var weights: Dictionary = {}
 var break_limits: Dictionary = {}
 var offer_contracts: int
@@ -115,8 +116,11 @@ func _read_rules(r: Dictionary) -> void:
 	start_clamps = int(start.get("clamps", 0))
 	start_columns = int(start.get("hold", {}).get("columns", 0))
 	start_rows = int(start.get("hold", {}).get("rows", 0))
-	max_columns = int(r.get("hold_max", {}).get("columns", 0))
-	max_rows = int(r.get("hold_max", {}).get("rows", 0))
+	var bay: Dictionary = r.get("shock_bay", {})
+	for size: Array in bay.get("sizes", []):
+		bay_sizes.append(Vector2i(int(size[0]), int(size[1])))
+	for price: Variant in bay.get("prices", []):
+		bay_prices.append(int(price))
 	for k: String in r.get("weights", {}):
 		weights[k] = int(r["weights"][k])
 	for k: String in r.get("break_limits", {}):
@@ -235,8 +239,13 @@ func _check() -> void:
 func _check_rules() -> void:
 	if legs.is_empty():
 		_fail("rules: no legs")
-	if start_columns < 1 or start_rows < 1 or max_columns < start_columns or max_rows < start_rows:
+	if start_columns < 1 or start_rows < 1:
 		_fail("rules: the hold sizes are not valid")
+	if bay_sizes.is_empty() or bay_sizes.size() != bay_prices.size():
+		_fail("rules: the shock bay needs a price for each size")
+	for size in bay_sizes:
+		if size.x < 1 or size.y < 1:
+			_fail("rules: a shock bay size must be 1×1 or more")
 	for w in Defs.WEIGHTS:
 		if weight_value(w) < 1:
 			_fail("rules: the weight %s needs a value" % w)

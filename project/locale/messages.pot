@@ -72,15 +72,15 @@ msgid "You have the most clamps already."
 msgstr ""
 
 #: project/rules/run.gd
+msgid "The shock bay cannot grow more."
+msgstr ""
+
+#: project/rules/run.gd
+msgid "A cargo in the shock bay cannot have a clamp."
+msgstr ""
+
+#: project/rules/run.gd
 msgid "The ship has each mod already."
-msgstr ""
-
-#: project/rules/run.gd
-msgid "The hold cannot grow more that way."
-msgstr ""
-
-#: project/rules/run.gd
-msgid "Select a column or a row."
 msgstr ""
 
 #: project/rules/run.gd
@@ -487,15 +487,19 @@ msgid "Clamps {now}/{max} → {after}/{max}"
 msgstr ""
 
 #: project/scenes/station/shop_panel.gd
-msgid "Hold {columns}×{rows}"
+msgid "Shock bay {now} → {after}"
 msgstr ""
 
 #: project/scenes/station/shop_panel.gd
-msgid "+Column → {columns}×{rows} · {price} cr"
+msgid "{columns}×{rows}"
 msgstr ""
 
 #: project/scenes/station/shop_panel.gd
-msgid "+Row → {columns}×{rows} · {price} cr"
+msgid "none"
+msgstr ""
+
+#: project/scenes/station/shop_panel.gd
+msgid "Shock bay {now} (maximum)"
 msgstr ""
 
 #: project/scenes/station/shop_panel.gd
@@ -1417,7 +1421,7 @@ msgid "Array Power"
 msgstr ""
 
 #: project/data/mods/array_power.json
-msgid "Each Shield has power with no Battery."
+msgid "A Battery powers each Shield within 2 cells."
 msgstr ""
 
 #: project/data/mods/cryo_line.json
@@ -1425,7 +1429,7 @@ msgid "Cryo Line"
 msgstr ""
 
 #: project/data/mods/cryo_line.json
-msgid "Perishable cargo with a cell in the left column stays fresh with no Cooler."
+msgid "A Cooler keeps each Perishable cargo within 2 cells fresh."
 msgstr ""
 
 #: project/data/mods/gravity_damper.json
@@ -1445,7 +1449,7 @@ msgid "Padded Walls"
 msgstr ""
 
 #: project/data/mods/padded_walls.json
-msgid "No cargo takes a wall jolt."
+msgid "Each wall jolt has a force 1 less."
 msgstr ""
 
 #: project/data/mods/shock_floor.json

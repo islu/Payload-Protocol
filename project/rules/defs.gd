@@ -141,10 +141,6 @@ const SIDE_TOP := "top"
 const SIDE_BOTTOM := "bottom"
 const SIDES: PackedStringArray = [SIDE_LEFT, SIDE_RIGHT, SIDE_TOP, SIDE_BOTTOM]
 
-# Hold upgrades (SPEC Section 17.2)
-const AXIS_COLUMN := "column"
-const AXIS_ROW := "row"
-
 # Links (SPEC Section 12.3)
 const LINK_COLD := "cold"
 const LINK_POWER := "power"

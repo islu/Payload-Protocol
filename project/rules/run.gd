@@ -23,9 +23,9 @@ const OFFER_BOUGHT_TEXT := "That offer is sold already."
 const NOT_ENOUGH_TEXT := "You do not have enough credits."
 const IN_DEBT_TEXT := "You cannot buy while your credits are below 0."
 const CLAMPS_MAXED_TEXT := "You have the most clamps already."
+const BAY_MAXED_TEXT := "The shock bay cannot grow more."
+const BAY_CLAMP_TEXT := "A cargo in the shock bay cannot have a clamp."
 const NO_MOD_LEFT_TEXT := "The ship has each mod already."
-const HOLD_MAXED_TEXT := "The hold cannot grow more that way."
-const BAD_AXIS_TEXT := "Select a column or a row."
 const CANNOT_SELL_TEXT := "You can sell only kit."
 const NOT_SCRAP_TEXT := "That cargo is not scrap."
 const NOT_ARRIVED_TEXT := "The ship has not arrived yet."
@@ -61,6 +61,8 @@ var jump: int = 1
 var credits: int
 var clamps: int
 var columns: int
+## The size of the shock bay: (0, 0) with no shock bay (SPEC Section 31).
+var bay_size := Vector2i.ZERO
 var rows: int
 ## Cargo by ID: in the hold and on the dock.
 var cargo: Dictionary = {}
@@ -71,7 +73,6 @@ var contracts: Array[Contract] = []
 ## The kit offers: {def: CargoDef, bought: bool} (SPEC Section 17.1).
 var shop: Array[Dictionary] = []
 var rerolls: int = 0
-var upgrades: int = 0
 ## The direction of each shift step of the next jump. The last one can be a fork step.
 var hazard: PackedStringArray = []
 ## The two directions of the fork step, or empty (SPEC Section 18). The station shows them.
@@ -164,6 +165,8 @@ func warp() -> String:
 	credits -= warp_log["fuel_fee"]
 	# The hold before the first shift step, so that the UI can play the log (SPEC Section 20.3).
 	warp_log["before"] = RunView.hold_views(self)
+	# The shock bay does not change in the warp: the UI shows it still (SPEC Section 31.2).
+	warp_log["bay"] = RunView.bay_views(self)
 	charges = {}
 	for c in hold_cargo():
 		if c.has(Defs.TRAIT_SHIELD):
@@ -337,10 +340,28 @@ func hold_cargo() -> Array[Cargo]:
 	return out
 
 
-## Returns the ID of the cargo in each cell of the hold that has one.
-func occupancy() -> Dictionary:
+## Returns the cargo in the shock bay, in the order of the IDs (SPEC Section 31).
+func bay_cargo() -> Array[Cargo]:
+	var out: Array[Cargo] = []
+	var ids := cargo.keys()
+	ids.sort()
+	for id: int in ids:
+		if cargo[id].in_bay:
+			out.append(cargo[id])
+	return out
+
+
+## Returns the cargo of the ship: the hold, then the shock bay (SPEC Section 31.1).
+func ship_cargo() -> Array[Cargo]:
+	var out := hold_cargo()
+	out.append_array(bay_cargo())
+	return out
+
+
+## Returns the ID of the cargo in each cell of the hold, or of the shock bay, that has one.
+func occupancy(to_bay := false) -> Dictionary:
 	var occ := {}
-	for c in hold_cargo():
+	for c in bay_cargo() if to_bay else hold_cargo():
 		for cell in c.cells():
 			occ[cell] = c.id
 	return occ
@@ -350,23 +371,30 @@ func inside(c: Vector2i) -> bool:
 	return c.x >= 0 and c.y >= 0 and c.x < columns and c.y < rows
 
 
-## Reports whether a cargo fits at a place. It ignores the cargo itself (SPEC Section 8.3).
-func fits(c: Cargo, pos: Vector2i, rot: int) -> bool:
-	var occ := occupancy()
+## Reports whether a cell is inside the shock bay (SPEC Section 31.1).
+func _inside_bay(c: Vector2i) -> bool:
+	return c.x >= 0 and c.y >= 0 and c.x < bay_size.x and c.y < bay_size.y
+
+
+## Reports whether a cargo fits at a place of the hold or of the shock bay. It
+## ignores the cargo itself (SPEC Section 8.3).
+func fits(c: Cargo, pos: Vector2i, rot: int, to_bay := false) -> bool:
+	var occ := occupancy(to_bay)
 	for cell in Shapes.cells_at(c.def.shape, rot, pos):
-		if not inside(cell) or occ.get(cell, c.id) != c.id:
+		var inside_area := _inside_bay(cell) if to_bay else inside(cell)
+		if not inside_area or occ.get(cell, c.id) != c.id:
 			return false
 	return true
 
 
 ## Reports whether a drop of a cargo at a place is valid (SPEC Section 8.3).
-func can_place(id: int, pos: Vector2i, rot: int) -> bool:
+func can_place(id: int, pos: Vector2i, rot: int, to_bay := false) -> bool:
 	return (
 		phase == Defs.PHASE_STATION
 		and cargo.has(id)
 		and rot >= 0
 		and rot < 4
-		and fits(cargo[id], pos, rot)
+		and fits(cargo[id], pos, rot, to_bay)
 	)
 
 
@@ -379,22 +407,25 @@ func _station_cargo_error(id: int) -> String:
 	return ""
 
 
-## Moves a cargo from the dock or the hold to a place in the hold (SPEC Section 8.2).
-## The clamp of the cargo moves with it.
-func place_cargo(id: int, pos: Vector2i, rot: int) -> String:
+## Moves a cargo from the dock, the hold, or the shock bay to a place in the hold or
+## in the shock bay (SPEC Sections 8.2 and 31.1). The clamp of the cargo moves with it
+## in the hold. A cargo in the shock bay has no clamp.
+func place_cargo(id: int, pos: Vector2i, rot: int, to_bay := false) -> String:
 	var err := _station_cargo_error(id)
 	if err != "":
 		return err
 	if rot < 0 or rot > 3:
 		return BAD_ROTATION_TEXT
 	var c: Cargo = cargo[id]
-	if not fits(c, pos, rot):
+	if not fits(c, pos, rot, to_bay):
 		return NO_FIT_TEXT
 	c.pos = pos
 	c.rot = rot
-	if not c.in_hold:
-		c.in_hold = true
-		dock.erase(id)
+	c.in_hold = not to_bay
+	c.in_bay = to_bay
+	if to_bay:
+		c.clamped = false
+	dock.erase(id)
 	return ""
 
 
@@ -406,8 +437,9 @@ func dock_cargo(id: int) -> String:
 	var c: Cargo = cargo[id]
 	if c.kind == Defs.KIND_SCRAP:
 		return SCRAP_TO_DOCK_TEXT
-	if c.in_hold:
+	if c.in_hold or c.in_bay:
 		c.in_hold = false
+		c.in_bay = false
 		c.clamped = false
 		dock.append(id)
 	return ""
@@ -439,11 +471,11 @@ func rotate_cargo(id: int) -> String:
 	if err != "":
 		return err
 	var c: Cargo = cargo[id]
-	if not c.in_hold:
+	if not c.in_hold and not c.in_bay:
 		return NOT_IN_HOLD_TEXT
 	var rot := (c.rot + 1) % 4
 	for kick in ROTATE_KICKS:
-		if fits(c, c.pos + kick, rot):
+		if fits(c, c.pos + kick, rot, c.in_bay):
 			c.pos += kick
 			c.rot = rot
 			return ""
@@ -465,6 +497,8 @@ func clamp_cargo(id: int) -> String:
 	if err != "":
 		return err
 	var c: Cargo = cargo[id]
+	if c.in_bay:
+		return BAY_CLAMP_TEXT
 	if not c.in_hold:
 		return NOT_IN_HOLD_TEXT
 	if c.clamped:
@@ -594,18 +628,25 @@ func _offer_mass(templates: Array) -> int:
 
 ## Returns the mass of a definition: its weight value multiplied by its cells.
 func def_mass(def: CargoDef) -> int:
+	# Kit has no mass (SPEC Section 25).
+	if def.kind == Defs.KIND_KIT:
+		return 0
 	return cat.weight_value(def.weight) * def.shape.size()
 
 
-## Returns the mass of a cargo now. Scrap is light (SPEC Section 25).
+## Returns the mass of a cargo now. Kit has no mass. Scrap is light, also the scrap
+## of a kit (SPEC Section 25).
 func cargo_mass(c: Cargo) -> int:
+	if c.kind == Defs.KIND_KIT:
+		return 0
 	return cat.weight_value(c.weight()) * c.def.shape.size()
 
 
-## Returns the mass of the cargo in the hold. The dock does not count.
+## Returns the mass of the cargo in the hold and in the shock bay. The dock does not
+## count (SPEC Section 25).
 func hold_mass() -> int:
 	var total := 0
-	for c in hold_cargo():
+	for c in ship_cargo():
 		total += cargo_mass(c)
 	return total
 
@@ -703,37 +744,26 @@ func buy_clamp() -> String:
 	return ""
 
 
-## Returns the price of the next hold upgrade (SPEC Section 17.2).
-func upgrade_price() -> int:
-	return cat.price("upgrade_first") + cat.price("upgrade_step") * upgrades
+## Returns the next purchase of the shock bay: {size: Vector2i, price}, or {} at its
+## maximum (SPEC Section 17.2).
+func shock_bay_offer() -> Dictionary:
+	var level := cat.bay_sizes.find(bay_size) + 1
+	if level >= cat.bay_sizes.size():
+		return {}
+	return {"size": cat.bay_sizes[level], "price": cat.bay_prices[level]}
 
 
-## Reports whether the hold can grow on an axis (SPEC Sections 5 and 17.2).
-func can_upgrade(axis: String) -> bool:
-	match axis:
-		Defs.AXIS_COLUMN:
-			return columns < cat.max_columns
-		Defs.AXIS_ROW:
-			return rows < cat.max_rows
-	return false
-
-
-## Adds one column at the right or one row at the bottom (SPEC Section 17.2).
-func upgrade_hold(axis: String) -> String:
+## Installs the shock bay, or makes it larger (SPEC Sections 17.2 and 31.1).
+func buy_shock_bay() -> String:
 	if phase != Defs.PHASE_STATION:
 		return NOT_AT_STATION_TEXT
-	if axis != Defs.AXIS_COLUMN and axis != Defs.AXIS_ROW:
-		return BAD_AXIS_TEXT
-	if not can_upgrade(axis):
-		return HOLD_MAXED_TEXT
-	var err := _pay(upgrade_price())
+	var offer := shock_bay_offer()
+	if offer.is_empty():
+		return BAY_MAXED_TEXT
+	var err := _pay(offer["price"])
 	if err != "":
 		return err
-	upgrades += 1
-	if axis == Defs.AXIS_COLUMN:
-		columns += 1
-	else:
-		rows += 1
+	bay_size = offer["size"]
 	return ""
 
 

@@ -2,6 +2,8 @@ class_name HoldView
 extends Control
 ## Draws the hold: the grid, the cargo, the links, the clamps, a zone, and the
 ## preview of a drop (SPEC Sections 8.3, 12.3, and 20.2). It reads the view only.
+## With bay true, it draws the shock bay: its own cells, a padded frame, and the
+## coupling to the hold below it (SPEC Section 31.2).
 
 ## A press on a cargo in the hold: the left button starts a drag, the right button rotates.
 signal cargo_pressed(id: int, grab: Vector2i, button: int)
@@ -14,16 +16,19 @@ signal cargo_hovered(id: int)
 const CELL := 100.0
 ## The free space around the grid, in cells: the marks of the front wall are there.
 const MARGIN := 0.8
+## The free space around the shock bay, in cells: the coupling is below it.
+const BAY_MARGIN := 0.5
 ## The width of the frame around the grid, in pixels.
 const FRAME := 14.0
 ## The color of the area of each mod.
 const MOD_COLORS := {
 	Defs.MOD_SHOCK_FLOOR: Color(0.55, 0.75, 1.0, 0.16),
-	Defs.MOD_CRYO_LINE: Color(0.45, 0.95, 1.0, 0.16)
 }
 
 ## The size of a cell in pixels.
 var cell := CELL
+## True for the shock bay (SPEC Section 31).
+var bay := false
 
 var columns := 6
 var rows := 6
@@ -60,17 +65,37 @@ func _init() -> void:
 
 
 func set_view(run: Dictionary) -> void:
-	columns = run["hold"]["columns"]
-	rows = run["hold"]["rows"]
 	cargo = run["cargo"]
-	links = run["links"]
-	mod_areas = run.get("mod_areas", [])
-	incident_cells = run.get("incident", {}).get("cells", [])
-	front_walls = PackedStringArray([run.get("front_wall", "")])
-	show_jolts = true
-	custom_minimum_size = Vector2(columns + MARGIN, rows + MARGIN) * CELL
+	if bay:
+		# The shock bay has no front wall, no mod area, and no incident (SPEC Section 31.1).
+		var size: Dictionary = run.get("shock_bay", {})
+		columns = size.get("columns", 0)
+		rows = size.get("rows", 0)
+		visible = columns > 0
+		links = []
+		for l: Dictionary in run["links"]:
+			if _mine(_cargo(l["from"])) and _mine(_cargo(l["to"])):
+				links.append(l)
+		custom_minimum_size = Vector2(columns + BAY_MARGIN, rows + BAY_MARGIN) * CELL
+	else:
+		columns = run["hold"]["columns"]
+		rows = run["hold"]["rows"]
+		links = []
+		for l: Dictionary in run["links"]:
+			if _mine(_cargo(l["from"])):
+				links.append(l)
+		mod_areas = run.get("mod_areas", [])
+		incident_cells = run.get("incident", {}).get("cells", [])
+		front_walls = PackedStringArray([run.get("front_wall", "")])
+		show_jolts = true
+		custom_minimum_size = Vector2(columns + MARGIN, rows + MARGIN) * CELL
 	_fit()
 	queue_redraw()
+
+
+## Reports whether a cargo view is in the area of this view: the hold or the shock bay.
+func _mine(c: Dictionary) -> bool:
+	return not c.is_empty() and (c.get("in_bay", false) if bay else c.get("in_hold", false))
 
 
 ## Marks front walls. jolts shows the wall jolt warnings (SPEC Section 20.2).
@@ -97,7 +122,7 @@ func set_hover(id: int) -> void:
 func frame_cells() -> Array[Vector2i]:
 	var out: Array[Vector2i] = []
 	var c := _cargo(_hover)
-	if c.is_empty() or not c["in_hold"]:
+	if not _mine(c):
 		return out
 	for s: Dictionary in c["shape"]:
 		out.append(Vector2i(c["x"] + s["x"], c["y"] + s["y"]))
@@ -106,7 +131,11 @@ func frame_cells() -> Array[Vector2i]:
 
 ## Returns the upper left of the grid in local coordinates. The grid is centered.
 func grid_origin() -> Vector2:
-	return ((size - Vector2(columns, rows) * cell) / 2.0).floor()
+	var o := ((size - Vector2(columns, rows) * cell) / 2.0).floor()
+	if bay:
+		# The shock bay sits at the top: the coupling fills the space below it.
+		o.y = FRAME + 4.0
+	return o
 
 
 ## Returns the cell at a global position, also outside the grid.
@@ -156,7 +185,7 @@ func is_over(global_pos: Vector2) -> bool:
 ## Returns the ID of the cargo in a cell, or -1.
 func cargo_at(at: Vector2i) -> int:
 	for c: Dictionary in cargo:
-		if not c["in_hold"]:
+		if not _mine(c):
 			continue
 		for s: Dictionary in c["shape"]:
 			if Vector2i(c["x"] + s["x"], c["y"] + s["y"]) == at:
@@ -225,7 +254,7 @@ func _draw() -> void:
 	for z: Dictionary in zone:
 		draw_rect(Rect2(o + Vector2(z["x"], z["y"]) * cell, Vector2(cell, cell)), Palette.ZONE)
 	for c: Dictionary in cargo:
-		if c["in_hold"]:
+		if _mine(c):
 			var alpha: float = 0.3 if c["id"] == dragging else fades.get(c["id"], 1.0)
 			if alpha <= 0.0:
 				continue
@@ -240,7 +269,7 @@ func _draw() -> void:
 				_draw_check(at + _first_cell_offset(c))
 	for id: int in marked:
 		var c := _cargo(id)
-		if not c.is_empty() and c["in_hold"]:
+		if _mine(c):
 			for s: Dictionary in c["shape"]:
 				draw_rect(
 					(
@@ -322,6 +351,9 @@ func _center(c: Dictionary) -> Vector2:
 func _draw_frame(o: Vector2) -> void:
 	var grid := Rect2(o, Vector2(columns, rows) * cell)
 	var outer := grid.grow(FRAME)
+	if bay:
+		_draw_bay_frame(grid, outer)
+		return
 	draw_rect(outer, Palette.PANEL_LINE.darkened(0.35))
 	draw_rect(outer, Palette.PANEL_LINE, false, 2.0)
 	draw_rect(grid.grow(2), Palette.BACKGROUND)
@@ -335,6 +367,24 @@ func _draw_frame(o: Vector2) -> void:
 		var py := o.y + y * cell
 		draw_circle(Vector2(grid.position.x - mid, py), 2.5, rivet)
 		draw_circle(Vector2(grid.end.x + mid, py), 2.5, rivet)
+
+
+## Draws the frame of the shock bay: soft padding with seams, and the coupling to
+## the hold below it (SPEC Section 31.2).
+func _draw_bay_frame(grid: Rect2, outer: Rect2) -> void:
+	var pad: Color = Palette.TRAIT_COLORS.get("cushion", Palette.ACCENT)
+	var bottom := outer.end.y
+	for side in [-1.0, 1.0]:
+		var x: float = grid.get_center().x + side * cell * 0.25
+		draw_line(Vector2(x, bottom), Vector2(x, size.y), Palette.PANEL_LINE, 6.0)
+	draw_rect(outer, Color(pad, 0.35).darkened(0.4))
+	draw_rect(outer, pad, false, 2.0)
+	var seam := Color(pad, 0.6)
+	for x in columns + 1:
+		var px := grid.position.x + x * cell
+		draw_line(Vector2(px, outer.position.y + 3), Vector2(px, grid.position.y - 3), seam, 1.5)
+		draw_line(Vector2(px, grid.end.y + 3), Vector2(px, bottom - 3), seam, 1.5)
+	draw_rect(grid.grow(2), Palette.BACKGROUND)
 
 
 ## Draws the front wall: a band of yellow and black stripes on the frame, and

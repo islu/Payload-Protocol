@@ -17,12 +17,12 @@ The station screen has these areas:
 | Area | Position | Content |
 | --- | --- | --- |
 | Top bar | Top | Four groups: (1) the leg, and a dot for each jump of the leg; (2) the credits, and a bar of the credits against the payment of this leg, with the jumps before the payment; (3) a bar of the hold mass, with a mark at the mass limit and a mark at the maximum (Section 25); (4) a badge with the icon and the name of the environment of the leg, with its rule when the mouse is on it (Section 28). A gear button at the right opens the pause menu (Section 20.7). |
-| Pilot box | Above the hold | The portrait and the line of the pilot, in one wide line (Section 22). |
+| Pilot box | Bottom left | The portrait and the line of the pilot, in a wide box (Section 22). |
 | Hazard panel | Center, at the left of the hold, from top to bottom | The shift steps of the next jump in order (Section 18). Each step is a card with a large arrow, its number, and its direction. A fork step shows its two directions and a question mark. |
 | Dock | Left, top | The cargo on the dock (Section 8.1). It uses most of the left side. |
 | Accepted contracts | Left, below the dock | One line for each accepted contract: the client, "Loaded N/M", and the total pay. The Contract Board button opens the contract drawer. |
 | Hold | Center | The grid and its cargo, the links, and the clamps. Each cell is 100 pixels, the size of the cargo images (Section 4.2). |
-| Shock bay | At the right of the hold | The cells of the shock bay, after its purchase (Section 31.2). |
+| Shock bay | Above the hold | The cells of the shock bay, after its purchase (Section 31.2). |
 | Mod bar | Below the hold | A card with the icon of each mod of the ship (Section 27). The mouse on a card shows the name and the rule of the mod, and marks the area of the mod on the hold. |
 | Services | Right | The services (Section 17.2), the sell area, and the Shop button that opens the shop drawer. |
 | Clamp panel | Right, below the services | The free clamps (Section 13). |
@@ -39,7 +39,7 @@ Contracts and the dock:
 - Each contract card shows on its first line the client, the total pay, and the mass of the contract. The second line shows the freight and the bonus. The same freight shows one time, with its image, "×N", and its trait icons.
 - The mouse on a contract card shows the details: the number of pieces, the pay for each piece, the rules of the traits, and the mass after it is accepted (the mass of the hold and the dock, plus the mass of the contract).
 - The mass of a contract that is not accepted is yellow when the mass after it is above the mass limit (a fuel fee), and red when it is above the maximum.
-- In the contract drawer, an accepted contract has a bright border and shows "Loaded N/M": N pieces of its M pieces are in the hold.
+- In the contract drawer, an accepted contract has a bright border and shows "Loaded N/M": N pieces of its M pieces are in the hold or in the shock bay.
 - When the mouse is on a contract card or on a line of an accepted contract, the hold marks the freight of that contract.
 - The dock title shows the number of cargo on the dock. The dock shows its cargo at 48 pixels for each cell. An empty dock is one line of text.
 
@@ -52,7 +52,7 @@ The shop and the services:
 
 - Each kit offer shows its image, each trait with its icon and its rule, its weight, and its price on the Buy button. A price that is more than the credits shows in red.
 - Each kit offer shows how it helps the accepted freight on the dock and in the hold: "Helps N of your freight". A Cooler counts Perishable freight. A Cushion counts Fragile freight. A Shield counts freight that is Fragile, Volatile, Fluid, or Electronic. A Battery counts the Shield kit on the dock and in the hold. A Sensor shows "The next jump has a fork step" when it does. Other kit and a count of 0 show nothing.
-- Each service shows the value now and the value after the purchase: the clamps (1/4 → 2/4), the shock bay (none → 2×2, or 2×2 → 2×3), and the mass limit (24 → 30).
+- Each service shows the value now and the value after the purchase: the clamps (1/4 → 2/4), the shock bay (none → 2×2, or 2×2 → 3×2), and the mass limit (24 → 30).
 - The sell area is a small bar. During a drag of a kit, it is green and shows the sell price. During a drag of a scrap, it is red and shows the clear price.
 
 The warp:

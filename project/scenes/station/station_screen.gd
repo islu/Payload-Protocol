@@ -53,6 +53,8 @@ var _hover_contract := -1
 var _shown_credits := -1
 
 var _hold: HoldView
+## The shock bay above the hold (SPEC Section 31.2).
+var _bay: HoldView
 var _top_label: Label
 var _credits_label: Label
 var _payment_label: Label
@@ -179,13 +181,26 @@ func _build() -> void:
 	_hazard_box = VBoxContainer.new()
 	_hazard_box.add_theme_constant_override("separation", 10)
 	hazard.add_child(_hazard_box)
+	var ship := VBoxContainer.new()
+	ship.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	ship.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	ship.add_theme_constant_override("separation", 0)
+	row.add_child(ship)
+	# The shock bay hangs above the hold (SPEC Section 31.2).
+	_bay = HoldView.new()
+	_bay.bay = true
+	_bay.visible = false
+	_bay.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_bay.cargo_pressed.connect(_on_hold_pressed)
+	_bay.cargo_hovered.connect(_on_hold_hovered)
+	ship.add_child(_bay)
 	_hold = HoldView.new()
 	_hold.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	_hold.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_hold.cargo_pressed.connect(_on_hold_pressed)
 	_hold.clamp_pressed.connect(func(id: int) -> void: _act(GameState.unclamp_cargo(id)))
 	_hold.cargo_hovered.connect(_on_hold_hovered)
-	row.add_child(_hold)
+	ship.add_child(_hold)
 	var hint := _label(center, HINT_TEXT, TextSize.SMALL, Palette.TEXT_DIM)
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 
@@ -304,6 +319,7 @@ func refresh() -> void:
 	_show_pilot()
 	_undo_button.disabled = not GameState.can_undo()
 	_hold.set_view(_run)
+	_bay.set_view(_run)
 	_refresh_hazard()
 	_refresh_dock()
 	_refresh_contracts()
@@ -478,7 +494,7 @@ func _refresh_dock() -> void:
 	if _run["dock"].is_empty():
 		_label(_dock_flow, EMPTY_DOCK_TEXT, TextSize.SMALL, Palette.TEXT_DIM)
 	for c: Dictionary in _run["cargo"]:
-		if c["in_hold"]:
+		if c["in_hold"] or c["in_bay"]:
 			continue
 		var chip := CargoChip.new().setup(c, DOCK_CELL)
 		chip.pressed.connect(
@@ -565,6 +581,8 @@ func _update_marks() -> void:
 	_hold.marked = marked
 	_hold.zone = zone
 	_hold.queue_redraw()
+	_bay.marked = marked
+	_bay.queue_redraw()
 
 
 func _cargo(id: int) -> Dictionary:

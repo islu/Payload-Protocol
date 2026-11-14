@@ -14,11 +14,7 @@ func test_hold_mass() -> void:
 	scrap.kind = Defs.KIND_SCRAP
 	put("foam", 0, 5)
 	on_dock("heavy")
-	eq(
-		run.hold_mass(),
-		4 + 3 + 1,
-		"freight, kit, and scrap count; the dock does not (SPEC Section 25)"
-	)
+	eq(run.hold_mass(), 4 + 3, "freight and scrap count; kit and the dock do not (SPEC Section 25)")
 
 
 func test_start_mass_limit() -> void:
@@ -89,4 +85,20 @@ func test_mass_view() -> void:
 		RunView.view(run)["cargo"][0]["mass"],
 		3,
 		"the tooltip shows the mass of a cargo (SPEC Section 25)"
+	)
+
+
+func test_kit_has_no_mass() -> void:
+	var battery := put("battery", 0, 0)
+	eq(run.cargo_mass(battery), 0, "a kit has a mass of 0 (SPEC Section 25)")
+	eq(
+		run.def_mass(run.cat.cargo["shield"]),
+		0,
+		"a kit definition has a mass of 0 (SPEC Section 25)"
+	)
+	battery.kind = Defs.KIND_SCRAP
+	eq(
+		run.cargo_mass(battery),
+		1,
+		"a kit that becomes scrap has the mass of a light scrap (SPEC Section 25)"
 	)

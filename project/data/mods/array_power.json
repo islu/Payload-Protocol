@@ -1,5 +1,5 @@
 {
 	"id": "array_power",
 	"name": "Array Power",
-	"text": "Each Shield has power with no Battery."
+	"text": "A Battery powers each Shield within 2 cells."
 }

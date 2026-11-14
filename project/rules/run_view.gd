@@ -45,10 +45,7 @@ static func jolt_risks(run: Run) -> Dictionary:
 				at_wall = true
 		if not at_wall:
 			continue
-		if run.has_mod(Defs.MOD_PADDED_WALLS):
-			continue
-		var f := Shift.taken(run, c, 0 if c.has(Defs.TRAIT_CUSHION) else Shift.force_weight(run, c))
-		if Shift.reaction_at(run, c, f) != "":
+		if Shift.reaction_at(run, c, Shift.jolt_force(run, c)) != "":
 			out[c.id] = true
 	return out
 
@@ -59,7 +56,7 @@ static func jolt_risks(run: Run) -> Dictionary:
 static func hazard(run: Run) -> Array:
 	var out := []
 	var sensor := false
-	for c in run.hold_cargo():
+	for c in run.ship_cargo():
 		if c.has(Defs.TRAIT_SENSOR):
 			sensor = true
 	for i in run.hazard.size():
@@ -94,6 +91,11 @@ static func names(cat: Catalog, run: Run = null) -> Dictionary:
 
 static func _limit(cat: Catalog, run: Run, trait_id: String) -> int:
 	return run.break_limit(trait_id) if run != null else cat.break_limit(trait_id)
+
+
+## Returns a size as {columns, rows}, or {} for (0, 0).
+static func _size(s: Vector2i) -> Dictionary:
+	return {} if s == Vector2i.ZERO else {"columns": s.x, "rows": s.y}
 
 
 static func text(key: String, args: Dictionary = {}) -> Dictionary:
@@ -142,13 +144,8 @@ static func view(run: Run) -> Dictionary:
 		"payment": run.payment(),
 		"clamps": run.clamps,
 		"free_clamps": run.free_clamps(),
-		"hold":
-		{
-			"columns": run.columns,
-			"rows": run.rows,
-			"max_columns": cat.max_columns,
-			"max_rows": cat.max_rows,
-		},
+		"hold": {"columns": run.columns, "rows": run.rows},
+		"shock_bay": _size(run.bay_size),
 		"cargo": [],
 		"dock": run.dock.duplicate(),
 		"links": links(run),
@@ -179,9 +176,11 @@ static func view(run: Run) -> Dictionary:
 	ids.sort()
 	var powered := Shift.power_check(run)
 	var hold := run.hold_cargo()
+	var bay := run.bay_cargo()
 	var risky := jolt_risks(run)
 	for id: int in ids:
-		var cv := _cargo(run, run.cargo[id], hold, powered)
+		var c: Cargo = run.cargo[id]
+		var cv := _cargo(run, c, bay if c.in_bay else hold, powered)
 		cv["jolt_risk"] = risky.has(id)
 		v["cargo"].append(cv)
 	for i in run.contracts.size():
@@ -207,23 +206,24 @@ static func view(run: Run) -> Dictionary:
 				}
 			)
 		)
+	var bay_offer := run.shock_bay_offer()
 	v["shop"] = {
 		"offers": offers,
 		"reroll_price": run.reroll_price(),
 		"clamp_price": cat.price("clamp"),
 		"clamp_max": cat.price("clamp_max"),
-		"upgrade_price": run.upgrade_price(),
-		"can_column": run.can_upgrade(Defs.AXIS_COLUMN),
-		"can_row": run.can_upgrade(Defs.AXIS_ROW),
+		"bay":
+		{
+			"now": _size(run.bay_size),
+			"after": _size(bay_offer.get("size", Vector2i.ZERO)),
+			"price": bay_offer.get("price", 0),
+		},
 		"breach_fee": cat.price("breach_fee"),
 		"reinforce_price": run.reinforce_price(),
 		"reinforce_amount": cat.reinforce_amount,
 		"scrap_cell": cat.price("scrap_cell"),
 		"clamps": run.clamps,
 		"clamps_after": run.clamps + 1,
-		"hold": {"columns": run.columns, "rows": run.rows},
-		"column_after": {"columns": run.columns + 1, "rows": run.rows},
-		"row_after": {"columns": run.columns, "rows": run.rows + 1},
 		"mass_limit": run.mass_limit,
 		"mass_limit_after": run.mass_limit + cat.reinforce_amount,
 	}
@@ -252,6 +252,15 @@ static func hold_views(run: Run) -> Array:
 	return out
 
 
+## Returns the views of the cargo in the shock bay (SPEC Section 31.2).
+static func bay_views(run: Run) -> Array:
+	var out := []
+	var bay := run.bay_cargo()
+	for c in bay:
+		out.append(_cargo(run, c, bay, {}))
+	return out
+
+
 static func _cargo(run: Run, c: Cargo, hold: Array[Cargo], powered: Dictionary) -> Dictionary:
 	var cv := {
 		"id": c.id,
@@ -269,6 +278,7 @@ static func _cargo(run: Run, c: Cargo, hold: Array[Cargo], powered: Dictionary) 
 		"x": c.pos.x,
 		"y": c.pos.y,
 		"in_hold": c.in_hold,
+		"in_bay": c.in_bay,
 		"clamped": c.clamped,
 		"contract": -1,
 		"pay": 0,
@@ -277,10 +287,9 @@ static func _cargo(run: Run, c: Cargo, hold: Array[Cargo], powered: Dictionary) 
 		"no_cooler":
 		(
 			# The warnings of SPEC Section 12.3.
-			c.in_hold
+			(c.in_hold or c.in_bay)
 			and c.has(Defs.TRAIT_PERISHABLE)
-			and not Arrival.cooled(c, hold)
-			and not Arrival.cryo(run, c)
+			and not Arrival.cooled(run, c, hold)
 		),
 		"no_power": c.in_hold and c.has(Defs.TRAIT_SHIELD) and not powered.has(c.id),
 	}
@@ -294,12 +303,12 @@ static func _cargo(run: Run, c: Cargo, hold: Array[Cargo], powered: Dictionary) 
 ## Returns each link in the hold now (SPEC Section 12.3).
 static func links(run: Run) -> Array:
 	var out := []
-	var hold := run.hold_cargo()
+	var hold := run.ship_cargo()
 	for a in hold:
 		for b in hold:
-			if a.has(Defs.TRAIT_COOLER) and b.has(Defs.TRAIT_PERISHABLE) and Cargo.next_to(a, b):
+			if Arrival.cools(run, a, b):
 				out.append({"kind": Defs.LINK_COLD, "from": a.id, "to": b.id})
-			elif a.has(Defs.TRAIT_BATTERY) and b.has(Defs.TRAIT_SHIELD) and Cargo.next_to(a, b):
+			elif Shift.powers(run, a, b):
 				out.append({"kind": Defs.LINK_POWER, "from": a.id, "to": b.id})
 	return out
 
@@ -307,14 +316,15 @@ static func links(run: Run) -> Array:
 ## Returns the links that a cargo would make at a place in the hold: the links
 ## with that cargo only (SPEC Section 8.3). It returns [] when the drop is not valid.
 ## It puts the cargo at the place, reads the links, and puts it back.
-static func preview_links(run: Run, id: int, pos: Vector2i, rot: int) -> Array:
-	if not run.can_place(id, pos, rot):
+static func preview_links(run: Run, id: int, pos: Vector2i, rot: int, to_bay := false) -> Array:
+	if not run.can_place(id, pos, rot, to_bay):
 		return []
 	var c: Cargo = run.cargo[id]
-	var old := [c.pos, c.rot, c.in_hold]
+	var old := [c.pos, c.rot, c.in_hold, c.in_bay]
 	c.pos = pos
 	c.rot = rot
-	c.in_hold = true
+	c.in_hold = not to_bay
+	c.in_bay = to_bay
 	var out := []
 	for l: Dictionary in links(run):
 		if l["from"] == id or l["to"] == id:
@@ -322,6 +332,7 @@ static func preview_links(run: Run, id: int, pos: Vector2i, rot: int) -> Array:
 	c.pos = old[0]
 	c.rot = old[1]
 	c.in_hold = old[2]
+	c.in_bay = old[3]
 	return out
 
 
@@ -341,13 +352,13 @@ static func _contract_card(run: Run, k: Contract, kv: Dictionary) -> void:
 		by_id[f["def_id"]] = g
 		groups.append(g)
 	var carried := 0
-	for c in run.hold_cargo():
+	for c in run.ship_cargo():
 		carried += run.cargo_mass(c)
 	for id in run.dock:
 		carried += run.cargo_mass(run.cargo[id])
 	var after := carried + mass
 	var loaded := 0
-	for c in run.hold_cargo():
+	for c in run.ship_cargo():
 		if k.accepted and c.contract == k.id:
 			loaded += 1
 	kv["groups"] = groups
@@ -422,7 +433,7 @@ static func mods(run: Run, ids: PackedStringArray) -> Array:
 
 
 ## Returns the area of each mod that has one: {mod, cells}. Shock Floor has the bottom
-## row, and Cryo Line has the left column (SPEC Section 27.2).
+## row (SPEC Section 27.2).
 static func mod_areas(run: Run) -> Array:
 	var out := []
 	if run.has_mod(Defs.MOD_SHOCK_FLOOR):
@@ -430,11 +441,6 @@ static func mod_areas(run: Run) -> Array:
 		for x in run.columns:
 			cells.append({"x": x, "y": run.rows - 1})
 		out.append({"mod": Defs.MOD_SHOCK_FLOOR, "cells": cells})
-	if run.has_mod(Defs.MOD_CRYO_LINE):
-		var cells := []
-		for y in run.rows:
-			cells.append({"x": 0, "y": y})
-		out.append({"mod": Defs.MOD_CRYO_LINE, "cells": cells})
 	return out
 
 

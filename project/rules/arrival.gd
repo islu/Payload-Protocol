@@ -105,22 +105,13 @@ static func arrive(run: Run) -> void:
 ## Returns each Perishable cargo that is not next to a Cooler (SPEC Section 12.1).
 static func spoil_check(run: Run) -> Array[Cargo]:
 	var out: Array[Cargo] = []
-	var hold := run.hold_cargo()
-	for c in hold:
-		if c.has(Defs.TRAIT_PERISHABLE) and not cooled(c, hold) and not cryo(run, c):
+	for c in run.ship_cargo():
+		if (
+			c.has(Defs.TRAIT_PERISHABLE)
+			and not cooled(run, c, run.bay_cargo() if c.in_bay else run.hold_cargo())
+		):
 			out.append(c)
 	return out
-
-
-## Reports whether the Cryo Line mod cools a cargo: a cell in the left column
-## (SPEC Section 27.2).
-static func cryo(run: Run, c: Cargo) -> bool:
-	if not run.has_mod(Defs.MOD_CRYO_LINE):
-		return false
-	for cell in c.cells():
-		if cell.x == 0:
-			return true
-	return false
 
 
 ## Returns the insurance of a lost piece: half of its pay, rounded down, with the
@@ -129,11 +120,22 @@ static func _insurance(run: Run, k: Contract) -> int:
 	return k.template.pay / 2 if run.has_mod(Defs.MOD_INSURANCE) else 0
 
 
-static func cooled(c: Cargo, hold: Array[Cargo]) -> bool:
+## Reports whether a Cooler of the hold keeps a cargo fresh (SPEC Section 12.1).
+static func cooled(run: Run, c: Cargo, hold: Array[Cargo]) -> bool:
 	for o in hold:
-		if o.has(Defs.TRAIT_COOLER) and Cargo.next_to(c, o):
+		if cools(run, o, c):
 			return true
 	return false
+
+
+## Reports whether a Cooler keeps a Perishable cargo fresh: next to it, or within
+## 2 cells with the Cryo Line mod (SPEC Sections 12.1 and 27.2).
+static func cools(run: Run, cooler: Cargo, c: Cargo) -> bool:
+	if not cooler.has(Defs.TRAIT_COOLER) or not c.has(Defs.TRAIT_PERISHABLE):
+		return false
+	if run.has_mod(Defs.MOD_CRYO_LINE):
+		return Cargo.within(cooler, c, 2)
+	return Cargo.next_to(cooler, c)
 
 
 ## Reports whether the bonus condition of a contract is true at the arrival.
@@ -149,13 +151,16 @@ static func bonus_met(run: Run, k: Contract, delivered: Array[Cargo]) -> bool:
 			return delivered.size() == k.cargo.size()
 		Defs.BONUS_ZONE:
 			for d in delivered:
+				# The shock bay is outside each zone (SPEC Section 31.1).
+				if d.in_bay:
+					return false
 				for cell in d.cells():
 					if not k.template.in_zone(cell, run.columns, run.rows):
 						return false
 			return true
 		Defs.BONUS_NOT_NEXT_TO:
 			for d in delivered:
-				for o in run.hold_cargo():
+				for o in run.ship_cargo():
 					if o.has(b["trait"]) and Cargo.next_to(d, o):
 						return false
 			return true

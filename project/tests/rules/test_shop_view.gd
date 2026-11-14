@@ -78,17 +78,6 @@ func test_services_before_and_after() -> void:
 	var s: Dictionary = RunView.view(run)["shop"]
 	eq(s["clamps"], run.clamps, "the clamps now (SPEC Section 20.2)")
 	eq(s["clamps_after"], run.clamps + 1, "the clamps after a purchase (SPEC Section 20.2)")
-	eq(s["hold"], {"columns": run.columns, "rows": run.rows}, "the hold now (SPEC Section 20.2)")
-	eq(
-		s["column_after"],
-		{"columns": run.columns + 1, "rows": run.rows},
-		"the hold after a column (SPEC Section 20.2)"
-	)
-	eq(
-		s["row_after"],
-		{"columns": run.columns, "rows": run.rows + 1},
-		"the hold after a row (SPEC Section 20.2)"
-	)
 	eq(s["mass_limit"], run.mass_limit, "the mass limit now (SPEC Section 20.2)")
 	eq(
 		s["mass_limit_after"],

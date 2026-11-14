@@ -205,3 +205,33 @@ func test_jolt_risk_view() -> void:
 	check(
 		not risk[away.id], "a cargo away from the front wall shows no warning (SPEC Section 12.3)"
 	)
+
+
+func test_padded_walls_jolt_risk() -> void:
+	# In a Heat Zone, Volatile breaks at 2. The heavy bomb at the left wall takes a
+	# jolt of 3 - 1 = 2 with Padded Walls, so it still explodes.
+	run.environment = Defs.ENV_HEAT_ZONE
+	run.mods.append(Defs.MOD_PADDED_WALLS)
+	run.hazard = PackedStringArray([Defs.DIR_LEFT, Defs.DIR_UP])
+	run.fork_options = PackedStringArray()
+	var bomb := put("bigbomb", 0, 2)
+	var glass := put("glass", 0, 4)
+	var risks := RunView.jolt_risks(run)
+	check(
+		risks.has(bomb.id),
+		"the warning uses the jolt that Padded Walls makes 1 less (SPEC Sections 12.3 and 27.2)"
+	)
+	check(not risks.has(glass.id), "a jolt of 2 - 1 does not break glass (SPEC Section 27.2)")
+
+
+func test_link_within_2_cells() -> void:
+	# The Battery at (0, 0) and the Shield at (2, 0) are 2 cells apart.
+	var battery := put("battery", 0, 0)
+	var shield := put("shield", 2, 0)
+	eq(RunView.links(run), [], "with no mod, cargo 2 cells apart have no link (SPEC Section 12.3)")
+	run.mods.append(Defs.MOD_ARRAY_POWER)
+	eq(
+		RunView.links(run),
+		[{"kind": Defs.LINK_POWER, "from": battery.id, "to": shield.id}],
+		"with Array Power, the link of a Battery within 2 cells shows (SPEC Sections 12.3 and 27.2)"
+	)

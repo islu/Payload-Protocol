@@ -7,10 +7,6 @@
 			"rows": 6
 		}
 	},
-	"hold_max": {
-		"columns": 8,
-		"rows": 8
-	},
 	"weights": {
 		"light": 1,
 		"standard": 2,
@@ -36,8 +32,6 @@
 		"reroll_step": 2,
 		"clamp": 8,
 		"clamp_max": 4,
-		"upgrade_first": 15,
-		"upgrade_step": 10,
 		"scrap_cell": 2,
 		"breach_fee": 5,
 		"sell_divisor": 2,
@@ -88,6 +82,10 @@
 			"incident_percent": 100
 		}
 	],
+	"shock_bay": {
+		"sizes": [[2, 2], [3, 2]],
+		"prices": [20, 30]
+	},
 	"mass": {
 		"limit": 24,
 		"over_percent": 25,

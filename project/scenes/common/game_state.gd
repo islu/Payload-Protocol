@@ -71,17 +71,20 @@ func abandon_run() -> void:
 
 
 ## Reports whether a drop of a cargo at a place is valid (SPEC Section 8.3).
-func can_place(id: int, x: int, y: int, rot: int) -> bool:
-	return run != null and run.can_place(id, Vector2i(x, y), rot)
+func can_place(id: int, x: int, y: int, rot: int, to_bay := false) -> bool:
+	return run != null and run.can_place(id, Vector2i(x, y), rot, to_bay)
 
 
 ## Returns the links that a drop of a cargo at a place would make (SPEC Section 8.3).
-func preview_links(id: int, x: int, y: int, rot: int) -> Array:
-	return RunView.preview_links(run, id, Vector2i(x, y), rot) if run != null else []
+func preview_links(id: int, x: int, y: int, rot: int, to_bay := false) -> Array:
+	if run == null:
+		return []
+	return RunView.preview_links(run, id, Vector2i(x, y), rot, to_bay)
 
 
-func place_cargo(id: int, x: int, y: int, rot: int) -> String:
-	return _act(func(r: Run) -> String: return r.place_cargo(id, Vector2i(x, y), rot))
+## Places a cargo in the hold, or in the shock bay with to_bay (SPEC Sections 8.2 and 31.1).
+func place_cargo(id: int, x: int, y: int, rot: int, to_bay := false) -> String:
+	return _act(func(r: Run) -> String: return r.place_cargo(id, Vector2i(x, y), rot, to_bay))
 
 
 func load_all() -> String:
@@ -128,8 +131,9 @@ func reinforce_hull() -> String:
 	return _act(func(r: Run) -> String: return r.reinforce_hull())
 
 
-func upgrade_hold(axis: String) -> String:
-	return _act(func(r: Run) -> String: return r.upgrade_hold(axis))
+## Installs the shock bay, or makes it larger (SPEC Section 17.2).
+func buy_shock_bay() -> String:
+	return _act(func(r: Run) -> String: return r.buy_shock_bay())
 
 
 func sell_kit(id: int) -> String:

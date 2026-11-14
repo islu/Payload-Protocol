@@ -1,5 +1,5 @@
 {
 	"id": "cryo_line",
 	"name": "Cryo Line",
-	"text": "Perishable cargo with a cell in the left column stays fresh with no Cooler."
+	"text": "A Cooler keeps each Perishable cargo within 2 cells fresh."
 }

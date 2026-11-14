@@ -25,7 +25,8 @@ const ACTIONS := {
 	"buy": "buy <offer>",
 	"reroll": "reroll",
 	"buyclamp": "buyclamp",
-	"upgrade": "upgrade column|row",
+	"placebay": "placebay <cargo> <x> <y> [rot 0-3] (puts it in the shock bay)",
+	"bay": "bay (buys the shock bay, or makes it larger)",
 	"reinforce": "reinforce (adds to the mass limit)",
 	"loadall": "loadall (puts each dock cargo in the first place that fits)",
 	"sell": "sell <kit>",
@@ -131,9 +132,10 @@ func _act(run: Run, parts: Array) -> String:
 			return run.accept_contract(n.call(1))
 		"cancel":
 			return run.cancel_contract(n.call(1))
-		"place":
+		"place", "placebay":
 			var rot: int = n.call(4) if parts.size() > 4 else 0
-			return run.place_cargo(n.call(1), Vector2i(n.call(2), n.call(3)), rot)
+			var pos := Vector2i(n.call(2), n.call(3))
+			return run.place_cargo(n.call(1), pos, rot, parts[0] == "placebay")
 		"dock":
 			return run.dock_cargo(n.call(1))
 		"rotate":
@@ -152,8 +154,8 @@ func _act(run: Run, parts: Array) -> String:
 			return run.reinforce_hull()
 		"loadall":
 			return run.load_all()
-		"upgrade":
-			return run.upgrade_hold(parts[1] if parts.size() > 1 else "")
+		"bay":
+			return run.buy_shock_bay()
 		"sell":
 			return run.sell_kit(n.call(1))
 		"clear":
@@ -298,7 +300,7 @@ func _render_station(run: Run, v: Dictionary) -> void:
 	_render_hold(run, v)
 	_say("Dock:" + ("" if not v["dock"].is_empty() else " (empty)"))
 	for c: Dictionary in v["cargo"]:
-		if not c["in_hold"]:
+		if not c["in_hold"] and not c["in_bay"]:
 			_say("  " + _cargo_line(c) + "  shape " + _shape_text(c["shape"]))
 	_say("Contracts:")
 	for k: Dictionary in v["contracts"]:
@@ -351,14 +353,23 @@ func _render_station(run: Run, v: Dictionary) -> void:
 		)
 	_say(
 		(
-			"  reroll %d · clamp %d (max %d) · upgrade %d%s%s · clear scrap 2/cell · sell kit at half"
+			"  reroll %d · clamp %d (max %d) · shock bay %s · clear scrap 2/cell · sell kit at half"
 			% [
 				s["reroll_price"],
 				s["clamp_price"],
 				s["clamp_max"],
-				s["upgrade_price"],
-				" column" if s["can_column"] else "",
-				" row" if s["can_row"] else ""
+				(
+					"max"
+					if s["bay"]["after"].is_empty()
+					else (
+						"%dx%d for %d"
+						% [
+							s["bay"]["after"]["columns"],
+							s["bay"]["after"]["rows"],
+							s["bay"]["price"]
+						]
+					)
+				),
 			]
 		)
 	)
@@ -388,8 +399,34 @@ func _render_hold(_run: Run, v: Dictionary) -> void:
 	for c: Dictionary in v["cargo"]:
 		if c["in_hold"]:
 			_say("  " + _cargo_line(c))
+	_render_bay(v)
 	for l: Dictionary in v["links"]:
 		_say("  link %s: %s-%s" % [l["kind"], _letter(l["from"]), _letter(l["to"])])
+
+
+## The shock bay: its own cells from (0, 0). The warp does not move or hit it (SPEC Section 31).
+func _render_bay(v: Dictionary) -> void:
+	var size: Dictionary = v["shock_bay"]
+	if size.is_empty():
+		return
+	var grid := []
+	for y: int in size["rows"]:
+		var row := []
+		row.resize(size["columns"])
+		row.fill(".")
+		grid.append(row)
+	for c: Dictionary in v["cargo"]:
+		if c["in_bay"]:
+			for cell: Dictionary in c["shape"]:
+				grid[c["y"] + cell["y"]][c["x"] + cell["x"]] = _letter(c["id"])
+	_say(
+		"Shock bay %dx%d (no slide, no hits; command: placebay):" % [size["columns"], size["rows"]]
+	)
+	for y: int in size["rows"]:
+		_say("  %d %s" % [y, " ".join(grid[y])])
+	for c: Dictionary in v["cargo"]:
+		if c["in_bay"]:
+			_say("  " + _cargo_line(c))
 
 
 func _cargo_line(c: Dictionary) -> String:
@@ -408,7 +445,11 @@ func _cargo_line(c: Dictionary) -> String:
 		tags.append("NO POWER")
 	if c.get("jolt_risk", false):
 		tags.append("JOLT RISK at the front wall")
-	var where := " at (%d,%d) rot %d" % [c["x"], c["y"], c["rot"]] if c["in_hold"] else ""
+	var where := ""
+	if c["in_hold"] or c["in_bay"]:
+		where = (
+			" %s(%d,%d) rot %d" % ["in bay at " if c["in_bay"] else "at ", c["x"], c["y"], c["rot"]]
+		)
 	return (
 		"%s id %d %s [%s %s%s]%s %s"
 		% [

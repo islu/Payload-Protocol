@@ -21,7 +21,7 @@ This file keeps each problem that is found and not fixed yet. Each item is in on
 
 ## To Decide
 
-- **[Balance · Data] Kit with no mass, the new mods, and the shock bay** (found 2026-11-14, by /game-design). The first values of the change of SPEC Sections 25, 27.2, and 31: kit mass 0, "within 2 cells" for Array Power and Cryo Line, Padded Walls -1, and the shock bay 2×2 for 20 and 2×3 for 30. Check in a playtest after the To Do items below: does the player fill the hold with Shields and Batteries, does someone still select Padded Walls, and is the shock bay always the first purchase?
+- **[Balance · Data] Kit with no mass, the new mods, and the shock bay** (found 2026-11-14, by /game-design). The first values of the change of SPEC Sections 25, 27.2, and 31: kit mass 0, "within 2 cells" for Array Power and Cryo Line, Padded Walls -1, and the shock bay 2×2 for 20 and 3×2 for 30. Check in a playtest after the To Do items below: does the player fill the hold with Shields and Batteries, does someone still select Padded Walls, and is the shock bay always the first purchase?
 
 - **[Balance · Data] Environments, incidents, and special contracts** (found 2026-11-14, by /game-design). The first values of SPEC Sections 28 to 30: Low Gravity 2 cells, the meteor force 3, the incident chance 50% in leg 2 and 100% in leg 3, the VIP penalty, and the long contract pay. Check in a playtest: is leg 3 too hard with an incident at each jump, and does Low Gravity make leg 2 too easy?
 
@@ -58,10 +58,6 @@ This file keeps each problem that is found and not fixed yet. Each item is in on
 
 The UI and UX change of 2026-11-14 (/game-design) is in the spec. Do the items in this order: the rules first, then a playtest, then the screens.
 
-- **[Spec · Rules] Kit with no mass, and the mods that help kit** (found 2026-11-14, by /game-design). SPEC Sections 25, 27.2, 10.4, 12.1, and 12.2: kit has a mass of 0; Array Power: a Battery powers each Shield within 2 cells; Cryo Line: a Cooler keeps each Perishable cargo within 2 cells fresh; Padded Walls: a wall jolt is 1 less.
-  To do                 Fix: change `Run.cargo_mass`, `Shift.power_check`, `Arrival.cryo`, and the wall jolt, with a failing test for each. Remove the Cryo Line area of the hold. Update the mod texts in `data/mods/` and How to Play.
-- **[Spec · Rules] The shock bay** (found 2026-11-14, by /game-design). SPEC Section 31 and the service of Section 17.2. It replaces the hold upgrade.
-  To do                 Fix: add the shock bay to `Run` (cells, place, mass, arrival, links), skip it in `Shift`, add the service and its prices in `rules.json`, the view, the text player, and the screen. Remove the hold upgrade and `hold_max`.
 - **[UX · Scenes] The contract drawer and the shop drawer** (found 2026-11-14, by /game-design). SPEC Section 20.2: a larger dock, a list of the accepted contracts, the contract drawer (open when a station opens), and the shop drawer. Only one drawer is open at a time.
   To do                 Fix: change the layout of `StationScreen`. Update `ui_check` and `shots.gd`.
 - **[UX · Scenes] The top bar** (found 2026-11-14, by /game-design). SPEC Section 20.2: four groups with the jump dots, the payment bar, the mass bar with the marks of the limit and the maximum, and the environment badge.

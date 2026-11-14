@@ -73,16 +73,16 @@ msgid "You have the most clamps already."
 msgstr "卡榫已經達到上限。"
 
 #: project/rules/run.gd
+msgid "The shock bay cannot grow more."
+msgstr "防震艙已經是最大了。"
+
+#: project/rules/run.gd
+msgid "A cargo in the shock bay cannot have a clamp."
+msgstr "防震艙裡的貨物不能上卡榫。"
+
+#: project/rules/run.gd
 msgid "The ship has each mod already."
 msgstr "船上已經裝了全部的改裝模組。"
-
-#: project/rules/run.gd
-msgid "The hold cannot grow more that way."
-msgstr "貨艙不能再往那個方向擴充。"
-
-#: project/rules/run.gd
-msgid "Select a column or a row."
-msgstr "請選擇加一欄或加一列。"
 
 #: project/rules/run.gd
 msgid "You can sell only kit."
@@ -510,16 +510,20 @@ msgid "Clamps {now}/{max} → {after}/{max}"
 msgstr "卡榫 {now}/{max} → {after}/{max}"
 
 #: project/scenes/station/shop_panel.gd
-msgid "Hold {columns}×{rows}"
-msgstr "貨艙 {columns}×{rows}"
+msgid "Shock bay {now} → {after}"
+msgstr "防震艙 {now} → {after}"
 
 #: project/scenes/station/shop_panel.gd
-msgid "+Column → {columns}×{rows} · {price} cr"
-msgstr "+欄 → {columns}×{rows} · {price} 點"
+msgid "{columns}×{rows}"
+msgstr "{columns}×{rows}"
 
 #: project/scenes/station/shop_panel.gd
-msgid "+Row → {columns}×{rows} · {price} cr"
-msgstr "+列 → {columns}×{rows} · {price} 點"
+msgid "none"
+msgstr "無"
+
+#: project/scenes/station/shop_panel.gd
+msgid "Shock bay {now} (maximum)"
+msgstr "防震艙 {now}（最大）"
 
 #: project/scenes/station/shop_panel.gd
 msgid "Mass limit {now} → {after}"
@@ -1444,16 +1448,16 @@ msgid "Array Power"
 msgstr "陣列供電"
 
 #: project/data/mods/array_power.json
-msgid "Each Shield has power with no Battery."
-msgstr "每個護盾不用電池也有電。"
+msgid "A Battery powers each Shield within 2 cells."
+msgstr "電池可以供電給 2 格內的每個護盾。"
 
 #: project/data/mods/cryo_line.json
 msgid "Cryo Line"
 msgstr "冷凍管線"
 
 #: project/data/mods/cryo_line.json
-msgid "Perishable cargo with a cell in the left column stays fresh with no Cooler."
-msgstr "有格子在最左欄的生鮮貨物，沒有冷藏也能保鮮。"
+msgid "A Cooler keeps each Perishable cargo within 2 cells fresh."
+msgstr "冷藏機能讓 2 格內的每個生鮮貨物保鮮。"
 
 #: project/data/mods/gravity_damper.json
 msgid "Gravity Damper"
@@ -1472,8 +1476,8 @@ msgid "Padded Walls"
 msgstr "軟墊牆"
 
 #: project/data/mods/padded_walls.json
-msgid "No cargo takes a wall jolt."
-msgstr "貨物不會受到前牆震動。"
+msgid "Each wall jolt has a force 1 less."
+msgstr "每次撞牆震動的撞擊力 -1。"
 
 #: project/data/mods/shock_floor.json
 msgid "Shock Floor"

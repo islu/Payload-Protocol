@@ -140,6 +140,14 @@ func _mod_choice() -> void:
 	GameState.state_changed.emit()
 	await _wait(0.6)
 	await _shot("12_station_route")
+	# The shock bay above the hold, with a cargo in it (SPEC Section 31.2).
+	r.credits += 50
+	r.bay_size = r.cat.bay_sizes[-1]
+	var c := r.new_cargo(r.cat.cargo["energy_crystal"])
+	r.place_cargo(c.id, Vector2i(1, 0), 0, true)
+	GameState.state_changed.emit()
+	await _wait(0.6)
+	await _shot("13_station_bay")
 
 
 func _warp() -> void:

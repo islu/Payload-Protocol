@@ -126,7 +126,7 @@ static func data() -> Dictionary:
 		"rules":
 		{
 			"start": {"credits": 40, "clamps": 1, "hold": {"columns": 6, "rows": 6}},
-			"hold_max": {"columns": 8, "rows": 8},
+			"shock_bay": {"sizes": [[2, 2], [3, 2]], "prices": [20, 30]},
 			"weights": {"light": 1, "standard": 2, "heavy": 3},
 			"break_limits": {"fragile": 2, "volatile": 3, "fluid": 2},
 			"offers": {"contracts": 3, "kit": 3},
@@ -136,8 +136,6 @@ static func data() -> Dictionary:
 				"reroll_step": 2,
 				"clamp": 8,
 				"clamp_max": 4,
-				"upgrade_first": 15,
-				"upgrade_step": 10,
 				"scrap_cell": 2,
 				"breach_fee": 5,
 				"sell_divisor": 2,

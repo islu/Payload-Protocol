@@ -14,6 +14,7 @@ var _undo_checked := false
 var _shop_checked := false
 var _contracts_checked := false
 var _snap_checked := false
+var _bay_checked := false
 ## The number of warps with a loss or a chain. The checks of SPEC Section 21.5 need one.
 var _losses_seen := 0
 ## The number of stations with an environment or an incident.
@@ -602,6 +603,9 @@ func _play_station(state: Node, station: StationScreen) -> void:
 	if not _snap_checked:
 		_snap_checked = true
 		_check_snap(station)
+	if not _bay_checked:
+		_bay_checked = true
+		await UiCheckBay.check(self, state, station)
 	if not _contracts_checked:
 		_contracts_checked = true
 		await _check_contracts(station)
@@ -619,7 +623,7 @@ func _play_station(state: Node, station: StationScreen) -> void:
 	run = state.view()["run"]
 	for c: Dictionary in run["cargo"]:
 		station._show_tip(c)
-		if c["in_hold"]:
+		if c["in_hold"] or c["in_bay"]:
 			continue
 		var placed := false
 		for y in run["hold"]["rows"]:
@@ -817,9 +821,13 @@ func _check_shop(station: StationScreen) -> void:
 		"%d → %d" % [shop["mass_limit"], shop["mass_limit_after"]] in texts.get("hull", ""),
 		"Reinforce hull shows the mass limit now and after (SPEC Section 20.2)"
 	)
+	var bay_after: Dictionary = shop["bay"]["after"]
 	_check(
-		"%d×%d" % [shop["hold"]["columns"], shop["hold"]["rows"]] in texts.get("hold", ""),
-		"the hold service shows the hold now (SPEC Section 20.2)"
+		(
+			bay_after.is_empty()
+			or "%d×%d" % [bay_after["columns"], bay_after["rows"]] in texts.get("bay", "")
+		),
+		"the shock bay service shows the size after the purchase (SPEC Section 20.2)"
 	)
 	# The sell area is a small bar. A drag colors it.
 	_check(

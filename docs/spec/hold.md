@@ -78,7 +78,7 @@ A cargo can have more than one trait.
 - The dock is an area at the left of the station screen. It has cargo that is not in the hold.
 - The dock has no size limit. The dock shows its cargo in a list.
 - New freight and new kit go to the dock first. A scrap that an event gives goes to the dock too (Section 26.3).
-- The **Load all** button puts each cargo on the dock into the hold, in the order of the dock. Each cargo goes to the first place where it fits: the cells are tried row by row from (0, 0), first in its rotation now, then in the next rotations. A cargo that does not fit stays on the dock.
+- The **Load all** button puts each cargo on the dock into the hold, in the order of the dock. Each cargo goes to the first place where it fits: the cells are tried row by row from (0, 0), first in its rotation now, then in the next rotations. A cargo that does not fit stays on the dock. Load all does not use the shock bay (Section 31).
 
 ### 8.2 Move and Rotate
 
@@ -130,7 +130,7 @@ The **shock bay** is a small area of cells next to the hold. The warp does not m
 ### 31.1 Rules
 
 - A run starts with no shock bay. The player buys it as a service (Section 17.2).
-- The first purchase gives a shock bay of 2 columns and 2 rows. The second purchase adds 1 row. The maximum is 2 columns and 3 rows.
+- The first purchase gives a shock bay of 2 columns and 2 rows. The second purchase adds 1 column at the right. The maximum is 3 columns and 2 rows.
 - The player moves cargo into and out of the shock bay as in the hold (Section 8). Freight, kit, and scrap can go in it.
 - Cargo in the shock bay does not slide. It takes no hits, no wall jolts, and no incidents.
 - The player cannot put a clamp on a cargo in the shock bay.
@@ -142,5 +142,6 @@ The **shock bay** is a small area of cells next to the hold. The warp does not m
 
 ### 31.2 Display
 
-- The shock bay shows at the right of the hold, with a padded frame. The station shows it only after the purchase.
-- During the warp, the cargo in the shock bay stays still.
+- The shock bay hangs above the hold, at its center, on a short coupling. Its cells have the size of the cells of the hold. It has a padded frame.
+- The station shows it only after the purchase.
+- During the warp, the shock bay shows above the hold, and its cargo stays still.

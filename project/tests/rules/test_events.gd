@@ -245,11 +245,7 @@ func test_mod_areas_view() -> void:
 		{"x": 0, "y": run.rows - 1},
 		"Shock Floor shows the bottom row (SPEC Section 27.2)"
 	)
-	eq(
-		areas[Defs.MOD_CRYO_LINE].size(),
-		run.rows,
-		"Cryo Line shows the left column (SPEC Section 27.2)"
-	)
+	check(not areas.has(Defs.MOD_CRYO_LINE), "Cryo Line has no area (SPEC Section 27.2)")
 
 
 func test_choice_with_no_effect() -> void:

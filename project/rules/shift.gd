@@ -164,14 +164,22 @@ static func _jolt(run: Run, c: Cargo, delta: Vector2i, out: Dictionary, forces: 
 	for cell in c.cells():
 		if not run.inside(cell + delta):
 			contact.append(_cell(cell))
-	# The Padded Walls mod stops each wall jolt (SPEC Section 27.2).
-	if contact.is_empty() or run.has_mod(Defs.MOD_PADDED_WALLS):
+	if contact.is_empty():
 		return
-	var f := taken(run, c, 0 if c.has(Defs.TRAIT_CUSHION) else force_weight(run, c))
+	var f := jolt_force(run, c)
 	out["hits"].append(
 		{"cargo": c.id, "other": 0, "wall": true, "jolt": true, "force": f, "contact": contact}
 	)
 	_take(forces, c.id, f)
+
+
+## Returns the force of the wall jolt of a cargo: its weight value, 0 for Cushion.
+## The Padded Walls mod makes it 1 less, and 0 at least (SPEC Sections 10.4 and 27.2).
+static func jolt_force(run: Run, c: Cargo) -> int:
+	var f := taken(run, c, 0 if c.has(Defs.TRAIT_CUSHION) else force_weight(run, c))
+	if run.has_mod(Defs.MOD_PADDED_WALLS):
+		f = maxi(0, f - 1)
+	return f
 
 
 ## Returns the weight value of a cargo for the force of its hits. With the Gravity
@@ -410,7 +418,7 @@ static func blast_area(run: Run, c: Cargo) -> Dictionary:
 
 
 ## Returns the Shields with power in this step, as a set of IDs: each Shield
-## next to a Battery that is not scrap (SPEC Section 12.2).
+## that a Battery that is not scrap powers (SPEC Section 12.2).
 static func power_check(run: Run) -> Dictionary:
 	var powered := {}
 	# A Magnetic Storm takes the power of each Shield, with Array Power too (SPEC Section 28.2).
@@ -420,15 +428,21 @@ static func power_check(run: Run) -> Dictionary:
 	for s in hold:
 		if not s.has(Defs.TRAIT_SHIELD):
 			continue
-		# The Array Power mod gives power to each Shield (SPEC Section 27.2).
-		if run.has_mod(Defs.MOD_ARRAY_POWER):
-			powered[s.id] = true
-			continue
 		for b in hold:
-			if b.has(Defs.TRAIT_BATTERY) and Cargo.next_to(s, b):
+			if powers(run, b, s):
 				powered[s.id] = true
 				break
 	return powered
+
+
+## Reports whether a Battery powers a Shield: next to it, or within 2 cells with the
+## Array Power mod (SPEC Sections 12.2 and 27.2). It does not check the environment.
+static func powers(run: Run, battery: Cargo, shield: Cargo) -> bool:
+	if not battery.has(Defs.TRAIT_BATTERY) or not shield.has(Defs.TRAIT_SHIELD):
+		return false
+	if run.has_mod(Defs.MOD_ARRAY_POWER):
+		return Cargo.within(battery, shield, 2)
+	return Cargo.next_to(battery, shield)
 
 
 ## Returns the Shield that spends its charge to protect a cargo, or null. The

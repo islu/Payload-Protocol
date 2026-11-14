@@ -76,7 +76,7 @@ The arrival has these steps, in this order:
 | Service | Rule | First price |
 | --- | --- | --- |
 | **Buy a clamp** | Adds 1 clamp. The maximum is 4 clamps. | 8 credits |
-| **Shock bay** | The first purchase installs a shock bay of 2×2 cells. The second purchase makes it 2×3 (Section 31). | 20 credits. The second purchase costs 30 credits. |
+| **Shock bay** | The first purchase installs a shock bay of 2×2 cells. The second purchase makes it 3×2 (Section 31). | 20 credits. The second purchase costs 30 credits. |
 | **Reinforce hull** | Adds 6 to the mass limit (Section 25). | 12 credits. Each one costs 8 credits more than the last one. |
 
 ### 17.3 Sell

@@ -1,5 +1,5 @@
 {
 	"id": "padded_walls",
 	"name": "Padded Walls",
-	"text": "No cargo takes a wall jolt."
+	"text": "Each wall jolt has a force 1 less."
 }

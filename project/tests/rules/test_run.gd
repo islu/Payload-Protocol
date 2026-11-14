@@ -210,21 +210,12 @@ func test_reroll_price_rises() -> void:
 	eq(run.shop.size(), 3, "a reroll gives 3 offers (SPEC Section 17.1)")
 
 
-func test_clamps_and_upgrades() -> void:
+func test_clamps() -> void:
 	run.credits = 1000
 	for i in 3:
 		eq(run.buy_clamp(), "", "buy a clamp (SPEC Section 17.2)")
 	eq(run.buy_clamp(), Run.CLAMPS_MAXED_TEXT, "the maximum is 4 clamps (SPEC Section 17.2)")
-	eq(run.upgrade_hold(Defs.AXIS_COLUMN), "", "add a column (SPEC Section 17.2)")
-	eq(run.upgrade_hold(Defs.AXIS_ROW), "", "add a row (SPEC Section 17.2)")
-	eq([run.columns, run.rows], [7, 7], "the hold grows (SPEC Section 17.2)")
-	eq(run.credits, 1000 - 24 - 15 - 25, "each upgrade costs 10 more (SPEC Section 17.2)")
-	run.upgrade_hold(Defs.AXIS_COLUMN)
-	eq(
-		run.upgrade_hold(Defs.AXIS_COLUMN),
-		Run.HOLD_MAXED_TEXT,
-		"the maximum is 8 columns (SPEC Section 5)"
-	)
+	eq(run.credits, 1000 - 24, "each clamp costs 8 (SPEC Section 17.2)")
 
 
 func test_clear_scrap() -> void:
