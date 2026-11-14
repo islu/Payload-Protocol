@@ -78,7 +78,8 @@ Use these terms in the spec, the code, the data, and the text of the game. Do no
 | Term | Meaning |
 | --- | --- |
 | **hold** | The grid of the ship where cargo goes (Section 5). |
-| **cell** | One square of the hold. |
+| **cell** | One square of the hold or of the shock bay. |
+| **shock bay** | A small area of cells next to the hold. The warp does not move or hit the cargo in it (Section 31). |
 | **cargo** | Each thing that can be in the hold: freight, kit, or scrap. |
 | **freight** | Cargo of a contract. It leaves the hold at the arrival (Section 6.2). |
 | **kit** | Cargo that the player buys. It stays in the hold until the player sells it (Section 6.3). |
@@ -91,7 +92,7 @@ Use these terms in the spec, the code, the data, and the text of the game. Do no
 | **leg** | A group of 3 jumps that ends with a payment. |
 | **hazard** | The list of shift steps of a jump (Section 18). |
 | **fork step** | A shift step with two possible directions. The warp shows which one happens (Section 18). |
-| **mass** | The load of a cargo: its weight value multiplied by its cells (Section 25). |
+| **mass** | The load of a freight or a scrap: its weight value multiplied by its cells. Kit has no mass (Section 25). |
 | **mass limit** | The mass that the ship can carry with no fuel fee (Section 25). |
 | **fuel fee** | The credits that the player pays at the warp for each point of mass over the mass limit (Section 25). |
 | **shift step** | One direction of a hazard. All cargo slides in that direction (Section 10). |
@@ -108,6 +109,7 @@ Use these terms in the spec, the code, the data, and the text of the game. Do no
 | **breached** | The state of a freight that stayed on the dock at the warp (Section 15.4). |
 | **clamp** | A lock that stops a cargo from a slide (Section 13). |
 | **pilot** | The ship AI that speaks lines (Section 22). |
+| **speaker** | The character who speaks in an event. It has a portrait (Section 20.8). |
 | **event** | A card at a station with choices. Each choice has effects (Section 26). |
 | **mod** | A permanent part of the ship that changes a rule (Section 27). |
 | **environment** | A rule of the route for all jumps of a leg (Section 28). |

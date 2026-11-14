@@ -9,7 +9,7 @@ The specification is in the files of [spec/](spec/). Each file has some sections
 | Sections | File | Content |
 | --- | --- | --- |
 | 1–4 | [overview.md](spec/overview.md) | Concept, pillars, references, game structure, platform, art, sound, terms |
-| 5–8, 25 | [hold.md](spec/hold.md) | The hold, cargo, traits, placement, mass |
+| 5–8, 25, 31 | [hold.md](spec/hold.md) | The hold, cargo, traits, placement, mass, the shock bay |
 | 9–13, 28–29 | [shift.md](spec/shift.md) | The warp, the slide, hits, reactions, links, clamps |
 | 14–19, 26–27, 30 | [run.md](spec/run.md) | The run, contracts, arrival, the shop, the hazard forecast, payments, the end of a run, events, mods |
 | 20–23 | [ui.md](spec/ui.md) | Screens, feedback, the pilot, settings, onboarding |

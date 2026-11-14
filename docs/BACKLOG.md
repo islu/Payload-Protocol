@@ -21,6 +21,8 @@ This file keeps each problem that is found and not fixed yet. Each item is in on
 
 ## To Decide
 
+- **[Balance · Data] Kit with no mass, the new mods, and the shock bay** (found 2026-11-14, by /game-design). The first values of the change of SPEC Sections 25, 27.2, and 31: kit mass 0, "within 2 cells" for Array Power and Cryo Line, Padded Walls -1, and the shock bay 2×2 for 20 and 2×3 for 30. Check in a playtest after the To Do items below: does the player fill the hold with Shields and Batteries, does someone still select Padded Walls, and is the shock bay always the first purchase?
+
 - **[Balance · Data] Environments, incidents, and special contracts** (found 2026-11-14, by /game-design). The first values of SPEC Sections 28 to 30: Low Gravity 2 cells, the meteor force 3, the incident chance 50% in leg 2 and 100% in leg 3, the VIP penalty, and the long contract pay. Check in a playtest: is leg 3 too hard with an incident at each jump, and does Low Gravity make leg 2 too easy?
 
 - **[Balance · Data] Events and mods** (found 2026-11-14, by /game-design). The first values of SPEC Sections 26 and 27: the costs 8, 10, 15, and 20, the drifting container +12, and the audit payment -15. Check in a playtest: are Padded Walls and Array Power always the best mod, and do 1 or 2 events in each leg make the run too slow? Playtest seed 22 (2026-11-14) found choices that are always best: Company Audit (pay 10 to cut the payment by 15), Pirate Demand (refuse for 8 of scrap cleanup, not a bribe of 15), and Ship Mechanic (a clamp for 10, but the shop sells one for 8). The event contracts pay much more than others: Smuggler Run 68 for 4 mass, Rescue Supplies 46 for 6 mass.
@@ -52,16 +54,26 @@ This file keeps each problem that is found and not fixed yet. Each item is in on
 - **[UX · Scenes] Pixel density of the cargo and the effects** (found 2026-11-13, by /game-design). The cargo images show at half their size, with fine pixels. The effects show at 3 times their size, with large pixels. Check with `task shots` and players that the two look good together.
 - **[Balance · Data] The 24 new freight** (found 2026-11-13, by /game-design). The themes medical, contraband, weapons, robots, and Earth relics added 24 freight and 21 contracts. Check in the next playtest: is the Black Market pay (about 1.5 times) worth the risk, and is the Mech Suit (heavy, Thruster, a square) a wall that is always best?
 
-- **[UX · Spec] Keep the cargo after a bad drop** (found 2026-11-14, by /code-review). SPEC Section 8.3: after a drop that is not valid, the cargo goes back to its last place. A cargo from the dock goes back to the dock with no animation, and the player must find it and pick it up again.
-  To decide             Options: (a) after a bad drop over the hold, the player keeps the cargo (a deny sound and a small shake). Only Esc or a drop outside the hold puts it back. (b) Keep the rule, and move the cargo back with a short tween. Needs a change of SPEC Section 8.3.
-- **[UX · Spec] The same feedback for each miss** (found 2026-11-14, by /code-review). A drop 0.4 cell outside the hold plays the deny sound and a toast. A drop 0.6 cell outside does nothing, and the cargo goes back with no sound.
-  To decide             Options: (a) the same feedback for each return (a tween and a soft sound). (b) Also snap a near miss to the nearest valid place within 1 cell, in the order of the rotate fallback of SPEC Section 8.2.
-- **[UX · Spec] A preview that says why** (found 2026-11-14, by /code-review). A red preview does not show why the drop fails: outside the hold, or a cargo in the way.
-  To decide             Options: color each blocked cell red and each free cell green, mark the cargo in the way, and show the nearest valid place as a faint ghost. Needs a line in SPEC Section 8.3.
-- **[UX · Spec] Place many cargo with drags** (found 2026-11-14, by /code-review). Only the click mode picks up the next cargo of the dock (SPEC Section 8.2). Players who drag do not find it.
-  To decide             Options: (a) mark the next cargo of the dock, and show a hint after the first drag. (b) A drag also picks up the next cargo, with a setting to turn it off.
-
 ## To Do
+
+The UI and UX change of 2026-11-14 (/game-design) is in the spec. Do the items in this order: the rules first, then a playtest, then the screens.
+
+- **[Spec · Rules] Kit with no mass, and the mods that help kit** (found 2026-11-14, by /game-design). SPEC Sections 25, 27.2, 10.4, 12.1, and 12.2: kit has a mass of 0; Array Power: a Battery powers each Shield within 2 cells; Cryo Line: a Cooler keeps each Perishable cargo within 2 cells fresh; Padded Walls: a wall jolt is 1 less.
+  To do                 Fix: change `Run.cargo_mass`, `Shift.power_check`, `Arrival.cryo`, and the wall jolt, with a failing test for each. Remove the Cryo Line area of the hold. Update the mod texts in `data/mods/` and How to Play.
+- **[Spec · Rules] The shock bay** (found 2026-11-14, by /game-design). SPEC Section 31 and the service of Section 17.2. It replaces the hold upgrade.
+  To do                 Fix: add the shock bay to `Run` (cells, place, mass, arrival, links), skip it in `Shift`, add the service and its prices in `rules.json`, the view, the text player, and the screen. Remove the hold upgrade and `hold_max`.
+- **[UX · Scenes] The contract drawer and the shop drawer** (found 2026-11-14, by /game-design). SPEC Section 20.2: a larger dock, a list of the accepted contracts, the contract drawer (open when a station opens), and the shop drawer. Only one drawer is open at a time.
+  To do                 Fix: change the layout of `StationScreen`. Update `ui_check` and `shots.gd`.
+- **[UX · Scenes] The top bar** (found 2026-11-14, by /game-design). SPEC Section 20.2: four groups with the jump dots, the payment bar, the mass bar with the marks of the limit and the maximum, and the environment badge.
+  To do                 Fix: add the values that the bars need to `RunView`, and draw the groups.
+- **[UX · Scenes] The mod bar and the mod cards** (found 2026-11-14, by /game-design). SPEC Sections 20.2 and 20.9: an icon for each of the 6 mods, a mod bar below the hold with a tooltip and the area mark, and the same cards in the mod choice.
+  To do                 Fix: draw the 6 icons (`CargoDraw.draw_icon()` or pixel art). Change `ChoicePanel` and add the mod bar.
+- **[UX · Data] The speakers of the events** (found 2026-11-14, by /game-design). SPEC Section 20.8 and content.md: 5 or 6 characters (for example a pirate, a mechanic, a smuggler, a company auditor, and a crew in distress), each with a pixel portrait. Each event names its speaker.
+  To do                 Fix: add the speakers to the data with their portraits, a `speaker` field in each event and its `Catalog` check, and the portrait in `ChoicePanel`.
+- **[UX · Scenes] The drag feedback** (found 2026-11-14, by /code-review; decided 2026-11-14, by /game-design). SPEC Sections 8.2, 8.3, and 23.1: the player keeps the cargo after a bad drop over the hold; the preview colors each cell and frames the cargo in the way, with a ghost of the nearest valid place; a drag also picks up the next cargo, with a setting.
+  To do                 Fix: change `StationDrag` and `HoldView`. Add the setting to `Settings` and the settings panel. Add checks to `ui_check`.
+- **[UX · Scenes] The warp checklist, the pilot box, and the contract cards** (found 2026-11-14, by /game-design). SPEC Section 20.2: the checklist above the Warp button, the wide pilot box above the hold, and the short contract cards with the details on the mouse.
+  To do                 Fix: add the checklist values to `RunView` if the view does not have them. Change `StationScreen` and `ContractCard`.
 
 - **[Balance · Data] The offer rate of the new contracts** (found 2026-11-14, by /playtest seed 22). The 3 personas saw 27 stations, and only `greenhouse` was offered (once). `prosthetics` and `warp_core` were not offered. The pay of `prosthetics` (now 4 each) and `greenhouse` (now 13 each) changed from the data, not from play. `warp_core` (24 + 10) pays 5.7 for each point of mass, more than the leg 3 median 4.7, but a wall jolt explodes it.
   To do                 Fix: count the offers of each contract over many seeds, and play the 3 contracts in a playtest.
@@ -71,8 +83,6 @@ This file keeps each problem that is found and not fixed yet. Each item is in on
 
 - **[Art · Data] A new image for the Foam Pad** (found 2026-11-14, by the user). The Foam Pad uses a rolled yoga mat (`tools/art/cargo_art.json`). The image does not look like a cushion kit, and the "fit" scale makes it a little soft.
   To do                 Fix: find a FreePixel image of a foam pad or a cushion that fits a line of 2 cells. Change its `source` and run `task art`.
-- **[UX · Scenes] Icons on the mod choice** (found 2026-11-14, by /code-review). The mod choice shows buttons with a name and a rule. An icon for each mod helps the player find a mod again on the top bar.
-  To do                 Fix: draw an icon for each mod, and show it on the button and on the tag of the top bar. Add it to SPEC Section 20.9.
 - **[Docs · Docs] A README for players** (found 2026-11-12, by the first plan). The itch.io page needs a short text for players: how to start, the controls, and where to send feedback.
   To do                 Fix: write the text. Keep README.md for developers.
 - **[Build · Build] Builds for macOS and Windows** (found 2026-11-12, by the first plan). Only the web build exists. These builds are optional.

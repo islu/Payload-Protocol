@@ -60,7 +60,7 @@ This file is part of the [game specification](../spec.md). The section numbers a
 - A Cushion cargo takes the wall jolt with a force of 0.
 - A cargo that slid into the front wall takes its hit of Section 10.3, and no wall jolt.
 - The wall jolt does not go to the cargo behind the cargo at the wall.
-- The Padded Walls mod stops each wall jolt (Section 27.2).
+- The Padded Walls mod makes the force of each wall jolt 1 less, and 0 at least (Section 27.2).
 
 ## 11. Reactions
 
@@ -101,7 +101,7 @@ A **link** is a rule between two cargo that are next to each other.
 - At the arrival, each Perishable cargo must be next to a Cooler.
 - A Perishable cargo that is not next to a Cooler spoils. It becomes scrap before the delivery (Section 16). Its contract does not pay for it.
 - Only the positions at the arrival count. A Perishable cargo can lose its Cooler in one shift step and find it again in the next.
-- The Cryo Line mod counts the left column as next to a Cooler (Section 27.2).
+- With the Cryo Line mod, a Cooler keeps each Perishable cargo within 2 cells fresh (Section 27.2).
 
 ### 12.2 Power and Shields
 
@@ -112,7 +112,7 @@ A **link** is a rule between two cargo that are next to each other.
 - A Shield does not stop the removal of scrap in a blast area. A Shield does not stop a spoil (Section 12.1).
 - When two Shields protect the same cargo, the Shield with the smaller `(y, x)` of its origin spends its charge first.
 - A Battery is Electronic. A leak next to it can short it. Then the Shield has no power in the next shift steps.
-- With the Array Power mod, each Shield has power (Section 27.2).
+- With the Array Power mod, a Battery powers each Shield within 2 cells (Section 27.2).
 - In a Magnetic Storm, no Shield has power, with the Array Power mod too (Section 28.2).
 
 ### 12.3 Link Display

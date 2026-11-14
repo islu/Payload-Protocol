@@ -25,6 +25,7 @@ This file has the design rules of the game content. The data files in `project/d
 - A large shape (4 or 5 cells) is hard to pack. Give it more pay, or make it a good wall.
 - Heavy cargo makes strong hits. It is a danger for its neighbors and a safe wall when it is clamped.
 - Kit helps freight. A kit is never a target of a contract.
+- Kit has no mass (SPEC Section 25). Its costs are its price and its cells.
 - One cell is one standard cargo crate, about 1 m. Give each cargo the size of the real object, relative to the crate and to the other cargo.
 - Small goods travel in one crate: 1 cell. Examples are a phone, a can of soda, a bottle, and a sample.
 - Each cargo has an image (SPEC Section 4.2). Select an image that fits the shape. Add the image to `tools/art/cargo_art.json` and run `task art`.
@@ -111,6 +112,7 @@ The first content has 43 freight and 6 kit. The freight has themes: supplies, te
 - A choice text tells what the player does. The screen shows the cost and the effects next to it.
 - A contract that only an event gives has `"legs": []`. Give it more pay than an offered contract of the same size: the player did not plan for it.
 - Use the effects of SPEC Section 26.2 only. A new kind of effect needs a code change.
+- Each event names its speaker: one of the characters with a portrait (SPEC Section 20.8). Use a speaker that exists. A new speaker needs a new portrait.
 
 ## Pilot Lines
 

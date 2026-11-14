@@ -16,27 +16,48 @@ The station screen has these areas:
 
 | Area | Position | Content |
 | --- | --- | --- |
-| Top bar | Top | The leg and the jump ("Leg 2 · Jump 1"), the credits, the payment of this leg, and the jumps before the payment. A tag with the name of each mod, with its rule when the mouse is on it (Section 27). The environment of the leg, with its rule when the mouse is on it (Section 28). A gear button at the right opens the pause menu (Section 20.7). |
+| Top bar | Top | Four groups: (1) the leg, and a dot for each jump of the leg; (2) the credits, and a bar of the credits against the payment of this leg, with the jumps before the payment; (3) a bar of the hold mass, with a mark at the mass limit and a mark at the maximum (Section 25); (4) a badge with the icon and the name of the environment of the leg, with its rule when the mouse is on it (Section 28). A gear button at the right opens the pause menu (Section 20.7). |
+| Pilot box | Above the hold | The portrait and the line of the pilot, in one wide line (Section 22). |
 | Hazard panel | Center, at the left of the hold, from top to bottom | The shift steps of the next jump in order (Section 18). Each step is a card with a large arrow, its number, and its direction. A fork step shows its two directions and a question mark. |
-| Dock | Left | The cargo on the dock (Section 8.1). |
-| Contract board | Left, below the dock | The 4 contracts, with Accept and Cancel buttons (Section 15). |
+| Dock | Left, top | The cargo on the dock (Section 8.1). It uses most of the left side. |
+| Accepted contracts | Left, below the dock | One line for each accepted contract: the client, "Loaded N/M", and the total pay. The Contract Board button opens the contract drawer. |
 | Hold | Center | The grid and its cargo, the links, and the clamps. Each cell is 100 pixels, the size of the cargo images (Section 4.2). |
-| Shop | Right | The kit offers, Reroll, the services, and the sell area (Section 17). |
-| Clamp panel | Right, below the shop | The free clamps (Section 13). |
-| Warp button | Bottom right | Starts the warp (Section 9). |
-| Pilot box | Bottom left | The line of the pilot (Section 22). |
+| Shock bay | At the right of the hold | The cells of the shock bay, after its purchase (Section 31.2). |
+| Mod bar | Below the hold | A card with the icon of each mod of the ship (Section 27). The mouse on a card shows the name and the rule of the mod, and marks the area of the mod on the hold. |
+| Services | Right | The services (Section 17.2), the sell area, and the Shop button that opens the shop drawer. |
+| Clamp panel | Right, below the services | The free clamps (Section 13). |
+| Warp button | Bottom right | Starts the warp (Section 9). The warp checklist is above it. |
 
-- Each contract card shows its client, its freight, the number of pieces, the pay for each piece, the total pay, and its bonus. The same freight shows one time, with its image, "×N", and its trait icons.
-- A contract that is not accepted shows its mass and the mass after it is accepted: the mass of the hold and the dock, plus the mass of the contract. That mass is yellow above the mass limit (a fuel fee), and red above the maximum.
-- An accepted contract has a bright border and shows "Loaded N/M": N pieces of its M pieces are in the hold.
+Drawers:
+
+- The **contract drawer** slides in from the left, over the dock. It shows the 4 contracts of the board, with Accept and Cancel buttons (Section 15). When a station opens, the contract drawer is open. Its button or Esc closes it. The hold stays visible.
+- The **shop drawer** slides in from the right. It shows the kit offers and Reroll (Section 17.1). The hold stays visible. The player can drag a bought kit from the dock while the shop drawer is open.
+- Only one drawer is open at a time.
+
+Contracts and the dock:
+
+- Each contract card shows on its first line the client, the total pay, and the mass of the contract. The second line shows the freight and the bonus. The same freight shows one time, with its image, "×N", and its trait icons.
+- The mouse on a contract card shows the details: the number of pieces, the pay for each piece, the rules of the traits, and the mass after it is accepted (the mass of the hold and the dock, plus the mass of the contract).
+- The mass of a contract that is not accepted is yellow when the mass after it is above the mass limit (a fuel fee), and red when it is above the maximum.
+- In the contract drawer, an accepted contract has a bright border and shows "Loaded N/M": N pieces of its M pieces are in the hold.
+- When the mouse is on a contract card or on a line of an accepted contract, the hold marks the freight of that contract.
 - The dock title shows the number of cargo on the dock. The dock shows its cargo at 48 pixels for each cell. An empty dock is one line of text.
-- When the mouse is on a contract, the hold marks the freight of that contract.
+
+The hazard:
+
 - When the mouse is on a hazard card, the hold marks the front wall of that step with the stripes of Section 12.3. A fork step that the player does not know marks both walls. The wall jolt warnings are for the first step only.
 - A fork step that a Sensor shows has a Sensor icon and its one direction (Section 18).
+
+The shop and the services:
+
 - Each kit offer shows its image, each trait with its icon and its rule, its weight, and its price on the Buy button. A price that is more than the credits shows in red.
 - Each kit offer shows how it helps the accepted freight on the dock and in the hold: "Helps N of your freight". A Cooler counts Perishable freight. A Cushion counts Fragile freight. A Shield counts freight that is Fragile, Volatile, Fluid, or Electronic. A Battery counts the Shield kit on the dock and in the hold. A Sensor shows "The next jump has a fork step" when it does. Other kit and a count of 0 show nothing.
-- Each service shows the value now and the value after the purchase: the clamps (1/4 → 2/4), the hold (6×6 → 7×6 or 6×7), and the mass limit (24 → 30).
+- Each service shows the value now and the value after the purchase: the clamps (1/4 → 2/4), the shock bay (none → 2×2, or 2×2 → 2×3), and the mass limit (24 → 30).
 - The sell area is a small bar. During a drag of a kit, it is green and shows the sell price. During a drag of a scrap, it is red and shows the clear price.
+
+The warp:
+
+- The **warp checklist** above the Warp button shows: the fuel fee, the number of cargo on the dock, the number of cargo with a wall jolt warning (Section 12.3), and the incident of the jump (Section 29.3).
 - An Undo button and Ctrl+Z take back the last action at this station: a placement, a contract, a purchase, a sale, a reroll, or a service. Undo does not go back past the arrival at the station. After an undo, the same action gives the same result again.
 
 ### 20.3 Warp
@@ -73,19 +94,21 @@ The station screen has these areas:
 
 ### 20.7 Pause
 
-- Esc opens the pause menu at the station and during the warp. A gear button at the top right of the station and the warp opens it too. It has these buttons: Resume, How to Play, Settings, and Abandon Run.
+- Esc opens the pause menu at the station and during the warp. A gear button at the top right of the station and the warp opens it too.
+- At the station, Esc does only the first of these: it puts back a held cargo (Section 8.3), it closes an open drawer (Section 20.2), or it opens the pause menu. It has these buttons: Resume, How to Play, Settings, and Abandon Run.
 - Abandon Run asks the player to confirm. Then it goes to the title screen.
 
 ### 20.8 Event
 
 - When a station with an event opens, the event shows in a panel at the center, above the station (Section 26).
+- The panel shows the portrait and the name of the speaker at its left. Each event names its speaker. The speakers are a small set of characters, for example a pirate and a mechanic (content.md).
 - The panel shows the name, the text, and a button for each choice. Each button shows the text of the choice, its cost, and its effects.
 - A choice that the player cannot select is disabled (Section 26.2).
 - The player cannot use the station until the player selects a choice.
 
 ### 20.9 Mod Choice
 
-- The mod choice shows a button for each mod: its name and its rule. A click on a button selects the mod (Section 27.1).
+- The mod choice shows a card for each mod: its icon, its name, and its rule. The icon is the same as on the mod bar (Section 20.2). A click on a card selects the mod (Section 27.1).
 - The player must select a mod.
 
 ## 21. Feedback
@@ -144,7 +167,7 @@ The station screen has these areas:
 
 ### 23.1 Settings
 
-- The settings are: music volume, sound volume, the CRT filter (on or off), the screen shake (on or off), the warp speed (1× or 2×), fullscreen (on or off), the language (English or 繁體中文), and hints (on or off).
+- The settings are: music volume, sound volume, the CRT filter (on or off), the screen shake (on or off), the warp speed (1× or 2×), fullscreen (on or off), the language (English or 繁體中文), hints (on or off), and the pick up of the next cargo (on or off, Section 8.2).
 - The game keeps the settings in `user://settings.cfg`.
 - Each switch shows its state clearly: off is an outlined capsule, on is a filled capsule.
 - A change of a setting applies at once. When the player changes the language, all text on the screen changes at once, also in the open menus.

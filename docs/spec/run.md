@@ -8,6 +8,7 @@ This file is part of the [game specification](../spec.md). The section numbers a
   - Credits: 40.
   - Clamps: 1.
   - The hold: 6 columns and 6 rows, empty.
+  - Shock bay: none (Section 31).
   - Kit: none.
 - A new run gets a random seed. The run end screen shows the seed (Section 19.2).
 - The first station of the run has contracts and the shop, as each station has.
@@ -52,8 +53,8 @@ Each contract has:
 
 The arrival has these steps, in this order:
 
-1. **Spoil:** each Perishable cargo that is not next to a Cooler becomes scrap (Section 12.1).
-2. **Delivery:** each intact freight leaves the hold. Its contract pays its pay. The freight of a long contract stays until its last jump (Section 30.2).
+1. **Spoil:** each Perishable cargo that no Cooler keeps fresh becomes scrap (Section 12.1).
+2. **Delivery:** each intact freight leaves the hold and the shock bay. Its contract pays its pay. The freight of a long contract stays until its last jump (Section 30.2).
 3. **Bonus:** each contract with a true condition pays its bonus.
 4. **Breach:** each breach fee is paid (Section 15.4).
 5. **Penalty:** each VIP contract with a piece that is not delivered pays its penalty (Section 30.1).
@@ -61,7 +62,6 @@ The arrival has these steps, in this order:
 
 - Scrap stays in the hold. Kit stays in the hold.
 - The Insurance mod pays for lost freight at the arrival (Section 27.2).
-- Credits can go below 0 after a breach fee. Then the player cannot buy until the credits are 0 or more.
 
 ## 17. The Shop
 
@@ -76,7 +76,7 @@ The arrival has these steps, in this order:
 | Service | Rule | First price |
 | --- | --- | --- |
 | **Buy a clamp** | Adds 1 clamp. The maximum is 4 clamps. | 8 credits |
-| **Hold upgrade** | Adds one column at the right, or one row at the bottom (the player selects). The maximum is 8 columns and 8 rows. It does not change the mass limit. | 15 credits. Each upgrade costs 10 credits more than the last one. |
+| **Shock bay** | The first purchase installs a shock bay of 2×2 cells. The second purchase makes it 2×3 (Section 31). | 20 credits. The second purchase costs 30 credits. |
 | **Reinforce hull** | Adds 6 to the mass limit (Section 25). | 12 credits. Each one costs 8 credits more than the last one. |
 
 ### 17.3 Sell
@@ -92,6 +92,7 @@ The arrival has these steps, in this order:
 ### 17.5 Prices
 
 - The player cannot buy when the price is more than the credits.
+- The credits can go below 0 after a fee: the breach fee, the fuel fee, or the clear price of scrap on the dock (Sections 15.4, 25, and 26.3). Then the player cannot buy until the credits are 0 or more.
 - `rules.json` has all prices.
 
 ## 18. The Hazard Forecast
@@ -114,7 +115,7 @@ The arrival has these steps, in this order:
 
 ### 18.1 Sensor
 
-- When a Sensor that is not scrap is in the hold, the station shows the direction of the fork step that will happen.
+- When a Sensor that is not scrap is in the hold or in the shock bay, the station shows the direction of the fork step that will happen.
 - When the player takes the Sensor out of the hold, the station shows the fork step as two directions again.
 
 ## 19. Payments and the End of the Run
@@ -183,13 +184,14 @@ A **mod** is a permanent part of the ship. It uses no cell of the hold. The play
 | Mod | Rule |
 | --- | --- |
 | **Shock Floor** | A cargo with a cell in the bottom row takes each hit with a force 1 less, and 0 at least. This includes the wall jolt. |
-| **Cryo Line** | At the arrival, a Perishable cargo with a cell in the left column counts as next to a Cooler (Section 12.1). |
-| **Padded Walls** | No cargo takes a wall jolt (Section 10.4). |
+| **Cryo Line** | A Cooler keeps each Perishable cargo within 2 cells fresh, not only the cargo next to it (Section 12.1). |
+| **Padded Walls** | Each wall jolt has a force 1 less, and 0 at least (Section 10.4). |
 | **Gravity Damper** | The weight value of heavy cargo is 2 for the force of its hits and its wall jolt. Its mass does not change. |
-| **Array Power** | Each Shield has power in each shift step. It does not need a Battery (Section 12.2). |
+| **Array Power** | A Battery powers each Shield within 2 cells, not only the Shields next to it (Section 12.2). |
 | **Insurance** | At the arrival, each piece of an accepted contract that is scrap, spoiled, or lost pays half of its pay, rounded down. A breached piece does not pay. |
 
-- The hold shows the area of a mod with an area: the bottom row for Shock Floor, and the left column for Cryo Line.
+- **Within 2 cells**: a cell of one cargo is at a distance of 2 or less from a cell of the other cargo. A diagonal step counts as 1, as in the blast area (Section 11.2).
+- The hold shows the area of a mod with an area: the bottom row for Shock Floor.
 
 ## 30. Special Contracts
 
