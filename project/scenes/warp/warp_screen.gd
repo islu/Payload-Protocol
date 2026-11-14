@@ -32,6 +32,8 @@ var finished := false
 ## (SPEC Section 21.5). The UI check reads them.
 var chain_shown := 0
 var loss_text := ""
+## The text of the incident that the warp played (SPEC Section 29.3). The UI check reads it.
+var incident_shown := ""
 
 var _view: Dictionary = {}
 var _cargo: Dictionary = {}
@@ -153,6 +155,7 @@ func _play() -> void:
 		_cargo[c["id"]] = c.duplicate(true)
 	_show_hold(run)
 	await _wait(0.4)
+	await _play_route(run, warp_log)
 	var n := 0
 	for step: Dictionary in warp_log.get("steps", []):
 		n += 1
@@ -227,7 +230,47 @@ func _play_step(n: int, step: Dictionary, run: Dictionary) -> void:
 		await _wait(REACTION_GAP)
 		if r["kind"] == Defs.REACT_EXPLOSION:
 			await _wait(0.1)  # The hit stop of an explosion (SPEC Section 21.3).
-	# Keep the hold the same as the log after the step.
+	_apply_after(step, run)
+	var fade := create_tween()
+	fade.tween_property(_banner, "modulate:a", 0.0, 0.3 / speed)
+	await _wait(0.35)
+
+
+## Plays the environment of the leg and the incident before the first step
+## (SPEC Sections 28.1 and 29.3).
+func _play_route(run: Dictionary, warp_log: Dictionary) -> void:
+	var env: Dictionary = run.get("environment", {})
+	if not env.is_empty():
+		_banner.modulate.a = 1.0
+		_banner.text = tr(env["name"])
+		await _wait(0.8)
+	var inc: Dictionary = warp_log.get("incident", {})
+	if inc.is_empty():
+		return
+	incident_shown = RouteCards.incident_text(inc)
+	_banner.modulate.a = 1.0
+	_banner.text = incident_shown
+	Sound.play(self, "alarm")
+	await _wait(0.6)
+	if inc.has("debris_view"):
+		var d: Dictionary = inc["debris_view"].duplicate(true)
+		_cargo[d["id"]] = d
+		_show_hold(run)
+		_fx.shards(_hold.cargo_center(d))
+		Sound.play(self, "metal_hit")
+	_play_hits(inc, Defs.DIR_DOWN)
+	await _wait(0.3)
+	for r: Dictionary in inc["reactions"]:
+		_play_reaction(r)
+		_play_loss(r)
+		_show_hold(run)
+		await _wait(REACTION_GAP)
+	_apply_after(inc, run)
+	await _wait(0.3)
+
+
+## Keeps the hold the same as the log after a step or an incident.
+func _apply_after(step: Dictionary, run: Dictionary) -> void:
 	var kept := {}
 	for spot: Dictionary in step["after"]:
 		kept[spot["cargo"]] = true
@@ -240,9 +283,6 @@ func _play_step(n: int, step: Dictionary, run: Dictionary) -> void:
 		if not kept.has(id):
 			_remove(id)
 	_show_hold(run)
-	var fade := create_tween()
-	fade.tween_property(_banner, "modulate:a", 0.0, 0.3 / speed)
-	await _wait(0.35)
 
 
 func _set_offset(k: float, id: int, from: Vector2) -> void:

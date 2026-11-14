@@ -12,6 +12,9 @@ const MASS_FEE_TEXT := "Mass {mass} · After {after}/{limit} (fuel fee)"
 const MASS_OVER_TEXT := "Mass {mass} · After {after}/{limit} (too heavy)"
 const LOADED_TEXT := "Loaded {loaded}/{pieces}"
 const BONUS_TEXT := "Bonus +{pay}: {text}"
+const VIP_TEXT := "VIP · Penalty {penalty} if a piece is not delivered"
+const LONG_TEXT := "Long · Delivered after {jumps} jumps"
+const ON_ITS_WAY_TEXT := "On its way · {jumps} jump(s) left"
 ## The cell of a freight image: a 1 cell freight, and a larger one.
 const GROUP_CELL := 36.0
 const GROUP_CELL_LARGE := 22.0
@@ -46,7 +49,12 @@ func setup(station: StationScreen, k: Dictionary) -> void:
 	client.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	lines.append(client.text)
 	var index: int = k["index"]
-	if k["accepted"]:
+	if k.get("carried", false):
+		# A long contract on its way cannot be canceled (SPEC Section 30.2).
+		var way := screen._label(head, "", TextSize.SMALL, Palette.ACCENT)
+		way.text = tr(ON_ITS_WAY_TEXT).format({"jumps": k["jumps_left"]})
+		lines.append(way.text)
+	elif k["accepted"]:
 		var loaded := screen._label(head, "", TextSize.SMALL, Palette.ACCENT)
 		loaded.text = tr(LOADED_TEXT).format(k)
 		lines.append(loaded.text)
@@ -74,6 +82,19 @@ func setup(station: StationScreen, k: Dictionary) -> void:
 			{"mass": k["mass"], "after": k["mass_after"], "limit": screen._run["mass"]["limit"]}
 		)
 		lines.append(mass.text)
+	# The mark of a special contract (SPEC Section 30).
+	var special := PackedStringArray()
+	if k.get("penalty", 0) > 0:
+		special.append(tr(VIP_TEXT).format({"penalty": k["penalty"]}))
+	if k.get("jumps", 1) > 1 and not k.get("carried", false):
+		special.append(tr(LONG_TEXT).format({"jumps": k["jumps"]}))
+	for s in special:
+		var mark := screen._label(box, "", TextSize.SMALL, RouteCards.INCIDENT_COLOR)
+		mark.text = s
+		mark.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		lines.append(s)
+	if special.size() > 0:
+		style.border_color = RouteCards.INCIDENT_COLOR if not k["accepted"] else style.border_color
 	if not k["bonus"].is_empty():
 		var b: Dictionary = k["bonus"]
 		var bonus := screen._label(box, "", TextSize.SMALL, Palette.WARN)

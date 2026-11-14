@@ -107,3 +107,5 @@ Use these terms in the spec, the code, the data, and the text of the game. Do no
 | **pilot** | The ship AI that speaks lines (Section 22). |
 | **event** | A card at a station with choices. Each choice has effects (Section 26). |
 | **mod** | A permanent part of the ship that changes a rule (Section 27). |
+| **environment** | A rule of the route for all jumps of a leg (Section 28). |
+| **incident** | An event of the route before the first shift step of a warp (Section 29). |

@@ -87,6 +87,18 @@ static func data() -> Dictionary:
 	contracts["k_event"] = {
 		"id": "k_event", "legs": [], "client_name": "E", "freight": ["box"], "pay": 9
 	}
+	# Special contracts (SPEC Section 30). No leg: only the tests accept them.
+	contracts["k_vip"] = {
+		"id": "k_vip",
+		"legs": [],
+		"client_name": "V",
+		"freight": ["vase", "vase"],
+		"pay": 8,
+		"penalty": 6
+	}
+	contracts["k_long"] = {
+		"id": "k_long", "legs": [], "client_name": "L", "freight": ["box"], "pay": 9, "jumps": 2
+	}
 	var lines := {}
 	for e in Defs.LINE_EVENTS:
 		lines[e] = {
@@ -134,6 +146,13 @@ static func data() -> Dictionary:
 			},
 			"events": {"station": 2, "chance_station": 3, "chance_percent": 50},
 			"mod_offers": 3,
+			"environments":
+			{
+				"low_gravity": {"max_slide": 2},
+				"radiation_belt": {"electronic": 2},
+				"heat_zone": {"volatile": 2, "fluid": 1},
+			},
+			"incidents": {"meteor_force": 3, "debris": "box"},
 			"mass":
 			{"limit": 40, "over_percent": 25, "fuel_fee": 2, "reinforce": 8, "offer_percent": 130},
 			"legs":
@@ -143,13 +162,17 @@ static func data() -> Dictionary:
 					"payment": 140,
 					"hazard_steps": [[2, 2], [2, 2], [2, 2]],
 					"kit_pool": KIT_POOL,
-					"fork": true
+					"fork": true,
+					"environment": true,
+					"incident_percent": 50,
 				},
 				{
 					"payment": 260,
 					"hazard_steps": [[2, 3], [2, 3], [2, 3]],
 					"kit_pool": KIT_POOL,
-					"fork": true
+					"fork": true,
+					"environment": true,
+					"incident_percent": 100,
 				},
 			],
 		},
@@ -159,7 +182,15 @@ static func data() -> Dictionary:
 		"lines": lines,
 		"events": events(),
 		"mods": mods(),
+		"environments": environments(),
 	}
+
+
+static func environments() -> Dictionary:
+	var out := {}
+	for id in Defs.ENVIRONMENTS:
+		out[id] = {"id": id, "name": id, "text": "rule of " + id}
+	return out
 
 
 ## Two events. e_one has each effect but mod in its first choice, and mod in its second.

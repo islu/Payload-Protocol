@@ -49,6 +49,8 @@ var fades: Dictionary = {}
 var checks: Dictionary = {}
 ## The areas of the mods of the ship: [{mod, cells}] (SPEC Section 27.2).
 var mod_areas: Array = []
+## The cells of the place of the incident of the next jump (SPEC Section 29.3).
+var incident_cells: Array = []
 
 var _hover := -1
 
@@ -63,6 +65,7 @@ func set_view(run: Dictionary) -> void:
 	cargo = run["cargo"]
 	links = run["links"]
 	mod_areas = run.get("mod_areas", [])
+	incident_cells = run.get("incident", {}).get("cells", [])
 	front_walls = PackedStringArray([run.get("front_wall", "")])
 	show_jolts = true
 	custom_minimum_size = Vector2(columns + MARGIN, rows + MARGIN) * CELL
@@ -215,6 +218,10 @@ func _draw() -> void:
 		for c: Dictionary in a["cells"]:
 			var r := Rect2(o + Vector2(c["x"], c["y"]) * cell, Vector2(cell, cell)).grow(-3)
 			draw_rect(r, MOD_COLORS.get(a["mod"], Palette.ZONE))
+	for c: Dictionary in incident_cells:
+		var r := Rect2(o + Vector2(c["x"], c["y"]) * cell, Vector2(cell, cell)).grow(-2)
+		draw_rect(r, Color(RouteCards.INCIDENT_COLOR, 0.12))
+		draw_rect(r, Color(RouteCards.INCIDENT_COLOR, 0.7), false, 2.0)
 	for z: Dictionary in zone:
 		draw_rect(Rect2(o + Vector2(z["x"], z["y"]) * cell, Vector2(cell, cell)), Palette.ZONE)
 	for c: Dictionary in cargo:

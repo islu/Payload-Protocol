@@ -68,7 +68,9 @@
 				"inertia_anchor",
 				"sensor_array"
 			],
-			"fork": true
+			"fork": true,
+			"environment": true,
+			"incident_percent": 50
 		},
 		{
 			"payment": 350,
@@ -81,7 +83,9 @@
 				"inertia_anchor",
 				"sensor_array"
 			],
-			"fork": true
+			"fork": true,
+			"environment": true,
+			"incident_percent": 100
 		}
 	],
 	"mass": {
@@ -90,5 +94,21 @@
 		"fuel_fee": 2,
 		"reinforce": 6,
 		"offer_percent": 130
+	},
+	"environments": {
+		"low_gravity": {
+			"max_slide": 2
+		},
+		"radiation_belt": {
+			"electronic": 2
+		},
+		"heat_zone": {
+			"volatile": 2,
+			"fluid": 1
+		}
+	},
+	"incidents": {
+		"meteor_force": 3,
+		"debris": "cargo_crate"
 	}
 }

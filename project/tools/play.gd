@@ -278,6 +278,12 @@ func _render_station(run: Run, v: Dictionary) -> void:
 			dirs.append("(%s)" % " or ".join(step["directions"]).to_upper())
 		else:
 			dirs.append(str(step["known"]).to_upper())
+	if not v["environment"].is_empty():
+		_say(
+			"Environment of the leg: %s (%s)" % [v["environment"]["name"], v["environment"]["text"]]
+		)
+	if not v["incident"].is_empty():
+		_say("Incident before the first step: " + _incident_text(v["incident"]))
 	_say("Hazard of the next jump: " + " then ".join(dirs))
 	if v["front_wall"] != "":
 		_say(
@@ -304,6 +310,12 @@ func _render_station(run: Run, v: Dictionary) -> void:
 		var bonus := ""
 		if not k["bonus"].is_empty():
 			bonus = " · bonus +%d: %s" % [k["bonus"]["pay"], _text(k["bonus"]["text"])]
+		if k["penalty"] > 0:
+			bonus += " · VIP penalty %d if a piece is not delivered" % k["penalty"]
+		if k["carried"]:
+			bonus += " · ON ITS WAY, %d jump(s) left, cannot cancel" % k["jumps_left"]
+		elif k["jumps"] > 1:
+			bonus += " · LONG: delivered after %d jumps" % k["jumps"]
 		_say(
 			(
 				"  [%d]%s %s: %s · pay %d each%s"
@@ -436,28 +448,51 @@ func _render_warp(run: Run) -> void:
 	if w.get("scrap_cleared", 0) > 0:
 		_say("  scrap cleared from the dock -%d" % w["scrap_cleared"])
 	var i := 0
-	for step: Dictionary in w["steps"]:
+	var steps: Array = w["steps"]
+	if w.has("incident"):
+		steps = [w["incident"]] + steps
+	for step: Dictionary in steps:
+		if not step.has("direction"):
+			_say("-- Incident: " + _incident_text(step))
+			if step["debris"] != 0:
+				_say("  a debris %s appears" % _letter(step["debris"]))
+			_render_events(step)
+			continue
 		i += 1
 		var fork := ""
 		if step.has("options"):
 			fork = " (fork: %s)" % " or ".join(step["options"]).to_upper()
 		_say("-- Shift step %d: %s%s" % [i, step["direction"].to_upper(), fork])
-		for h: Dictionary in step["hits"]:
-			if h.get("jolt", false):
-				_say(
-					(
-						"  %s is jolted at the front wall with force %d"
-						% [_letter(h["cargo"]), h["force"]]
-					)
-				)
-				continue
-			var target := "the wall" if h["wall"] else _letter(h["other"])
-			_say("  %s hits %s with force %d" % [_letter(h["cargo"]), target, h["force"]])
-		for r: Dictionary in step["reactions"]:
-			var extra := ""
-			if r["kind"] == Defs.REACT_SHIELD:
-				extra = " (Shield %s cancels a %s)" % [_letter(r["shield"]), r["canceled"]]
-			_say("  %s: %s%s" % [r["kind"].to_upper(), _letter(r["cargo"]), extra])
+		_render_events(step)
+
+
+func _incident_text(inc: Dictionary) -> String:
+	match inc["kind"]:
+		Defs.INCIDENT_METEOR:
+			return "METEOR on column x=%d (the top cargo takes force 3)" % inc["x"]
+		Defs.INCIDENT_ION_PULSE:
+			return "ION PULSE on row y=%d (each Electronic cargo there shorts)" % inc["y"]
+	return (
+		"HULL BREACH at cell %d %d (a debris, or the cargo there becomes scrap)"
+		% [inc["x"], inc["y"]]
+	)
+
+
+## Prints the hits and the reactions of a step or an incident.
+func _render_events(step: Dictionary) -> void:
+	for h: Dictionary in step["hits"]:
+		if h.get("jolt", false):
+			_say(
+				"  %s is jolted at the front wall with force %d" % [_letter(h["cargo"]), h["force"]]
+			)
+			continue
+		var target := "the wall" if h["wall"] else _letter(h["other"])
+		_say("  %s hits %s with force %d" % [_letter(h["cargo"]), target, h["force"]])
+	for r: Dictionary in step["reactions"]:
+		var extra := ""
+		if r["kind"] == Defs.REACT_SHIELD:
+			extra = " (Shield %s cancels a %s)" % [_letter(r["shield"]), r["canceled"]]
+		_say("  %s: %s%s" % [r["kind"].to_upper(), _letter(r["cargo"]), extra])
 
 
 func _render_arrival(v: Dictionary) -> void:

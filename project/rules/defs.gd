@@ -77,6 +77,21 @@ const EFFECTS: PackedStringArray = [
 	EFFECT_PAYMENT,
 ]
 
+# Route environments (SPEC Section 28.2)
+const ENV_LOW_GRAVITY := "low_gravity"
+const ENV_MAGNETIC_STORM := "magnetic_storm"
+const ENV_RADIATION_BELT := "radiation_belt"
+const ENV_HEAT_ZONE := "heat_zone"
+const ENVIRONMENTS: PackedStringArray = [
+	ENV_LOW_GRAVITY, ENV_MAGNETIC_STORM, ENV_RADIATION_BELT, ENV_HEAT_ZONE
+]
+
+# Incidents (SPEC Section 29.2)
+const INCIDENT_METEOR := "meteor"
+const INCIDENT_ION_PULSE := "ion_pulse"
+const INCIDENT_HULL_BREACH := "hull_breach"
+const INCIDENTS: PackedStringArray = [INCIDENT_METEOR, INCIDENT_ION_PULSE, INCIDENT_HULL_BREACH]
+
 # Mods (SPEC Section 27.2)
 const MOD_SHOCK_FLOOR := "shock_floor"
 const MOD_CRYO_LINE := "cryo_line"

@@ -130,6 +130,16 @@ func _mod_choice() -> void:
 	GameState.choose_mod(0)
 	await _wait(0.6)
 	await _shot("11_station_mod")
+	# The route: an environment, an incident, and special contracts (SPEC Sections 28 to 30).
+	var r: Run = GameState._record.run
+	r.environment = Defs.ENV_HEAT_ZONE
+	r.incident = {"kind": Defs.INCIDENT_METEOR, "x": 2}
+	r.contracts[0] = Contract.new(900, r.cat.contract("vip_embassy"))
+	r.contracts[1] = Contract.new(901, r.cat.contract("long_mine"))
+	r.contracts[2] = Contract.new(902, r.cat.contract("statue_loan"))
+	GameState.state_changed.emit()
+	await _wait(0.6)
+	await _shot("12_station_route")
 
 
 func _warp() -> void:

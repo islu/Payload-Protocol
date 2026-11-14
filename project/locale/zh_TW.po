@@ -97,6 +97,10 @@ msgid "No payment is due now."
 msgstr "現在沒有要還的款。"
 
 #: project/rules/run.gd
+msgid "This contract is on its way. You cannot cancel it."
+msgstr "這張合約的貨已經在路上，不能取消。"
+
+#: project/rules/run.gd
 msgid "No event is open."
 msgstr "現在沒有事件。"
 
@@ -405,6 +409,18 @@ msgstr "已裝入 {loaded}/{pieces}"
 msgid "Bonus +{pay}: {text}"
 msgstr "獎金 +{pay}：{text}"
 
+#: project/scenes/station/contract_card.gd
+msgid "VIP · Penalty {penalty} if a piece is not delivered"
+msgstr "VIP · 任何一件沒送達就罰款 {penalty}"
+
+#: project/scenes/station/contract_card.gd
+msgid "Long · Delivered after {jumps} jumps"
+msgstr "長程 · {jumps} 次跳躍後才交貨"
+
+#: project/scenes/station/contract_card.gd
+msgid "On its way · {jumps} jump(s) left"
+msgstr "運送中 · 還剩 {jumps} 次跳躍"
+
 #: project/scenes/station/hints.gd
 msgid "Accept a contract on the left. Its freight goes to the dock."
 msgstr "在左邊接下一張合約，貨物會送到碼頭。"
@@ -424,6 +440,18 @@ msgstr "看看上方的危險預報：每一段位移都會讓所有貨物往那
 #: project/scenes/station/hints.gd
 msgid "When the hold is ready, press WARP."
 msgstr "貨艙整理好了，就按「跳躍」。"
+
+#: project/scenes/station/route_cards.gd
+msgid "Meteor · Column {x}"
+msgstr "隕石 · 第 {x} 欄"
+
+#: project/scenes/station/route_cards.gd
+msgid "Ion Pulse · Row {y}"
+msgstr "離子脈衝 · 第 {y} 列"
+
+#: project/scenes/station/route_cards.gd
+msgid "Hull Breach · Column {x}, Row {y}"
+msgstr "船殼破裂 · 第 {x} 欄第 {y} 列"
 
 #: project/scenes/station/shop_panel.gd
 msgid "Buy · {price} cr"
@@ -628,6 +656,10 @@ msgid "Breach -{breach}"
 msgstr "違約金 -{breach}"
 
 #: project/scenes/warp/report_panel.gd
+msgid "Penalty -{penalty}"
+msgstr "罰款 -{penalty}"
+
+#: project/scenes/warp/report_panel.gd
 msgid "delivered"
 msgstr "已交貨"
 
@@ -663,6 +695,10 @@ msgstr "保險"
 #: project/scenes/warp/report_panel.gd
 msgid "Breach fees"
 msgstr "違約金"
+
+#: project/scenes/warp/report_panel.gd
+msgid "Penalties"
+msgstr "罰款"
 
 #: project/scenes/warp/report_panel.gd
 msgid "Kit sold from the dock"
@@ -707,6 +743,10 @@ msgstr "損失 -{loss}"
 #: project/data/cargo/ammo_crate.json
 msgid "Ammo Crate"
 msgstr "彈藥箱"
+
+#: project/data/cargo/ancient_statue.json
+msgid "Ancient Statue"
+msgstr "古代雕像"
 
 #: project/data/cargo/antique_phone.json
 msgid "Antique Phone"
@@ -856,6 +896,10 @@ msgstr "服務型機器人"
 msgid "Shield Generator"
 msgstr "護盾產生器"
 
+#: project/data/cargo/ship_engine.json
+msgid "Ship Engine"
+msgstr "太空船引擎"
+
 #: project/data/cargo/space_cheese.json
 msgid "Space Cheese"
 msgstr "太空起司"
@@ -887,6 +931,7 @@ msgstr "齒輪機器人公司"
 
 #: project/data/contracts/antique_tech.json
 #: project/data/contracts/earth_curios.json
+#: project/data/contracts/statue_loan.json
 msgid "Earth Heritage Museum"
 msgstr "地球遺產博物館"
 
@@ -936,6 +981,10 @@ msgstr "霓虹餐館"
 msgid "Swift Courier"
 msgstr "疾風快遞"
 
+#: project/data/contracts/engine_order.json
+msgid "Shipyard Seven"
+msgstr "第七造船廠"
+
 #: project/data/contracts/fine_glass.json
 #: project/data/contracts/gallery.json
 msgid "Luma Gallery"
@@ -959,6 +1008,14 @@ msgstr "鐵工公會"
 #: project/data/contracts/parking_meters.json
 msgid "Old Town Collectors"
 msgstr "舊城收藏家"
+
+#: project/data/contracts/long_colony.json
+msgid "Far Colony"
+msgstr "遠方殖民地"
+
+#: project/data/contracts/long_mine.json
+msgid "Deep Core Mine"
+msgstr "深核礦場"
 
 #: project/data/contracts/mail_run.json
 msgid "Orbital Post"
@@ -1005,6 +1062,46 @@ msgstr "拋錨貨船"
 #: project/data/contracts/sculpture.json
 msgid "Museum of Nowhere"
 msgstr "無處博物館"
+
+#: project/data/contracts/vip_clinic.json
+msgid "Orbital Clinic"
+msgstr "軌道診所"
+
+#: project/data/contracts/vip_embassy.json
+msgid "Embassy Courier"
+msgstr "使館信差"
+
+#: project/data/environments/heat_zone.json
+msgid "Heat Zone"
+msgstr "熱區"
+
+#: project/data/environments/heat_zone.json
+msgid "Volatile cargo explodes at a force of 2. Fluid cargo leaks at a force of 1."
+msgstr "爆裂物在撞擊力 2 時爆炸，流體在撞擊力 1 時洩漏。"
+
+#: project/data/environments/low_gravity.json
+msgid "Low Gravity"
+msgstr "低重力"
+
+#: project/data/environments/low_gravity.json
+msgid "Each cargo slides 2 cells at most in each shift step."
+msgstr "每一次位移，貨物最多滑 2 格。"
+
+#: project/data/environments/magnetic_storm.json
+msgid "Magnetic Storm"
+msgstr "磁暴"
+
+#: project/data/environments/magnetic_storm.json
+msgid "No Shield has power. Array Power does not help."
+msgstr "所有護盾都沒有電，陣列供電也沒用。"
+
+#: project/data/environments/radiation_belt.json
+msgid "Radiation Belt"
+msgstr "輻射帶"
+
+#: project/data/environments/radiation_belt.json
+msgid "An Electronic cargo shorts at a hit with a force of 2 or more."
+msgstr "電子貨物受到撞擊力 2 以上的撞擊時會短路。"
 
 #: project/data/events/company_audit.json
 msgid "Pay early."

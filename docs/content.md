@@ -6,13 +6,14 @@ This file has the design rules of the game content. The data files in `project/d
 
 | Content | Folder or file |
 | --- | --- |
-| Balance values: start values, break limits, prices, payments, hazard steps, hold size, the event stations, the mod offers | `rules.json` |
+| Balance values: start values, break limits, prices, payments, hazard steps, hold size, the event stations, the mod offers, the numbers of the environments and the incidents | `rules.json` |
 | Names and rules text of traits, kinds, weights, and directions | `terms.json` |
 | Freight and kit definitions | `cargo/` |
 | Contract templates, by leg | `contracts/` |
 | Pilot lines, by event | `lines/` |
 | Station events and their choices | `events/` |
 | The name and the rule text of each mod. The rule is in the code (SPEC Section 27.2). | `mods/` |
+| The name and the rule text of each route environment. The rule is in the code (SPEC Section 28.2). | `environments/` |
 
 - Use one file for each definition. The `id` is snake_case and is the same as the file name.
 - New content must not need a code change. Do not hard-code balance values.
@@ -30,7 +31,7 @@ This file has the design rules of the game content. The data files in `project/d
 
 ## First Content (Version 1)
 
-The first content has 38 freight and 6 kit. The freight has themes: supplies, tech, food, medical, contraband, weapons, robots, and Earth relics. The data files set the shapes and the values.
+The first content has 40 freight and 6 kit. The freight has themes: supplies, tech, food, medical, contraband, weapons, robots, and Earth relics. The data files set the shapes and the values.
 
 ### Freight
 
@@ -71,6 +72,8 @@ The first content has 38 freight and 6 kit. The freight has themes: supplies, te
 | `fire_hydrant` | Fire Hydrant | heavy | — | 2 cells, a line |
 | `parking_meter` | Parking Meter | standard | Electronic | 2 cells, a line |
 | `mailbox` | Mailbox | standard | — | 2 cells, a line |
+| `ship_engine` | Ship Engine | heavy | — | 5 cells, a P (large freight, SPEC Section 30.3) |
+| `ancient_statue` | Ancient Statue | standard | Fragile | 5 cells, a P (large freight, SPEC Section 30.3) |
 | `instant_noodles` | Instant Noodles | light | — | 1 cell |
 | `flashlight` | Flashlight | light | Electronic | 1 cell |
 | `burger` | Burger | standard | Perishable | 1 cell |
@@ -95,6 +98,8 @@ The first content has 38 freight and 6 kit. The freight has themes: supplies, te
 - A Black Market contract carries contraband or weapons. It pays about 1.5 times a contract with freight of the same size and risk.
 - An Earth Heritage Museum or Old Town Collectors contract carries Earth relics: everyday things of old Earth.
 - Each freight is in one contract at least.
+- A VIP contract has a penalty of about half of its total pay. A long contract pays about 1.8 times a contract of the same freight (SPEC Section 30).
+- Large freight (5 cells) is in a contract of its own, with a high pay.
 - The 4 offers of a station must have a total mass of 1.3 times the mass limit or more (SPEC Section 25). Then the player must select.
 
 ## Event Rules

@@ -10,6 +10,10 @@ var freight: PackedStringArray = []
 var pay: int = 0
 ## The bonus (SPEC Section 15.2): {type, pay, zone: {side, size}, trait}, or empty.
 var bonus: Dictionary = {}
+## The penalty of a VIP contract, or 0 (SPEC Section 30.1).
+var penalty: int = 0
+## The jumps of the freight: 2 for a long contract (SPEC Section 30.2).
+var jumps: int = 1
 
 
 static func from_dict(d: Dictionary) -> ContractTemplate:
@@ -21,6 +25,8 @@ static func from_dict(d: Dictionary) -> ContractTemplate:
 	for f in d.get("freight", []):
 		t.freight.append(str(f))
 	t.pay = int(d.get("pay", 0))
+	t.penalty = int(d.get("penalty", 0))
+	t.jumps = int(d.get("jumps", 1))
 	var b: Dictionary = d.get("bonus", {})
 	if not b.is_empty():
 		t.bonus = {

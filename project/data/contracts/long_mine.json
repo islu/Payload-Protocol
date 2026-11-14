@@ -1,0 +1,8 @@
+{
+	"id": "long_mine",
+	"legs": [2, 3],
+	"client_name": "Deep Core Mine",
+	"freight": ["steel_ingot", "steel_ingot", "cargo_crate"],
+	"pay": 14,
+	"jumps": 2
+}

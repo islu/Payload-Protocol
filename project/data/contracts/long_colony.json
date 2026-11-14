@@ -1,0 +1,8 @@
+{
+	"id": "long_colony",
+	"legs": [3],
+	"client_name": "Far Colony",
+	"freight": ["reactor_core"],
+	"pay": 40,
+	"jumps": 2
+}

@@ -11,6 +11,7 @@ const REPLAY_TEXT := "Replay (slow)"
 const BONUS_TEXT := "Bonus +{bonus}"
 const BONUS_MISSED_TEXT := "Bonus missed"
 const BREACH_TEXT := "Breach -{breach}"
+const PENALTY_TEXT := "Penalty -{penalty}"
 const COUNT_TEXT := "×{count}"
 const PIECE_STATE_TEXT := {
 	Defs.PIECE_DELIVERED: "delivered",
@@ -24,13 +25,14 @@ const LEDGER_TEXT := {
 	"bonuses": "Bonuses",
 	"insurance": "Insurance",
 	"breaches": "Breach fees",
+	"penalties": "Penalties",
 	"sold": "Kit sold from the dock",
 	"scrap_cleared": "Scrap cleared from the dock",
 	"fuel_fee": "Fuel fee",
 	"net": "Net",
 }
 ## The lines of the ledger that take credits away.
-const LEDGER_COSTS: PackedStringArray = ["breaches", "scrap_cleared", "fuel_fee"]
+const LEDGER_COSTS: PackedStringArray = ["breaches", "penalties", "scrap_cleared", "fuel_fee"]
 const CREDITS_TEXT := "Credits {before} → {after}"
 const CELL := 40.0
 
@@ -159,6 +161,8 @@ func _card(k: Dictionary) -> void:
 		notes.append(tr(BONUS_TEXT).format(k) if k["bonus_met"] else tr(BONUS_MISSED_TEXT))
 	if k["breach"] > 0:
 		notes.append(tr(BREACH_TEXT).format(k))
+	if k.get("penalty", 0) > 0:
+		notes.append(tr(PENALTY_TEXT).format(k))
 	if not notes.is_empty():
 		var note := _label(
 			box, "", TextSize.SMALL, Palette.WARN if k["bonus_met"] else Palette.TEXT_DIM

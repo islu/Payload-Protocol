@@ -1,0 +1,7 @@
+{
+	"id": "statue_loan",
+	"legs": [2, 3],
+	"client_name": "Earth Heritage Museum",
+	"freight": ["ancient_statue"],
+	"pay": 32
+}

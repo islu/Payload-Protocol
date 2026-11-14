@@ -34,6 +34,7 @@ This file is part of the [game specification](../spec.md). The section numbers a
 - A clamped cargo does not slide (Section 13). It blocks other cargo as a wall does.
 - A Thruster cargo slides 1 cell at most in each shift step.
 - A Thruster cargo that stops after 1 cell with no wall and no cargo in front of it makes no hit.
+- In Low Gravity, each cargo slides 2 cells at most in each shift step (Section 28.2).
 
 ### 10.3 Hits
 
@@ -67,6 +68,7 @@ This file is part of the [game specification](../spec.md). The section numbers a
 - A cargo has one reaction at most from its hits. When it has more than one trait that reacts, only the first in this order happens: explosion, leak, break.
   - Example: a Fuel Drum (Fluid, Volatile) leaks at a force of 2. At a force of 3 or more, it explodes and does not leak.
 - A cargo that became scrap has no traits, so it does not react again.
+- A route environment can change a break limit (Section 28.2).
 
 ### 11.1 Break
 
@@ -109,6 +111,7 @@ A **link** is a rule between two cargo that are next to each other.
 - When two Shields protect the same cargo, the Shield with the smaller `(y, x)` of its origin spends its charge first.
 - A Battery is Electronic. A leak next to it can short it. Then the Shield has no power in the next shift steps.
 - With the Array Power mod, each Shield has power (Section 27.2).
+- In a Magnetic Storm, no Shield has power, with the Array Power mod too (Section 28.2).
 
 ### 12.3 Link Display
 
@@ -128,3 +131,51 @@ A **link** is a rule between two cargo that are next to each other.
 - When a clamped cargo leaves the hold or is removed, its clamp goes back to the clamp panel.
 - A clamp can go on scrap.
 - The player cannot put a clamp on a cargo on the dock.
+
+## 28. Route Environments
+
+An **environment** is a rule of the route for all jumps of a leg.
+
+### 28.1 When Environments Happen
+
+- Leg 1 has no environment. The seed selects one environment for leg 2 and one for leg 3. The two are not the same.
+- The station shows the environment of the leg in the top bar and in the hazard panel. The mouse on it shows its rule. The warp shows it in the banner before the first step.
+
+### 28.2 The Environments
+
+| Environment | Rule |
+| --- | --- |
+| **Low Gravity** | Each cargo slides 2 cells at most in each shift step. |
+| **Magnetic Storm** | No Shield has power. The Array Power mod does not change this. |
+| **Radiation Belt** | An Electronic cargo that takes a hit with a force of 2 or more shorts. It becomes scrap. |
+| **Heat Zone** | The break limit of Volatile is 2, and the break limit of Fluid is 1. |
+
+- An environment is stronger than a mod. When an environment and a mod give different rules, the environment is correct.
+- `rules.json` has the numbers of the environments.
+
+## 29. Incidents
+
+An **incident** is an event of the route that happens before the first shift step of a warp.
+
+### 29.1 When Incidents Happen
+
+- Leg 1 has no incidents. In leg 2, a jump has an incident with a chance of one half. In leg 3, each jump has an incident.
+- A jump has one incident at most.
+- The seed selects the kind and the place of the incident when the station opens. The place has a cargo in it when the station opens, if one can.
+
+### 29.2 The Incidents
+
+| Incident | Place | Rule |
+| --- | --- | --- |
+| **Meteor** | A column | The cargo with the top cell in that column takes a hit with a force of 3. The rules of Section 11 apply. When the column is empty, nothing happens. |
+| **Ion Pulse** | A row | Each Electronic cargo with a cell in that row shorts. It becomes scrap. |
+| **Hull Breach** | A cell | When the cell is empty, a debris appears in it: a scrap of 1 cell. When a cargo is in the cell, that cargo becomes scrap, and no debris appears. |
+
+- The reactions of an incident are reactions of Section 11: a Shield can cancel them, and they can start a chain.
+- The power check of Section 12.2 happens before the incident.
+
+### 29.3 Display
+
+- The hazard panel shows the incident as the first card, before the shift steps: its name and its place ("Meteor · Column 4").
+- The hold marks the place of the incident: the column, the row, or the cell.
+- The warp plays the incident before the first shift step, with a banner.

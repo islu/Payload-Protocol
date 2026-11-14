@@ -51,7 +51,7 @@ static func jolt_risks(run: Run) -> Dictionary:
 			continue
 		var f := Shift.taken(run, c, 0 if c.has(Defs.TRAIT_CUSHION) else Shift.force_weight(run, c))
 		for t in Defs.LIMIT_TRAITS:
-			if c.has(t) and f >= run.cat.break_limit(t):
+			if c.has(t) and f >= run.break_limit(t):
 				out[c.id] = true
 	return out
 
@@ -167,6 +167,8 @@ static func view(run: Run) -> Dictionary:
 		"mod_offer": mods(run, run.mod_offer),
 		"mod_areas": mod_areas(run),
 		"event": event(run),
+		"environment": environment(run),
+		"incident": incident(run),
 	}
 	var ids := run.cargo.keys()
 	ids.sort()
@@ -380,6 +382,10 @@ static func _contract(run: Run, i: int, k: Contract) -> Dictionary:
 		"pay": t.pay,
 		"bonus": {},
 		"accepted": k.accepted,
+		"penalty": t.penalty,
+		"jumps": t.jumps,
+		"jumps_left": k.jumps_left,
+		"carried": k.carried(),
 	}
 	_contract_card(run, k, kv)
 	if t.has_bonus():
@@ -458,3 +464,30 @@ static func _effect(run: Run, f: Dictionary) -> Dictionary:
 		Defs.EFFECT_PAYMENT:
 			return text(EFFECT_TEXT[f["type"]], {"amount": f["amount"]})
 	return text(EFFECT_TEXT.get(f["type"], ""), {})
+
+
+## Returns the environment of the leg: {id, name, text}, or {} (SPEC Section 28.1).
+static func environment(run: Run) -> Dictionary:
+	if run.environment == "":
+		return {}
+	var e: Dictionary = run.cat.environments.get(run.environment, {})
+	return {"id": run.environment, "name": e.get("name", ""), "text": e.get("text", "")}
+
+
+## Returns the incident of the next jump: {kind, x, y, cells}, or {}. cells has the
+## cells of its place: a column, a row, or a cell (SPEC Section 29.3).
+static func incident(run: Run) -> Dictionary:
+	var i := run.incident
+	if i.is_empty():
+		return {}
+	var cells := []
+	match i["kind"]:
+		Defs.INCIDENT_METEOR:
+			for y in run.rows:
+				cells.append({"x": i["x"], "y": y})
+		Defs.INCIDENT_ION_PULSE:
+			for x in run.columns:
+				cells.append({"x": x, "y": i["y"]})
+		_:
+			cells.append({"x": i["x"], "y": i["y"]})
+	return {"kind": i["kind"], "x": i.get("x", -1), "y": i.get("y", -1), "cells": cells}

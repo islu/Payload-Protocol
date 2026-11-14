@@ -37,6 +37,12 @@ var chance_station: int
 var chance_percent: int
 ## The number of mods in a mod choice (SPEC Section 27.1).
 var mod_offers: int
+## The numbers of each environment, by ID: {max_slide, electronic, volatile, fluid}
+## (SPEC Section 28.2).
+var environment_values: Dictionary = {}
+## The force of a meteor, and the cargo of a debris (SPEC Section 29.2).
+var meteor_force: int
+var debris: String
 
 ## terms.json: the words of the rules.
 var terms: Dictionary = {}
@@ -49,6 +55,8 @@ var lines: Dictionary = {}
 var events: Array[EventDef] = []
 ## The name and the rule text of each mod: {name, text} by ID (SPEC Section 27).
 var mods: Dictionary = {}
+## The name and the rule text of each environment: {name, text} by ID (SPEC Section 28).
+var environments: Dictionary = {}
 
 
 ## Makes a catalog from the parsed data: {rules, terms, cargo, contracts, lines}.
@@ -86,6 +94,11 @@ static func from_data(data: Dictionary) -> Catalog:
 		var m: Dictionary = files[name]
 		cat._check_id(str(m.get("id", "")), name, "mod")
 		cat.mods[name] = {"name": str(m.get("name", "")), "text": str(m.get("text", ""))}
+	files = data.get("environments", {})
+	for name: String in _sorted(files):
+		var m: Dictionary = files[name]
+		cat._check_id(str(m.get("id", "")), name, "environment")
+		cat.environments[name] = {"name": str(m.get("name", "")), "text": str(m.get("text", ""))}
 	cat._check()
 	return cat
 
@@ -123,6 +136,13 @@ func _read_rules(r: Dictionary) -> void:
 	chance_station = int(ev.get("chance_station", 0))
 	chance_percent = int(ev.get("chance_percent", 0))
 	mod_offers = int(r.get("mod_offers", 0))
+	var envs: Dictionary = r.get("environments", {})
+	for id: String in envs:
+		environment_values[id] = {}
+		for k: String in envs[id]:
+			environment_values[id][k] = int(envs[id][k])
+	meteor_force = int(r.get("incidents", {}).get("meteor_force", 0))
+	debris = str(r.get("incidents", {}).get("debris", ""))
 	for s: Dictionary in r.get("legs", []):
 		var steps: Array[Vector2i] = []
 		for span in s.get("hazard_steps", []):
@@ -138,6 +158,8 @@ func _read_rules(r: Dictionary) -> void:
 					"hazard_steps": steps,
 					"kit_pool": pool,
 					"fork": bool(s.get("fork", false)),
+					"environment": bool(s.get("environment", false)),
+					"incident_percent": int(s.get("incident_percent", 0)),
 				}
 			)
 		)
@@ -200,6 +222,14 @@ func _check() -> void:
 	for id: String in mods:
 		if not id in Defs.MODS:
 			_fail("mods: %s is not a mod of the code" % id)
+	for id in Defs.ENVIRONMENTS:
+		var e: Dictionary = environments.get(id, {})
+		if e.get("name", "") == "" or e.get("text", "") == "":
+			_fail("environments: the environment %s needs a name and a text" % id)
+	if not cargo.has(debris) or cargo[debris].shape.size() != 1:
+		_fail("rules: the debris %s is not a cargo of 1 cell" % debris)
+	if meteor_force < 1:
+		_fail("rules: the meteor force must be 1 or more")
 
 
 func _check_rules() -> void:
@@ -283,6 +313,8 @@ func _check_contract(t: ContractTemplate) -> void:
 	for s in t.legs:
 		if s < 1 or s > legs.size():
 			_fail("contract %s: the leg %d is not valid" % [t.id, s])
+	if t.penalty < 0 or t.jumps < 1 or t.jumps > 3:
+		_fail("contract %s: the penalty or the jumps are not valid" % t.id)
 	for id in t.freight:
 		if not cargo.has(id) or cargo[id].kind != Defs.KIND_FREIGHT:
 			_fail("contract %s: %s is not a freight" % [t.id, id])

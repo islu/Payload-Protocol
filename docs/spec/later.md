@@ -4,11 +4,6 @@ This file is part of the [game specification](../spec.md). The section numbers a
 
 ## 24. Later
 
-The user approved the direction of these ideas on 2026-11-14. Design each one with /game-design before it goes into the other sections.
-
-- **Phase 3: route conditions** (the phase environments of the first draft). Each leg has one condition, for example a radiation zone or low gravity. The station shows it for all jumps of the leg. The condition changes the values of traits or of the slide.
-- **Phase 3: incident steps.** A new kind of shift step, for example a meteor that breaks the top cargo of one column. The station shows the step and its column before the warp (Section 1.1).
-- **Phase 3: special contracts.** A VIP contract with high pay, a contract for more than one jump, and a large freight.
 - **Tilt and rotation steps:** a shift step that turns the whole hold, or a diagonal slide.
 - **Hidden steps:** a step that shows "?" (any of three directions). The fork step of Section 18 is the first part of this idea.
 - **A save of the run** between jumps.

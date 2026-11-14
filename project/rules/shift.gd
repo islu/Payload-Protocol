@@ -89,6 +89,9 @@ static func _can_step(
 	# A clamped cargo does not slide. A Thruster slides 1 cell at most (SPEC Section 10.2).
 	if c.clamped or (c.has(Defs.TRAIT_THRUSTER) and dist.get(c.id, 0) >= 1):
 		return false
+	# Low Gravity: a cargo slides a few cells at most (SPEC Section 28.2).
+	if dist.get(c.id, 0) >= run.env_value(Defs.ENV_LOW_GRAVITY, "max_slide", 1 << 30):
+		return false
 	for cell in c.cells():
 		var n := cell + delta
 		if not run.inside(n) or occ.get(n, c.id) != c.id:
@@ -189,6 +192,12 @@ static func taken(run: Run, c: Cargo, force: int) -> int:
 	return force
 
 
+## Returns the force that shorts an Electronic cargo: the number of the Radiation
+## Belt, or no force with no Radiation Belt (SPEC Section 28.2).
+static func _radiation(run: Run) -> int:
+	return run.env_value(Defs.ENV_RADIATION_BELT, "electronic", 1 << 30)
+
+
 static func _take(forces: Dictionary, id: int, force: int) -> void:
 	forces[id] = maxi(forces.get(id, -1), force)
 
@@ -203,15 +212,88 @@ static func _react(run: Run, forces: Dictionary, powered: Dictionary, out: Dicti
 			continue
 		var f: int = forces[c.id]
 		# One reaction for each cargo: the first in this order (SPEC Section 11).
-		if c.has(Defs.TRAIT_VOLATILE) and f >= run.cat.break_limit(Defs.TRAIT_VOLATILE):
+		if c.has(Defs.TRAIT_VOLATILE) and f >= run.break_limit(Defs.TRAIT_VOLATILE):
 			queue.append([Defs.REACT_EXPLOSION, c.id, -1])
-		elif c.has(Defs.TRAIT_FLUID) and f >= run.cat.break_limit(Defs.TRAIT_FLUID):
+		elif c.has(Defs.TRAIT_FLUID) and f >= run.break_limit(Defs.TRAIT_FLUID):
 			queue.append([Defs.REACT_LEAK, c.id, -1])
-		elif c.has(Defs.TRAIT_FRAGILE) and f >= run.cat.break_limit(Defs.TRAIT_FRAGILE):
+		elif c.has(Defs.TRAIT_FRAGILE) and f >= run.break_limit(Defs.TRAIT_FRAGILE):
 			queue.append([Defs.REACT_BREAK, c.id, -1])
+		elif c.has(Defs.TRAIT_ELECTRONIC) and f >= _radiation(run):
+			# A Radiation Belt shorts Electronic cargo at a hit (SPEC Section 28.2).
+			queue.append([Defs.REACT_SHORT, c.id, -1])
+	_run_queue(run, queue, powered, out)
+
+
+## Does the reactions of a queue, and each reaction that they start, in order.
+## Each item is [kind, cargo ID, cause].
+static func _run_queue(run: Run, queue: Array, powered: Dictionary, out: Dictionary) -> void:
 	while not queue.is_empty():
 		var p: Array = queue.pop_front()
 		queue.append_array(_apply(run, p[0], p[1], p[2], powered, out))
+
+
+## Plays an incident before the first shift step (SPEC Section 29). incident is
+## {kind, x, y}. It returns the log: {kind, x, y, hits, reactions, after, debris}.
+## debris is the ID of a new debris, or 0.
+static func incident(run: Run, inc: Dictionary) -> Dictionary:
+	var out := {
+		"kind": inc["kind"],
+		"x": inc.get("x", -1),
+		"y": inc.get("y", -1),
+		"hits": [],
+		"reactions": [],
+		"after": [],
+		"debris": 0,
+	}
+	var powered := power_check(run)
+	var queue: Array = []
+	match inc["kind"]:
+		Defs.INCIDENT_METEOR:
+			var top: Cargo = null
+			var top_y := 1 << 30
+			for c in run.hold_cargo():
+				for cell in c.cells():
+					if cell.x == inc["x"] and cell.y < top_y:
+						top = c
+						top_y = cell.y
+			if top != null:
+				var f := taken(run, top, 0 if top.has(Defs.TRAIT_CUSHION) else run.cat.meteor_force)
+				var contact := [_cell(Vector2i(inc["x"], top_y))]
+				out["hits"].append(
+					{
+						"cargo": top.id,
+						"other": 0,
+						"wall": false,
+						"jolt": false,
+						"meteor": true,
+						"force": f,
+						"contact": contact
+					}
+				)
+				_react(run, {top.id: f}, powered, out)
+		Defs.INCIDENT_ION_PULSE:
+			for c in run.hold_cargo():
+				if (
+					c.has(Defs.TRAIT_ELECTRONIC)
+					and c.cells().any(func(v: Vector2i) -> bool: return v.y == inc["y"])
+				):
+					queue.append([Defs.REACT_SHORT, c.id, -1])
+		Defs.INCIDENT_HULL_BREACH:
+			var cell := Vector2i(inc["x"], inc["y"])
+			var occ := run.occupancy()
+			if occ.has(cell):
+				queue.append([Defs.REACT_BREAK, occ[cell], -1])
+			else:
+				var d := run.new_cargo(run.cat.cargo[run.cat.debris])
+				d.kind = Defs.KIND_SCRAP
+				d.in_hold = true
+				d.pos = cell
+				run.dock.erase(d.id)
+				out["debris"] = d.id
+	_run_queue(run, queue, powered, out)
+	for c in run.hold_cargo():
+		out["after"].append({"cargo": c.id, "x": c.pos.x, "y": c.pos.y, "kind": c.kind})
+	return out
 
 
 ## Does one reaction, and returns the reactions that it starts.
@@ -328,6 +410,9 @@ static func power_check(run: Run) -> Dictionary:
 	for s in hold:
 		if not s.has(Defs.TRAIT_SHIELD):
 			continue
+		# A Magnetic Storm takes the power of each Shield, with Array Power too (SPEC Section 28.2).
+		if run.environment == Defs.ENV_MAGNETIC_STORM:
+			break
 		# The Array Power mod gives power to each Shield (SPEC Section 27.2).
 		if run.has_mod(Defs.MOD_ARRAY_POWER):
 			powered[s.id] = true

@@ -20,8 +20,14 @@ static func arrive(run: Run) -> void:
 		c.spoiled = true
 		report["spoiled"].append(c.id)
 	var leaving: Array[int] = []
+	var carried: Array[int] = []
 	for k in run.contracts:
 		if not k.accepted:
+			continue
+		if k.jumps_left > 1:
+			# A long contract: its freight stays until its last jump (SPEC Section 30.2).
+			k.jumps_left -= 1
+			carried.append(k.id)
 			continue
 		var res := {
 			"client_name": k.template.client_name,
@@ -32,6 +38,7 @@ static func arrive(run: Run) -> void:
 			"bonus_met": false,
 			"breach": 0,
 			"insurance": 0,
+			"penalty": 0,
 		}
 		var delivered: Array[Cargo] = []
 		for i in k.cargo.size():
@@ -68,19 +75,25 @@ static func arrive(run: Run) -> void:
 					}
 				)
 			)
+		# A VIP contract pays its penalty when a piece is not delivered (SPEC Section 30.1).
+		if delivered.size() != k.cargo.size():
+			res["penalty"] = k.template.penalty
 		if bonus_met(run, k, delivered):
 			res["bonus_met"] = true
 			res["bonus"] = k.template.bonus["pay"]
 		for c in delivered:
 			leaving.append(c.id)
 		run.stats["delivered"] += delivered.size()
-		report["total"] += res["pay"] + res["bonus"] + res["insurance"] - res["breach"]
+		report["total"] += (
+			res["pay"] + res["bonus"] + res["insurance"] - res["breach"] - res["penalty"]
+		)
 		res["groups"] = groups(res["pieces"])
 		report["contracts"].append(res)
 	for id in leaving:
 		run.remove_cargo(id)
 	for c: Cargo in run.cargo.values():
-		c.contract = 0
+		if not c.contract in carried:
+			c.contract = 0
 		c.spoiled = false
 	run.credits += report["total"]
 	_ledger(run, report)
@@ -219,6 +232,8 @@ static func _ledger(run: Run, report: Dictionary) -> void:
 		ledger["bonuses"] += res["bonus"]
 		ledger["insurance"] += res["insurance"]
 		ledger["breaches"] += res["breach"]
+		ledger["penalties"] = ledger.get("penalties", 0) + res["penalty"]
+	ledger["penalties"] = ledger.get("penalties", 0)
 	ledger["sold"] = report["sold"]
 	ledger["scrap_cleared"] = run.last_warp.get("scrap_cleared", 0)
 	ledger["fuel_fee"] = run.last_warp.get("fuel_fee", 0)

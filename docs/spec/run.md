@@ -53,10 +53,11 @@ Each contract has:
 The arrival has these steps, in this order:
 
 1. **Spoil:** each Perishable cargo that is not next to a Cooler becomes scrap (Section 12.1).
-2. **Delivery:** each intact freight leaves the hold. Its contract pays its pay.
+2. **Delivery:** each intact freight leaves the hold. Its contract pays its pay. The freight of a long contract stays until its last jump (Section 30.2).
 3. **Bonus:** each contract with a true condition pays its bonus.
 4. **Breach:** each breach fee is paid (Section 15.4).
-5. **Report:** the arrival report shows the result (Section 20.4).
+5. **Penalty:** each VIP contract with a piece that is not delivered pays its penalty (Section 30.1).
+6. **Report:** the arrival report shows the result (Section 20.4).
 
 - Scrap stays in the hold. Kit stays in the hold.
 - The Insurance mod pays for lost freight at the arrival (Section 27.2).
@@ -95,7 +96,7 @@ The arrival has these steps, in this order:
 
 ## 18. The Hazard Forecast
 
-- The station shows the hazard of the next jump: each shift step in order, with an arrow and a direction name.
+- The station shows the hazard of the next jump: each shift step in order, with an arrow and a direction name. An incident comes first (Section 29).
 - The hazard is fixed when the station opens. It does not change at the station.
 - The number of shift steps depends on the leg:
 
@@ -189,3 +190,25 @@ A **mod** is a permanent part of the ship. It uses no cell of the hold. The play
 | **Insurance** | At the arrival, each piece of an accepted contract that is scrap, spoiled, or lost pays half of its pay, rounded down. A breached piece does not pay. |
 
 - The hold shows the area of a mod with an area: the bottom row for Shock Floor, and the left column for Cryo Line.
+
+## 30. Special Contracts
+
+A special contract is a contract template with more fields. The contract board offers it as other contracts (Section 15.1). Its card shows a mark.
+
+### 30.1 VIP Contract
+
+- A VIP contract has a **penalty**.
+- At the arrival, when a piece of the contract is not delivered, the contract pays its penalty. A piece that is scrap, spoiled, lost, or breached is not delivered.
+- The penalty is in addition to the breach fees.
+
+### 30.2 Long Contract
+
+- A long contract has a number of jumps: 2.
+- Its freight stays in the hold at the arrival of each jump but the last. It is not delivered, and it does not pay.
+- At the arrival of the last jump, the contract is delivered as other contracts (Section 16).
+- The contract stays accepted at the stations between. The player can move its freight in the hold. Freight of the contract on the dock at the warp is breached (Section 15.4).
+- The station shows the contract with the jumps that are left.
+
+### 30.3 Large Freight
+
+- Some freight has a shape of 5 cells. It has no other rule. Its contracts pay more (content.md).

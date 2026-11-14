@@ -29,6 +29,7 @@ const CANNOT_SELL_TEXT := "You can sell only kit."
 const NOT_SCRAP_TEXT := "That cargo is not scrap."
 const NOT_ARRIVED_TEXT := "The ship has not arrived yet."
 const NOT_AT_PAYMENT_TEXT := "No payment is due now."
+const CARRIED_TEXT := "This contract is on its way. You cannot cancel it."
 const NO_EVENT_TEXT := "No event is open."
 const NO_CHOICE_TEXT := "There is no such choice."
 const NO_MOD_CHOICE_TEXT := "No mod choice is open."
@@ -95,6 +96,10 @@ var event: EventDef = null
 var events_seen: PackedStringArray = []
 ## The credits that events took off the payment of this leg (SPEC Section 26.2).
 var payment_cut: int = 0
+## The environment of the leg, or "" (SPEC Section 28).
+var environment: String = ""
+## The incident of the next jump: {kind, x, y}, or empty (SPEC Section 29).
+var incident: Dictionary = {}
 ## The IDs of the mods of the ship (SPEC Section 27).
 var mods: PackedStringArray = []
 ## The IDs of the mods of the open mod choice (SPEC Section 27.1).
@@ -132,6 +137,7 @@ func _open_station() -> void:
 	_offer_contracts()
 	_offer_kit()
 	hazard = _make_hazard()
+	incident = _make_incident()
 	say(Defs.LINE_HAZARD)
 	_start_event()
 
@@ -161,6 +167,14 @@ func warp() -> String:
 	for c in hold_cargo():
 		if c.has(Defs.TRAIT_SHIELD):
 			charges[c.id] = 1
+	# The incident comes before the first shift step (SPEC Section 29).
+	if not incident.is_empty():
+		var inc := Shift.incident(self, incident)
+		if inc["debris"] != 0:
+			for cv: Dictionary in RunView.hold_views(self):
+				if cv["id"] == inc["debris"]:
+					inc["debris_view"] = cv
+		warp_log["incident"] = inc
 	for i in hazard.size():
 		var step := Shift.step(self, hazard[i])
 		if i == hazard.size() - 1 and not fork_options.is_empty():
@@ -168,7 +182,7 @@ func warp() -> String:
 		warp_log["steps"].append(step)
 	# The total lost pay of the warp (SPEC Section 21.5).
 	warp_log["loss"] = 0
-	for step: Dictionary in warp_log["steps"]:
+	for step: Dictionary in warp_log["steps"] + [warp_log.get("incident", {"reactions": []})]:
 		for r: Dictionary in step["reactions"]:
 			warp_log["loss"] += r["loss"]
 	last_warp = warp_log
@@ -210,10 +224,63 @@ func make_payment() -> String:
 	leg += 1
 	jump = 1
 	payment_cut = 0
+	_pick_environment()
 	_open_station()
 	# A mod choice after the payment of each leg but the last (SPEC Section 27.1).
 	offer_mods()
 	return ""
+
+
+# --- Environments (SPEC Section 28) ---
+
+
+## Selects the environment of a new leg. Two legs do not have the same one
+## (SPEC Section 28.1).
+func _pick_environment() -> void:
+	var last := environment
+	environment = ""
+	if not cat.legs[leg - 1].get("environment", false):
+		return
+	var pool: Array = []
+	for id in Defs.ENVIRONMENTS:
+		if id != last and cat.environments.has(id):
+			pool.append(id)
+	if not pool.is_empty():
+		environment = pool[rng.randi_range(0, pool.size() - 1)]
+
+
+## Selects the incident of the next jump, with its place (SPEC Section 29.1). The
+## place has a cargo when the hold has one.
+func _make_incident() -> Dictionary:
+	var percent: int = cat.legs[leg - 1].get("incident_percent", 0)
+	if percent <= 0 or rng.randi_range(1, 100) > percent:
+		return {}
+	var kind: String = Defs.INCIDENTS[rng.randi_range(0, Defs.INCIDENTS.size() - 1)]
+	var cells: Array = occupancy().keys()
+	cells.sort()
+	if cells.is_empty():
+		for y in rows:
+			for x in columns:
+				cells.append(Vector2i(x, y))
+	var cell: Vector2i = cells[rng.randi_range(0, cells.size() - 1)]
+	match kind:
+		Defs.INCIDENT_METEOR:
+			return {"kind": kind, "x": cell.x}
+		Defs.INCIDENT_ION_PULSE:
+			return {"kind": kind, "y": cell.y}
+	return {"kind": kind, "x": cell.x, "y": cell.y}
+
+
+## Returns a number of the environment now, or the default (SPEC Section 28.2).
+func env_value(id: String, key: String, default: int) -> int:
+	if environment != id:
+		return default
+	return cat.environment_values.get(id, {}).get(key, default)
+
+
+## Returns the break limit of a trait in the environment now (SPEC Sections 7 and 28.2).
+func break_limit(trait_id: String) -> int:
+	return env_value(Defs.ENV_HEAT_ZONE, trait_id, cat.break_limit(trait_id))
 
 
 # --- Events and mods (SPEC Sections 26 and 27) ---
@@ -537,6 +604,8 @@ func cancel_contract(index: int) -> String:
 	var k := contracts[index]
 	if not k.accepted:
 		return NOT_ACCEPTED_TEXT
+	if k.carried():
+		return CARRIED_TEXT
 	for id in k.cargo:
 		remove_cargo(id)
 	k.accepted = false
@@ -572,7 +641,12 @@ func _offer_contracts() -> void:
 		picked = pick_n(rng, pool, n)
 		if attempt == 19 or _offer_mass(picked) * 100 >= mass_limit * cat.offer_mass_percent:
 			break
-	contracts.clear()
+	# A long contract on its way stays on the board (SPEC Section 30.2).
+	var kept: Array[Contract] = []
+	for k in contracts:
+		if k.accepted and k.carried():
+			kept.append(k)
+	contracts = kept
 	for t: ContractTemplate in picked:
 		_next_contract += 1
 		contracts.append(Contract.new(_next_contract, t))

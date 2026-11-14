@@ -16,6 +16,8 @@ var _contracts_checked := false
 var _snap_checked := false
 ## The number of warps with a loss or a chain. The checks of SPEC Section 21.5 need one.
 var _losses_seen := 0
+## The number of stations with an environment or an incident.
+var _route_seen := 0
 
 
 func _ready() -> void:
@@ -121,6 +123,7 @@ func _play_run(main: Control) -> void:
 		match run["phase"]:
 			Defs.PHASE_STATION:
 				station = main.screen()
+				_route_seen += UiCheckLoop.route_station(self, station)
 				await _play_station(state, station)
 			Defs.PHASE_ARRIVAL:
 				await _play_warp(main)
@@ -134,6 +137,7 @@ func _play_run(main: Control) -> void:
 		state.view()["run"]["phase"] == Defs.PHASE_END,
 		"the run reaches its end (SPEC Section 19.2)"
 	)
+	_check(_route_seen > 0, "the run has a leg with an environment, for SPEC Sections 28 and 29")
 	_check(mods_seen > 0, "the run has a mod choice, for the checks of SPEC Section 20.9")
 	_check(_losses_seen > 0, "the run has a warp with a loss, for the checks of SPEC Section 21.5")
 	state.abandon_run()
@@ -230,6 +234,7 @@ func _play_warp(main: Control) -> void:
 	_check(
 		hits == 0 or warp._fx.played.has("hit"), "a hit plays the spark sheet (SPEC Section 21.2)"
 	)
+	UiCheckLoop.route_warp(self, warp)
 	if UiCheckLoop.losses(self, warp):
 		_losses_seen += 1
 	_check_report(warp)
@@ -383,6 +388,14 @@ func _check_overlays(main: Control) -> void:
 	_check(not get_tree().paused, "Resume ends the pause (SPEC Section 20.7)")
 
 
+## Returns the number of cards of the hazard panel: the environment, the incident,
+## and each step (SPEC Sections 20.2, 28.1, and 29.3).
+static func _route_cards(run: Dictionary) -> int:
+	var n: int = run["hazard"].size()
+	n += 0 if run["environment"].is_empty() else 1
+	return n + (0 if run["incident"].is_empty() else 1)
+
+
 ## The hold fills the center, and the hazard panel is above it (SPEC Section 20.2).
 ## The text has four sizes (SPEC Section 4.2).
 func _check_layout(station: StationScreen) -> void:
@@ -410,8 +423,8 @@ func _check_layout(station: StationScreen) -> void:
 	var panel := station._hazard_box.get_global_rect()
 	var top := hold.global_position.y + grid.position.y
 	_check(
-		station._hazard_box.get_child_count() == GameState.view()["run"]["hazard"].size(),
-		"the hazard panel has one card for each step (SPEC Section 20.2)"
+		station._hazard_box.get_child_count() == _route_cards(GameState.view()["run"]),
+		"the hazard panel has one card for each step (SPEC Sections 20.2 and 29.3)"
 	)
 	var left := hold.global_position.x + grid.position.x
 	var cards := station._hazard_box.get_children()

@@ -339,6 +339,9 @@ func refresh() -> void:
 ## Shows a tag for each mod of the ship. The mouse on it shows the rule (SPEC Section 20.2).
 func _show_mods() -> void:
 	_clear(_mods_box)
+	# The environment of the leg comes first (SPEC Section 28.1).
+	if not _run.get("environment", {}).is_empty():
+		RouteCards.env_tag(_mods_box, _run["environment"])
 	for m: Dictionary in _run.get("mods", []):
 		var tag := PanelContainer.new()
 		tag.mouse_filter = Control.MOUSE_FILTER_STOP
@@ -418,6 +421,11 @@ func _show_mass() -> void:
 ## that happens when a Sensor is in the hold (SPEC Section 18).
 func _refresh_hazard() -> void:
 	_clear(_hazard_box)
+	# The environment and the incident come before the shift steps (SPEC Sections 28.1 and 29.3).
+	if not _run.get("environment", {}).is_empty():
+		RouteCards.env_tag(_hazard_box, _run["environment"])
+	if not _run.get("incident", {}).is_empty():
+		RouteCards.incident_card(_hazard_box, _run["incident"])
 	var i := 0
 	for step: Dictionary in _run["hazard"]:
 		var index := i

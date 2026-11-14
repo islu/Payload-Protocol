@@ -91,7 +91,10 @@ static func choose(ui: Node, main: Control) -> void:
 		var station: StationScreen = main.screen()
 		station.refresh()
 		ui._check(
-			station._mods_box.get_child_count() == run["mods"].size(),
+			(
+				station._mods_box.get_child_count()
+				== run["mods"].size() + (0 if run["environment"].is_empty() else 1)
+			),
 			"the top bar has a tag for each mod (SPEC Section 20.2)"
 		)
 		ui._check(
@@ -100,3 +103,37 @@ static func choose(ui: Node, main: Control) -> void:
 		)
 	if run["mods"].size() > mods:
 		ui.mods_seen += 1
+
+
+## The station shows the environment and the incident, and the hold marks the place
+## of the incident (SPEC Sections 28.1 and 29.3). Returns 1 when the station had one.
+static func route_station(ui: Node, station: StationScreen) -> int:
+	var run: Dictionary = GameState.view()["run"]
+	var seen := 0
+	if not run["environment"].is_empty():
+		seen = 1
+		var tag := station._mods_box.get_node_or_null("Environment")
+		ui._check(tag != null, "the top bar shows the environment of the leg (SPEC Section 28.1)")
+		ui._check(
+			station._hazard_box.get_child(0).name == "Environment",
+			"the hazard panel shows the environment first (SPEC Section 28.1)"
+		)
+	if not run["incident"].is_empty():
+		seen = 1
+		var card := station._hazard_box.get_node_or_null("Incident")
+		ui._check(card != null, "the hazard panel shows the incident (SPEC Section 29.3)")
+		ui._check(
+			station._hold.incident_cells == run["incident"]["cells"],
+			"the hold marks the place of the incident (SPEC Section 29.3)"
+		)
+	return seen
+
+
+## The warp plays the incident before the first step (SPEC Section 29.3).
+static func route_warp(ui: Node, warp: WarpScreen) -> void:
+	var inc: Dictionary = GameState.view()["run"]["warp"].get("incident", {})
+	if not inc.is_empty():
+		ui._check(
+			warp.incident_shown == RouteCards.incident_text(inc),
+			"the warp shows the incident in a banner (SPEC Section 29.3)"
+		)

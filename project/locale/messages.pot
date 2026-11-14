@@ -96,6 +96,10 @@ msgid "No payment is due now."
 msgstr ""
 
 #: project/rules/run.gd
+msgid "This contract is on its way. You cannot cancel it."
+msgstr ""
+
+#: project/rules/run.gd
 msgid "No event is open."
 msgstr ""
 
@@ -382,6 +386,18 @@ msgstr ""
 msgid "Bonus +{pay}: {text}"
 msgstr ""
 
+#: project/scenes/station/contract_card.gd
+msgid "VIP · Penalty {penalty} if a piece is not delivered"
+msgstr ""
+
+#: project/scenes/station/contract_card.gd
+msgid "Long · Delivered after {jumps} jumps"
+msgstr ""
+
+#: project/scenes/station/contract_card.gd
+msgid "On its way · {jumps} jump(s) left"
+msgstr ""
+
 #: project/scenes/station/hints.gd
 msgid "Accept a contract on the left. Its freight goes to the dock."
 msgstr ""
@@ -400,6 +416,18 @@ msgstr ""
 
 #: project/scenes/station/hints.gd
 msgid "When the hold is ready, press WARP."
+msgstr ""
+
+#: project/scenes/station/route_cards.gd
+msgid "Meteor · Column {x}"
+msgstr ""
+
+#: project/scenes/station/route_cards.gd
+msgid "Ion Pulse · Row {y}"
+msgstr ""
+
+#: project/scenes/station/route_cards.gd
+msgid "Hull Breach · Column {x}, Row {y}"
 msgstr ""
 
 #: project/scenes/station/shop_panel.gd
@@ -601,6 +629,10 @@ msgid "Breach -{breach}"
 msgstr ""
 
 #: project/scenes/warp/report_panel.gd
+msgid "Penalty -{penalty}"
+msgstr ""
+
+#: project/scenes/warp/report_panel.gd
 msgid "delivered"
 msgstr ""
 
@@ -635,6 +667,10 @@ msgstr ""
 
 #: project/scenes/warp/report_panel.gd
 msgid "Breach fees"
+msgstr ""
+
+#: project/scenes/warp/report_panel.gd
+msgid "Penalties"
 msgstr ""
 
 #: project/scenes/warp/report_panel.gd
@@ -679,6 +715,10 @@ msgstr ""
 
 #: project/data/cargo/ammo_crate.json
 msgid "Ammo Crate"
+msgstr ""
+
+#: project/data/cargo/ancient_statue.json
+msgid "Ancient Statue"
 msgstr ""
 
 #: project/data/cargo/antique_phone.json
@@ -829,6 +869,10 @@ msgstr ""
 msgid "Shield Generator"
 msgstr ""
 
+#: project/data/cargo/ship_engine.json
+msgid "Ship Engine"
+msgstr ""
+
 #: project/data/cargo/space_cheese.json
 msgid "Space Cheese"
 msgstr ""
@@ -860,6 +904,7 @@ msgstr ""
 
 #: project/data/contracts/antique_tech.json
 #: project/data/contracts/earth_curios.json
+#: project/data/contracts/statue_loan.json
 msgid "Earth Heritage Museum"
 msgstr ""
 
@@ -909,6 +954,10 @@ msgstr ""
 msgid "Swift Courier"
 msgstr ""
 
+#: project/data/contracts/engine_order.json
+msgid "Shipyard Seven"
+msgstr ""
+
 #: project/data/contracts/fine_glass.json
 #: project/data/contracts/gallery.json
 msgid "Luma Gallery"
@@ -931,6 +980,14 @@ msgstr ""
 #: project/data/contracts/hydrants.json
 #: project/data/contracts/parking_meters.json
 msgid "Old Town Collectors"
+msgstr ""
+
+#: project/data/contracts/long_colony.json
+msgid "Far Colony"
+msgstr ""
+
+#: project/data/contracts/long_mine.json
+msgid "Deep Core Mine"
 msgstr ""
 
 #: project/data/contracts/mail_run.json
@@ -977,6 +1034,46 @@ msgstr ""
 
 #: project/data/contracts/sculpture.json
 msgid "Museum of Nowhere"
+msgstr ""
+
+#: project/data/contracts/vip_clinic.json
+msgid "Orbital Clinic"
+msgstr ""
+
+#: project/data/contracts/vip_embassy.json
+msgid "Embassy Courier"
+msgstr ""
+
+#: project/data/environments/heat_zone.json
+msgid "Heat Zone"
+msgstr ""
+
+#: project/data/environments/heat_zone.json
+msgid "Volatile cargo explodes at a force of 2. Fluid cargo leaks at a force of 1."
+msgstr ""
+
+#: project/data/environments/low_gravity.json
+msgid "Low Gravity"
+msgstr ""
+
+#: project/data/environments/low_gravity.json
+msgid "Each cargo slides 2 cells at most in each shift step."
+msgstr ""
+
+#: project/data/environments/magnetic_storm.json
+msgid "Magnetic Storm"
+msgstr ""
+
+#: project/data/environments/magnetic_storm.json
+msgid "No Shield has power. Array Power does not help."
+msgstr ""
+
+#: project/data/environments/radiation_belt.json
+msgid "Radiation Belt"
+msgstr ""
+
+#: project/data/environments/radiation_belt.json
+msgid "An Electronic cargo shorts at a hit with a force of 2 or more."
 msgstr ""
 
 #: project/data/events/company_audit.json

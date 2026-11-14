@@ -5,6 +5,9 @@
  "ammo_crate": {
   "source": "sorted/space/space-ammo-crate-military-green-box_20260217_053740.png"
  },
+ "ancient_statue": {
+  "source": "sorted/ancient-egypt/sphinx-statue-stone-desert-guardian-large_20260218_104502.png"
+ },
  "antique_phone": {
   "source": "sorted/modern-city/modern-smartphone-mobile-device-screen_20260217_075445.png"
  },
@@ -126,6 +129,10 @@
  },
  "shield_generator": {
   "source": "sorted/scifi-objects/shield-generator-small-disc-blue-glow_20260225_033352.png"
+ },
+ "ship_engine": {
+  "source": "sorted/scifi-interior/scifi-engine-thruster-large-nozzle-exhaust_20260217_142041.png",
+  "scale": "fit"
  },
  "space_cheese": {
   "source": "sorted/food-cooking/ingredient-cheese-block-yellow-holes_20260217_095150.png"
