@@ -56,6 +56,27 @@ This file keeps each problem that is found and not fixed yet. Each item is in on
 
 ## To Do
 
+- **[Refactor · Rules] The numbers of the mods are in the code** (found 2026-11-16, by /simplify). `Shift` and `Arrival` have the values of the mods: Padded Walls -1, Shock Floor -1, the range 2 of Array Power and Cryo Line, and the insurance share 1/2. `data/mods/*.json` has only the name and the text, so the text repeats the numbers by hand. CLAUDE.md says: do not hard-code balance values.
+  To do                 Fix: give each mod JSON its values (`range`, `force_delta`, `insurance_share`). Read them in one pass that applies the active mods, not in branches on the mod ID.
+
+- **[Refactor · Rules] One function for the force of a hit** (found 2026-11-16, by /simplify). `Shift` calculates the force of a hit at four places (a wall, a cargo, a jolt, a meteor), and it builds the hit dictionary four times. The Cushion rule is a little different at each place.
+  To do                 Fix: one `hit_force(run, c, raw, ctx)` that applies each modifier, and one builder for the hit of the log. The tests of Sections 10 to 12 must pass with no change.
+
+- **[Refactor · Rules] Actions as data** (found 2026-11-16, by /simplify). Each action is in `Run`, in `GameState`, and in the commands of `play.gd`. `RunRecord` keeps Callables, so a record cannot be saved. An undo plays the whole run again from the seed.
+  To do                 Fix: an action is `{name, args}` with one `Run.do()`. Keep a checkpoint at the station start, so that an undo plays only the actions of the station. Hints can then listen to the actions.
+
+- **[Refactor · Scenes] The values that scenes still calculate** (found 2026-11-16, by /simplify). The station disables Warp with `hold > max` (`station_screen.gd`, `top_bar.gd`). `ShopPanel` caps the clamps and decides "too expensive". `StationScreen` and `StationDrag` choose between sell and clear by the kind. The mass state is the literal "ok", "fee", or "over". `WarpScreen._to_scrap` and `_play_reaction` decide which reaction removes a cargo.
+  To do                 Fix: add `can_warp`, a list of services with `can_buy`, the sell action of each cargo, `Defs.MASS_*` constants, and the result of each reaction to the view and the log.
+
+- **[Refactor · Scenes] Private members as an API** (found 2026-11-16, by /simplify). `StationDrag`, `ShopPanel`, and `ContractCard` call about 60 private members of `StationScreen` (`_act`, `_hold`, `_run`, `_show_sell`, ...). The UI checks read about 140 private members. `shots.gd` changes `GameState._record.run` directly.
+  To do                 Fix: give `StationScreen` a small public interface, as `TopBar` has. Add a test seam to `GameState` that sets up a scenario through the record.
+
+- **[Refactor · Scenes] The station builds all of its lists again after each action** (found 2026-11-16, by /simplify). Each `state_changed` frees and makes again the hazard, the dock, the contract cards, the shop, the services, and the mod bar: about 200 Controls. A cargo move changes only some of them. Also, `Settings.set_value` saves the file and sets the locale again at each tick of a volume slider.
+  To do                 Fix: keep the last view part of each section, and build a section again only when it changes. Apply and save only the setting that changed, and save a slider at the end of its drag.
+
+- **[Cleanup · Tests] Duplicated helpers in the tests and the tools** (found 2026-11-16, by /simplify). The tests repeat "skip the event, set the hazard, warp" (5 places), "place in the first free cell" (4 places), and "the global position of a cell" (4 places). `RuleTest.shift()` copies the Shield charge reset of `Run.warp()`. Each rule test builds the fixture catalog again. `ui_check` waits 3.7 s of real time for the pilot line and the hold move. `glyphs.py` repeats the file walker of `i18n.py`. `import_art.py` repeats its image load and its prune steps.
+  To do                 Fix: add `RuleTest.skip_event()`, `first_free()`, and `HoldView.cell_global()`. Extract `Run._prepare_jump()`. Finish the tweens in the UI check instead of a wait. Share the walker and the image steps of the tools.
+
 - **[Balance · Data] The offer rate of the new contracts** (found 2026-11-14, by /playtest seed 22). The 3 personas saw 27 stations, and only `greenhouse` was offered (once). `prosthetics` and `warp_core` were not offered. The pay of `prosthetics` (now 4 each) and `greenhouse` (now 13 each) changed from the data, not from play. `warp_core` (24 + 10) pays 5.7 for each point of mass, more than the leg 3 median 4.7, but a wall jolt explodes it.
   To do                 Fix: count the offers of each contract over many seeds, and play the 3 contracts in a playtest.
 

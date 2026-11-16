@@ -81,7 +81,7 @@ project/tests/        # run_tests.gd, TestCase, the rule tests in tests/rules/te
 project/tools/        # play.gd, the text player
 project/locale/       # messages.pot (made by task i18n) and the .po file for each language
 project/audio/sfx/    # The sounds. tools/sfx/make_sfx.py makes the placeholders.
-tools/                # i18n/ (i18n.py, glyphs.py: each character is in the font), sfx/make_sfx.py, fmt_json/fmt_json.py (Python through uv), fx/ (Node: make_fx.mjs, fx.json, effects/), art/ (import_art.py, cargo_art.json, speaker_art.json)
+tools/                # godot_check.sh (runs Godot headless and fails on a script error), i18n/ (i18n.py, glyphs.py: each character is in the font), sfx/make_sfx.py, fmt_json/fmt_json.py (Python through uv), fx/ (Node: make_fx.mjs, fx.json, effects/), art/ (import_art.py, cargo_art.json, speaker_art.json)
 project/art/          # Font, theme, fx/ (the effect sheets of task fx), cargo/ and speakers/ (the cargo images and the portraits of task art)
 docs/                 # spec.md (index) and spec/ (the spec by topic), content.md, BACKLOG.md, assets.md
 docs/notes/           # Notes that are not in git (the first draft)

@@ -53,7 +53,7 @@ static func draw(
 		canvas.draw_rect(badge, Color(Palette.BACKGROUND, 0.75 * alpha))
 	var x := top_left.x + gap + 6 + icon / 2
 	for t: String in traits:
-		var mark_color: Color = Palette.TRAIT_COLORS.get(t, Palette.TEXT)
+		var mark_color: Color = Palette.trait_color(t)
 		mark_color.a *= alpha
 		draw_icon(canvas, t, Vector2(x, top_left.y + gap + 6 + icon / 2), icon, mark_color)
 		x += icon + 4

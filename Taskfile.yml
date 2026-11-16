@@ -8,6 +8,8 @@ vars:
   # pixelfx (MIT) makes the effect sheets. Change the commit on purpose only, then run task fx.
   PIXELFX_URL: https://github.com/patch-gg/pixelfx
   PIXELFX_COMMIT: 5294518ce7c72e48b6100a744596e0acf57f2826
+  # Runs Godot headless and fails on a script error (tools/godot_check.sh).
+  GODOT_CHECK: GODOT={{.GODOT}} sh tools/godot_check.sh
 
 tasks:
   default:
@@ -16,6 +18,8 @@ tasks:
 
   import:
     desc: Let Godot import the project (headless). Run once after a clone, and after you add a class_name.
+    # task check runs test, test:ui, and smoke: they need one import only.
+    run: once
     cmds:
       - "{{.GODOT}} --headless --path {{.PROJECT_PATH}} --import"
 
@@ -34,27 +38,14 @@ tasks:
     desc: "Run the rule tests (tests/rules). Filter by file: task test -- slide"
     deps: [import]
     cmds:
-      # Godot exits with 0 after a script error in some cases, so fail on the error text too.
-      - |
-        out=$({{.GODOT}} --headless --path {{.PROJECT_PATH}} -s res://tests/run_tests.gd -- {{.CLI_ARGS}} 2>&1) && status=0 || status=$?
-        echo "$out" | grep -v -e '^Godot Engine' -e '^$'
-        if [ $status -ne 0 ]; then exit $status; fi
-        if echo "$out" | grep -q -e "SCRIPT ERROR" -e "Parse Error"; then exit 1; fi
+      - "{{.GODOT_CHECK}} 300 '' --path {{.PROJECT_PATH}} -s res://tests/run_tests.gd -- {{.CLI_ARGS}}"
 
   test:ui:
     desc: Play a full run through the screens, headless. Fails on a SCRIPT ERROR.
     deps: [import]
     cmds:
-      - |
-        # timeout stops a run that hangs, for example when the script does not load:
-        # then nothing calls quit(). A normal run takes a few seconds.
-        out=$(timeout 120 {{.GODOT}} --headless --path {{.PROJECT_PATH}} res://tests/ui_check.tscn 2>&1) && status=0 || status=$?
-        if [ $status -eq 124 ]; then echo "$out" | tail -20; echo "ui_check: stopped after 120 seconds"; exit 1; fi
-        echo "$out" | grep -v -e '^Godot Engine' -e '^$'
-        if [ $status -ne 0 ]; then exit $status; fi
-        if echo "$out" | grep -q -e "SCRIPT ERROR" -e "Parse Error" -e "ERROR:"; then exit 1; fi
-        # A run that did not reach its end has no result line.
-        if ! echo "$out" | grep -q "ui_check: passed"; then echo "ui_check: no result"; exit 1; fi
+      # A run that did not reach its end has no result line.
+      - "{{.GODOT_CHECK}} 120 'ui_check: passed' --path {{.PROJECT_PATH}} res://tests/ui_check.tscn"
 
   play:
     desc: "The text player of the playtest skill. Run it with no command for the commands: task play -- help"
@@ -65,10 +56,7 @@ tasks:
     desc: Run the game headless for a few frames. Fails on a SCRIPT ERROR.
     deps: [import]
     cmds:
-      - |
-        out=$({{.GODOT}} --headless --path {{.PROJECT_PATH}} --quit-after 5 2>&1)
-        echo "$out"
-        if echo "$out" | grep -q -e "SCRIPT ERROR" -e "Parse Error" -e "ERROR:"; then exit 1; fi
+      - "{{.GODOT_CHECK}} 60 '' --path {{.PROJECT_PATH}} --quit-after 5"
 
   shots:
     desc: Take screenshots of each screen into shots/ (not in git). It opens a window. Delete them after the review.

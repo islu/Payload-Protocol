@@ -61,10 +61,14 @@ var hover_mod := ""
 var incident_cells: Array = []
 
 var _hover := -1
+## The links pulse: only this layer redraws each frame, not the whole hold.
+var _link_layer: LinkLayer
 
 
 func _init() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
+	_link_layer = LinkLayer.new(self)
+	add_child(_link_layer)
 
 
 func set_view(run: Dictionary) -> void:
@@ -92,8 +96,8 @@ func set_view(run: Dictionary) -> void:
 		front_walls = PackedStringArray([run.get("front_wall", "")])
 		show_jolts = true
 		custom_minimum_size = Vector2(columns + MARGIN, rows + MARGIN) * CELL
-	_fit()
 	queue_redraw()
+	_link_layer.queue_redraw()
 
 
 ## Reports whether a cargo view is in the area of this view: the hold or the shock bay.
@@ -105,11 +109,6 @@ func _mine(c: Dictionary) -> bool:
 func show_front_walls(walls: PackedStringArray, jolts: bool) -> void:
 	front_walls = walls
 	show_jolts = jolts
-	queue_redraw()
-
-
-## The grid stays centered when the view changes size.
-func _fit() -> void:
 	queue_redraw()
 
 
@@ -193,11 +192,8 @@ func is_over(global_pos: Vector2) -> bool:
 ## Returns the ID of the cargo in a cell, or -1.
 func cargo_at(at: Vector2i) -> int:
 	for c: Dictionary in cargo:
-		if not _mine(c):
-			continue
-		for s: Dictionary in c["shape"]:
-			if Vector2i(c["x"] + s["x"], c["y"] + s["y"]) == at:
-				return c["id"]
+		if _mine(c) and at in _cells_of(c):
+			return c["id"]
 	return -1
 
 
@@ -221,8 +217,9 @@ func _gui_input(event: InputEvent) -> void:
 
 
 func _notification(what: int) -> void:
+	# The grid stays centered when the view changes size.
 	if what == NOTIFICATION_RESIZED:
-		_fit()
+		queue_redraw()
 	if what == NOTIFICATION_MOUSE_EXIT:
 		set_hover(-1)
 
@@ -280,42 +277,28 @@ func _draw() -> void:
 	for id: int in marked:
 		var c := _cargo(id)
 		if _mine(c):
-			for s: Dictionary in c["shape"]:
-				draw_rect(
-					(
-						Rect2(
-							o + Vector2(c["x"] + s["x"], c["y"] + s["y"]) * cell,
-							Vector2(cell, cell)
-						)
-						. grow(-3)
-					),
-					Palette.ACCENT,
-					false,
-					3.0
-				)
+			for p in _cells_of(c):
+				var r := Rect2(o + Vector2(p) * cell, Vector2(cell, cell)).grow(-3)
+				draw_rect(r, Palette.ACCENT, false, 3.0)
 	# The cargo under the mouse: a bright frame on its cells (SPEC Section 4.2).
 	_draw_outline(o, frame_cells(), Palette.ACCENT)
 	for wall in front_walls:
 		_draw_front_wall(o, wall)
-	_draw_links(o)
 	if not preview.is_empty():
 		_draw_preview(o)
 
 
-func _draw_links(o: Vector2) -> void:
+## Draws the links between the cargo on a canvas, with a pulse (SPEC Section 12.3).
+func _draw_links(canvas: CanvasItem, o: Vector2) -> void:
 	var t := Time.get_ticks_msec() / 1000.0
 	for l: Dictionary in links:
 		var a := _cargo(l["from"])
 		var b := _cargo(l["to"])
 		if a.is_empty() or b.is_empty():
 			continue
-		var color: Color = (
-			Palette.TRAIT_COLORS["cooler"]
-			if l["kind"] == Defs.LINK_COLD
-			else Palette.TRAIT_COLORS["battery"]
-		)
+		var color := Palette.link_color(l["kind"])
 		color.a = 0.6 + 0.3 * sin(t * 3.0)
-		draw_line(o + _center(a), o + _center(b), color, 3.0)
+		canvas.draw_line(o + _center(a), o + _center(b), color, 3.0)
 
 
 ## Draws an outline around a group of cells.
@@ -372,11 +355,7 @@ func _draw_preview_links(o: Vector2) -> void:
 		var other := _cargo(other_id)
 		if other.is_empty():
 			continue
-		var color: Color = (
-			Palette.TRAIT_COLORS["cooler"]
-			if l["kind"] == Defs.LINK_COLD
-			else Palette.TRAIT_COLORS["battery"]
-		)
+		var color := Palette.link_color(l["kind"])
 		draw_dashed_line(o + at, o + _center(other), color, 3.0, 10.0)
 
 
@@ -412,7 +391,7 @@ func _draw_frame(o: Vector2) -> void:
 ## Draws the frame of the shock bay: soft padding with seams, and the coupling to
 ## the hold below it (SPEC Section 31.2).
 func _draw_bay_frame(grid: Rect2, outer: Rect2) -> void:
-	var pad: Color = Palette.TRAIT_COLORS.get("cushion", Palette.ACCENT)
+	var pad: Color = Palette.TRAIT_COLORS[Defs.TRAIT_CUSHION]
 	var bottom := outer.end.y
 	for side in [-1.0, 1.0]:
 		var x: float = grid.get_center().x + side * cell * 0.25
@@ -517,11 +496,29 @@ func _draw_warning(top_left: Vector2) -> void:
 
 
 func _process(_delta: float) -> void:
-	if not links.is_empty() or not offsets.is_empty():
+	if not offsets.is_empty():
 		queue_redraw()
+		_link_layer.queue_redraw()
+	elif not links.is_empty():
+		_link_layer.queue_redraw()
 
 
 ## Returns the center of a cargo in local coordinates, with its offset.
 func cargo_center(c: Dictionary) -> Vector2:
 	var off: Vector2 = offsets.get(c["id"], Vector2.ZERO)
 	return grid_origin() + _center(c) + off * cell
+
+
+## The layer of the links on top of the hold. It redraws alone each frame while a
+## link pulses.
+class LinkLayer:
+	extends Control
+	var hold: HoldView
+
+	func _init(view: HoldView) -> void:
+		hold = view
+		mouse_filter = Control.MOUSE_FILTER_IGNORE
+		set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+
+	func _draw() -> void:
+		hold._draw_links(self, hold.grid_origin())

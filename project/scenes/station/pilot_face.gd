@@ -9,6 +9,8 @@ const SHEETS: PackedStringArray = ["pilot_idle", "pilot_talk"]
 ## True while a line types out: the mouth moves.
 var talking := false
 var _t := 0.0
+## The talking state and the frame that the portrait shows now.
+var _frame: Array = []
 
 
 func _init() -> void:
@@ -24,7 +26,12 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	_t += delta
-	queue_redraw()
+	# Redraw only when the frame of the sheet changes.
+	var s := FxSheets.sheet(SHEETS[1] if talking else SHEETS[0])
+	var frame := [talking, int(_t * s["fps"]) % int(s["frames"])] if not s.is_empty() else []
+	if frame != _frame:
+		_frame = frame
+		queue_redraw()
 
 
 func _draw() -> void:

@@ -32,7 +32,7 @@ func _init() -> void:
 
 func refresh() -> void:
 	var run: Dictionary = screen._run
-	StationScreen._clear(self)
+	Ui.clear(self)
 	var s: Dictionary = run["shop"]
 	offer_cards.clear()
 	if show_services:
@@ -50,8 +50,8 @@ func refresh() -> void:
 
 func _build_services(s: Dictionary) -> void:
 	# Each service shows the value now and after the purchase (SPEC Section 20.2).
-	screen._label(self, SERVICES_TEXT, TextSize.HEADING, Palette.ACCENT)
-	var box := screen._panel(self)
+	Ui.label(self, SERVICES_TEXT, TextSize.HEADING, Palette.ACCENT)
+	var box := Ui.panel(self)
 	var list := VBoxContainer.new()
 	list.add_theme_constant_override("separation", 6)
 	box.add_child(list)
@@ -100,7 +100,7 @@ func _bay_size(size: Dictionary) -> String:
 
 ## A kit offer: its image, its traits with their rules, how it helps, and Buy (SPEC Section 20.2).
 func _offer_card(o: Dictionary) -> void:
-	var card := screen._panel(self)
+	var card := Ui.panel(self)
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 12)
 	card.add_child(row)
@@ -114,7 +114,7 @@ func _offer_card(o: Dictionary) -> void:
 	info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.add_child(info)
 	var text := PackedStringArray()
-	var title := screen._label(info, "", TextSize.BODY)
+	var title := Ui.label(info, "", TextSize.BODY)
 	title.text = tr(o["name"])
 	text.append(title.text)
 	for t: String in o["traits"]:
@@ -125,13 +125,13 @@ func _offer_card(o: Dictionary) -> void:
 		line.add_theme_constant_override("separation", 6)
 		info.add_child(line)
 		line.add_child(trait_icon(t))
-		var rule := screen._label(line, "", TextSize.SMALL, Palette.TEXT_DIM)
+		var rule := Ui.label(line, "", TextSize.SMALL, Palette.TEXT_DIM)
 		rule.text = rule_text
 		rule.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		rule.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		text.append(rule.text)
 	if not o["helps"].is_empty():
-		var helps := screen._label(info, "", TextSize.SMALL, Palette.GOOD)
+		var helps := Ui.label(info, "", TextSize.SMALL, Palette.GOOD)
 		helps.text = GameText.format(o["helps"])
 		text.append(helps.text)
 	var buy: Button
@@ -165,7 +165,7 @@ func _service_row(parent: Control, key: String, text: String) -> HBoxContainer:
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 8)
 	parent.add_child(row)
-	var l := screen._label(row, "", TextSize.BODY)
+	var l := Ui.label(row, "", TextSize.BODY)
 	l.text = text
 	l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	service_texts[key] = text
@@ -177,6 +177,6 @@ static func trait_icon(trait_id: String) -> Control:
 	var c := Control.new()
 	c.custom_minimum_size = Vector2(18, 18)
 	c.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
-	var color: Color = Palette.TRAIT_COLORS.get(trait_id, Palette.TEXT)
+	var color: Color = Palette.trait_color(trait_id)
 	c.draw.connect(func() -> void: CargoDraw.draw_icon(c, trait_id, Vector2(9, 9), 16.0, color))
 	return c

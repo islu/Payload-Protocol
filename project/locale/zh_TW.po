@@ -623,7 +623,6 @@ msgid "Drag cargo, or click to pick it up and click to drop it. Right click or R
 msgstr "拖曳貨物，或點一下拿起、再點一下放下。右鍵或 R 旋轉。"
 
 #: project/scenes/station/station_screen.gd
-#: project/scenes/warp/warp_screen.gd
 msgid "or"
 msgstr "或"
 

@@ -9,11 +9,9 @@ signal playback_finished
 
 const STEP_TEXT := "Shift {n}: {arrow} {direction}"
 const FORK_TEXT := "Shift {n}: {options} ...?"
-const OR_TEXT := "or"
 const SKIP_TEXT := "Click or press Space to speed up."
 const CHAIN_TEXT := "Chain ×{count}"
 const LOST_TEXT := "Lost -{loss}"
-const ARROWS := {Defs.DIR_LEFT: "←", Defs.DIR_RIGHT: "→", Defs.DIR_UP: "↑", Defs.DIR_DOWN: "↓"}
 ## The space between the hold and the report, in pixels.
 const REPORT_GAP := 40.0
 ## The cells that a slide moves in each second (SPEC Section 21.1).
@@ -207,18 +205,24 @@ func _sorted_ids() -> Array:
 
 func _play_step(n: int, step: Dictionary, run: Dictionary) -> void:
 	var d: String = step["direction"]
-	var name: String = _view["names"]["directions"].get(d, d)
 	_banner.modulate.a = 1.0
 	if step.has("options"):
 		# A fork step: show the two directions, then the one that happens (SPEC Section 20.3).
 		var names := PackedStringArray()
 		for o: String in step["options"]:
 			names.append(StationScreen.direction_text(o, _view))
-		_banner.text = tr(FORK_TEXT).format({"n": n, "options": (" %s " % tr(OR_TEXT)).join(names)})
+		_banner.text = tr(FORK_TEXT).format({"n": n, "options": StationScreen.or_join(names)})
 		Sound.play(self, "alarm")
 		await _wait(0.9)
-	_banner.text = tr(STEP_TEXT).format(
-		{"n": n, "arrow": ARROWS.get(d, "?"), "direction": tr(name)}
+	_banner.text = (
+		tr(STEP_TEXT)
+		. format(
+			{
+				"n": n,
+				"arrow": StationScreen.ARROWS.get(d, "?"),
+				"direction": StationScreen.direction_name(d, _view),
+			}
+		)
 	)
 	Sound.play(self, "alarm")
 	await _wait(0.6)
@@ -412,7 +416,6 @@ func _remove(id: int) -> void:
 func _to_scrap(c: Dictionary) -> void:
 	c["kind"] = Defs.KIND_SCRAP
 	c["traits"] = []
-	c["clamped"] = c.get("clamped", false)
 
 
 ## Plays the spoils of the arrival: a green cloud on each spoiled cargo (SPEC Section 21.3).

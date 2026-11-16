@@ -596,7 +596,6 @@ msgid "Drag cargo, or click to pick it up and click to drop it. Right click or R
 msgstr ""
 
 #: project/scenes/station/station_screen.gd
-#: project/scenes/warp/warp_screen.gd
 msgid "or"
 msgstr ""
 

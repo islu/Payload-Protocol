@@ -196,8 +196,9 @@ static func view(run: Run) -> Dictionary:
 		var cv := _cargo(run, c, bay if c.in_bay else hold, powered)
 		cv["jolt_risk"] = risky.has(id)
 		v["cargo"].append(cv)
+	var carried := _carried_mass(run)
 	for i in run.contracts.size():
-		v["contracts"].append(_contract(run, i, run.contracts[i]))
+		v["contracts"].append(_contract(run, i, run.contracts[i], carried))
 	var offers := []
 	for i in run.shop.size():
 		var d: CargoDef = run.shop[i]["def"]
@@ -378,7 +379,7 @@ static func preview_links(run: Run, id: int, pos: Vector2i, rot: int, to_bay := 
 
 ## Adds the values of a contract card to its view: the freight groups, the totals,
 ## the mass after it is accepted, and the loaded pieces (SPEC Section 20.2).
-static func _contract_card(run: Run, k: Contract, kv: Dictionary) -> void:
+static func _contract_card(run: Run, k: Contract, kv: Dictionary, carried: int) -> void:
 	var groups := []
 	var by_id := {}
 	var mass := 0
@@ -391,16 +392,12 @@ static func _contract_card(run: Run, k: Contract, kv: Dictionary) -> void:
 		g["count"] = 1
 		by_id[f["def_id"]] = g
 		groups.append(g)
-	var carried := 0
-	for c in run.ship_cargo():
-		carried += run.cargo_mass(c)
-	for id in run.dock:
-		carried += run.cargo_mass(run.cargo[id])
 	var after := carried + mass
 	var loaded := 0
-	for c in run.ship_cargo():
-		if k.accepted and c.contract == k.id:
-			loaded += 1
+	if k.accepted:
+		for c in run.ship_cargo():
+			if c.contract == k.id:
+				loaded += 1
 	kv["groups"] = groups
 	kv["pieces"] = kv["freight"].size()
 	kv["total_pay"] = k.template.pay * kv["freight"].size()
@@ -412,7 +409,18 @@ static func _contract_card(run: Run, k: Contract, kv: Dictionary) -> void:
 	kv["loaded"] = loaded
 
 
-static func _contract(run: Run, i: int, k: Contract) -> Dictionary:
+## The mass of the cargo in the ship and on the dock: a contract adds to it when the
+## player accepts it (SPEC Section 20.2).
+static func _carried_mass(run: Run) -> int:
+	var carried := 0
+	for c in run.ship_cargo():
+		carried += run.cargo_mass(c)
+	for id in run.dock:
+		carried += run.cargo_mass(run.cargo[id])
+	return carried
+
+
+static func _contract(run: Run, i: int, k: Contract, carried: int) -> Dictionary:
 	var t := k.template
 	var freight := []
 	for id in t.freight:
@@ -443,7 +451,7 @@ static func _contract(run: Run, i: int, k: Contract) -> Dictionary:
 		"jumps_left": k.jumps_left,
 		"carried": k.carried(),
 	}
-	_contract_card(run, k, kv)
+	_contract_card(run, k, kv, carried)
 	if t.has_bonus():
 		var b := t.bonus
 		var key := run.cat.term_text("bonuses", b["type"])

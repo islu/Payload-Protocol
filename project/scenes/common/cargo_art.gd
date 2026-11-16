@@ -29,11 +29,8 @@ static func turns(def_id: String, shape: Array) -> int:
 	var a := _art(def_id)
 	if a.is_empty():
 		return -1
-	var want := _cells(shape)
-	for q in 4:
-		if _cells(Shapes.to_view(Shapes.rotate(a["shape"], q))) == want:
-			return q
-	return 0
+	var q: int = a["turned"].find(_cells(shape))
+	return maxi(q, 0)
 
 
 ## Draws the image of a cargo over the box of its shape. origin is the upper left
@@ -72,10 +69,15 @@ static func _art(def_id: String) -> Dictionary:
 			var shape: Array[Vector2i] = []
 			for c: Array in data["shape"]:
 				shape.append(Vector2i(int(c[0]), int(c[1])))
+			# The sorted cells of each quarter turn of the image, for turns().
+			var turned := []
+			for q in 4:
+				turned.append(_cells(Shapes.to_view(Shapes.rotate(shape, q))))
 			a = {
 				"texture": load(path + ".png"),
 				"scrap": load(path + "_scrap.png"),
 				"shape": shape,
+				"turned": turned,
 			}
 	_cache[def_id] = a
 	return a

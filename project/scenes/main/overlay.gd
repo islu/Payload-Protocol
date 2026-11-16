@@ -23,13 +23,7 @@ func _init() -> void:
 	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(center)
 	panel = PanelContainer.new()
-	var style := StyleBoxFlat.new()
-	style.bg_color = Palette.PANEL
-	style.border_color = Palette.ACCENT
-	style.set_border_width_all(2)
-	style.set_corner_radius_all(8)
-	style.set_content_margin_all(32)
-	panel.add_theme_stylebox_override("panel", style)
+	panel.add_theme_stylebox_override("panel", Ui.panel_style(Palette.ACCENT, 2, 8, 32))
 	center.add_child(panel)
 	box = VBoxContainer.new()
 	box.add_theme_constant_override("separation", 16)
@@ -60,9 +54,7 @@ func _notification(what: int) -> void:
 
 
 func _rebuild() -> void:
-	for child in box.get_children():
-		box.remove_child(child)
-		child.queue_free()
+	Ui.clear(box)
 	_build()
 
 

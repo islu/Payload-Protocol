@@ -9,8 +9,6 @@ const NOTHING_TEXT := "There is nothing to undo at this station."
 
 ## The run now.
 var run: Run
-var _cat: Catalog
-var _seed: int
 ## Each action that worked: a Callable that takes the Run and returns an error text.
 var _actions: Array[Callable] = []
 ## The number of actions before the arrival at this station.
@@ -18,8 +16,6 @@ var _station_start := 0
 
 
 func _init(catalog: Catalog, run_seed: int) -> void:
-	_cat = catalog
-	_seed = run_seed
 	run = Run.new(catalog, run_seed)
 
 
@@ -45,7 +41,7 @@ func undo() -> String:
 	if not can_undo():
 		return NOTHING_TEXT
 	_actions.pop_back()
-	run = Run.new(_cat, _seed)
+	run = Run.new(run.cat, run.seed_value)
 	for a in _actions:
 		a.call(run)
 	return ""

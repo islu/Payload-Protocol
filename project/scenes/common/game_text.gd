@@ -28,7 +28,7 @@ static func trait_line(terms: Array, trait_id: String, colored := false) -> Stri
 			continue
 		var name := TranslationServer.translate(term["name"])
 		if colored:
-			var color: Color = Palette.TRAIT_COLORS.get(trait_id, Palette.TEXT)
+			var color: Color = Palette.trait_color(trait_id)
 			name = "[color=#%s]%s[/color]" % [color.to_html(false), name]
 		return "%s: %s" % [name, format(term["rule"])]
 	return ""

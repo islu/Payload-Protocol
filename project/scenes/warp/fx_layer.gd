@@ -21,6 +21,8 @@ var speed := 1.0
 var played := {}
 var _fx: Array = []
 var _flash := 0.0
+## True while the layer shows an effect or the flash.
+var _drawn := false
 
 
 func _ready() -> void:
@@ -69,7 +71,7 @@ func explosion(at: Vector2, cells: Array) -> void:
 			"kind": "area",
 			"at": at,
 			"time": 0.5,
-			"color": Palette.TRAIT_COLORS["volatile"],
+			"color": Palette.TRAIT_COLORS[Defs.TRAIT_VOLATILE],
 			"cells": cells
 		}
 	)
@@ -111,10 +113,14 @@ func _add(fx: Dictionary) -> void:
 
 
 func _process(delta: float) -> void:
+	if _fx.is_empty() and _flash <= 0.0 and not _drawn:
+		return
 	for fx: Dictionary in _fx:
 		fx["t"] += delta * speed
 	_fx = _fx.filter(func(fx: Dictionary) -> bool: return fx["t"] < fx["time"])
 	_flash = maxf(0.0, _flash - delta * speed * 4.0)
+	# One more redraw after the last effect clears the layer.
+	_drawn = not _fx.is_empty() or _flash > 0.0
 	queue_redraw()
 
 

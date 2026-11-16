@@ -96,20 +96,14 @@ func _speaker(speaker: Dictionary) -> Control:
 func _dialogue(e: Dictionary) -> Control:
 	var frame := PanelContainer.new()
 	frame.size_flags_vertical = Control.SIZE_SHRINK_END
-	var style := StyleBoxFlat.new()
-	style.bg_color = Palette.PANEL
-	style.border_color = Palette.ACCENT
-	style.set_border_width_all(2)
-	style.set_corner_radius_all(8)
-	style.set_content_margin_all(28)
-	frame.add_theme_stylebox_override("panel", style)
+	frame.add_theme_stylebox_override("panel", Ui.panel_style(Palette.ACCENT, 2, 8, 28))
 	var col := VBoxContainer.new()
 	col.add_theme_constant_override("separation", 12)
 	col.custom_minimum_size.x = BOX_WIDTH
 	frame.add_child(col)
-	speaker_name = _label(col, tr(e["speaker"]["name"]), TextSize.HEADING, Palette.ACCENT)
-	_label(col, tr(e["name"]), TITLE_SIZE, Palette.TEXT)
-	var body := _label(col, tr(e["text"]), TextSize.HEADING, Palette.TEXT)
+	speaker_name = Ui.label(col, e["speaker"]["name"], TextSize.HEADING, Palette.ACCENT)
+	Ui.label(col, e["name"], TITLE_SIZE, Palette.TEXT)
+	var body := Ui.label(col, e["text"], TextSize.HEADING, Palette.TEXT)
 	body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	var gap := Control.new()
 	gap.custom_minimum_size.y = 4
@@ -143,15 +137,6 @@ func _dialogue(e: Dictionary) -> Control:
 func _pick(err: String) -> void:
 	if err != "":
 		Sound.play(self, "deny")
-
-
-func _label(parent: Control, text: String, font_size: int, color: Color) -> Label:
-	var l := Label.new()
-	l.text = text
-	l.add_theme_font_size_override("font_size", font_size)
-	l.add_theme_color_override("font_color", color)
-	parent.add_child(l)
-	return l
 
 
 ## The player must select a choice: Esc does nothing.

@@ -87,16 +87,7 @@ func set_credits(value: int) -> void:
 ## A group: a panel with a row of parts.
 func _group() -> PanelContainer:
 	var p := PanelContainer.new()
-	var style := StyleBoxFlat.new()
-	style.bg_color = Palette.PANEL
-	style.border_color = Palette.PANEL_LINE
-	style.set_border_width_all(1)
-	style.set_corner_radius_all(6)
-	style.content_margin_left = 12
-	style.content_margin_right = 12
-	style.content_margin_top = 4
-	style.content_margin_bottom = 4
-	p.add_theme_stylebox_override("panel", style)
+	p.add_theme_stylebox_override("panel", Ui.panel_style(Palette.PANEL_LINE, 1, 6, 12, 4))
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 10)
 	p.add_child(row)

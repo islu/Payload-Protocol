@@ -15,6 +15,8 @@ var state: Dictionary = {}
 var ignore_release := false
 
 var _screen: StationScreen
+## The area, the cells, the cargo, and the rotation of the preview now.
+var _preview_key: Array = []
 
 
 func _init(screen: StationScreen) -> void:
@@ -134,6 +136,11 @@ func update(mouse := Vector2.INF) -> void:
 	var origin := target.snap_origin(mouse, state["grab"])
 	var id: int = state["id"]
 	var rot: int = state["rot"]
+	# The preview changes only when the cargo goes to other cells.
+	var key := [target, origin, id, rot]
+	if key == _preview_key and not target.preview.is_empty():
+		return
+	_preview_key = key
 	var p := GameState.drop_preview(id, origin.x, origin.y, rot, to_bay)
 	p["origin"] = origin
 	p["id"] = id
@@ -215,6 +222,7 @@ func _pick_next() -> void:
 
 func end() -> void:
 	state = {}
+	_preview_key = []
 	_screen._show_sell({})
 	for view: HoldView in [_screen._hold, _screen._bay]:
 		view.dragging = -1

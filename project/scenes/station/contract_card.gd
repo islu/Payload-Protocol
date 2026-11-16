@@ -40,12 +40,9 @@ var _details := PackedStringArray()
 
 func setup(station: StationScreen, k: Dictionary) -> void:
 	screen = station
-	var style := StyleBoxFlat.new()
-	style.bg_color = Palette.PANEL
-	style.border_color = Palette.ACCENT if k["accepted"] else Palette.PANEL_LINE
-	style.set_border_width_all(3 if k["accepted"] else 2)
-	style.set_corner_radius_all(6)
-	style.set_content_margin_all(10)
+	var style := Ui.panel_style(
+		Palette.ACCENT if k["accepted"] else Palette.PANEL_LINE, 3 if k["accepted"] else 2
+	)
 	add_theme_stylebox_override("panel", style)
 	var box := VBoxContainer.new()
 	box.add_theme_constant_override("separation", 4)
@@ -108,13 +105,13 @@ func _first_line(box: Control, k: Dictionary, details: PackedStringArray) -> Str
 	var head := HBoxContainer.new()
 	head.add_theme_constant_override("separation", 10)
 	box.add_child(head)
-	var client := screen._label(
+	var client := Ui.label(
 		head, "", TextSize.BODY, Palette.ACCENT if k["accepted"] else Palette.TEXT
 	)
 	client.text = tr(k["client_name"])
 	client.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	client.clip_text = true
-	var pay := screen._label(head, "", TextSize.BODY, Palette.GOOD)
+	var pay := Ui.label(head, "", TextSize.BODY, Palette.GOOD)
 	pay.text = tr(PAY_TEXT).format({"total": k["total_pay"]})
 	details.append(
 		tr(TOTALS_TEXT).format({"pieces": k["pieces"], "pay": k["pay"], "total": k["total_pay"]})
@@ -126,17 +123,17 @@ func _first_line(box: Control, k: Dictionary, details: PackedStringArray) -> Str
 		var limit: int = screen._run["mass"]["limit"]
 		var after := {"mass": k["mass"], "after": k["mass_after"], "limit": limit}
 		details.append(tr(texts[k["mass_state"]]).format(after))
-	var mass := screen._label(head, "", TextSize.BODY, mass_color)
+	var mass := Ui.label(head, "", TextSize.BODY, mass_color)
 	mass.text = tr(MASS_TEXT).format(k)
 	var line := PackedStringArray([client.text, pay.text, mass.text])
 	var index: int = k["index"]
 	if k.get("carried", false):
 		# A long contract on its way cannot be canceled (SPEC Section 30.2).
-		var way := screen._label(head, "", TextSize.SMALL, Palette.ACCENT)
+		var way := Ui.label(head, "", TextSize.SMALL, Palette.ACCENT)
 		way.text = tr(ON_ITS_WAY_TEXT).format({"jumps": k["jumps_left"]})
 		line.append(way.text)
 	elif k["accepted"]:
-		var loaded := screen._label(head, "", TextSize.SMALL, Palette.ACCENT)
+		var loaded := Ui.label(head, "", TextSize.SMALL, Palette.ACCENT)
 		loaded.text = tr(LOADED_TEXT).format(k)
 		line.append(loaded.text)
 		screen._button(
@@ -152,7 +149,7 @@ func _first_line(box: Control, k: Dictionary, details: PackedStringArray) -> Str
 
 ## A short tag on the second line. It returns its text.
 func _tag(row: Control, tag: String, color: Color) -> String:
-	var l := screen._label(row, "", TextSize.SMALL, color)
+	var l := Ui.label(row, "", TextSize.SMALL, color)
 	l.text = tag
 	l.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	return tag
@@ -192,7 +189,7 @@ func _groups(parent: Control, groups: Array) -> HFlowContainer:
 		chip.mouse_entered.connect(func() -> void: screen._show_tip(g))
 		chip.mouse_exited.connect(_on_chip_exited)
 		item.add_child(chip)
-		var count := screen._label(item, "", TextSize.BODY)
+		var count := Ui.label(item, "", TextSize.BODY)
 		count.text = tr(COUNT_TEXT).format(g)
 		count.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		for t: String in g["traits"]:

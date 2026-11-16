@@ -51,17 +51,13 @@ var _pilot: Label
 
 
 func _init() -> void:
-	var style := StyleBoxFlat.new()
+	var style := Ui.panel_style(Palette.ACCENT, 2, 8, 22)
 	style.bg_color = Color(Palette.PANEL, 0.95)
-	style.border_color = Palette.ACCENT
-	style.set_border_width_all(2)
-	style.set_corner_radius_all(8)
-	style.set_content_margin_all(22)
 	add_theme_stylebox_override("panel", style)
 	var box := VBoxContainer.new()
 	box.add_theme_constant_override("separation", 12)
 	add_child(box)
-	head = _label(box, "", 40, Palette.ACCENT)
+	head = Ui.label(box, "", 40, Palette.ACCENT)
 	var scroll := ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
@@ -70,20 +66,20 @@ func _init() -> void:
 	_cards.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_cards.add_theme_constant_override("separation", 8)
 	scroll.add_child(_cards)
-	var ledger_panel := _panel(box, Palette.PANEL_LINE, 1)
+	var ledger_panel := Ui.panel(box, Palette.PANEL_LINE, 1)
 	var ledger_box := VBoxContainer.new()
 	ledger_panel.add_child(ledger_box)
 	_ledger = GridContainer.new()
 	_ledger.columns = 2
 	_ledger.add_theme_constant_override("h_separation", 24)
 	ledger_box.add_child(_ledger)
-	_credits = _label(ledger_box, "", TextSize.BODY, Palette.WARN)
+	_credits = Ui.label(ledger_box, "", TextSize.BODY, Palette.WARN)
 	var pilot := HBoxContainer.new()
 	pilot.add_theme_constant_override("separation", 12)
 	box.add_child(pilot)
 	pilot_face = PilotFace.new()
 	pilot.add_child(pilot_face)
-	_pilot = _label(pilot, "", TextSize.BODY, Palette.WARN)
+	_pilot = Ui.label(pilot, "", TextSize.BODY, Palette.WARN)
 	_pilot.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_pilot.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_pilot.size_flags_vertical = Control.SIZE_SHRINK_CENTER
@@ -108,11 +104,11 @@ func retranslate() -> void:
 func show_report(run: Dictionary) -> void:
 	retranslate()
 	var a: Dictionary = run["arrival"]
-	StationScreen._clear(_cards)
+	Ui.clear(_cards)
 	items.clear()
 	for k: Dictionary in a.get("contracts", []):
 		_card(k)
-	StationScreen._clear(_ledger)
+	Ui.clear(_ledger)
 	var lines := PackedStringArray()
 	var ledger: Dictionary = a.get("ledger", {})
 	for key: String in LEDGER_TEXT:
@@ -122,10 +118,10 @@ func show_report(run: Dictionary) -> void:
 		var color := Palette.TEXT if key == "net" else Palette.TEXT_DIM
 		if key == "net":
 			color = Palette.GOOD if value >= 0 else Palette.BAD
-		var name := _label(_ledger, "", TextSize.BODY, color)
+		var name := Ui.label(_ledger, "", TextSize.BODY, color)
 		name.text = tr(LEDGER_TEXT[key])
 		name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		var amount_label := _label(_ledger, "", TextSize.BODY, color)
+		var amount_label := Ui.label(_ledger, "", TextSize.BODY, color)
 		amount_label.text = amount(value)
 		amount_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 		lines.append("%s %s" % [name.text, amount_label.text])
@@ -139,16 +135,16 @@ func show_report(run: Dictionary) -> void:
 
 ## A card of a contract: the client, the pay, and a group for each freight and state.
 func _card(k: Dictionary) -> void:
-	var card := _panel(_cards, Palette.PANEL_LINE, 2)
+	var card := Ui.panel(_cards, Palette.PANEL_LINE, 2)
 	var box := VBoxContainer.new()
 	box.add_theme_constant_override("separation", 4)
 	card.add_child(box)
 	var top := HBoxContainer.new()
 	box.add_child(top)
-	var client := _label(top, "", TextSize.BODY)
+	var client := Ui.label(top, "", TextSize.BODY)
 	client.text = tr(k["client_name"])
 	client.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	var pay := _label(top, "", TextSize.BODY, Palette.GOOD if k["pay"] > 0 else Palette.TEXT_DIM)
+	var pay := Ui.label(top, "", TextSize.BODY, Palette.GOOD if k["pay"] > 0 else Palette.TEXT_DIM)
 	pay.text = "+%d" % k["pay"]
 	var row := HFlowContainer.new()
 	row.add_theme_constant_override("h_separation", 16)
@@ -164,7 +160,7 @@ func _card(k: Dictionary) -> void:
 	if k.get("penalty", 0) > 0:
 		notes.append(tr(PENALTY_TEXT).format(k))
 	if not notes.is_empty():
-		var note := _label(
+		var note := Ui.label(
 			box, "", TextSize.SMALL, Palette.WARN if k["bonus_met"] else Palette.TEXT_DIM
 		)
 		note.text = " · ".join(notes)
@@ -196,7 +192,7 @@ func _group(g: Dictionary) -> Control:
 	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	icon.draw.connect(func() -> void: draw_state(icon, delivered, color))
 	item.add_child(icon)
-	var text := _label(item, "", TextSize.SMALL, color)
+	var text := Ui.label(item, "", TextSize.SMALL, color)
 	text.text = "%s %s" % [tr(COUNT_TEXT).format(g), tr(PIECE_STATE_TEXT[g["state"]])]
 	text.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	text.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -221,25 +217,3 @@ static func draw_state(canvas: CanvasItem, delivered: bool, color: Color) -> voi
 	else:
 		canvas.draw_line(Vector2(3, 3), Vector2(13, 13), color, 3.0)
 		canvas.draw_line(Vector2(13, 3), Vector2(3, 13), color, 3.0)
-
-
-func _label(parent: Control, text: String, font_size: int, color := Palette.TEXT) -> Label:
-	var l := Label.new()
-	l.text = tr(text) if text != "" else ""
-	l.add_theme_font_size_override("font_size", font_size)
-	l.add_theme_color_override("font_color", color)
-	parent.add_child(l)
-	return l
-
-
-func _panel(parent: Control, border: Color, width: int) -> PanelContainer:
-	var p := PanelContainer.new()
-	var style := StyleBoxFlat.new()
-	style.bg_color = Palette.PANEL
-	style.border_color = border
-	style.set_border_width_all(width)
-	style.set_corner_radius_all(6)
-	style.set_content_margin_all(10)
-	p.add_theme_stylebox_override("panel", style)
-	parent.add_child(p)
-	return p

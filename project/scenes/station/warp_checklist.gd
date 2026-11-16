@@ -21,16 +21,7 @@ var _marks: Array[Mark] = []
 
 
 func _init() -> void:
-	var style := StyleBoxFlat.new()
-	style.bg_color = Palette.PANEL
-	style.border_color = Palette.PANEL_LINE
-	style.set_border_width_all(1)
-	style.set_corner_radius_all(6)
-	style.content_margin_left = 10
-	style.content_margin_right = 10
-	style.content_margin_top = 6
-	style.content_margin_bottom = 6
-	add_theme_stylebox_override("panel", style)
+	add_theme_stylebox_override("panel", Ui.panel_style(Palette.PANEL_LINE, 1, 6, 10, 6))
 	var box := VBoxContainer.new()
 	box.add_theme_constant_override("separation", 2)
 	add_child(box)

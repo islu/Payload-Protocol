@@ -63,11 +63,5 @@ static func incident_card(parent: Control, inc: Dictionary) -> PanelContainer:
 static func _tag(color: Color) -> PanelContainer:
 	var tag := PanelContainer.new()
 	tag.mouse_filter = Control.MOUSE_FILTER_STOP
-	var style := StyleBoxFlat.new()
-	style.bg_color = Palette.PANEL
-	style.border_color = color
-	style.set_border_width_all(1)
-	style.set_corner_radius_all(4)
-	style.set_content_margin_all(6)
-	tag.add_theme_stylebox_override("panel", style)
+	tag.add_theme_stylebox_override("panel", Ui.panel_style(color, 1, 4, 6))
 	return tag

@@ -15,20 +15,12 @@ func _init() -> void:
 
 ## Shows a card for each mod. hover gets the view of the mod under the mouse, or {}.
 func set_mods(mods: Array, hover: Callable) -> void:
-	for c in get_children():
-		remove_child(c)
-		c.queue_free()
+	Ui.clear(self)
 	cards.clear()
 	for m: Dictionary in mods:
 		var card := PanelContainer.new()
 		card.mouse_filter = Control.MOUSE_FILTER_STOP
-		var style := StyleBoxFlat.new()
-		style.bg_color = Palette.PANEL
-		style.border_color = Palette.ACCENT
-		style.set_border_width_all(1)
-		style.set_corner_radius_all(6)
-		style.set_content_margin_all(4)
-		card.add_theme_stylebox_override("panel", style)
+		card.add_theme_stylebox_override("panel", Ui.panel_style(Palette.ACCENT, 1, 6, 4))
 		card.add_child(ModIcon.new(m["id"], 32.0))
 		card.mouse_entered.connect(hover.bind(m))
 		card.mouse_exited.connect(hover.bind({}))

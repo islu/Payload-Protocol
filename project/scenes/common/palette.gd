@@ -20,17 +20,27 @@ const ZONE := Color(0.37, 0.83, 1.0, 0.18)
 
 ## One color for each trait (SPEC Section 4.2).
 const TRAIT_COLORS := {
-	"fragile": Color("7fdcff"),
-	"volatile": Color("ff5a3c"),
-	"fluid": Color("3c8cff"),
-	"electronic": Color("ffd23c"),
-	"perishable": Color("7ce05a"),
-	"thruster": Color("b07cff"),
-	"cushion": Color("ff9ad5"),
-	"cooler": Color("a8f0ff"),
-	"battery": Color("c8ff3c"),
-	"shield": Color("3cffc8"),
+	Defs.TRAIT_FRAGILE: Color("7fdcff"),
+	Defs.TRAIT_VOLATILE: Color("ff5a3c"),
+	Defs.TRAIT_FLUID: Color("3c8cff"),
+	Defs.TRAIT_ELECTRONIC: Color("ffd23c"),
+	Defs.TRAIT_PERISHABLE: Color("7ce05a"),
+	Defs.TRAIT_THRUSTER: Color("b07cff"),
+	Defs.TRAIT_CUSHION: Color("ff9ad5"),
+	Defs.TRAIT_COOLER: Color("a8f0ff"),
+	Defs.TRAIT_BATTERY: Color("c8ff3c"),
+	Defs.TRAIT_SHIELD: Color("3cffc8"),
 }
+
+
+## Returns the color of a trait, or Palette.TEXT for a trait with no color.
+static func trait_color(trait_id: String) -> Color:
+	return TRAIT_COLORS.get(trait_id, TEXT)
+
+
+## Returns the color of a link: the Cooler color for a cold link, else the Battery color.
+static func link_color(kind: String) -> Color:
+	return TRAIT_COLORS[Defs.TRAIT_COOLER if kind == Defs.LINK_COLD else Defs.TRAIT_BATTERY]
 
 
 ## Returns the body color of a cargo view: its first trait, or plain, or scrap.

@@ -294,10 +294,8 @@ func has_mod(id: String) -> bool:
 
 ## Returns the pay of a freight: the pay of its contract, or 0 (SPEC Section 21.5).
 func pay_of(c: Cargo) -> int:
-	for k in contracts:
-		if k.id == c.contract:
-			return k.template.pay
-	return 0
+	var k := contract_by_id(c.contract)
+	return k.template.pay if k != null else 0
 
 
 func _end(win: bool) -> void:
@@ -331,23 +329,23 @@ func remove_cargo(id: int) -> void:
 
 ## Returns the cargo in the hold, in the order of the IDs.
 func hold_cargo() -> Array[Cargo]:
-	var out: Array[Cargo] = []
-	var ids := cargo.keys()
-	ids.sort()
-	for id: int in ids:
-		if cargo[id].in_hold:
-			out.append(cargo[id])
-	return out
+	return _cargo_in(false)
 
 
 ## Returns the cargo in the shock bay, in the order of the IDs (SPEC Section 31).
 func bay_cargo() -> Array[Cargo]:
+	return _cargo_in(true)
+
+
+## Returns the cargo in the shock bay with bay, else in the hold, in the order of the IDs.
+func _cargo_in(bay: bool) -> Array[Cargo]:
 	var out: Array[Cargo] = []
 	var ids := cargo.keys()
 	ids.sort()
 	for id: int in ids:
-		if cargo[id].in_bay:
-			out.append(cargo[id])
+		var c: Cargo = cargo[id]
+		if c.in_bay if bay else c.in_hold:
+			out.append(c)
 	return out
 
 
@@ -452,16 +450,19 @@ func load_all() -> String:
 	if phase != Defs.PHASE_STATION:
 		return NOT_AT_STATION_TEXT
 	for id in dock.duplicate():
-		var c: Cargo = cargo[id]
-		var placed := false
-		for turn in 4:
-			var rot := (c.rot + turn) % 4
-			for y in rows:
-				for x in columns:
-					if not placed and fits(c, Vector2i(x, y), rot):
-						place_cargo(id, Vector2i(x, y), rot)
-						placed = true
+		_load_one(cargo[id])
 	return ""
+
+
+## Puts a cargo in the first place of the hold where it fits, for load_all().
+func _load_one(c: Cargo) -> void:
+	for turn in 4:
+		var rot := (c.rot + turn) % 4
+		for y in rows:
+			for x in columns:
+				if fits(c, Vector2i(x, y), rot):
+					place_cargo(c.id, Vector2i(x, y), rot)
+					return
 
 
 ## Rotates a cargo in the hold in its place. If the new shape does not fit, the

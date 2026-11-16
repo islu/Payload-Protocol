@@ -230,17 +230,17 @@ func _render(run: Run) -> void:
 	match v["phase"]:
 		Defs.PHASE_EVENT:
 			_render_event(v["event"])
-			_render_station(run, v)
+			_render_station(v)
 		Defs.PHASE_MOD:
 			_say("Select a ship mod. Command: choose <n>")
 			for i in v["mod_offer"].size():
 				var mo: Dictionary = v["mod_offer"][i]
 				_say("  %d: %s: %s" % [i, mo["name"], mo["text"]])
 		Defs.PHASE_STATION:
-			_render_station(run, v)
+			_render_station(v)
 		Defs.PHASE_ARRIVAL:
 			_render_arrival(v)
-			_render_hold(run, v)
+			_render_hold(v)
 		Defs.PHASE_PAYMENT:
 			var t: Dictionary = v["payment_screen"]
 			_say(
@@ -281,7 +281,7 @@ func _render_event(e: Dictionary) -> void:
 		_say("  %d: %s [%s]%s" % [c["index"], c["text"], ", ".join(notes), off])
 
 
-func _render_station(run: Run, v: Dictionary) -> void:
+func _render_station(v: Dictionary) -> void:
 	var dirs := []
 	for step: Dictionary in v["hazard"]:
 		if step["fork"] and step["known"] == "":
@@ -302,7 +302,7 @@ func _render_station(run: Run, v: Dictionary) -> void:
 				% v["front_wall"].to_upper()
 			)
 		)
-	_render_hold(run, v)
+	_render_hold(v)
 	_say("Dock:" + ("" if not v["dock"].is_empty() else " (empty)"))
 	for c: Dictionary in v["cargo"]:
 		if not c["in_hold"] and not c["in_bay"]:
@@ -319,7 +319,7 @@ func _render_station(run: Run, v: Dictionary) -> void:
 			)
 		var bonus := ""
 		if not k["bonus"].is_empty():
-			bonus = " · bonus +%d: %s" % [k["bonus"]["pay"], _text(k["bonus"]["text"])]
+			bonus = " · bonus +%d: %s" % [k["bonus"]["pay"], GameText.format(k["bonus"]["text"])]
 		if k["penalty"] > 0:
 			bonus += " · VIP penalty %d if a piece is not delivered" % k["penalty"]
 		if k["carried"]:
@@ -358,7 +358,7 @@ func _render_station(run: Run, v: Dictionary) -> void:
 		)
 	_say(
 		(
-			"  reroll %d · clamp %d (max %d) · shock bay %s · clear scrap 2/cell · sell kit at half"
+			"  reroll %d · clamp %d (max %d) · shock bay %s · clear scrap %d/cell · sell kit at half"
 			% [
 				s["reroll_price"],
 				s["clamp_price"],
@@ -375,25 +375,16 @@ func _render_station(run: Run, v: Dictionary) -> void:
 						]
 					)
 				),
+				s["scrap_cell"],
 			]
 		)
 	)
 
 
-func _render_hold(_run: Run, v: Dictionary) -> void:
+func _render_hold(v: Dictionary) -> void:
 	var cols: int = v["hold"]["columns"]
 	var rows: int = v["hold"]["rows"]
-	var grid := []
-	for y in rows:
-		var row := []
-		row.resize(cols)
-		row.fill(".")
-		grid.append(row)
-	for c: Dictionary in v["cargo"]:
-		if not c["in_hold"]:
-			continue
-		for cell: Dictionary in c["shape"]:
-			grid[c["y"] + cell["y"]][c["x"] + cell["x"]] = _letter(c["id"])
+	var grid := _grid(cols, rows, v["cargo"], false)
 	var header := "    "
 	for x in cols:
 		header += str(x) + " "
@@ -414,16 +405,7 @@ func _render_bay(v: Dictionary) -> void:
 	var size: Dictionary = v["shock_bay"]
 	if size.is_empty():
 		return
-	var grid := []
-	for y: int in size["rows"]:
-		var row := []
-		row.resize(size["columns"])
-		row.fill(".")
-		grid.append(row)
-	for c: Dictionary in v["cargo"]:
-		if c["in_bay"]:
-			for cell: Dictionary in c["shape"]:
-				grid[c["y"] + cell["y"]][c["x"] + cell["x"]] = _letter(c["id"])
+	var grid := _grid(size["columns"], size["rows"], v["cargo"], true)
 	_say(
 		"Shock bay %dx%d (no slide, no hits; command: placebay):" % [size["columns"], size["rows"]]
 	)
@@ -432,6 +414,22 @@ func _render_bay(v: Dictionary) -> void:
 	for c: Dictionary in v["cargo"]:
 		if c["in_bay"]:
 			_say("  " + _cargo_line(c))
+
+
+## Returns the rows of an area (the hold, or the shock bay with in_bay): "." for an
+## empty cell, and the letter of the cargo in a cell.
+func _grid(cols: int, rows: int, cargo: Array, in_bay: bool) -> Array:
+	var grid := []
+	for y in rows:
+		var row := []
+		row.resize(cols)
+		row.fill(".")
+		grid.append(row)
+	for c: Dictionary in cargo:
+		if c["in_bay"] if in_bay else c["in_hold"]:
+			for cell: Dictionary in c["shape"]:
+				grid[c["y"] + cell["y"]][c["x"] + cell["x"]] = _letter(c["id"])
+	return grid
 
 
 func _cargo_line(c: Dictionary) -> String:
@@ -479,13 +477,6 @@ func _shape_text(shape: Array) -> String:
 	for c: Dictionary in shape:
 		cells.append("%d,%d" % [c["x"], c["y"]])
 	return "[" + " ".join(cells) + "]"
-
-
-func _text(t: Dictionary) -> String:
-	var s: String = t["key"]
-	for k: String in t.get("args", {}):
-		s = s.replace("{" + k + "}", str(t["args"][k]))
-	return s
 
 
 func _render_warp(run: Run) -> void:

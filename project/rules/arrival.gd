@@ -150,7 +150,8 @@ static func bonus_met(run: Run, k: Contract, delivered: Array[Cargo]) -> bool:
 		return false
 	match b["type"]:
 		Defs.BONUS_ALL_INTACT:
-			return delivered.size() == k.cargo.size()
+			# The check above: each piece is delivered.
+			return true
 		Defs.BONUS_ZONE:
 			for d in delivered:
 				# The shock bay is outside each zone (SPEC Section 31.1).
@@ -236,14 +237,13 @@ static func groups(pieces: Array) -> Array:
 
 ## Adds the ledger and the credits before and after to the report (SPEC Section 20.4).
 static func _ledger(run: Run, report: Dictionary) -> void:
-	var ledger := {"deliveries": 0, "bonuses": 0, "insurance": 0, "breaches": 0}
+	var ledger := {"deliveries": 0, "bonuses": 0, "insurance": 0, "breaches": 0, "penalties": 0}
 	for res: Dictionary in report["contracts"]:
 		ledger["deliveries"] += res["pay"]
 		ledger["bonuses"] += res["bonus"]
 		ledger["insurance"] += res["insurance"]
 		ledger["breaches"] += res["breach"]
-		ledger["penalties"] = ledger.get("penalties", 0) + res["penalty"]
-	ledger["penalties"] = ledger.get("penalties", 0)
+		ledger["penalties"] += res["penalty"]
 	ledger["sold"] = report["sold"]
 	ledger["scrap_cleared"] = run.last_warp.get("scrap_cleared", 0)
 	ledger["fuel_fee"] = run.last_warp.get("fuel_fee", 0)

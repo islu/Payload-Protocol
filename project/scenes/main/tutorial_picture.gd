@@ -106,7 +106,8 @@ func _draw_reactions() -> void:
 	for y in 3:
 		for x in 3:
 			draw_rect(
-				Rect2(_at(x, y), Vector2(CELL, CELL)), Color(Palette.TRAIT_COLORS["volatile"], 0.25)
+				Rect2(_at(x, y), Vector2(CELL, CELL)),
+				Color(Palette.TRAIT_COLORS[Defs.TRAIT_VOLATILE], 0.25)
 			)
 	var bomb := _cargo("plasma_cell", [Defs.TRAIT_VOLATILE], Defs.WEIGHT_LIGHT)
 	CargoDraw.draw(self, bomb, _one(), _at(1, 1), CELL)
@@ -117,7 +118,11 @@ func _draw_reactions() -> void:
 	var bot := _cargo("helper_bot", [], Defs.WEIGHT_STANDARD, Defs.KIND_SCRAP)
 	CargoDraw.draw(self, bot, _one(), _at(5, 1), CELL)
 	CargoDraw.draw_icon(
-		self, Defs.TRAIT_ELECTRONIC, _at(5.5, 1.5), 22.0, Palette.TRAIT_COLORS["electronic"]
+		self,
+		Defs.TRAIT_ELECTRONIC,
+		_at(5.5, 1.5),
+		22.0,
+		Palette.TRAIT_COLORS[Defs.TRAIT_ELECTRONIC]
 	)
 
 
@@ -127,11 +132,11 @@ func _draw_links() -> void:
 		self, _cargo("cooler_unit", [Defs.TRAIT_COOLER]), _line(2, false), _at(0, 0), CELL
 	)
 	CargoDraw.draw(self, _cargo("space_cheese", [Defs.TRAIT_PERISHABLE]), _one(), _at(1, 0), CELL)
-	draw_line(_at(0.5, 0.5), _at(1.5, 0.5), Palette.TRAIT_COLORS["cooler"], 3.0)
+	draw_line(_at(0.5, 0.5), _at(1.5, 0.5), Palette.TRAIT_COLORS[Defs.TRAIT_COOLER], 3.0)
 	CargoDraw.draw(self, _cargo("battery_pack", [Defs.TRAIT_BATTERY]), _one(), _at(3, 0), CELL)
 	CargoDraw.draw(self, _cargo("shield_generator", [Defs.TRAIT_SHIELD]), _one(), _at(4, 0), CELL)
-	draw_line(_at(3.5, 0.5), _at(4.5, 0.5), Palette.TRAIT_COLORS["battery"], 3.0)
-	draw_arc(_at(4.5, 0.5), CELL * 0.9, 0, TAU, 40, Palette.TRAIT_COLORS["shield"], 2.0)
+	draw_line(_at(3.5, 0.5), _at(4.5, 0.5), Palette.TRAIT_COLORS[Defs.TRAIT_BATTERY], 3.0)
+	draw_arc(_at(4.5, 0.5), CELL * 0.9, 0, TAU, 40, Palette.TRAIT_COLORS[Defs.TRAIT_SHIELD], 2.0)
 	var clamped := _cargo("cargo_crate", [])
 	clamped["clamped"] = true
 	CargoDraw.draw(self, clamped, _one(), _at(2, 2), CELL)

@@ -45,6 +45,8 @@ var _drag := StationDrag.new(self)
 var _hover_contract := -1
 ## The credits that the top bar shows now. They count to the view (SPEC Section 21.4).
 var _shown_credits := -1
+## The tween that counts the credits, while it runs.
+var _credits_tween: Tween
 
 var _hold: HoldView
 ## The shock bay above the hold (SPEC Section 31.2).
@@ -128,16 +130,16 @@ func _build() -> void:
 	body.add_child(left)
 	var dock_head := HBoxContainer.new()
 	left.add_child(dock_head)
-	_dock_title = _label(dock_head, DOCK_TEXT, TextSize.HEADING, Palette.ACCENT)
+	_dock_title = Ui.label(dock_head, DOCK_TEXT, TextSize.HEADING, Palette.ACCENT)
 	_dock_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_button(dock_head, tr(LOAD_ALL_TEXT), func() -> void: _act(GameState.load_all(), "clack"))
 	# The dock fits its cargo. An empty dock is one line (SPEC Section 20.2).
-	_dock_panel = _panel(left)
+	_dock_panel = Ui.panel(left)
 	_dock_flow = HFlowContainer.new()
 	_dock_flow.add_theme_constant_override("h_separation", 10)
 	_dock_flow.add_theme_constant_override("v_separation", 10)
 	_dock_panel.add_child(_dock_flow)
-	_label(left, CONTRACTS_TEXT, TextSize.HEADING, Palette.ACCENT)
+	Ui.label(left, CONTRACTS_TEXT, TextSize.HEADING, Palette.ACCENT)
 	var scroll := ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
@@ -148,10 +150,10 @@ func _build() -> void:
 	scroll.add_child(_contracts_box)
 	var pilot := HBoxContainer.new()
 	pilot.add_theme_constant_override("separation", 12)
-	_panel(left).add_child(pilot)
+	Ui.panel(left).add_child(pilot)
 	_pilot_face = PilotFace.new()
 	pilot.add_child(_pilot_face)
-	_pilot_label = _label(pilot, "", TextSize.BODY, Palette.ACCENT)
+	_pilot_label = Ui.label(pilot, "", TextSize.BODY, Palette.ACCENT)
 	_pilot_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_pilot_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_pilot_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
@@ -170,7 +172,7 @@ func _build() -> void:
 	hazard.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	hazard.add_theme_constant_override("separation", 10)
 	row.add_child(hazard)
-	var next_jump := _label(hazard, NEXT_JUMP_TEXT, TextSize.BODY, Palette.WARN)
+	var next_jump := Ui.label(hazard, NEXT_JUMP_TEXT, TextSize.BODY, Palette.WARN)
 	next_jump.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_hazard_box = VBoxContainer.new()
 	_hazard_box.add_theme_constant_override("separation", 10)
@@ -202,14 +204,14 @@ func _build() -> void:
 	center.add_child(bottom)
 	_mod_bar = ModBar.new()
 	bottom.add_child(_mod_bar)
-	var hint := _label(bottom, HINT_TEXT, TextSize.SMALL, Palette.TEXT_DIM)
+	var hint := Ui.label(bottom, HINT_TEXT, TextSize.SMALL, Palette.TEXT_DIM)
 	hint.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 
 	var right := VBoxContainer.new()
 	right.custom_minimum_size.x = SIDE_WIDTH
 	right.add_theme_constant_override("separation", 10)
 	body.add_child(right)
-	_label(right, SHOP_TEXT, TextSize.HEADING, Palette.ACCENT)
+	Ui.label(right, SHOP_TEXT, TextSize.HEADING, Palette.ACCENT)
 	_shop = ShopPanel.new()
 	_shop.screen = self
 	right.add_child(_shop)
@@ -217,16 +219,16 @@ func _build() -> void:
 	_services.screen = self
 	_services.show_services = true
 	right.add_child(_services)
-	_label(right, CLAMPS_TEXT, TextSize.HEADING, Palette.ACCENT)
+	Ui.label(right, CLAMPS_TEXT, TextSize.HEADING, Palette.ACCENT)
 	_clamp_box = HBoxContainer.new()
 	_clamp_box.add_theme_constant_override("separation", 8)
 	right.add_child(_clamp_box)
-	_clamp_label = _label(right, "", TextSize.SMALL, Palette.TEXT_DIM)
+	_clamp_label = Ui.label(right, "", TextSize.SMALL, Palette.TEXT_DIM)
 	_clamp_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	# The sell area is a small bar. A drag colors it (SPEC Section 20.2).
-	_sell_area = _panel(right)
+	_sell_area = Ui.panel(right)
 	_sell_area.custom_minimum_size.y = SELL_HEIGHT
-	_sell_label = _label(_sell_area, "", TextSize.SMALL, Palette.TEXT_DIM)
+	_sell_label = Ui.label(_sell_area, "", TextSize.SMALL, Palette.TEXT_DIM)
 	_sell_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_sell_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	_show_sell({})
@@ -269,28 +271,6 @@ func _build() -> void:
 	add_child(_toast)
 
 
-func _label(parent: Control, text: String, font_size: int, color := Palette.TEXT) -> Label:
-	var l := Label.new()
-	l.text = tr(text) if text != "" else ""
-	l.add_theme_font_size_override("font_size", font_size)
-	l.add_theme_color_override("font_color", color)
-	parent.add_child(l)
-	return l
-
-
-func _panel(parent: Control) -> PanelContainer:
-	var p := PanelContainer.new()
-	var style := StyleBoxFlat.new()
-	style.bg_color = Palette.PANEL
-	style.border_color = Palette.PANEL_LINE
-	style.set_border_width_all(2)
-	style.set_corner_radius_all(6)
-	style.set_content_margin_all(10)
-	p.add_theme_stylebox_override("panel", style)
-	parent.add_child(p)
-	return p
-
-
 func _button(parent: Control, text: String, action: Callable, enabled := true) -> Button:
 	var b := Button.new()
 	b.text = text
@@ -299,12 +279,6 @@ func _button(parent: Control, text: String, action: Callable, enabled := true) -
 	b.pressed.connect(action)
 	parent.add_child(b)
 	return b
-
-
-static func _clear(node: Node) -> void:
-	for child in node.get_children():
-		node.remove_child(child)
-		child.queue_free()
 
 
 # --- Refresh from the view ---
@@ -384,7 +358,13 @@ func _count_credits(target: int) -> void:
 	if _shown_credits < 0:
 		_set_credits(target)
 		return
-	var t := create_tween()
+	if target == _shown_credits and _credits_tween == null:
+		return
+	if _credits_tween != null:
+		_credits_tween.kill()
+	_credits_tween = create_tween()
+	_credits_tween.finished.connect(func() -> void: _credits_tween = null)
+	var t := _credits_tween
 	t.tween_method(
 		func(v: float) -> void: _set_credits(roundi(v)), float(_shown_credits), float(target), 0.4
 	)
@@ -398,7 +378,7 @@ func _set_credits(value: int) -> void:
 ## Shows each step of the hazard. A fork step shows its two directions, or the one
 ## that happens when a Sensor is in the hold (SPEC Section 18).
 func _refresh_hazard() -> void:
-	_clear(_hazard_box)
+	Ui.clear(_hazard_box)
 	# The environment and the incident come before the shift steps (SPEC Sections 28.1 and 29.3).
 	if not _run.get("environment", {}).is_empty():
 		var tag := RouteCards.env_tag(_hazard_box, _run["environment"])
@@ -410,7 +390,7 @@ func _refresh_hazard() -> void:
 		var index := i
 		i += 1
 		var color: Color = Palette.BAD if step["fork"] else Palette.WARN
-		var card := _panel(_hazard_box)
+		var card := Ui.panel(_hazard_box)
 		var style: StyleBoxFlat = card.get_theme_stylebox("panel")
 		style.border_color = color
 		card.custom_minimum_size = Vector2(120, 0)
@@ -422,10 +402,10 @@ func _refresh_hazard() -> void:
 		box.add_theme_constant_override("separation", 0)
 		card.add_child(box)
 		var look := step_card(step, _view)
-		var big := _label(box, "", 52, color)
+		var big := Ui.label(box, "", 52, color)
 		big.text = look["arrow"]
 		big.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		var name_label := _label(box, "", 17, color)
+		var name_label := Ui.label(box, "", 17, color)
 		name_label.text = "%d · %s" % [i, look["names"]]
 		name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		if look["sensor"]:
@@ -437,7 +417,7 @@ func _refresh_hazard() -> void:
 			var icon := ShopPanel.trait_icon(Defs.TRAIT_SENSOR)
 			icon.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 			row.add_child(icon)
-			_label(row, "", TextSize.SMALL, Palette.ACCENT).text = tr(SENSOR_TEXT)
+			Ui.label(row, "", TextSize.SMALL, Palette.ACCENT).text = tr(SENSOR_TEXT)
 
 
 ## Returns how a hazard card looks: {arrow, names, sensor}. A fork step shows its
@@ -450,8 +430,7 @@ static func step_card(step: Dictionary, view: Dictionary) -> Dictionary:
 		for d: String in step["directions"]:
 			arrow += ARROWS.get(d, "?")
 			names.append(direction_name(d, view))
-		var joined := (" %s " % TranslationServer.translate(OR_TEXT)).join(names)
-		return {"arrow": arrow + "?", "names": joined, "sensor": false}
+		return {"arrow": arrow + "?", "names": or_join(names), "sensor": false}
 	return {
 		"arrow": ARROWS.get(step["known"], "?"),
 		"names": direction_name(step["known"], view),
@@ -472,6 +451,11 @@ func _set_hover_step(index: int) -> void:
 
 
 ## Returns the arrow and the name of a direction.
+## Joins the names of the directions of a fork step with "or".
+static func or_join(names: PackedStringArray) -> String:
+	return (" %s " % TranslationServer.translate(OR_TEXT)).join(names)
+
+
 static func direction_text(d: String, view: Dictionary) -> String:
 	return "%s %s" % [ARROWS.get(d, "?"), direction_name(d, view)]
 
@@ -482,10 +466,10 @@ static func direction_name(d: String, view: Dictionary) -> String:
 
 
 func _refresh_dock() -> void:
-	_clear(_dock_flow)
+	Ui.clear(_dock_flow)
 	_dock_title.text = tr(DOCK_COUNT_TEXT).format({"count": _run["dock"].size()})
 	if _run["dock"].is_empty():
-		_label(_dock_flow, EMPTY_DOCK_TEXT, TextSize.SMALL, Palette.TEXT_DIM)
+		Ui.label(_dock_flow, EMPTY_DOCK_TEXT, TextSize.SMALL, Palette.TEXT_DIM)
 	for c: Dictionary in _run["cargo"]:
 		if c["in_hold"] or c["in_bay"]:
 			continue
@@ -499,7 +483,7 @@ func _refresh_dock() -> void:
 
 
 func _refresh_contracts() -> void:
-	_clear(_contracts_box)
+	Ui.clear(_contracts_box)
 	_contract_cards.clear()
 	for k: Dictionary in _run["contracts"]:
 		var card := ContractCard.new()
@@ -538,7 +522,7 @@ func _show_sell(c: Dictionary) -> void:
 
 
 func _refresh_clamps() -> void:
-	_clear(_clamp_box)
+	Ui.clear(_clamp_box)
 	for i in _run["free_clamps"]:
 		var chip := ClampChip.new()
 		chip.pressed.connect(func() -> void: _drag.begin_clamp())

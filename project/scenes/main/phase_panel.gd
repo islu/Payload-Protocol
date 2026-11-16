@@ -53,8 +53,7 @@ func refresh() -> void:
 	var run: Dictionary = GameState.view()["run"]
 	if run.is_empty():
 		return
-	for b in _buttons.get_children():
-		b.queue_free()
+	Ui.clear(_buttons)
 	var lines := PackedStringArray()
 	match run["phase"]:
 		Defs.PHASE_PAYMENT:
