@@ -208,7 +208,7 @@ A special contract is a contract template with more fields. The contract board o
 - A long contract has a number of jumps: 2.
 - The contract board does not offer a long contract when the run has fewer jumps left than the contract needs. The jump of the station counts.
 - Its freight stays in the hold at the arrival of each jump but the last. It is not delivered, and it does not pay.
-- At the arrival of the last jump, the contract is delivered as other contracts (Section 16).
+- At the arrival of the last jump, the contract is delivered as other contracts (Section 16). Then it leaves the contract board, as other contracts.
 - The contract stays accepted at the stations between. The player can move its freight in the hold. Freight of the contract on the dock at the warp is breached (Section 15.4).
 - The station shows the contract with the jumps that are left.
 

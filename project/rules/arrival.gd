@@ -29,6 +29,8 @@ static func arrive(run: Run) -> void:
 			k.jumps_left -= 1
 			carried.append(k.id)
 			continue
+		# The contract is settled: a long contract leaves the board too (SPEC Section 30.2).
+		k.jumps_left = 0
 		var res := {
 			"client_name": k.template.client_name,
 			"pieces": [],

@@ -109,6 +109,39 @@ func test_long_on_dock_is_breached() -> void:
 	)
 
 
+## Takes a long contract to its last jump, and warps. The freight is in the hold, or
+## on the dock with on_dock (a breach: the contract fails).
+func _long_to_delivery(on_dock: bool) -> Contract:
+	var k := _long_to_next_station()
+	run.continue_run()
+	if run.phase == Defs.PHASE_EVENT:
+		run.choose_event(run.event.choices.size() - 1)
+	if on_dock:
+		eq(run.dock_cargo(k.cargo[0]), "", "move the freight to the dock")
+	run.hazard = PackedStringArray([Defs.DIR_DOWN])
+	run.incident = {}
+	eq(run.warp(), "", "warp to the last jump")
+	return k
+
+
+func test_long_leaves_after_delivery() -> void:
+	var k := _long_to_delivery(false)
+	run._offer_contracts()
+	check(
+		not k in run.contracts,
+		"after its delivery, a long contract leaves the board (SPEC Section 30.2)"
+	)
+
+
+func test_long_leaves_after_failure() -> void:
+	var k := _long_to_delivery(true)
+	run._offer_contracts()
+	check(
+		not k in run.contracts,
+		"after a delivery with a breach, a long contract leaves the board (SPEC Section 30.2)"
+	)
+
+
 ## Returns the template IDs that the station of a jump offers, over many seeds. The
 ## long contract is in each leg, so that only the jumps left decide.
 func _offers_at(leg: int, jump: int) -> Dictionary:
