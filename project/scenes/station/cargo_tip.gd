@@ -1,7 +1,8 @@
 class_name CargoTip
 extends PanelContainer
 ## The tooltip of a cargo (SPEC Section 8.4): its name, kind, weight, traits with
-## their rules, mass, and prices. It follows the mouse inside its parent.
+## their rules, mass, and prices. It shows the text of a mod card and of a contract
+## card too (SPEC Section 20.2). It follows the mouse inside its parent.
 
 const TIP_WEIGHT_TEXT := "{kind} · {weight} (weight {value})"
 const TIP_PAY_TEXT := "Pays {pay} at the arrival"
@@ -26,6 +27,11 @@ func _init() -> void:
 	for key in ["normal_font_size", "bold_font_size"]:
 		_label.add_theme_font_size_override(key, TextSize.BODY)
 	add_child(_label)
+
+
+## Returns the text of the tip, for the checks.
+func text() -> String:
+	return _label.text
 
 
 ## Shows the tooltip of a cargo view. view is GameState.view(): its names and terms.
@@ -73,6 +79,15 @@ func show_cargo(c: Dictionary, view: Dictionary) -> void:
 	if c.get("no_power", false):
 		lines.append("[color=#%s]%s[/color]" % [Palette.WARN.to_html(false), tr(NO_POWER_TEXT)])
 	_label.text = "\n".join(lines)
+	visible = true
+	reset_size()
+	_place()
+
+
+## Shows a title in bold, and lines of text below it: the details of a mod or of a
+## contract (SPEC Section 20.2).
+func show_text(title: String, lines: PackedStringArray) -> void:
+	_label.text = "\n".join(PackedStringArray(["[b]%s[/b]" % title]) + lines)
 	visible = true
 	reset_size()
 	_place()

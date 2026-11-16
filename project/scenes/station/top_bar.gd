@@ -3,7 +3,8 @@ extends HBoxContainer
 ## The top bar of the station: four groups (SPEC Section 20.2). (1) The leg, and a
 ## dot for each jump. (2) The credits, and a bar of the credits against the payment.
 ## (3) A bar of the hold mass, with a mark at the mass limit. (4) The environment.
-## It reads the run view only. The scene shows the values; it calculates none.
+## It reads the run view only. The scene shows the values; it calculates none. The
+## station shows the rule of the environment in its tip.
 
 const LEG_TEXT := "Leg {leg}/{legs}"
 const CREDITS_TEXT := "Credits: {credits}"
@@ -77,7 +78,6 @@ func set_view(run: Dictionary) -> void:
 		_env_icon.env = env["id"]
 		_env_icon.queue_redraw()
 		_env_name.text = tr(env["name"])
-		env_badge.tooltip_text = "%s: %s" % [tr(env["name"]), tr(env["text"])]
 
 
 func set_credits(value: int) -> void:

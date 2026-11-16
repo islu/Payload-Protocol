@@ -8,6 +8,10 @@ const MENU_TEXT := "Menu (Esc)"
 const SIZE := 56.0
 const TEETH := 8
 
+## The tip of the button. It is a child of the parent of the button, so that it can
+## show next to the button.
+var tip: CargoTip
+
 
 func _init() -> void:
 	name = "GearButton"
@@ -19,12 +23,14 @@ func _init() -> void:
 	offset_right = -20
 	offset_top = 20
 	offset_bottom = 20 + SIZE
-	tooltip_text = tr(MENU_TEXT)
+	tip = CargoTip.new()
+	mouse_entered.connect(func() -> void: tip.show_text(tr(MENU_TEXT), PackedStringArray()))
+	mouse_exited.connect(func() -> void: tip.visible = false)
+	visibility_changed.connect(func() -> void: tip.visible = tip.visible and visible)
 
 
-func _notification(what: int) -> void:
-	if what == NOTIFICATION_TRANSLATION_CHANGED:
-		tooltip_text = tr(MENU_TEXT)
+func _ready() -> void:
+	get_parent().add_child.call_deferred(tip)
 
 
 func _draw() -> void:

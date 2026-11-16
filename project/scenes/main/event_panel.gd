@@ -32,6 +32,9 @@ void fragment() {
 var choices: Array[Button] = []
 var speaker_portrait: TextureRect
 var speaker_name: Label
+## The tip of the panel: why a choice is disabled (SPEC Section 26.2). The station tip
+## is below the panel, so the panel has its own.
+var tip: CargoTip
 
 
 func _build() -> void:
@@ -47,6 +50,10 @@ func _build() -> void:
 	box.add_child(row)
 	row.add_child(_speaker(e["speaker"]))
 	row.add_child(_dialogue(e))
+	if tip == null:
+		tip = CargoTip.new()
+		add_child(tip)
+	tip.visible = false
 	for b in choices:
 		if not b.disabled:
 			b.grab_focus.call_deferred()
@@ -123,7 +130,10 @@ func _dialogue(e: Dictionary) -> Control:
 		b.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		b.add_theme_font_size_override("font_size", TextSize.BUTTON)
 		b.disabled = not c["can"]
-		b.tooltip_text = tr(c["why"])
+		var why := tr(c["why"])
+		if why != "":
+			b.mouse_entered.connect(func() -> void: tip.show_text(why, PackedStringArray()))
+			b.mouse_exited.connect(func() -> void: tip.visible = false)
 		b.pressed.connect(func() -> void: _pick(GameState.choose_event(index)))
 		col.add_child(b)
 		choices.append(b)

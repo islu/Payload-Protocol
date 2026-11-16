@@ -609,7 +609,7 @@ func _play_station(state: Node, station: StationScreen) -> void:
 		await UiCheckBay.check(self, state, station)
 	if not _contracts_checked:
 		_contracts_checked = true
-		await _check_contracts(station)
+		await UiCheckCards.check(self, station)
 	if not _shop_checked:
 		_shop_checked = true
 		_check_shop(station)
@@ -863,90 +863,6 @@ func _check_shop(station: StationScreen) -> void:
 		station._sell_mode == "idle",
 		"the end of a drag makes the sell area idle (SPEC Section 20.2)"
 	)
-
-
-## The contract cards and the dock (SPEC Section 20.2).
-func _check_contracts(station: StationScreen) -> void:
-	var run: Dictionary = GameState.view()["run"]
-	_check(
-		station._contract_cards.size() == run["contracts"].size(),
-		"the board shows a card for each contract (SPEC Section 20.2)"
-	)
-	var seen_open := false
-	var seen_accepted := false
-	for i in mini(station._contract_cards.size(), run["contracts"].size()):
-		var k: Dictionary = run["contracts"][i]
-		var card: ContractCard = station._contract_cards[i]
-		for g: Dictionary in k["groups"]:
-			_check(
-				"×%d" % g["count"] in card.text,
-				"a card shows each freight one time with ×N (SPEC Section 20.2)"
-			)
-		_check(
-			str(k["total_pay"]) in card.first_line and str(k["mass"]) in card.first_line,
-			"the first line shows the total pay and the mass (SPEC Section 20.2)"
-		)
-		_check(
-			"%d" % k["pieces"] in card.tooltip_text and str(k["pay"]) in card.tooltip_text,
-			"the details show the pieces and the pay for each piece (SPEC Section 20.2)"
-		)
-		var border: Color = card.get_theme_stylebox("panel").border_color
-		if k["accepted"]:
-			seen_accepted = true
-			_check(
-				border == Palette.ACCENT, "an accepted card has a bright border (SPEC Section 20.2)"
-			)
-			_check(
-				"%d/%d" % [k["loaded"], k["pieces"]] in card.text,
-				"an accepted card shows Loaded N/M (SPEC Section 20.2)"
-			)
-		else:
-			seen_open = true
-			_check(
-				border != Palette.ACCENT,
-				"a card that is not accepted has no bright border (SPEC Section 20.2)"
-			)
-			_check(
-				str(k["mass_after"]) in card.tooltip_text,
-				"the details show the mass after it is accepted (SPEC Section 20.2)"
-			)
-			var colors := {"ok": Palette.TEXT_DIM, "fee": Palette.WARN, "over": Palette.BAD}
-			var want: Color = colors[k["mass_state"]]
-			_check(
-				card.mass_color == want,
-				"the mass after is yellow above the limit and red above the maximum (SPEC Section 20.2)"
-			)
-	_check(seen_open and seen_accepted, "the check sees an open card and an accepted card")
-	_check(
-		str(run["dock"].size()) in station._dock_title.text,
-		"the dock title shows the number of cargo on the dock (SPEC Section 20.2)"
-	)
-	var chips := station._dock_flow.get_children().filter(
-		func(n: Node) -> bool: return n is CargoChip
-	)
-	_check(
-		chips.size() == run["dock"].size(),
-		"the dock shows each cargo on the dock (SPEC Section 20.2)"
-	)
-	if not chips.is_empty():
-		_check(
-			is_equal_approx(chips[0].cell, StationScreen.DOCK_CELL),
-			"the dock shows its cargo at 48 pixels for each cell (SPEC Section 20.2)"
-		)
-	# An empty dock is one line of text.
-	var saved: Array = station._run["dock"]
-	station._run["dock"] = []
-	var cargo: Array = station._run["cargo"]
-	station._run["cargo"] = cargo.filter(func(c: Dictionary) -> bool: return c["in_hold"])
-	station._refresh_dock()
-	await get_tree().process_frame
-	_check(
-		station._dock_panel.size.y < 70.0,
-		"an empty dock is one line: %d (SPEC Section 20.2)" % station._dock_panel.size.y
-	)
-	station._run["dock"] = saved
-	station._run["cargo"] = cargo
-	station._refresh_dock()
 
 
 ## The shape snaps to the cells under the cursor: the cell under the mouse is the

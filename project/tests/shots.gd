@@ -92,6 +92,13 @@ func _station() -> void:
 			mass += add
 	await _wait(0.5)
 	await _shot("04_station_accepted")
+	# The mouse on a contract card: its details in the tip (SPEC Section 20.2).
+	var board: StationScreen = _main.screen()
+	if not board._contract_cards.is_empty():
+		board._contract_cards[0].mouse_entered.emit()
+		await _wait(0.2)
+		await _shot("04b_contract_tip")
+		board._contract_cards[0].mouse_exited.emit()
 	GameState.load_all()
 	await _wait(0.5)
 	var station: StationScreen = _main.screen()

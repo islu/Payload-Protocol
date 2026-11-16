@@ -29,10 +29,21 @@ static func check(ui: Node, station: StationScreen) -> void:
 		"group 4 shows the environment of the leg, if it has one (SPEC Sections 20.2 and 28.1)"
 	)
 	if not env.is_empty():
+		bar.env_badge.mouse_entered.emit()
 		ui._check(
-			tr_text(env["text"]) in bar.env_badge.tooltip_text,
+			station._tip.visible and tr_text(env["text"]) in station._tip.text(),
 			"the mouse on the badge shows the rule of the environment (SPEC Section 28.1)"
 		)
+		bar.env_badge.mouse_exited.emit()
+		var tag := station._hazard_box.find_child("Environment", false, false) as Control
+		if tag != null:
+			tag.mouse_entered.emit()
+			ui._check(
+				station._tip.visible and tr_text(env["text"]) in station._tip.text(),
+				"the mouse on the environment tag shows its rule (SPEC Section 28.1)"
+			)
+			tag.mouse_exited.emit()
+		ui._check(not station._tip.visible, "the tip hides when the mouse leaves")
 	var xs := []
 	for g: Control in bar.groups:
 		if g.visible:

@@ -115,6 +115,7 @@ func _build() -> void:
 	_top_bar = TopBar.new()
 	top.add_child(_top_bar)
 	_credits_label = _top_bar.credits_label
+	_tip_on(_top_bar.env_badge, _env_tip)
 
 	var body := HBoxContainer.new()
 	body.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -200,6 +201,7 @@ func _build() -> void:
 	bottom.add_theme_constant_override("separation", 16)
 	center.add_child(bottom)
 	_mod_bar = ModBar.new()
+	_mod_bar.station = self
 	bottom.add_child(_mod_bar)
 	var hint := _label(bottom, HINT_TEXT, TextSize.SMALL, Palette.TEXT_DIM)
 	hint.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
@@ -394,7 +396,8 @@ func _refresh_hazard() -> void:
 	_clear(_hazard_box)
 	# The environment and the incident come before the shift steps (SPEC Sections 28.1 and 29.3).
 	if not _run.get("environment", {}).is_empty():
-		RouteCards.env_tag(_hazard_box, _run["environment"])
+		var tag := RouteCards.env_tag(_hazard_box, _run["environment"])
+		_tip_on(tag, _env_tip)
 	if not _run.get("incident", {}).is_empty():
 		RouteCards.incident_card(_hazard_box, _run["incident"])
 	var i := 0
@@ -650,6 +653,32 @@ func _on_hold_hovered(id: int) -> void:
 func _show_tip(c: Dictionary) -> void:
 	if not _drag.is_active():
 		_tip.show_cargo(c, _view)
+
+
+## The tip of the environment of the leg: its name and its rule (SPEC Section 28.1).
+func _env_tip() -> Array:
+	var env: Dictionary = _run.get("environment", {})
+	if env.is_empty():
+		return ["", PackedStringArray()]
+	return [tr(env["name"]), PackedStringArray([tr(env["text"])])]
+
+
+## Shows the tip on a control while the mouse is on it. text gives [title, lines] at
+## that time, so that the tip shows the values now.
+func _tip_on(control: Control, text: Callable) -> void:
+	control.mouse_filter = Control.MOUSE_FILTER_STOP
+	control.mouse_entered.connect(
+		func() -> void:
+			var t: Array = text.call()
+			_show_text_tip(t[0], t[1])
+	)
+	control.mouse_exited.connect(_hide_tip)
+
+
+## Shows the tip with a title and lines of text, when no drag is active (SPEC Section 20.2).
+func _show_text_tip(title: String, lines: PackedStringArray) -> void:
+	if not _drag.is_active():
+		_tip.show_text(title, lines)
 
 
 func _hide_tip() -> void:

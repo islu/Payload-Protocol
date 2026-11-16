@@ -6,6 +6,8 @@ extends HBoxContainer
 
 ## The card of each mod, in the order of the view. The checks read them.
 var cards: Array[PanelContainer] = []
+## The station: its tip shows the name and the rule of the mod under the mouse.
+var station: StationScreen
 
 
 func _init() -> void:
@@ -22,7 +24,6 @@ func set_mods(mods: Array, hover: Callable) -> void:
 	for m: Dictionary in mods:
 		var card := PanelContainer.new()
 		card.mouse_filter = Control.MOUSE_FILTER_STOP
-		card.tooltip_text = "%s: %s" % [tr(m["name"]), tr(m["text"])]
 		var style := StyleBoxFlat.new()
 		style.bg_color = Palette.PANEL
 		style.border_color = Palette.ACCENT
@@ -32,7 +33,19 @@ func set_mods(mods: Array, hover: Callable) -> void:
 		card.add_theme_stylebox_override("panel", style)
 		card.add_child(ModIcon.new(m["id"], 32.0))
 		var id: String = m["id"]
-		card.mouse_entered.connect(func() -> void: hover.call(id))
-		card.mouse_exited.connect(func() -> void: hover.call(""))
+		var title := tr(m["name"])
+		var rule := PackedStringArray([tr(m["text"])])
+		card.mouse_entered.connect(
+			func() -> void:
+				hover.call(id)
+				if station != null:
+					station._show_text_tip(title, rule)
+		)
+		card.mouse_exited.connect(
+			func() -> void:
+				hover.call("")
+				if station != null:
+					station._hide_tip()
+		)
 		add_child(card)
 		cards.append(card)

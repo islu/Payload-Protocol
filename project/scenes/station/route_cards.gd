@@ -20,14 +20,11 @@ static func incident_text(inc: Dictionary) -> String:
 	)
 
 
-## Adds a tag with the name of the environment. The mouse on it shows its rule.
+## Adds a tag with the name of the environment. The station shows its rule in its tip
+## when the mouse is on it.
 static func env_tag(parent: Control, env: Dictionary) -> PanelContainer:
 	var tag := _tag(Palette.WARN)
 	tag.name = "Environment"
-	tag.tooltip_text = (
-		"%s: %s"
-		% [TranslationServer.translate(env["name"]), TranslationServer.translate(env["text"])]
-	)
 	var l := Label.new()
 	l.text = TranslationServer.translate(env["name"])
 	l.add_theme_font_size_override("font_size", TextSize.SMALL)

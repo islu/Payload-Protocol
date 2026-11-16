@@ -2,8 +2,8 @@ class_name ContractCard
 extends PanelContainer
 ## A contract card of the station (SPEC Section 20.2). The first line has the client,
 ## the total pay, and the mass. The second line has the freight groups and the bonus.
-## The mouse on the card shows the details: the pieces, the pay for each piece, the
-## rules of the traits, and the mass after it is accepted.
+## The mouse on the card shows the details in the tip of the station: the pieces, the
+## pay for each piece, the rules of the traits, and the mass after it is accepted.
 
 const ACCEPT_TEXT := "Accept"
 const CANCEL_TEXT := "Cancel"
@@ -65,14 +65,23 @@ func setup(station: StationScreen, k: Dictionary) -> void:
 	if (k.get("penalty", 0) > 0 or k.get("jumps", 1) > 1) and not k["accepted"]:
 		style.border_color = RouteCards.INCIDENT_COLOR
 	details.append_array(_trait_rules(k["groups"]))
-	tooltip_text = "\n".join(details)
 	var counts := PackedStringArray()
 	for g: Dictionary in k["groups"]:
 		counts.append(tr(COUNT_TEXT).format(g))
-	text = "\n".join([head, " ".join(counts + tags), tooltip_text])
+	text = "\n".join([head, " ".join(counts + tags), "\n".join(details)])
 	var index: int = k["index"]
-	mouse_entered.connect(func() -> void: screen._set_hover_contract(index))
-	mouse_exited.connect(func() -> void: screen._set_hover_contract(-1))
+	var title := tr(k["client_name"])
+	# The details show in the tip of the station (SPEC Section 20.2).
+	mouse_entered.connect(
+		func() -> void:
+			screen._set_hover_contract(index)
+			screen._show_text_tip(title, details)
+	)
+	mouse_exited.connect(
+		func() -> void:
+			screen._set_hover_contract(-1)
+			screen._hide_tip()
+	)
 
 
 ## The first line: the client, the total pay, the mass, and the state or the button.

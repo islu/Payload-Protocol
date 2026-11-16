@@ -6,13 +6,19 @@ extends RefCounted
 
 ## The gear button at the top right opens the pause menu (SPEC Sections 20.2 and 20.7).
 static func gear(ui: Node, main: Control) -> void:
-	var button: Button = main.gear
+	var button: GearButton = main.gear
 	var screen := ui.get_viewport().get_visible_rect().size
 	var center := button.get_global_rect().get_center()
 	ui._check(
 		button.is_visible_in_tree() and center.x > screen.x * 0.9 and center.y < screen.y * 0.1,
 		"the station has a gear button at the top right (SPEC Section 20.2)"
 	)
+	button.mouse_entered.emit()
+	ui._check(
+		button.tip.visible and ui.tr(GearButton.MENU_TEXT) in button.tip.text(),
+		"the mouse on the gear button shows what it does"
+	)
+	button.mouse_exited.emit()
 	button.pressed.emit()
 	await ui.get_tree().process_frame
 	var opened: Node = null
@@ -110,16 +116,21 @@ static func choose(ui: Node, main: Control) -> void:
 		)
 		for i in mini(bar.cards.size(), run["mods"].size()):
 			var m: Dictionary = run["mods"][i]
-			ui._check(
-				TranslationServer.translate(m["text"]) in bar.cards[i].tooltip_text,
-				"the mouse on a mod card shows its rule (SPEC Section 20.2)"
-			)
 			bar.cards[i].mouse_entered.emit()
+			ui._check(
+				(
+					station._tip.visible
+					and TranslationServer.translate(m["text"]) in station._tip.text()
+					and TranslationServer.translate(m["name"]) in station._tip.text()
+				),
+				"the mouse on a mod card shows its name and its rule at once (SPEC Section 20.2)"
+			)
 			ui._check(
 				station._hold.hover_mod == m["id"],
 				"the mouse on a mod card marks its area on the hold (SPEC Section 20.2)"
 			)
 			bar.cards[i].mouse_exited.emit()
+			ui._check(not station._tip.visible, "the tip hides when the mouse leaves the card")
 		for id in Defs.MODS:
 			ui._check(ModIcon.has_icon(id), "the mod %s has an icon (SPEC Section 20.2)" % id)
 		ui._check(
@@ -196,6 +207,13 @@ static func _check_event(ui: Node, panel: EventPanel, event: Dictionary) -> void
 			panel.choices[i].disabled != bool(want[i]["can"]),
 			"a choice that costs more than the credits is disabled (SPEC Section 20.8)"
 		)
+		if not want[i]["can"]:
+			panel.choices[i].mouse_entered.emit()
+			ui._check(
+				panel.tip.visible and ui.tr(want[i]["why"]) in panel.tip.text(),
+				"the mouse on a disabled choice shows why (SPEC Section 26.2)"
+			)
+			panel.choices[i].mouse_exited.emit()
 	for id: String in DataFiles.catalog().speakers:
 		var path := EventPanel.PORTRAIT_PATH % id
 		ui._check(ResourceLoader.exists(path), "the speaker %s has a portrait (content.md)" % id)
