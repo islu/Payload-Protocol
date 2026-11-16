@@ -108,6 +108,7 @@ func _station() -> void:
 	await _wait(0.4)
 	await _shot("05_station_loaded")
 	station._drag.end()
+	await _drag_blocked(station)
 	station._hide_tip()
 	var pause: Overlay = _main.open_overlay(PauseMenu.new())
 	pause.add_child(SettingsPanel.new())
@@ -162,3 +163,23 @@ func _warp() -> void:
 		await _wait(0.3)
 	await _wait(1.0)
 	await _shot("08_report")
+
+
+## A cargo of the hold over another one: the red cells, the red frame, and the ghost
+## (SPEC Section 8.3).
+func _drag_blocked(station: StationScreen) -> void:
+	var placed: Array = GameState.view()["run"]["cargo"].filter(
+		func(c: Dictionary) -> bool: return c["in_hold"]
+	)
+	if placed.size() < 2:
+		return
+	var a: Dictionary = placed[0]
+	var b: Dictionary = placed[1]
+	var hold := station._hold
+	var s: Dictionary = a["rotations"][a["rot"]][0]
+	var at := Vector2(a["x"] + s["x"], a["y"] + s["y"]) + Vector2(0.5, 0.5)
+	station._drag.begin_cargo(b["id"], UiCheckDrag._grab(station, b["id"]))
+	station._drag.update(hold.global_position + hold.grid_origin() + at * hold.cell)
+	await _wait(0.3)
+	await _shot("05b_drag_blocked")
+	station._drag.end()

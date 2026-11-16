@@ -99,7 +99,7 @@ A cargo can have more than one trait.
 - During a drag over the hold or the shock bay, the shape snaps to the cells under the cursor.
 - A drop is not valid when a cell of the shape is outside the area under the cursor (the hold or the shock bay), or when a cell has a different cargo.
 - The preview shows each cell of the shape. A free cell is green. A cell outside the area, or a cell with a different cargo, is red. Each cargo in the way has a red frame.
-- When the drop is not valid, a faint ghost shows the nearest valid place within 1 cell, in the rotation now, if one exists.
+- When the drop is not valid, a faint ghost shows the nearest valid place within 1 cell, in the rotation now, if one exists. The game tries the places in the order of Section 8.2.
 - After a valid drop, the cargo goes to those cells, and the game plays the clack sound.
 - After a drop over the hold or the shock bay that is not valid, the player keeps the cargo. The game plays the deny sound, and the cargo shakes.
 - Esc, or a drop outside the hold and the shock bay, puts the held cargo back in its last place.

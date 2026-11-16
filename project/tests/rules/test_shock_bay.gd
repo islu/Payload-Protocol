@@ -233,3 +233,19 @@ func test_view() -> void:
 			cv = c
 	check(cv["in_bay"] and not cv["in_hold"], "the cargo view says the area (SPEC Section 31.2)")
 	eq(v["shop"]["bay"]["after"], {"columns": 3, "rows": 2}, "the next size is 3×2")
+
+
+func test_drop_preview_in_bay() -> void:
+	_bay()
+	var bar := on_dock("bar")
+	var p := RunView.drop_preview(run, bar.id, Vector2i(1, 0), 0, true)
+	eq(
+		p["cells"][1],
+		{"cell": Vector2i(2, 0), "free": false},
+		"a cell outside the shock bay is not free (SPEC Sections 8.3 and 31.1)"
+	)
+	eq(
+		p["nearest"],
+		Vector2i(0, 0),
+		"the ghost shows the nearest place in the shock bay (SPEC Sections 8.3 and 31.1)"
+	)

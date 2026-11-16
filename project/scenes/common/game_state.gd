@@ -75,6 +75,14 @@ func can_place(id: int, x: int, y: int, rot: int, to_bay := false) -> bool:
 	return run != null and run.can_place(id, Vector2i(x, y), rot, to_bay)
 
 
+## Returns the preview of a drop of a cargo at a place: each cell, the cargo in the
+## way, and the nearest valid place (SPEC Section 8.3).
+func drop_preview(id: int, x: int, y: int, rot: int, to_bay := false) -> Dictionary:
+	if run == null:
+		return {}
+	return RunView.drop_preview(run, id, Vector2i(x, y), rot, to_bay)
+
+
 ## Returns the links that a drop of a cargo at a place would make (SPEC Section 8.3).
 func preview_links(id: int, x: int, y: int, rot: int, to_bay := false) -> Array:
 	if run == null:

@@ -24,6 +24,8 @@ static func check(ui: Node, state: Node, station: StationScreen) -> void:
 		station._drag.begin_cargo(c["id"], grab)
 		station._drag.update()
 		station._drag.drop_at(at)
+		# A drop from the dock picks up the next cargo (SPEC Section 8.2): put it back.
+		station._drag.end()
 		await ui.get_tree().process_frame
 		var moved := false
 		for d: Dictionary in state.view()["run"]["cargo"]:

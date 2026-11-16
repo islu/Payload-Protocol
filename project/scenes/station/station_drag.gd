@@ -112,9 +112,10 @@ func rotate() -> void:
 
 
 ## Moves the drag to the mouse, and shows the preview over the hold or the shock bay
-## (SPEC Sections 8.3 and 31.1).
-func update() -> void:
-	var mouse := _screen.get_global_mouse_position()
+## (SPEC Sections 8.3 and 31.1). The UI check gives the global position of the mouse.
+func update(mouse := Vector2.INF) -> void:
+	if mouse == Vector2.INF:
+		mouse = _screen.get_global_mouse_position()
 	_screen._drag_layer.queue_redraw()
 	var target := _target(mouse)
 	for view: HoldView in [_screen._hold, _screen._bay]:
@@ -125,18 +126,13 @@ func update() -> void:
 		return
 	var to_bay := target.bay
 	var origin := target.snap_origin(mouse, state["grab"])
-	var c := _screen._cargo(state["id"])
-	var cells: Array[Vector2i] = []
-	for s: Dictionary in c["rotations"][state["rot"]]:
-		cells.append(origin + Vector2i(s["x"], s["y"]))
 	var id: int = state["id"]
 	var rot: int = state["rot"]
-	target.preview = {
-		"cells": cells,
-		"ok": GameState.can_place(id, origin.x, origin.y, rot, to_bay),
-		"links": GameState.preview_links(id, origin.x, origin.y, rot, to_bay),
-		"id": id,
-	}
+	var p := GameState.drop_preview(id, origin.x, origin.y, rot, to_bay)
+	p["origin"] = origin
+	p["id"] = id
+	p["links"] = GameState.preview_links(id, origin.x, origin.y, rot, to_bay)
+	target.preview = p
 	target.queue_redraw()
 
 
@@ -180,13 +176,31 @@ func drop_at(mouse: Vector2) -> void:
 		var origin := target.snap_origin(mouse, drag["grab"])
 		var err := GameState.place_cargo(id, origin.x, origin.y, drag["rot"], target.bay)
 		_screen._act(err, "clack")
-		# A picked-up cargo from the dock: pick up the next one (SPEC Section 8.2).
-		if err == "" and drag["held"] and drag["from_dock"]:
+		if err != "":
+			_keep(drag)
+		# A cargo from the dock: pick up the next one, after a drag and after a pick
+		# up. A setting turns it off (SPEC Sections 8.2 and 23.1).
+		elif drag["from_dock"] and Settings.get_value("pick_next"):
 			_pick_next()
 	# A drop anywhere else leaves the cargo in its last place (SPEC Section 8.3).
 
 
-## Picks up the next cargo on the dock after a placement by clicks (SPEC Section 8.2).
+## After a drop over the hold or the shock bay that is not valid, the player keeps the
+## cargo: it follows the mouse, and it shakes (SPEC Section 8.3).
+func _keep(drag: Dictionary) -> void:
+	state = drag
+	state["held"] = true
+	_screen._hold.dragging = drag["id"]
+	_screen._bay.dragging = drag["id"]
+	var c := _screen._cargo(drag["id"])
+	_screen._show_sell(c)
+	_screen._drag_layer.start(c, c["rotations"][drag["rot"]], drag["grab"])
+	_screen._drag_layer.shake()
+	update()
+	_screen._update_marks()
+
+
+## Picks up the next cargo on the dock after a placement from the dock (SPEC Section 8.2).
 func _pick_next() -> void:
 	# refresh() set the run of the screen for this action already.
 	var dock: Array = _screen._run["dock"]

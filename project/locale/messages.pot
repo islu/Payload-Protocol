@@ -346,6 +346,10 @@ msgid "Hints"
 msgstr ""
 
 #: project/scenes/main/settings_panel.gd
+msgid "Pick up the next cargo"
+msgstr ""
+
+#: project/scenes/main/settings_panel.gd
 msgid "Language"
 msgstr ""
 

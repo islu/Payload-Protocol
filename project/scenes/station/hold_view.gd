@@ -37,7 +37,8 @@ var links: Array = []
 ## The cells to mark: the zone of a bonus, or the freight of a contract.
 var zone: Array = []
 var marked: Array = []
-## The preview of a drop: {cells: [Vector2i], ok: bool}, or empty.
+## The preview of a drop, or empty: the drop_preview of GameState (ok, cells, blocking,
+## nearest), with origin (the place under the mouse), id, and links (SPEC Section 8.3).
 var preview: Dictionary = {}
 ## The ID of the cargo that the player drags. It shows faded in its old place.
 var dragging := -1
@@ -288,25 +289,12 @@ func _draw() -> void:
 					3.0
 				)
 	# The cargo under the mouse: a bright frame on its cells (SPEC Section 4.2).
-	var framed := frame_cells()
-	for p in framed:
-		var r := Rect2(o + Vector2(p) * cell, Vector2(cell, cell))
-		for d: Vector2i in Shapes.EDGE_NEIGHBORS:
-			if p + d in framed:
-				continue
-			var a := r.get_center() + (Vector2(d) - Vector2(d.y, d.x).abs()) * cell / 2.0
-			var b := r.get_center() + (Vector2(d) + Vector2(d.y, d.x).abs()) * cell / 2.0
-			draw_line(a - Vector2(d) * 2.0, b - Vector2(d) * 2.0, Palette.ACCENT, 3.0)
+	_draw_outline(o, frame_cells(), Palette.ACCENT)
 	for wall in front_walls:
 		_draw_front_wall(o, wall)
 	_draw_links(o)
 	if not preview.is_empty():
-		_draw_preview_links(o)
-		var color: Color = Palette.GOOD if preview["ok"] else Palette.BAD
-		for p: Vector2i in preview["cells"]:
-			var r := Rect2(o + Vector2(p) * cell, Vector2(cell, cell)).grow(-2)
-			draw_rect(r, Color(color, 0.25))
-			draw_rect(r, color, false, 2.0)
+		_draw_preview(o)
 
 
 func _draw_links(o: Vector2) -> void:
@@ -325,11 +313,56 @@ func _draw_links(o: Vector2) -> void:
 		draw_line(o + _center(a), o + _center(b), color, 3.0)
 
 
+## Draws an outline around a group of cells.
+func _draw_outline(o: Vector2, cells: Array[Vector2i], color: Color) -> void:
+	for p in cells:
+		var r := Rect2(o + Vector2(p) * cell, Vector2(cell, cell))
+		for d: Vector2i in Shapes.EDGE_NEIGHBORS:
+			if p + d in cells:
+				continue
+			var a := r.get_center() + (Vector2(d) - Vector2(d.y, d.x).abs()) * cell / 2.0
+			var b := r.get_center() + (Vector2(d) + Vector2(d.y, d.x).abs()) * cell / 2.0
+			draw_line(a - Vector2(d) * 2.0, b - Vector2(d) * 2.0, color, 3.0)
+
+
+## Draws the preview of a drop (SPEC Section 8.3): each cell green when it is free and
+## red when it is not, a red frame on each cargo in the way, and a faint ghost at the
+## nearest valid place.
+func _draw_preview(o: Vector2) -> void:
+	_draw_preview_links(o)
+	for e: Dictionary in preview["cells"]:
+		var color: Color = Palette.GOOD if e["free"] else Palette.BAD
+		var r := Rect2(o + Vector2(e["cell"]) * cell, Vector2(cell, cell)).grow(-2)
+		draw_rect(r, Color(color, 0.25))
+		draw_rect(r, color, false, 2.0)
+	for id: int in preview.get("blocking", []):
+		var c := _cargo(id)
+		var cells: Array[Vector2i] = []
+		for s: Dictionary in c.get("shape", []):
+			cells.append(Vector2i(c["x"] + s["x"], c["y"] + s["y"]))
+		_draw_outline(o, cells, Palette.BAD)
+	for p in ghost_cells():
+		var r := Rect2(o + Vector2(p) * cell, Vector2(cell, cell)).grow(-6)
+		draw_rect(r, Color(Palette.GOOD, 0.1))
+		draw_rect(r, Color(Palette.GOOD, 0.45), false, 2.0)
+
+
+## Returns the cells of the ghost at the nearest valid place, or [] (SPEC Section 8.3).
+func ghost_cells() -> Array[Vector2i]:
+	var out: Array[Vector2i] = []
+	if preview.is_empty() or preview.get("nearest") == null:
+		return out
+	var shift: Vector2i = preview["nearest"] - preview["origin"]
+	for e: Dictionary in preview["cells"]:
+		out.append(e["cell"] + shift)
+	return out
+
+
 ## Draws the links that the drop would make, from the preview cells (SPEC Section 8.3).
 func _draw_preview_links(o: Vector2) -> void:
 	var sum := Vector2.ZERO
-	for p: Vector2i in preview["cells"]:
-		sum += Vector2(p) + Vector2(0.5, 0.5)
+	for e: Dictionary in preview["cells"]:
+		sum += Vector2(e["cell"]) + Vector2(0.5, 0.5)
 	var at: Vector2 = sum / preview["cells"].size() * cell
 	for l: Dictionary in preview.get("links", []):
 		var other_id: int = l["to"] if l["from"] == preview["id"] else l["from"]

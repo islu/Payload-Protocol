@@ -369,6 +369,10 @@ msgid "Hints"
 msgstr "提示"
 
 #: project/scenes/main/settings_panel.gd
+msgid "Pick up the next cargo"
+msgstr "自動拿起下一件貨物"
+
+#: project/scenes/main/settings_panel.gd
 msgid "Language"
 msgstr "語言"
 

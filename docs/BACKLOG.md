@@ -58,8 +58,6 @@ This file keeps each problem that is found and not fixed yet. Each item is in on
 
 The UI and UX change of 2026-11-14 (/game-design) is in the spec. Do the items in this order: the rules first, then a playtest, then the screens.
 
-- **[UX · Scenes] The drag feedback** (found 2026-11-14, by /code-review; decided 2026-11-14, by /game-design). SPEC Sections 8.2, 8.3, and 23.1: the player keeps the cargo after a bad drop over the hold; the preview colors each cell and frames the cargo in the way, with a ghost of the nearest valid place; a drag also picks up the next cargo, with a setting.
-  To do                 Fix: change `StationDrag` and `HoldView`. Add the setting to `Settings` and the settings panel. Add checks to `ui_check`.
 - **[UX · Scenes] The warp checklist, the pilot box, and the contract cards** (found 2026-11-14, by /game-design). SPEC Section 20.2: the checklist above the Warp button, the wide pilot box above the hold, and the short contract cards with the details on the mouse.
   To do                 Fix: add the checklist values to `RunView` if the view does not have them. Change `StationScreen` and `ContractCard`.
 

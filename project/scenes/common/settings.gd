@@ -13,6 +13,8 @@ const DEFAULTS := {
 	"fullscreen": false,
 	"locale": "en",
 	"hints": true,
+	# Pick up the next cargo of the dock after a placement (SPEC Sections 8.2 and 23.1).
+	"pick_next": true,
 	# The progress of the hints (SPEC Section 23.3).
 	"hints_seen": [],
 	"runs_started": 0,

@@ -313,6 +313,33 @@ static func links(run: Run) -> Array:
 	return out
 
 
+## Returns the preview of a drop of a cargo at a place in the hold, or in the shock bay
+## with to_bay (SPEC Section 8.3): {ok, cells: [{cell, free}], blocking: [cargo IDs],
+## nearest}. A cell is not free when it is outside the area or has a different cargo.
+## nearest is the first valid place 1 cell away, in the order of Section 8.2, when the
+## drop is not valid. Else it is null.
+static func drop_preview(run: Run, id: int, pos: Vector2i, rot: int, to_bay := false) -> Dictionary:
+	var out := {"ok": false, "cells": [], "blocking": [], "nearest": null}
+	if not run.cargo.has(id) or rot < 0 or rot > 3:
+		return out
+	var c: Cargo = run.cargo[id]
+	var occ := run.occupancy(to_bay)
+	var area := run.bay_size if to_bay else Vector2i(run.columns, run.rows)
+	for cell in Shapes.cells_at(c.def.shape, rot, pos):
+		var inside := cell.x >= 0 and cell.y >= 0 and cell.x < area.x and cell.y < area.y
+		var other: int = occ.get(cell, id)
+		out["cells"].append({"cell": cell, "free": inside and other == id})
+		if other != id and not other in out["blocking"]:
+			out["blocking"].append(other)
+	out["ok"] = run.can_place(id, pos, rot, to_bay)
+	if not out["ok"]:
+		for kick in Run.ROTATE_KICKS:
+			if kick != Vector2i.ZERO and run.can_place(id, pos + kick, rot, to_bay):
+				out["nearest"] = pos + kick
+				break
+	return out
+
+
 ## Returns the links that a cargo would make at a place in the hold: the links
 ## with that cargo only (SPEC Section 8.3). It returns [] when the drop is not valid.
 ## It puts the cargo at the place, reads the links, and puts it back.

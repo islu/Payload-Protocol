@@ -619,6 +619,7 @@ func _play_station(state: Node, station: StationScreen) -> void:
 		await _check_language(station)
 		# A new language builds the station again (SPEC Section 23.1).
 		station = main.screen()
+	UiCheckDrag.check(self, station)
 	_check_chain(station)
 	await get_tree().process_frame
 	run = state.view()["run"]

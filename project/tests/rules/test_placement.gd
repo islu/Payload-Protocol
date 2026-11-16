@@ -224,3 +224,53 @@ func test_load_all_rotates() -> void:
 		[true, 1, Vector2i(5, 0)],
 		"Load all tries the next rotations (SPEC Section 8.1)"
 	)
+
+
+func test_drop_preview_marks_each_cell() -> void:
+	var box := put("box", 1, 0)
+	var c := on_dock("bar")
+	var p := RunView.drop_preview(run, c.id, Vector2i(0, 0), 0)
+	eq(
+		p["cells"],
+		[{"cell": Vector2i(0, 0), "free": true}, {"cell": Vector2i(1, 0), "free": false}],
+		"the preview marks each cell: free, or with a different cargo (SPEC Section 8.3)"
+	)
+	eq(p["ok"], false, "the drop is not valid (SPEC Section 8.3)")
+	eq(p["blocking"], [box.id], "the preview names each cargo in the way (SPEC Section 8.3)")
+
+
+func test_drop_preview_cell_outside() -> void:
+	var c := on_dock("bar")
+	var p := RunView.drop_preview(run, c.id, Vector2i(5, 0), 0)
+	eq(
+		p["cells"][1],
+		{"cell": Vector2i(6, 0), "free": false},
+		"a cell outside the hold is not free (SPEC Section 8.3)"
+	)
+	eq(p["blocking"], [], "a cell outside has no cargo in the way (SPEC Section 8.3)")
+
+
+func test_drop_preview_nearest_in_kick_order() -> void:
+	put("box", 2, 2)
+	var c := on_dock("box")
+	var p := RunView.drop_preview(run, c.id, Vector2i(2, 2), 0)
+	eq(
+		p["nearest"],
+		Vector2i(1, 2),
+		"left and right fit: the ghost is at the left, in the order of Section 8.2 (SPEC Section 8.3)"
+	)
+
+
+func test_drop_preview_no_nearest() -> void:
+	for y in range(1, 4):
+		for x in range(1, 4):
+			put("box", x, y)
+	var c := on_dock("box")
+	var p := RunView.drop_preview(run, c.id, Vector2i(2, 2), 0)
+	eq(p["nearest"], null, "with no valid place within 1 cell, no ghost shows (SPEC Section 8.3)")
+
+
+func test_drop_preview_valid_has_no_ghost() -> void:
+	var c := on_dock("bar")
+	var p := RunView.drop_preview(run, c.id, Vector2i(0, 0), 0)
+	eq([p["ok"], p["nearest"]], [true, null], "a valid drop shows no ghost (SPEC Section 8.3)")

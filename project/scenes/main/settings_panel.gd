@@ -10,6 +10,7 @@ const SHAKE_TEXT := "Screen shake"
 const WARP_SPEED_TEXT := "Warp speed 2×"
 const FULLSCREEN_TEXT := "Fullscreen"
 const HINTS_TEXT := "Hints"
+const PICK_NEXT_TEXT := "Pick up the next cargo"
 const LANGUAGE_TEXT := "Language"
 const BACK_TEXT := "Back"
 const LANGUAGE_NAMES := {"en": "English", "zh_TW": "繁體中文"}
@@ -34,6 +35,7 @@ func _build() -> void:
 	if not OS.has_feature("web"):
 		_toggle(FULLSCREEN_TEXT, "fullscreen")
 	_toggle(HINTS_TEXT, "hints")
+	_toggle(PICK_NEXT_TEXT, "pick_next")
 	var row := HBoxContainer.new()
 	box.add_child(row)
 	var label := Label.new()
