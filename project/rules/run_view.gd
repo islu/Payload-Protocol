@@ -50,6 +50,18 @@ static func jolt_risks(run: Run) -> Dictionary:
 	return out
 
 
+## Returns the warp checklist (SPEC Section 20.2): the fuel fee, the number of cargo on
+## the dock, the number of cargo with a wall jolt warning, and the kind of the incident
+## of the jump ("" with no incident).
+static func checklist(run: Run) -> Dictionary:
+	return {
+		"fee": run.fuel_fee(),
+		"dock": run.dock.size(),
+		"jolts": jolt_risks(run).size(),
+		"incident": str(run.incident.get("kind", "")),
+	}
+
+
 ## Returns the hazard of the next jump: each step is {directions, fork, known}.
 ## A step that is not a fork has one direction, and known is that direction. A fork
 ## step has two directions. Its known is "" unless a Sensor is in the hold (SPEC Section 18).
@@ -171,6 +183,7 @@ static func view(run: Run) -> Dictionary:
 		"event": event(run),
 		"environment": environment(run),
 		"incident": incident(run),
+		"checklist": checklist(run),
 	}
 	var ids := run.cargo.keys()
 	ids.sort()

@@ -32,7 +32,7 @@ description: Conventions of the Payload Protocol rules layer (project/rules) and
 | `shift.gd` | `Shift.step()` (the hold only: the shock bay does not shift; `Run.warp()` puts its cargo views in `warp.bay`): power, slide, hits (with the wall jolt of SPEC Section 10.4: a hit with `jolt: true`), reactions (each with its lost pay `loss` and its number in the chain `chain`, SPEC Section 21.5), `Shift.incident()` (the incident before the first step, SPEC Section 29), blast area, shields. It returns the event log of the step |
 | `arrival.gd` | `Arrival.arrive()`: spoil, delivery, bonus, breach, the report, the line event |
 | `run_record.gd` | `RunRecord`: the seed and each action that worked (a `Callable` on the `Run`). `undo()` plays the run again from the seed with no last action, back to the arrival at the station (SPEC Section 20.2). |
-| `run_view.gd` | `RunView.view()`: the plain data that the UI reads. `hazard()` hides the direction of a fork step unless a Sensor is in the hold. `drop_preview()` and `preview_links()` give the preview of a drag (SPEC Section 8.3). |
+| `run_view.gd` | `RunView.view()`: the plain data that the UI reads. `hazard()` hides the direction of a fork step unless a Sensor is in the hold. `drop_preview()` and `preview_links()` give the preview of a drag (SPEC Section 8.3). `checklist()` gives the warp checklist (SPEC Section 20.2). |
 
 `scenes/common/game_state.gd` (the autoload `GameState`) and `scenes/common/data_files.gd` (`DataFiles`) are the only places that read files and own a `Run`.
 

@@ -382,6 +382,7 @@ msgid "No Battery next to it: no power."
 msgstr ""
 
 #: project/scenes/station/cargo_tip.gd
+#: project/scenes/station/contract_card.gd
 msgid "Mass {mass}"
 msgstr ""
 
@@ -396,6 +397,10 @@ msgstr ""
 #: project/scenes/station/contract_card.gd
 #: project/scenes/warp/report_panel.gd
 msgid "×{count}"
+msgstr ""
+
+#: project/scenes/station/contract_card.gd
+msgid "{total} cr"
 msgstr ""
 
 #: project/scenes/station/contract_card.gd
@@ -423,11 +428,23 @@ msgid "Bonus +{pay}: {text}"
 msgstr ""
 
 #: project/scenes/station/contract_card.gd
+msgid "Bonus +{pay}"
+msgstr ""
+
+#: project/scenes/station/contract_card.gd
 msgid "VIP · Penalty {penalty} if a piece is not delivered"
 msgstr ""
 
 #: project/scenes/station/contract_card.gd
+msgid "VIP"
+msgstr ""
+
+#: project/scenes/station/contract_card.gd
 msgid "Long · Delivered after {jumps} jumps"
+msgstr ""
+
+#: project/scenes/station/contract_card.gd
+msgid "Long · {jumps}"
 msgstr ""
 
 #: project/scenes/station/contract_card.gd
@@ -618,6 +635,38 @@ msgstr ""
 
 #: project/scenes/station/top_bar.gd
 msgid "Too heavy: {max} at most"
+msgstr ""
+
+#: project/scenes/station/warp_checklist.gd
+msgid "Fuel fee: {fee} cr"
+msgstr ""
+
+#: project/scenes/station/warp_checklist.gd
+msgid "No fuel fee"
+msgstr ""
+
+#: project/scenes/station/warp_checklist.gd
+msgid "Dock: {count} cargo left"
+msgstr ""
+
+#: project/scenes/station/warp_checklist.gd
+msgid "Dock empty"
+msgstr ""
+
+#: project/scenes/station/warp_checklist.gd
+msgid "Wall jolt: {count} cargo"
+msgstr ""
+
+#: project/scenes/station/warp_checklist.gd
+msgid "No wall jolt"
+msgstr ""
+
+#: project/scenes/station/warp_checklist.gd
+msgid "Incident: {text}"
+msgstr ""
+
+#: project/scenes/station/warp_checklist.gd
+msgid "No incident"
 msgstr ""
 
 #: project/scenes/warp/report_panel.gd

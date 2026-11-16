@@ -5,6 +5,7 @@ class_name UiCheckTopBar
 
 static func check(ui: Node, station: StationScreen) -> void:
 	var run: Dictionary = GameState.view()["run"]
+	_check_list(ui, station, run)
 	var bar: TopBar = station._top_bar
 	ui._check(
 		[bar.dots.total, bar.dots.current] == [run["jumps"], run["jump"]],
@@ -45,3 +46,34 @@ static func check(ui: Node, station: StationScreen) -> void:
 
 static func tr_text(key: String) -> String:
 	return TranslationServer.translate(key)
+
+
+## The warp checklist above the Warp button (SPEC Section 20.2): 4 rows, each with the
+## value of view.run.checklist, and a warning when it is not clear.
+static func _check_list(ui: Node, station: StationScreen, run: Dictionary) -> void:
+	var list: WarpChecklist = station._checklist
+	var c: Dictionary = run["checklist"]
+	ui._check(
+		list.global_position.y < station._warp_button.global_position.y,
+		"the warp checklist is above the Warp button (SPEC Section 20.2)"
+	)
+	ui._check(
+		list.warnings == [c["fee"] > 0, c["dock"] > 0, c["jolts"] > 0, c["incident"] != ""],
+		"each row of the checklist warns when it is not clear (SPEC Section 20.2)"
+	)
+	ui._check(
+		c["fee"] == 0 or str(c["fee"]) in list.rows[0].text,
+		"the checklist shows the fuel fee (SPEC Section 20.2)"
+	)
+	ui._check(
+		c["dock"] == 0 or str(c["dock"]) in list.rows[1].text,
+		"the checklist shows the cargo on the dock (SPEC Section 20.2)"
+	)
+	ui._check(
+		c["jolts"] == 0 or str(c["jolts"]) in list.rows[2].text,
+		"the checklist shows the cargo with a wall jolt warning (SPEC Section 20.2)"
+	)
+	ui._check(
+		c["incident"] == "" or RouteCards.incident_text(run["incident"]) in list.rows[3].text,
+		"the checklist shows the incident of the jump (SPEC Sections 20.2 and 29.3)"
+	)

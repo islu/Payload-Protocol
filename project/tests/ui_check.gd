@@ -883,8 +883,12 @@ func _check_contracts(station: StationScreen) -> void:
 				"a card shows each freight one time with ×N (SPEC Section 20.2)"
 			)
 		_check(
-			str(k["total_pay"]) in card.text and str(k["pieces"]) in card.text,
-			"a card shows the pieces and the total pay (SPEC Section 20.2)"
+			str(k["total_pay"]) in card.first_line and str(k["mass"]) in card.first_line,
+			"the first line shows the total pay and the mass (SPEC Section 20.2)"
+		)
+		_check(
+			"%d" % k["pieces"] in card.tooltip_text and str(k["pay"]) in card.tooltip_text,
+			"the details show the pieces and the pay for each piece (SPEC Section 20.2)"
 		)
 		var border: Color = card.get_theme_stylebox("panel").border_color
 		if k["accepted"]:
@@ -903,8 +907,8 @@ func _check_contracts(station: StationScreen) -> void:
 				"a card that is not accepted has no bright border (SPEC Section 20.2)"
 			)
 			_check(
-				str(k["mass_after"]) in card.text,
-				"a card shows the mass after it is accepted (SPEC Section 20.2)"
+				str(k["mass_after"]) in card.tooltip_text,
+				"the details show the mass after it is accepted (SPEC Section 20.2)"
 			)
 			var colors := {"ok": Palette.TEXT_DIM, "fee": Palette.WARN, "over": Palette.BAD}
 			var want: Color = colors[k["mass_state"]]

@@ -21,7 +21,7 @@ This file keeps each problem that is found and not fixed yet. Each item is in on
 
 ## To Decide
 
-- **[Balance · Data] Kit with no mass, the new mods, and the shock bay** (found 2026-11-14, by /game-design). The first values of the change of SPEC Sections 25, 27.2, and 31: kit mass 0, "within 2 cells" for Array Power and Cryo Line, Padded Walls -1, and the shock bay 2×2 for 20 and 3×2 for 30. Check in a playtest after the To Do items below: does the player fill the hold with Shields and Batteries, does someone still select Padded Walls, and is the shock bay always the first purchase?
+- **[Balance · Data] Kit with no mass, the new mods, and the shock bay** (found 2026-11-14, by /game-design). The first values of the change of SPEC Sections 25, 27.2, and 31: kit mass 0, "within 2 cells" for Array Power and Cryo Line, Padded Walls -1, and the shock bay 2×2 for 20 and 3×2 for 30. Check in a playtest: does the player fill the hold with Shields and Batteries, does someone still select Padded Walls, and is the shock bay always the first purchase?
 
 - **[Balance · Data] Environments, incidents, and special contracts** (found 2026-11-14, by /game-design). The first values of SPEC Sections 28 to 30: Low Gravity 2 cells, the meteor force 3, the incident chance 50% in leg 2 and 100% in leg 3, the VIP penalty, and the long contract pay. Check in a playtest: is leg 3 too hard with an incident at each jump, and does Low Gravity make leg 2 too easy?
 
@@ -55,11 +55,6 @@ This file keeps each problem that is found and not fixed yet. Each item is in on
 - **[Balance · Data] The 24 new freight** (found 2026-11-13, by /game-design). The themes medical, contraband, weapons, robots, and Earth relics added 24 freight and 21 contracts. Check in the next playtest: is the Black Market pay (about 1.5 times) worth the risk, and is the Mech Suit (heavy, Thruster, a square) a wall that is always best?
 
 ## To Do
-
-The UI and UX change of 2026-11-14 (/game-design) is in the spec. Do the items in this order: the rules first, then a playtest, then the screens.
-
-- **[UX · Scenes] The warp checklist, the pilot box, and the contract cards** (found 2026-11-14, by /game-design). SPEC Section 20.2: the checklist above the Warp button, the wide pilot box above the hold, and the short contract cards with the details on the mouse.
-  To do                 Fix: add the checklist values to `RunView` if the view does not have them. Change `StationScreen` and `ContractCard`.
 
 - **[Balance · Data] The offer rate of the new contracts** (found 2026-11-14, by /playtest seed 22). The 3 personas saw 27 stations, and only `greenhouse` was offered (once). `prosthetics` and `warp_core` were not offered. The pay of `prosthetics` (now 4 each) and `greenhouse` (now 13 each) changed from the data, not from play. `warp_core` (24 + 10) pays 5.7 for each point of mass, more than the leg 3 median 4.7, but a wall jolt explodes it.
   To do                 Fix: count the offers of each contract over many seeds, and play the 3 contracts in a playtest.

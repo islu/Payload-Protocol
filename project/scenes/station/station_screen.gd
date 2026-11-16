@@ -51,6 +51,8 @@ var _hold: HoldView
 var _bay: HoldView
 ## The top bar: the leg, the credits, the mass, and the environment (SPEC Section 20.2).
 var _top_bar: TopBar
+## The warp checklist above the Warp button (SPEC Section 20.2).
+var _checklist: WarpChecklist
 ## The credits of the top bar: the gold sparkle of a coin goes there (SPEC Section 21.4).
 var _credits_label: Label
 ## The mod bar below the hold (SPEC Section 20.2).
@@ -230,11 +232,13 @@ func _build() -> void:
 	var spacer := Control.new()
 	spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	right.add_child(spacer)
+	_checklist = WarpChecklist.new()
+	right.add_child(_checklist)
 	# Undo takes back the last action at this station (SPEC Section 20.2).
 	_undo_button = _button(right, tr(UNDO_TEXT), _undo, false)
 	_warp_button = Button.new()
 	_warp_button.text = tr(WARP_TEXT)
-	_warp_button.custom_minimum_size = Vector2(0, 90)
+	_warp_button.custom_minimum_size = Vector2(0, 72)
 	_warp_button.add_theme_font_size_override("font_size", 40)
 	_warp_button.pressed.connect(_on_warp_pressed)
 	right.add_child(_warp_button)
@@ -312,6 +316,7 @@ func refresh() -> void:
 	if _run.is_empty() or not _run["phase"] in STATION_PHASES:
 		return
 	_top_bar.set_view(_run)
+	_checklist.set_view(_run)
 	_count_credits(_run["credits"])
 	# The Warp button does not work over the maximum mass (SPEC Section 25).
 	_warp_button.disabled = _run["mass"]["hold"] > _run["mass"]["max"]

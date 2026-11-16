@@ -405,6 +405,7 @@ msgid "No Battery next to it: no power."
 msgstr "旁邊沒有電池：沒有電力。"
 
 #: project/scenes/station/cargo_tip.gd
+#: project/scenes/station/contract_card.gd
 msgid "Mass {mass}"
 msgstr "載重 {mass}"
 
@@ -420,6 +421,10 @@ msgstr "取消"
 #: project/scenes/warp/report_panel.gd
 msgid "×{count}"
 msgstr "×{count}"
+
+#: project/scenes/station/contract_card.gd
+msgid "{total} cr"
+msgstr "{total} 點"
 
 #: project/scenes/station/contract_card.gd
 msgid "{pieces} pieces · Pay {pay} each · Total {total}"
@@ -446,12 +451,24 @@ msgid "Bonus +{pay}: {text}"
 msgstr "獎金 +{pay}：{text}"
 
 #: project/scenes/station/contract_card.gd
+msgid "Bonus +{pay}"
+msgstr "獎金 +{pay}"
+
+#: project/scenes/station/contract_card.gd
 msgid "VIP · Penalty {penalty} if a piece is not delivered"
 msgstr "VIP · 任何一件沒送達就罰款 {penalty}"
 
 #: project/scenes/station/contract_card.gd
+msgid "VIP"
+msgstr "VIP"
+
+#: project/scenes/station/contract_card.gd
 msgid "Long · Delivered after {jumps} jumps"
 msgstr "長程 · {jumps} 次跳躍後才交貨"
+
+#: project/scenes/station/contract_card.gd
+msgid "Long · {jumps}"
+msgstr "長程 · {jumps}"
 
 #: project/scenes/station/contract_card.gd
 msgid "On its way · {jumps} jump(s) left"
@@ -646,6 +663,38 @@ msgstr "燃料費 {fee}"
 #: project/scenes/station/top_bar.gd
 msgid "Too heavy: {max} at most"
 msgstr "超重：最多 {max}"
+
+#: project/scenes/station/warp_checklist.gd
+msgid "Fuel fee: {fee} cr"
+msgstr "燃料費：{fee} 點"
+
+#: project/scenes/station/warp_checklist.gd
+msgid "No fuel fee"
+msgstr "沒有燃料費"
+
+#: project/scenes/station/warp_checklist.gd
+msgid "Dock: {count} cargo left"
+msgstr "碼頭還有 {count} 件貨物"
+
+#: project/scenes/station/warp_checklist.gd
+msgid "Dock empty"
+msgstr "碼頭已清空"
+
+#: project/scenes/station/warp_checklist.gd
+msgid "Wall jolt: {count} cargo"
+msgstr "撞牆震動：{count} 件貨物"
+
+#: project/scenes/station/warp_checklist.gd
+msgid "No wall jolt"
+msgstr "沒有撞牆震動"
+
+#: project/scenes/station/warp_checklist.gd
+msgid "Incident: {text}"
+msgstr "事故：{text}"
+
+#: project/scenes/station/warp_checklist.gd
+msgid "No incident"
+msgstr "沒有事故"
 
 #: project/scenes/warp/report_panel.gd
 msgid "Arrival"
