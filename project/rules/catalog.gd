@@ -58,6 +58,8 @@ var events: Array[EventDef] = []
 var mods: Dictionary = {}
 ## The name and the rule text of each environment: {name, text} by ID (SPEC Section 28).
 var environments: Dictionary = {}
+## The speakers of the events (SPEC Section 20.8): {name} by ID.
+var speakers: Dictionary = {}
 
 
 ## Makes a catalog from the parsed data: {rules, terms, cargo, contracts, lines}.
@@ -90,6 +92,11 @@ static func from_data(data: Dictionary) -> Catalog:
 		var e := EventDef.from_dict(files[name])
 		cat._check_id(e.id, name, "event")
 		cat.events.append(e)
+	files = data.get("speakers", {})
+	for name: String in _sorted(files):
+		var m: Dictionary = files[name]
+		cat._check_id(str(m.get("id", "")), name, "speaker")
+		cat.speakers[name] = {"name": str(m.get("name", ""))}
 	files = data.get("mods", {})
 	for name: String in _sorted(files):
 		var m: Dictionary = files[name]
@@ -218,6 +225,9 @@ func _check() -> void:
 	for e in Defs.LINE_EVENTS:
 		if lines.get(e, PackedStringArray()).size() < MIN_LINES:
 			_fail("lines: the event %s needs %d lines at least" % [e, MIN_LINES])
+	for id: String in speakers:
+		if speakers[id]["name"] == "":
+			_fail("speaker %s: it needs a name" % id)
 	for e in events:
 		_check_event(e)
 	for id in Defs.MODS:
@@ -354,6 +364,8 @@ func _check_contract(t: ContractTemplate) -> void:
 func _check_event(e: EventDef) -> void:
 	if e.name == "" or e.text == "":
 		_fail("event %s: it needs a name and a text" % e.id)
+	if not speakers.has(e.speaker):
+		_fail("event %s: the speaker %s is not a speaker" % [e.id, e.speaker])
 	if e.choices.size() < 2 or e.choices.size() > 3:
 		_fail("event %s: 2 or 3 choices" % e.id)
 	var free := false

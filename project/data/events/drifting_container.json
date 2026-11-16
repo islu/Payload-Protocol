@@ -2,6 +2,7 @@
 	"id": "drifting_container",
 	"name": "Drifting Container",
 	"text": "A lost container drifts past. Some of it is still good.",
+	"speaker": "dock_worker",
 	"choices": [
 		{
 			"text": "Haul it in.",

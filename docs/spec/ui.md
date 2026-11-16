@@ -94,11 +94,12 @@ The warp:
 
 ### 20.8 Event
 
-- When a station with an event opens, the event shows in a panel at the center, above the station (Section 26).
-- The panel shows the portrait and the name of the speaker at its left. Each event names its speaker. The speakers are a small set of characters, for example a pirate and a mechanic (content.md).
-- The panel shows the name, the text, and a button for each choice. Each button shows the text of the choice, its cost, and its effects.
+- When a station with an event opens, the event shows at the center, above the dark station (Section 26).
+- The speaker stands at the left of the dialogue box, outside a frame. Each event names its speaker. The speakers are a small set of characters, for example a pirate and a mechanic (content.md).
+- All speakers have the same proportions: their heads have the same size and are at the same height. Each speaker fades out at the bottom edge of the dialogue box.
+- The dialogue box shows the name of the speaker, the name of the event, its text, and a button for each choice. Each button shows the text of the choice, its cost, and its effects.
 - A choice that the player cannot select is disabled (Section 26.2).
-- The player cannot use the station until the player selects a choice.
+- The player cannot use the station until the player selects a choice. Esc and the gear button do nothing.
 
 ### 20.9 Mod Choice
 

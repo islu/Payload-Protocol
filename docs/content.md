@@ -12,6 +12,7 @@ This file has the design rules of the game content. The data files in `project/d
 | Contract templates, by leg | `contracts/` |
 | Pilot lines, by event | `lines/` |
 | Station events and their choices | `events/` |
+| The speakers of the events: the name of each character (SPEC Section 20.8) | `speakers/` |
 | The name and the rule text of each mod. The rule is in the code (SPEC Section 27.2). | `mods/` |
 | The name and the rule text of each route environment. The rule is in the code (SPEC Section 28.2). | `environments/` |
 
@@ -112,7 +113,7 @@ The first content has 43 freight and 6 kit. The freight has themes: supplies, te
 - A choice text tells what the player does. The screen shows the cost and the effects next to it.
 - A contract that only an event gives has `"legs": []`. Give it more pay than an offered contract of the same size: the player did not plan for it.
 - Use the effects of SPEC Section 26.2 only. A new kind of effect needs a code change.
-- Each event names its speaker: one of the characters with a portrait (SPEC Section 20.8). Use a speaker that exists. A new speaker needs a new portrait.
+- Each event names its speaker: one of the characters with a portrait (SPEC Section 20.8). Use a speaker of `speakers/`. A new speaker needs a portrait of the upper body or the full body: add it to `tools/art/speaker_art.json` with the height of its head, and run `task art`.
 
 ## Pilot Lines
 

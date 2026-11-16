@@ -265,7 +265,12 @@ func _render(run: Run) -> void:
 
 
 func _render_event(e: Dictionary) -> void:
-	_say("EVENT: %s. %s Command: choose <n>" % [e["name"], e["text"]])
+	_say(
+		(
+			"EVENT: %s (%s speaks). %s Command: choose <n>"
+			% [e["name"], e["speaker"]["name"], e["text"]]
+		)
+	)
 	for c: Dictionary in e["choices"]:
 		var notes := PackedStringArray()
 		if c["cost"] > 0:

@@ -2,6 +2,7 @@
 	"id": "pirate_demand",
 	"name": "Pirate Demand",
 	"text": "Pirates block the route. They want credits, or they shoot.",
+	"speaker": "pirate",
 	"choices": [
 		{
 			"text": "Pay them.",

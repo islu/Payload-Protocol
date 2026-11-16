@@ -2,6 +2,7 @@
 	"id": "smuggler_offer",
 	"name": "Smuggler's Offer",
 	"text": "A smuggler needs a quiet ship. The pay is good. The cargo is not.",
+	"speaker": "smuggler",
 	"choices": [
 		{
 			"text": "Take the job.",

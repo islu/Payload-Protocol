@@ -2,6 +2,7 @@
 	"id": "distress_call",
 	"name": "Distress Call",
 	"text": "A stranded freighter calls for help. Its crew offers what it can.",
+	"speaker": "stranded_crew",
 	"choices": [
 		{
 			"text": "Give them fuel. They give you a ship part.",

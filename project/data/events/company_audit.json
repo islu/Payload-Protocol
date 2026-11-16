@@ -2,6 +2,7 @@
 	"id": "company_audit",
 	"name": "Company Audit",
 	"text": "The company checks your books. An early payment makes it happy.",
+	"speaker": "auditor",
 	"choices": [
 		{
 			"text": "Pay early.",

@@ -1,0 +1,26 @@
+{
+	"auditor": {
+		"source": "sorted/cyberpunk/cyberpunk-corpo-executive-suit-implants-sleek_20260218_055312.png",
+		"head": 36
+	},
+	"dock_worker": {
+		"source": "sorted/cyberpunk/cyberpunk-mechanic-grease-jumpsuit-wrench-cyber_20260218_060946.png",
+		"head": 27
+	},
+	"mechanic": {
+		"source": "sorted/steampunk/steampunk-lady-inventor-goggles-corset-wrench_20260217_122651.png",
+		"head": 56
+	},
+	"pirate": {
+		"source": "sorted/cyberpunk/cyberpunk-mercenary-heavy-weapons-armor-scarred_20260218_061103.png",
+		"head": 30
+	},
+	"smuggler": {
+		"source": "sorted/cyberpunk/cyberpunk-smuggler-dark-hoodie-hidden-weapons_20260218_061007.png",
+		"head": 42
+	},
+	"stranded_crew": {
+		"source": "sorted/cyberpunk-assets/characters/cyber-nomad-wasteland-wanderer-road-027-v2-2026-03-07T18-21-35.png",
+		"head": 42
+	}
+}

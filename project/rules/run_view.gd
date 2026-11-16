@@ -470,7 +470,14 @@ static func event(run: Run) -> Dictionary:
 				}
 			)
 		)
-	return {"id": run.event.id, "name": run.event.name, "text": run.event.text, "choices": choices}
+	var speaker: Dictionary = run.cat.speakers[run.event.speaker]
+	return {
+		"id": run.event.id,
+		"name": run.event.name,
+		"text": run.event.text,
+		"speaker": {"id": run.event.speaker, "name": speaker["name"]},
+		"choices": choices,
+	}
 
 
 static func _effect(run: Run, f: Dictionary) -> Dictionary:

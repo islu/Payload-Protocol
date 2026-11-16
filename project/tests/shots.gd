@@ -118,10 +118,12 @@ func _station() -> void:
 
 
 ## The warp, image by image, and the arrival report.
-## The mod choice (SPEC Section 20.9), and the station with the tag of the mod.
+## The event with its speaker (SPEC Section 20.8), the mod choice (SPEC Section 20.9),
+## and the station with the tag of the mod.
 func _mod_choice() -> void:
 	var run: Dictionary = GameState.view()["run"]
 	if run["phase"] == Defs.PHASE_EVENT:
+		await _shot("09_event")
 		GameState.choose_event(run["event"]["choices"].size() - 1)
 	StationEvents.offer_mods(GameState._record.run)
 	GameState.state_changed.emit()

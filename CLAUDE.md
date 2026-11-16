@@ -2,7 +2,7 @@
 
 Payload Protocol is a single-player puzzle game about cargo in the hold of a spaceship. The player packs freight into a grid. Each warp shifts the hold: cargo slides, hits, breaks, explodes, and leaks (SPEC Section 1).
 
-**Status:** The rules of Sections 5 to 19, the events of Section 26, the mods of Section 27, the environments and incidents of Sections 28 and 29, and the special contracts of Section 30 are in the code, with tests and a text player. All screens of Section 20 are in the code: the title, the station, the warp with the arrival report, the payment screen and the run end (`PhasePanel`), the pause menu with its gear button, the event and the mod choice (`ChoicePanel`), the settings, How to Play with pictures, and the hints of the first runs. The effects of Section 21, the placeholder sounds, the CRT filter, the trait icons, and the zh-TW text are in the code. One CC0 music loop plays on all screens. The spec change of 2026-11-14 (the new station layout) is not in the code yet: see the To Do items of [docs/BACKLOG.md](docs/BACKLOG.md).
+**Status:** The rules of Sections 5 to 19, the events of Section 26, the mods of Section 27, the environments and incidents of Sections 28 and 29, and the special contracts of Section 30 are in the code, with tests and a text player. All screens of Section 20 are in the code: the title, the station, the warp with the arrival report, the payment screen and the run end (`PhasePanel`), the pause menu with its gear button, the event with its speaker (`EventPanel`) and the mod choice (`ChoicePanel`), the settings, How to Play with pictures, and the hints of the first runs. The effects of Section 21, the placeholder sounds, the CRT filter, the trait icons, and the zh-TW text are in the code. One CC0 music loop plays on all screens. The spec change of 2026-11-14 (the new station layout) is not in the code yet: see the To Do items of [docs/BACKLOG.md](docs/BACKLOG.md).
 
 [docs/spec.md](docs/spec.md) is the source of truth for game design. If the code and the spec do not agree, ask the user. Do not change the spec without approval. [docs/content.md](docs/content.md) has the content design rules.
 
@@ -64,7 +64,7 @@ task shots        # Take screenshots of each screen into shots/ (a window opens)
 task i18n         # Collect the text for translation into project/locale/
 task sfx          # Make the placeholder sounds in project/audio/sfx
 task fx           # Make the effect sheets in project/art/fx with pixelfx (tools/fx/fx.json)
-task art          # Make the cargo images in project/art/cargo and project/icon.png from FreePixel images (tools/art/cargo_art.json)
+task art          # Make the cargo images, the speaker portraits, and project/icon.png from FreePixel images (tools/art/)
 task fmt          # Format the GDScript code and the JSON data (tab indentation)
 task lint         # Lint the GDScript code, and check the format
 task check        # Run lint, test, test:ui, and smoke
@@ -76,13 +76,13 @@ task check:quiet  # Run task check. Print only the failures. The full output is 
 ```text
 project/rules/        # The game rules: pure GDScript classes. Run is the state and the actions.
 project/scenes/       # Scenes and scripts by feature. common/game_state.gd is the autoload GameState.
-project/data/         # Game content (JSON): rules.json, terms.json, cargo/, contracts/, lines/, events/, mods/, environments/
+project/data/         # Game content (JSON): rules.json, terms.json, cargo/, contracts/, lines/, events/, speakers/, mods/, environments/
 project/tests/        # run_tests.gd, TestCase, the rule tests in tests/rules/test_*.gd, and ui_check.tscn
 project/tools/        # play.gd, the text player
 project/locale/       # messages.pot (made by task i18n) and the .po file for each language
 project/audio/sfx/    # The sounds. tools/sfx/make_sfx.py makes the placeholders.
-tools/                # i18n/i18n.py, sfx/make_sfx.py, fmt_json/fmt_json.py (Python through uv), fx/ (Node: make_fx.mjs, fx.json, effects/), art/ (import_art.py, cargo_art.json)
-project/art/          # Font, theme, fx/ (the effect sheets of task fx), cargo/ (the cargo images of task art)
+tools/                # i18n/i18n.py, sfx/make_sfx.py, fmt_json/fmt_json.py (Python through uv), fx/ (Node: make_fx.mjs, fx.json, effects/), art/ (import_art.py, cargo_art.json, speaker_art.json)
+project/art/          # Font, theme, fx/ (the effect sheets of task fx), cargo/ and speakers/ (the cargo images and the portraits of task art)
 docs/                 # spec.md (index) and spec/ (the spec by topic), content.md, BACKLOG.md, assets.md
 docs/notes/           # Notes that are not in git (the first draft)
 ```

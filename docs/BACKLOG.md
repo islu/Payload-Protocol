@@ -58,8 +58,6 @@ This file keeps each problem that is found and not fixed yet. Each item is in on
 
 The UI and UX change of 2026-11-14 (/game-design) is in the spec. Do the items in this order: the rules first, then a playtest, then the screens.
 
-- **[UX · Data] The speakers of the events** (found 2026-11-14, by /game-design). SPEC Section 20.8 and content.md: 5 or 6 characters (for example a pirate, a mechanic, a smuggler, a company auditor, and a crew in distress), each with a pixel portrait. Each event names its speaker.
-  To do                 Fix: add the speakers to the data with their portraits, a `speaker` field in each event and its `Catalog` check, and the portrait in `ChoicePanel`.
 - **[UX · Scenes] The drag feedback** (found 2026-11-14, by /code-review; decided 2026-11-14, by /game-design). SPEC Sections 8.2, 8.3, and 23.1: the player keeps the cargo after a bad drop over the hold; the preview colors each cell and frames the cargo in the way, with a ghost of the nearest valid place; a drag also picks up the next cargo, with a setting.
   To do                 Fix: change `StationDrag` and `HoldView`. Add the setting to `Settings` and the settings panel. Add checks to `ui_check`.
 - **[UX · Scenes] The warp checklist, the pilot box, and the contract cards** (found 2026-11-14, by /game-design). SPEC Section 20.2: the checklist above the Warp button, the wide pilot box above the hold, and the short contract cards with the details on the mouse.

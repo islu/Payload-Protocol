@@ -37,7 +37,7 @@ To open the project in the Godot Project Manager, import `project/project.godot`
 | `task i18n` | Collect the text for translation into `project/locale/` |
 | `task sfx` | Make the placeholder sounds |
 | `task fx` | Make the effect sheets with pixelfx |
-| `task art` | Make the cargo images and the project icon from FreePixel images |
+| `task art` | Make the cargo images, the speaker portraits, and the project icon from FreePixel images |
 | `task fmt` | Format the GDScript code |
 | `task lint` | Lint the GDScript code, and check the format |
 | `task check` | Run lint, the tests, the UI check, and smoke |

@@ -96,7 +96,7 @@ tasks:
       - node tools/fx/make_fx.mjs .local/pixelfx project/art/fx
 
   art:
-    desc: Make the cargo images in project/art/cargo from FreePixel images (tools/art/cargo_art.json). Then run task import.
+    desc: Make the cargo images in project/art/cargo and the speaker portraits in project/art/speakers from FreePixel images (tools/art/). Then run task import.
     cmds:
       - uv run --no-project --with pillow==11.3.0 python tools/art/import_art.py
 

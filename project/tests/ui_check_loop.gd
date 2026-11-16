@@ -56,43 +56,50 @@ static func losses(ui: Node, warp: WarpScreen) -> bool:
 ## (SPEC Sections 20.8 and 20.9).
 static func choose(ui: Node, main: Control) -> void:
 	var run: Dictionary = GameState.view()["run"]
-	var panel: ChoicePanel = main.choice
-	ui._check(panel != null, "the %s shows in a panel (SPEC Sections 20.8 and 20.9)" % run["phase"])
-	ui._check(
-		main.screen() is StationScreen, "the station shows behind the panel (SPEC Section 20.8)"
-	)
 	ui._check(
 		not main.gear.visible,
-		"the gear button hides while the player must select (SPEC Section 20.8)"
-	)
-	if panel == null:
-		return
-	var want: Array = (
-		run["event"]["choices"] if run["phase"] == Defs.PHASE_EVENT else run["mod_offer"]
+		"the gear button hides while the player must select (SPEC Sections 20.8 and 20.9)"
 	)
 	ui._check(
-		panel.choices.size() == want.size(),
-		"the panel has a button for each choice (SPEC Sections 20.8 and 20.9)"
+		main.screen() is StationScreen,
+		"the station shows behind the panel (SPEC Sections 20.8 and 20.9)"
 	)
-	if run["phase"] == Defs.PHASE_MOD:
+	var buttons: Array[Button] = []
+	if run["phase"] == Defs.PHASE_EVENT:
+		var event_panel := main.choice as EventPanel
+		ui._check(event_panel != null, "the event shows in a panel (SPEC Section 20.8)")
+		if event_panel == null:
+			return
+		buttons = event_panel.choices
+		_check_event(ui, event_panel, run["event"])
+	else:
+		var panel := main.choice as ChoicePanel
+		ui._check(panel != null, "the mod choice shows in a panel (SPEC Section 20.9)")
+		if panel == null:
+			return
+		buttons = panel.choices
+		var want: Array = run["mod_offer"]
+		ui._check(
+			buttons.size() == want.size(), "the panel has a card for each mod (SPEC Section 20.9)"
+		)
 		var icons: Array = panel.mod_icons.map(func(m: ModIcon) -> String: return m.mod)
 		var ids: Array = want.map(func(m: Dictionary) -> String: return m["id"])
 		ui._check(
 			icons == ids, "each mod card has the icon of its mod: %s (SPEC Section 20.9)" % [icons]
 		)
-	if run["phase"] == Defs.PHASE_EVENT:
-		for i in want.size():
-			ui._check(
-				panel.choices[i].disabled != bool(want[i]["can"]),
-				"a choice that costs more than the credits is disabled (SPEC Section 20.8)"
-			)
+	var was_event: bool = run["phase"] == Defs.PHASE_EVENT
 	var mods: int = run["mods"].size()
-	for b in panel.choices:
+	for b in buttons:
 		if not b.disabled:
 			b.pressed.emit()
 			break
 	await ui.get_tree().process_frame
 	run = GameState.view()["run"]
+	if was_event:
+		ui._check(
+			run["phase"] == Defs.PHASE_EVENT or not main.choice is EventPanel,
+			"after the choice of an event, the panel closes (SPEC Section 20.8)"
+		)
 	if run["phase"] == Defs.PHASE_STATION and main.screen() is StationScreen:
 		var station: StationScreen = main.screen()
 		station.refresh()
@@ -157,3 +164,43 @@ static func route_warp(ui: Node, warp: WarpScreen) -> void:
 			warp.incident_shown == RouteCards.incident_text(inc),
 			"the warp shows the incident in a banner (SPEC Section 29.3)"
 		)
+
+
+## Checks the event panel: the speaker, the dialogue, and a button for each choice
+## (SPEC Section 20.8). Each speaker of the data has a portrait.
+static func _check_event(ui: Node, panel: EventPanel, event: Dictionary) -> void:
+	var speaker: Dictionary = event["speaker"]
+	var portrait := panel.speaker_portrait
+	ui._check(
+		portrait != null and portrait.texture != null,
+		"the event panel shows the portrait of %s (SPEC Section 20.8)" % speaker["id"]
+	)
+	ui._check(
+		panel.speaker_name != null and panel.speaker_name.text == ui.tr(speaker["name"]),
+		"the dialogue box shows the name of the speaker (SPEC Section 20.8)"
+	)
+	# The heads have the same size (task art), and the top of each portrait is the top
+	# of the head: the same height shows for each speaker (SPEC Section 20.8).
+	if portrait != null and portrait.texture != null:
+		ui._check(
+			portrait.texture.get_height() == EventPanel.FIGURE_HEIGHT,
+			"the head of the speaker is at the same height for each speaker (SPEC Section 20.8)"
+		)
+	var want: Array = event["choices"]
+	ui._check(
+		panel.choices.size() == want.size(),
+		"the dialogue box has a button for each choice (SPEC Section 20.8)"
+	)
+	for i in mini(want.size(), panel.choices.size()):
+		ui._check(
+			panel.choices[i].disabled != bool(want[i]["can"]),
+			"a choice that costs more than the credits is disabled (SPEC Section 20.8)"
+		)
+	for id: String in DataFiles.catalog().speakers:
+		var path := EventPanel.PORTRAIT_PATH % id
+		ui._check(ResourceLoader.exists(path), "the speaker %s has a portrait (content.md)" % id)
+		if ResourceLoader.exists(path):
+			ui._check(
+				load(path).get_height() >= EventPanel.FIGURE_HEIGHT,
+				"the portrait of %s reaches the bottom of the dialogue box (SPEC Section 20.8)" % id
+			)

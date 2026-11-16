@@ -15,9 +15,11 @@ const MUSIC_PATH := "res://audio/music/vintage_menu.ogg"
 
 ## The gear button of the station and the warp (SPEC Section 20.7).
 var gear: GearButton
-## The event or the mod choice on top of the station (SPEC Sections 20.8 and 20.9).
-var choice: ChoicePanel
-## The phase and the event of the choice now, so that a new choice builds a new panel.
+## The event or the mod choice on top of the station (SPEC Sections 20.8 and 20.9):
+## an EventPanel or a ChoicePanel.
+var choice: Overlay
+## The phase and the event or the mods of the choice now, so that a new choice builds
+## a new panel.
 var _choice_key := ""
 var _screen: Control
 var _screen_kind := ""
@@ -92,7 +94,7 @@ func _update_choice(run: Dictionary) -> void:
 		choice.queue_free()
 		choice = null
 	if key != "":
-		choice = ChoicePanel.new()
+		choice = EventPanel.new() if phase == Defs.PHASE_EVENT else ChoicePanel.new()
 		open_overlay(choice)
 
 

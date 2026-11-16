@@ -16,6 +16,14 @@ For each cargo, the tool:
    image in dark gray, for scrap), and <id>.json ({"shape": the cells of the shape}).
 
 It also makes the project icon project/icon.png from the "_icon" entry of the table.
+
+tools/art/speaker_art.json has an entry for each speaker ID (SPEC Section 20.8):
+  {"source": "<path at the FreePixel CDN>", "head": <the height of the head in pixels>,
+   "crop": [x, y, w, h]}
+"source" and "head" are necessary. "head" is the height from the top of the figure to
+the chin in the source image. The tool crops the image to the figure and scales it so
+that each head is HEAD_SIZE pixels high: all speakers have the same proportions. It
+writes <id>.png to project/art/speakers.
 """
 
 import json
@@ -33,6 +41,11 @@ CARGO = ROOT / "project/data/cargo"
 RAW = ROOT / ".local/art"
 OUT = ROOT / "project/art/cargo"
 ICON = ROOT / "project/icon.png"
+SPEAKER_TABLE = ROOT / "tools/art/speaker_art.json"
+SPEAKERS = ROOT / "project/data/speakers"
+SPEAKER_OUT = ROOT / "project/art/speakers"
+# The height of the head of each speaker portrait. The event screen uses the same value.
+HEAD_SIZE = 120
 ICON_SIZE = 256
 
 
@@ -95,6 +108,34 @@ def make_icon(entry: dict) -> None:
     print(f"art: icon {img.width}x{img.height} in {ICON_SIZE}x{ICON_SIZE}")
 
 
+def make_portrait(speaker_id: str, entry: dict) -> None:
+    """The portrait of a speaker: the figure, scaled to a head of HEAD_SIZE pixels."""
+    img = Image.open(download(entry["source"])).convert("RGBA")
+    if "crop" in entry:
+        x, y, w, h = entry["crop"]
+        img = img.crop((x, y, x + w, y + h))
+    img = img.crop(img.getbbox())
+    scale = HEAD_SIZE / entry["head"]
+    size = (round(img.width * scale), round(img.height * scale))
+    # Nearest keeps the pixels sharp. The scale is 2 or more, so the uneven pixels are small.
+    img = img.resize(size, Image.Resampling.NEAREST)
+    img.save(SPEAKER_OUT / f"{speaker_id}.png")
+    print(f"art: speaker {speaker_id} {img.width}x{img.height}, scale {scale:.2f}")
+
+
+def make_portraits() -> None:
+    table = json.loads(SPEAKER_TABLE.read_text())
+    SPEAKER_OUT.mkdir(parents=True, exist_ok=True)
+    for speaker_id, entry in table.items():
+        make_portrait(speaker_id, entry)
+    for f in SPEAKER_OUT.iterdir():
+        if f.suffix == ".png" and f.stem not in table:
+            f.unlink()
+    missing = sorted(p.stem for p in SPEAKERS.glob("*.json") if p.stem not in table)
+    if missing:
+        print("art: no portrait for " + ", ".join(missing))
+
+
 def main() -> int:
     table = json.loads(TABLE.read_text())
     make_icon(table.pop("_icon"))
@@ -110,6 +151,7 @@ def main() -> int:
     missing = sorted(p.stem for p in CARGO.glob("*.json") if p.stem not in table)
     if missing:
         print("art: no image for " + ", ".join(missing))
+    make_portraits()
     return 0
 
 

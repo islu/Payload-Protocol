@@ -173,7 +173,7 @@ msgstr "遊戲資料載入失敗。"
 msgid "No run is in progress."
 msgstr "目前沒有進行中的航程。"
 
-#: project/scenes/main/choice_panel.gd
+#: project/scenes/main/event_panel.gd
 msgid "Cost {cost}"
 msgstr "花費 {cost}"
 
@@ -1486,6 +1486,30 @@ msgstr "減震底板"
 #: project/data/mods/shock_floor.json
 msgid "Cargo with a cell in the bottom row takes each hit with a force 1 less."
 msgstr "有格子在最底列的貨物，每次承受的撞擊力 -1。"
+
+#: project/data/speakers/auditor.json
+msgid "Company Auditor"
+msgstr "公司稽核員"
+
+#: project/data/speakers/dock_worker.json
+msgid "Dock Worker"
+msgstr "碼頭工作人員"
+
+#: project/data/speakers/mechanic.json
+msgid "Mechanic"
+msgstr "技師"
+
+#: project/data/speakers/pirate.json
+msgid "Pirate"
+msgstr "海盜"
+
+#: project/data/speakers/smuggler.json
+msgid "Smuggler"
+msgstr "走私客"
+
+#: project/data/speakers/stranded_crew.json
+msgid "Stranded Crew"
+msgstr "受困船員"
 
 #: project/data/terms.json
 msgid "All Intact"

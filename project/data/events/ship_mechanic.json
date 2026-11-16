@@ -2,6 +2,7 @@
 	"id": "ship_mechanic",
 	"name": "Ship Mechanic",
 	"text": "A mechanic at the dock offers a quick job.",
+	"speaker": "mechanic",
 	"choices": [
 		{
 			"text": "Fit a clamp.",

@@ -6,6 +6,8 @@ extends RefCounted
 var id: String
 var name: String
 var text: String
+## The ID of the speaker: the character who speaks in the event (SPEC Section 20.8).
+var speaker: String
 ## Each choice: {text: String, cost: int, effects: Array of {type, amount, cargo, contract}}.
 var choices: Array[Dictionary] = []
 
@@ -15,6 +17,7 @@ static func from_dict(d: Dictionary) -> EventDef:
 	e.id = str(d.get("id", ""))
 	e.name = str(d.get("name", ""))
 	e.text = str(d.get("text", ""))
+	e.speaker = str(d.get("speaker", ""))
 	for c: Dictionary in d.get("choices", []):
 		var effects: Array[Dictionary] = []
 		for f: Dictionary in c.get("effects", []):

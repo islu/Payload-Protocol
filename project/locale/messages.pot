@@ -172,7 +172,7 @@ msgstr ""
 msgid "No run is in progress."
 msgstr ""
 
-#: project/scenes/main/choice_panel.gd
+#: project/scenes/main/event_panel.gd
 msgid "Cost {cost}"
 msgstr ""
 
@@ -1458,6 +1458,30 @@ msgstr ""
 
 #: project/data/mods/shock_floor.json
 msgid "Cargo with a cell in the bottom row takes each hit with a force 1 less."
+msgstr ""
+
+#: project/data/speakers/auditor.json
+msgid "Company Auditor"
+msgstr ""
+
+#: project/data/speakers/dock_worker.json
+msgid "Dock Worker"
+msgstr ""
+
+#: project/data/speakers/mechanic.json
+msgid "Mechanic"
+msgstr ""
+
+#: project/data/speakers/pirate.json
+msgid "Pirate"
+msgstr ""
+
+#: project/data/speakers/smuggler.json
+msgid "Smuggler"
+msgstr ""
+
+#: project/data/speakers/stranded_crew.json
+msgid "Stranded Crew"
 msgstr ""
 
 #: project/data/terms.json

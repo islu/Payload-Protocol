@@ -179,6 +179,7 @@ static func data() -> Dictionary:
 		"contracts": contracts,
 		"lines": lines,
 		"events": events(),
+		"speakers": {"s_one": {"id": "s_one", "name": "Speaker One"}},
 		"mods": mods(),
 		"environments": environments(),
 	}
@@ -207,6 +208,7 @@ static func events() -> Dictionary:
 			"id": "e_one",
 			"name": "One",
 			"text": "Event one",
+			"speaker": "s_one",
 			"choices":
 			[
 				{"text": "All", "cost": 5, "effects": all},
@@ -219,6 +221,7 @@ static func events() -> Dictionary:
 			"id": "e_two",
 			"name": "Two",
 			"text": "Event two",
+			"speaker": "s_one",
 			"choices": [{"text": "Ignore", "effects": []}, {"text": "Ignore too", "effects": []}],
 		},
 	}

@@ -276,3 +276,40 @@ func test_choice_with_no_effect() -> void:
 		"a choice with a cost cannot start a mod choice with no mod left (SPEC Section 26.2)"
 	)
 	eq(run.credits, 40, "the mod choice takes no credits (SPEC Section 26.2)")
+
+
+func test_event_view_names_its_speaker() -> void:
+	_open(2)
+	var e := RunView.event(run)
+	eq(
+		e.get("speaker", {}),
+		{"id": "s_one", "name": "Speaker One"},
+		"the event view has the ID and the name of its speaker (SPEC Section 20.8)"
+	)
+
+
+func test_event_needs_a_speaker() -> void:
+	var d := Fixture.data()
+	d["events"]["e_one"].erase("speaker")
+	check(
+		not Catalog.from_data(d).errors.is_empty(),
+		"an event with no speaker is an error of the data (SPEC Section 20.8)"
+	)
+
+
+func test_event_speaker_must_exist() -> void:
+	var d := Fixture.data()
+	d["events"]["e_one"]["speaker"] = "nobody"
+	check(
+		not Catalog.from_data(d).errors.is_empty(),
+		"an event with a speaker that does not exist is an error of the data (content.md)"
+	)
+
+
+func test_speaker_needs_a_name() -> void:
+	var d := Fixture.data()
+	d["speakers"]["s_one"]["name"] = ""
+	check(
+		not Catalog.from_data(d).errors.is_empty(),
+		"a speaker with no name is an error of the data (SPEC Section 20.8)"
+	)

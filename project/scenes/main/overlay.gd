@@ -6,6 +6,8 @@ extends Control
 signal closed
 
 var box: VBoxContainer
+## The framed panel around the box. A panel can change its style.
+var panel: PanelContainer
 ## The language of the text in the box.
 var _locale := ""
 
@@ -20,7 +22,7 @@ func _init() -> void:
 	var center := CenterContainer.new()
 	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(center)
-	var panel := PanelContainer.new()
+	panel = PanelContainer.new()
 	var style := StyleBoxFlat.new()
 	style.bg_color = Palette.PANEL
 	style.border_color = Palette.ACCENT
