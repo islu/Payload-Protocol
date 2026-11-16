@@ -118,18 +118,18 @@ func _offer_card(o: Dictionary) -> void:
 	title.text = tr(o["name"])
 	text.append(title.text)
 	for t: String in o["traits"]:
-		for term: Dictionary in screen._view["terms"]:
-			if term["id"] != t:
-				continue
-			var line := HBoxContainer.new()
-			line.add_theme_constant_override("separation", 6)
-			info.add_child(line)
-			line.add_child(trait_icon(t))
-			var rule := screen._label(line, "", TextSize.SMALL, Palette.TEXT_DIM)
-			rule.text = "%s: %s" % [tr(term["name"]), GameText.format(term["rule"])]
-			rule.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-			rule.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-			text.append(rule.text)
+		var rule_text := GameText.trait_line(screen._view["terms"], t)
+		if rule_text == "":
+			continue
+		var line := HBoxContainer.new()
+		line.add_theme_constant_override("separation", 6)
+		info.add_child(line)
+		line.add_child(trait_icon(t))
+		var rule := screen._label(line, "", TextSize.SMALL, Palette.TEXT_DIM)
+		rule.text = rule_text
+		rule.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		rule.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		text.append(rule.text)
 	if not o["helps"].is_empty():
 		var helps := screen._label(info, "", TextSize.SMALL, Palette.GOOD)
 		helps.text = GameText.format(o["helps"])

@@ -58,15 +58,9 @@ func show_cargo(c: Dictionary, view: Dictionary) -> void:
 		)
 	)
 	for t: String in c.get("traits", []):
-		for term: Dictionary in view["terms"]:
-			if term["id"] == t:
-				var color: Color = Palette.TRAIT_COLORS.get(t, Palette.TEXT)
-				lines.append(
-					(
-						"[color=#%s]%s[/color]: %s"
-						% [color.to_html(false), tr(term["name"]), GameText.format(term["rule"])]
-					)
-				)
+		var line := GameText.trait_line(view["terms"], t, true)
+		if line != "":
+			lines.append(line)
 	lines.append(tr(TIP_MASS_TEXT).format({"mass": c["mass"]}))
 	if c.get("pay", 0) > 0:
 		lines.append(tr(TIP_PAY_TEXT).format({"pay": c["pay"]}))

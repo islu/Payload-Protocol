@@ -39,11 +39,17 @@ func begin_cargo(id: int, grab: Vector2) -> void:
 		"held": false,
 		"from_dock": not c["in_hold"] and not c["in_bay"],
 	}
-	_screen._hold.dragging = id
-	_screen._bay.dragging = id
+	_lift(c)
+
+
+## Shows the cargo of the drag state as lifted: faded in its old place, at the mouse,
+## and with the sell area (SPEC Section 21.1).
+func _lift(c: Dictionary, mouse := Vector2.INF) -> void:
+	_screen._hold.dragging = state["id"]
+	_screen._bay.dragging = state["id"]
 	_screen._show_sell(c)
-	_screen._drag_layer.start(c, c["rotations"][c["rot"]], grab)
-	update()
+	_screen._drag_layer.start(c, c["rotations"][state["rot"]], state["grab"])
+	update(mouse)
 	_screen._update_marks()
 
 
@@ -177,7 +183,7 @@ func drop_at(mouse: Vector2) -> void:
 		var err := GameState.place_cargo(id, origin.x, origin.y, drag["rot"], target.bay)
 		_screen._act(err, "clack")
 		if err != "":
-			_keep(drag)
+			_keep(drag, mouse)
 		# A cargo from the dock: pick up the next one, after a drag and after a pick
 		# up. A setting turns it off (SPEC Sections 8.2 and 23.1).
 		elif drag["from_dock"] and Settings.get_value("pick_next"):
@@ -187,17 +193,11 @@ func drop_at(mouse: Vector2) -> void:
 
 ## After a drop over the hold or the shock bay that is not valid, the player keeps the
 ## cargo: it follows the mouse, and it shakes (SPEC Section 8.3).
-func _keep(drag: Dictionary) -> void:
+func _keep(drag: Dictionary, mouse: Vector2) -> void:
 	state = drag
 	state["held"] = true
-	_screen._hold.dragging = drag["id"]
-	_screen._bay.dragging = drag["id"]
-	var c := _screen._cargo(drag["id"])
-	_screen._show_sell(c)
-	_screen._drag_layer.start(c, c["rotations"][drag["rot"]], drag["grab"])
+	_lift(_screen._cargo(drag["id"]), mouse)
 	_screen._drag_layer.shake()
-	update()
-	_screen._update_marks()
 
 
 ## Picks up the next cargo on the dock after a placement from the dock (SPEC Section 8.2).

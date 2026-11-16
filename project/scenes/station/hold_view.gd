@@ -123,11 +123,16 @@ func set_hover(id: int) -> void:
 
 ## Returns the cells of the frame of the cargo under the mouse (SPEC Section 4.2).
 func frame_cells() -> Array[Vector2i]:
-	var out: Array[Vector2i] = []
 	var c := _cargo(_hover)
 	if not _mine(c):
-		return out
-	for s: Dictionary in c["shape"]:
+		return []
+	return _cells_of(c)
+
+
+## Returns the cells of a cargo view in the grid, or [] for {}.
+static func _cells_of(c: Dictionary) -> Array[Vector2i]:
+	var out: Array[Vector2i] = []
+	for s: Dictionary in c.get("shape", []):
 		out.append(Vector2i(c["x"] + s["x"], c["y"] + s["y"]))
 	return out
 
@@ -336,11 +341,7 @@ func _draw_preview(o: Vector2) -> void:
 		draw_rect(r, Color(color, 0.25))
 		draw_rect(r, color, false, 2.0)
 	for id: int in preview.get("blocking", []):
-		var c := _cargo(id)
-		var cells: Array[Vector2i] = []
-		for s: Dictionary in c.get("shape", []):
-			cells.append(Vector2i(c["x"] + s["x"], c["y"] + s["y"]))
-		_draw_outline(o, cells, Palette.BAD)
+		_draw_outline(o, _cells_of(_cargo(id)), Palette.BAD)
 	for p in ghost_cells():
 		var r := Rect2(o + Vector2(p) * cell, Vector2(cell, cell)).grow(-6)
 		draw_rect(r, Color(Palette.GOOD, 0.1))
@@ -360,6 +361,8 @@ func ghost_cells() -> Array[Vector2i]:
 
 ## Draws the links that the drop would make, from the preview cells (SPEC Section 8.3).
 func _draw_preview_links(o: Vector2) -> void:
+	if preview["cells"].is_empty():
+		return
 	var sum := Vector2.ZERO
 	for e: Dictionary in preview["cells"]:
 		sum += Vector2(e["cell"]) + Vector2(0.5, 0.5)

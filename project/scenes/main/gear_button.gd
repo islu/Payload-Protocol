@@ -9,7 +9,8 @@ const SIZE := 56.0
 const TEETH := 8
 
 ## The tip of the button. It is a child of the parent of the button, so that it can
-## show next to the button.
+## show next to the button. The button makes it when it enters the tree, and frees it
+## when it leaves the tree.
 var tip: CargoTip
 
 
@@ -23,14 +24,30 @@ func _init() -> void:
 	offset_right = -20
 	offset_top = 20
 	offset_bottom = 20 + SIZE
-	tip = CargoTip.new()
 	mouse_entered.connect(func() -> void: tip.show_text(tr(MENU_TEXT), PackedStringArray()))
-	mouse_exited.connect(func() -> void: tip.visible = false)
-	visibility_changed.connect(func() -> void: tip.visible = tip.visible and visible)
+	mouse_exited.connect(_hide_tip)
+	visibility_changed.connect(_on_visibility_changed)
 
 
-func _ready() -> void:
+func _enter_tree() -> void:
+	tip = CargoTip.new()
 	get_parent().add_child.call_deferred(tip)
+
+
+func _exit_tree() -> void:
+	if is_instance_valid(tip):
+		tip.queue_free()
+	tip = null
+
+
+func _on_visibility_changed() -> void:
+	if not visible:
+		_hide_tip()
+
+
+func _hide_tip() -> void:
+	if is_instance_valid(tip):
+		tip.visible = false
 
 
 func _draw() -> void:

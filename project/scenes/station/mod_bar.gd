@@ -6,8 +6,6 @@ extends HBoxContainer
 
 ## The card of each mod, in the order of the view. The checks read them.
 var cards: Array[PanelContainer] = []
-## The station: its tip shows the name and the rule of the mod under the mouse.
-var station: StationScreen
 
 
 func _init() -> void:
@@ -15,7 +13,7 @@ func _init() -> void:
 	alignment = BoxContainer.ALIGNMENT_CENTER
 
 
-## Shows a card for each mod. hover gets the ID of the mod under the mouse, or "".
+## Shows a card for each mod. hover gets the view of the mod under the mouse, or {}.
 func set_mods(mods: Array, hover: Callable) -> void:
 	for c in get_children():
 		remove_child(c)
@@ -32,20 +30,7 @@ func set_mods(mods: Array, hover: Callable) -> void:
 		style.set_content_margin_all(4)
 		card.add_theme_stylebox_override("panel", style)
 		card.add_child(ModIcon.new(m["id"], 32.0))
-		var id: String = m["id"]
-		var title := tr(m["name"])
-		var rule := PackedStringArray([tr(m["text"])])
-		card.mouse_entered.connect(
-			func() -> void:
-				hover.call(id)
-				if station != null:
-					station._show_text_tip(title, rule)
-		)
-		card.mouse_exited.connect(
-			func() -> void:
-				hover.call("")
-				if station != null:
-					station._hide_tip()
-		)
+		card.mouse_entered.connect(hover.bind(m))
+		card.mouse_exited.connect(hover.bind({}))
 		add_child(card)
 		cards.append(card)

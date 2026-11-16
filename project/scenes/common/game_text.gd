@@ -17,3 +17,18 @@ static func format(text: Variant) -> String:
 		var v: Variant = raw[name]
 		args[name] = str(int(v)) if v is float or v is int else TranslationServer.translate(str(v))
 	return TranslationServer.translate(text["key"]).format(args)
+
+
+## Returns the line of a trait: "Name: rule" from the terms of the view, or "" for a
+## trait that is not in terms (SPEC Section 8.4). With colored, the name has the color
+## of the trait in BBCode, for a RichTextLabel.
+static func trait_line(terms: Array, trait_id: String, colored := false) -> String:
+	for term: Dictionary in terms:
+		if term["id"] != trait_id:
+			continue
+		var name := TranslationServer.translate(term["name"])
+		if colored:
+			var color: Color = Palette.TRAIT_COLORS.get(trait_id, Palette.TEXT)
+			name = "[color=#%s]%s[/color]" % [color.to_html(false), name]
+		return "%s: %s" % [name, format(term["rule"])]
+	return ""

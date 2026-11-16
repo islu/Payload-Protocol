@@ -33,6 +33,9 @@ var first_line := ""
 ## The color of the mass: Palette.TEXT_DIM, WARN, or BAD.
 var mass_color := Palette.TEXT_DIM
 var screen: StationScreen
+## The title and the lines of the tip of the card (SPEC Section 20.2).
+var _title := ""
+var _details := PackedStringArray()
 
 
 func setup(station: StationScreen, k: Dictionary) -> void:
@@ -70,18 +73,33 @@ func setup(station: StationScreen, k: Dictionary) -> void:
 		counts.append(tr(COUNT_TEXT).format(g))
 	text = "\n".join([head, " ".join(counts + tags), "\n".join(details)])
 	var index: int = k["index"]
-	var title := tr(k["client_name"])
+	_title = tr(k["client_name"])
+	_details = details
 	# The details show in the tip of the station (SPEC Section 20.2).
 	mouse_entered.connect(
 		func() -> void:
 			screen._set_hover_contract(index)
-			screen._show_text_tip(title, details)
+			_show_details()
 	)
 	mouse_exited.connect(
 		func() -> void:
 			screen._set_hover_contract(-1)
 			screen._hide_tip()
 	)
+
+
+## Shows the details of the card in the tip of the station.
+func _show_details() -> void:
+	screen._show_text_tip(_title, _details)
+
+
+## The mouse leaves a freight image: the tip shows the details of the card again when
+## the mouse is still on the card. The card gets no new mouse_entered from its child.
+func _on_chip_exited() -> void:
+	if get_global_rect().has_point(get_global_mouse_position()):
+		_show_details()
+	else:
+		screen._hide_tip()
 
 
 ## The first line: the client, the total pay, the mass, and the state or the button.
@@ -149,9 +167,9 @@ func _trait_rules(groups: Array) -> PackedStringArray:
 			if seen.has(t):
 				continue
 			seen[t] = true
-			for term: Dictionary in screen._view["terms"]:
-				if term["id"] == t:
-					out.append("%s: %s" % [tr(term["name"]), GameText.format(term["rule"])])
+			var line := GameText.trait_line(screen._view["terms"], t)
+			if line != "":
+				out.append(line)
 	return out
 
 
@@ -172,7 +190,7 @@ func _groups(parent: Control, groups: Array) -> HFlowContainer:
 		chip.mouse_filter = Control.MOUSE_FILTER_PASS
 		chip.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		chip.mouse_entered.connect(func() -> void: screen._show_tip(g))
-		chip.mouse_exited.connect(screen._hide_tip)
+		chip.mouse_exited.connect(_on_chip_exited)
 		item.add_child(chip)
 		var count := screen._label(item, "", TextSize.BODY)
 		count.text = tr(COUNT_TEXT).format(g)

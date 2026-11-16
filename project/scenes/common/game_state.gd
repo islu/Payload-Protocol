@@ -79,7 +79,7 @@ func can_place(id: int, x: int, y: int, rot: int, to_bay := false) -> bool:
 ## way, and the nearest valid place (SPEC Section 8.3).
 func drop_preview(id: int, x: int, y: int, rot: int, to_bay := false) -> Dictionary:
 	if run == null:
-		return {}
+		return {"ok": false, "cells": [], "blocking": [], "nearest": null}
 	return RunView.drop_preview(run, id, Vector2i(x, y), rot, to_bay)
 
 

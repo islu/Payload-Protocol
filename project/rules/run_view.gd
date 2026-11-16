@@ -52,12 +52,12 @@ static func jolt_risks(run: Run) -> Dictionary:
 
 ## Returns the warp checklist (SPEC Section 20.2): the fuel fee, the number of cargo on
 ## the dock, the number of cargo with a wall jolt warning, and the kind of the incident
-## of the jump ("" with no incident).
-static func checklist(run: Run) -> Dictionary:
+## of the jump ("" with no incident). risky is the result of jolt_risks.
+static func checklist(run: Run, risky: Dictionary) -> Dictionary:
 	return {
 		"fee": run.fuel_fee(),
 		"dock": run.dock.size(),
-		"jolts": jolt_risks(run).size(),
+		"jolts": risky.size(),
 		"incident": str(run.incident.get("kind", "")),
 	}
 
@@ -144,6 +144,7 @@ static func kit_helps(run: Run, d: CargoDef) -> Dictionary:
 ## Returns the visible state of a run.
 static func view(run: Run) -> Dictionary:
 	var cat := run.cat
+	var risky := jolt_risks(run)
 	var v := {
 		"seed": str(run.seed_value),
 		"phase": run.phase,
@@ -183,14 +184,13 @@ static func view(run: Run) -> Dictionary:
 		"event": event(run),
 		"environment": environment(run),
 		"incident": incident(run),
-		"checklist": checklist(run),
+		"checklist": checklist(run, risky),
 	}
 	var ids := run.cargo.keys()
 	ids.sort()
 	var powered := Shift.power_check(run)
 	var hold := run.hold_cargo()
 	var bay := run.bay_cargo()
-	var risky := jolt_risks(run)
 	for id: int in ids:
 		var c: Cargo = run.cargo[id]
 		var cv := _cargo(run, c, bay if c.in_bay else hold, powered)
