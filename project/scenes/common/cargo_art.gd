@@ -9,6 +9,11 @@ const DIR := "res://art/cargo/"
 static var _cache: Dictionary = {}
 
 
+## Empties the cache, so that its textures are free before the game quits.
+static func clear() -> void:
+	_cache.clear()
+
+
 ## Returns the image of a cargo, or its scrap image, or null.
 static func texture(def_id: String, scrap := false) -> Texture2D:
 	var a := _art(def_id)

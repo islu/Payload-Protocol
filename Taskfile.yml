@@ -123,6 +123,7 @@ tasks:
       - uv run --no-project python tools/fmt_json/fmt_json.py --check
       - "{{.GDTOOLKIT}} gdlint {{.PROJECT_PATH}}"
       - uv run --no-project python tools/i18n/i18n.py --check
+      - uv run --no-project --with fonttools==4.55.0 python tools/i18n/glyphs.py
 
   check:
     desc: Run lint, the rule tests, the UI check, and smoke

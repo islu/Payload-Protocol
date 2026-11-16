@@ -59,9 +59,6 @@ This file keeps each problem that is found and not fixed yet. Each item is in on
 - **[Balance · Data] The offer rate of the new contracts** (found 2026-11-14, by /playtest seed 22). The 3 personas saw 27 stations, and only `greenhouse` was offered (once). `prosthetics` and `warp_core` were not offered. The pay of `prosthetics` (now 4 each) and `greenhouse` (now 13 each) changed from the data, not from play. `warp_core` (24 + 10) pays 5.7 for each point of mass, more than the leg 3 median 4.7, but a wall jolt explodes it.
   To do                 Fix: count the offers of each contract over many seeds, and play the 3 contracts in a playtest.
 
-- **[UX · Scenes] A glyph that the font does not have** (found 2026-11-14, by Claude). The pilot box of the station shows "▸" (U+25B8). The font jf open huninn does not have it. On the desktop a system font shows it, but the web build can show a box.
-  To do                 Fix: use a glyph of the font (for example ":" or "→"), or draw the mark. Check the other symbols of the text with the font too.
-
 - **[Art · Data] A new image for the Foam Pad** (found 2026-11-14, by the user). The Foam Pad uses a rolled yoga mat (`tools/art/cargo_art.json`). The image does not look like a cushion kit, and the "fit" scale makes it a little soft.
   To do                 Fix: find a FreePixel image of a foam pad or a cushion that fits a line of 2 cells. Change its `source` and run `task art`.
 - **[Docs · Docs] A README for players** (found 2026-11-12, by the first plan). The itch.io page needs a short text for players: how to start, the controls, and where to send feedback.
@@ -69,5 +66,3 @@ This file keeps each problem that is found and not fixed yet. Each item is in on
 - **[Build · Build] Builds for macOS and Windows** (found 2026-11-12, by the first plan). Only the web build exists. These builds are optional.
   Waiting on a trigger  Waits for: a player who asks for a download, or a second playtest round.
                         Fix then: add the export presets, a task for each, and sign or note the macOS build.
-- **[Cleanup · Tests] Resources in use at the exit of task shots** (found 2026-11-13, by Claude). `task shots` prints "2 resources still in use at exit" when it quits. A run with `--verbose` does not print it, so the two resources are not known. The screenshots are correct.
-  To do                 Fix: find the two resources (for example the music stream or the FxSheets cache) and free them before quit().

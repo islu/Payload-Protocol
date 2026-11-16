@@ -9,6 +9,11 @@ const DIR := "res://art/fx/"
 static var _cache := {}
 
 
+## Empties the cache, so that its textures are free before the game quits.
+static func clear() -> void:
+	_cache.clear()
+
+
 ## Returns {texture, fps, frames, size: Vector2, columns, pivot: Vector2, scale},
 ## or {} when the files are missing.
 static func sheet(name: String) -> Dictionary:

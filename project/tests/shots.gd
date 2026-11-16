@@ -54,7 +54,19 @@ func _run() -> void:
 		f.close()
 	Settings._config = null
 	print("shots: wrote %s" % _out)
+	await _free_all()
 	get_tree().quit()
+
+
+## Frees the screens and the caches before the quit, so that no resource is in use
+## at the exit: the static caches keep their textures until they are cleared.
+func _free_all() -> void:
+	_main.music().stop()
+	_main.queue_free()
+	await get_tree().process_frame
+	await get_tree().process_frame
+	CargoArt.clear()
+	FxSheets.clear()
 
 
 func _shot(file_name: String) -> void:
