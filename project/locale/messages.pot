@@ -123,6 +123,10 @@ msgstr ""
 msgid "There is nothing to undo at this station."
 msgstr ""
 
+#: project/rules/run_record.gd
+msgid "There is no such action."
+msgstr ""
+
 #: project/rules/run_view.gd
 msgid "Helps {count} of your freight"
 msgstr ""

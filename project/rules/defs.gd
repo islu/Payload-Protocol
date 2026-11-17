@@ -171,6 +171,28 @@ const LINE_EVENTS: PackedStringArray = [
 	LINE_LOSE,
 ]
 
+## The actions of the player. A recorded action is {name, args} (RunRecord).
+const ACT_PLACE := "place"
+const ACT_LOAD_ALL := "load_all"
+const ACT_DOCK := "dock"
+const ACT_ROTATE := "rotate"
+const ACT_CLAMP := "clamp"
+const ACT_UNCLAMP := "unclamp"
+const ACT_ACCEPT := "accept"
+const ACT_CANCEL := "cancel"
+const ACT_BUY_KIT := "buy_kit"
+const ACT_REROLL := "reroll"
+const ACT_BUY_CLAMP := "buy_clamp"
+const ACT_REINFORCE := "reinforce"
+const ACT_BUY_BAY := "buy_bay"
+const ACT_SELL_KIT := "sell_kit"
+const ACT_CLEAR_SCRAP := "clear_scrap"
+const ACT_WARP := "warp"
+const ACT_CONTINUE := "continue"
+const ACT_PAY := "pay"
+const ACT_CHOOSE_EVENT := "choose_event"
+const ACT_CHOOSE_MOD := "choose_mod"
+
 
 ## Returns the cell step of a direction.
 static func delta(direction: String) -> Vector2i:

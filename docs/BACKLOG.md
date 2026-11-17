@@ -47,9 +47,6 @@ This file keeps each problem that is found and not fixed yet. Each item is in on
 
 ## To Do
 
-- **[Refactor · Rules] Actions as data** (found 2026-11-16, by /simplify). Each action is in `Run`, in `GameState`, and in the commands of `play.gd`. `RunRecord` keeps Callables, so a record cannot be saved. An undo plays the whole run again from the seed.
-  To do                 Fix: an action is `{name, args}` with one `Run.do()`. Keep a checkpoint at the station start, so that an undo plays only the actions of the station. Hints can then listen to the actions.
-
 - **[Refactor · Scenes] The values that scenes still calculate** (found 2026-11-16, by /simplify). The station disables Warp with `hold > max` (`station_screen.gd`, `top_bar.gd`). `ShopPanel` caps the clamps and decides "too expensive". `StationScreen` and `StationDrag` choose between sell and clear by the kind. The mass state is the literal "ok", "fee", or "over". `WarpScreen._to_scrap` and `_play_reaction` decide which reaction removes a cargo.
   To do                 Fix: add `can_warp`, a list of services with `can_buy`, the sell action of each cargo, `Defs.MASS_*` constants, and the result of each reaction to the view and the log.
 

@@ -36,6 +36,26 @@ const ACTIONS := {
 	"choose": "choose <choice> (an event choice or a mod)",
 	"undo": "undo (takes back the last action at this station)",
 }
+## The action of each command with no special form (the others: place, placebay, choose).
+const COMMANDS := {
+	"accept": Defs.ACT_ACCEPT,
+	"cancel": Defs.ACT_CANCEL,
+	"dock": Defs.ACT_DOCK,
+	"rotate": Defs.ACT_ROTATE,
+	"clamp": Defs.ACT_CLAMP,
+	"unclamp": Defs.ACT_UNCLAMP,
+	"buy": Defs.ACT_BUY_KIT,
+	"reroll": Defs.ACT_REROLL,
+	"buyclamp": Defs.ACT_BUY_CLAMP,
+	"bay": Defs.ACT_BUY_BAY,
+	"reinforce": Defs.ACT_REINFORCE,
+	"loadall": Defs.ACT_LOAD_ALL,
+	"sell": Defs.ACT_SELL_KIT,
+	"clear": Defs.ACT_CLEAR_SCRAP,
+	"warp": Defs.ACT_WARP,
+	"continue": Defs.ACT_CONTINUE,
+	"pay": Defs.ACT_PAY,
+}
 
 var _out: PackedStringArray = []
 
@@ -80,7 +100,7 @@ func _command(path: String, args: Array) -> int:
 		return 1
 	var rec := RunRecord.new(cat, int(session["seed"]))
 	for a: Array in session["actions"]:
-		var err := rec.act(func(r: Run) -> String: return _act(r, a))
+		var err := _act(rec, a)
 		if err != "":
 			_say("the session does not replay: %s: %s" % [" ".join(a), err])
 			return 1
@@ -114,7 +134,7 @@ func _step(rec: RunRecord, session: Dictionary, parts: Array) -> bool:
 	var traits := {}
 	for c: Dictionary in RunView.view(rec.run)["cargo"]:
 		traits[c["id"]] = c["traits"]
-	var err := rec.undo() if undo else rec.act(func(r: Run) -> String: return _act(r, parts))
+	var err := rec.undo() if undo else _act(rec, parts)
 	if err != "":
 		_say("> %s: %s" % [" ".join(parts), err])
 		return false
@@ -128,51 +148,29 @@ func _step(rec: RunRecord, session: Dictionary, parts: Array) -> bool:
 	return true
 
 
-func _act(run: Run, parts: Array) -> String:
-	var n := func(i: int) -> int: return int(parts[i]) if parts.size() > i else -1
+## Returns the action of a command: {name, args}, or {} for an unknown command.
+func _action(run: Run, parts: Array) -> Dictionary:
+	var args := parts.slice(1).map(func(v: String) -> int: return int(v))
 	match parts[0]:
-		"accept":
-			return run.accept_contract(n.call(1))
-		"cancel":
-			return run.cancel_contract(n.call(1))
 		"place", "placebay":
-			var rot: int = n.call(4) if parts.size() > 4 else 0
-			var pos := Vector2i(n.call(2), n.call(3))
-			return run.place_cargo(n.call(1), pos, rot, parts[0] == "placebay")
-		"dock":
-			return run.dock_cargo(n.call(1))
-		"rotate":
-			return run.rotate_cargo(n.call(1))
-		"clamp":
-			return run.clamp_cargo(n.call(1))
-		"unclamp":
-			return run.unclamp_cargo(n.call(1))
-		"buy":
-			return run.buy_kit(n.call(1))
-		"reroll":
-			return run.reroll()
-		"buyclamp":
-			return run.buy_clamp()
-		"reinforce":
-			return run.reinforce_hull()
-		"loadall":
-			return run.load_all()
-		"bay":
-			return run.buy_shock_bay()
-		"sell":
-			return run.sell_kit(n.call(1))
-		"clear":
-			return run.clear_scrap(n.call(1))
-		"warp":
-			return run.warp()
-		"continue":
-			return run.continue_run()
-		"pay":
-			return run.make_payment()
+			while args.size() < 4:
+				args.append(0 if args.size() == 3 else -1)
+			args.append(parts[0] == "placebay")
+			return {"name": Defs.ACT_PLACE, "args": args}
 		"choose":
-			var i: int = n.call(1)
-			return run.choose_mod(i) if run.phase == Defs.PHASE_MOD else run.choose_event(i)
-	return "unknown command %s" % parts[0]
+			var mod := run.phase == Defs.PHASE_MOD
+			return {"name": Defs.ACT_CHOOSE_MOD if mod else Defs.ACT_CHOOSE_EVENT, "args": args}
+	if not COMMANDS.has(parts[0]):
+		return {}
+	return {"name": COMMANDS[parts[0]], "args": args}
+
+
+## Does a command on the record. It records the action when it works.
+func _act(rec: RunRecord, parts: Array) -> String:
+	var a := _action(rec.run, parts)
+	if a.is_empty():
+		return "unknown command %s" % parts[0]
+	return rec.act(a["name"], a["args"])
 
 
 func _usage() -> void:
@@ -219,17 +217,10 @@ func _render(run: Run) -> void:
 	if v["line"] != "":
 		_say(GameText.PILOT_NAME + ": " + v["line"])
 	if not v["mods"].is_empty():
-		_say(
-			(
-				"Mods: "
-				+ "; ".join(
-					v["mods"].map(
-						func(m: Dictionary) -> String:
-							return "%s (%s)" % [m["name"], GameText.format(m["text"])]
-					)
-				)
-			)
-		)
+		var mods := PackedStringArray()
+		for mod: Dictionary in v["mods"]:
+			mods.append("%s (%s)" % [mod["name"], GameText.format(mod["text"])])
+		_say("Mods: " + "; ".join(mods))
 	match v["phase"]:
 		Defs.PHASE_EVENT:
 			_render_event(v["event"])

@@ -59,7 +59,7 @@ task test:ui      # Play a full run through the screens, headless
 task export:web   # Export the web build to build/web
 task serve:web    # Serve build/web at http://localhost:8060
 task play -- help # The text player: one command in each call (the playtest skill)
-task smoke        # Run the game headless for 5 frames. Fails on an error.
+task smoke        # Run the game headless for 5 frames, and start a run in the text player. Fails on an error.
 task shots        # Take screenshots of each screen into shots/ (a window opens). Delete them after the review.
 task i18n         # Collect the text for translation into project/locale/
 task sfx          # Make the placeholder sounds in project/audio/sfx

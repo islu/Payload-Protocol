@@ -53,10 +53,11 @@ tasks:
       - "{{.GODOT}} --headless --path {{.PROJECT_PATH}} -s res://tools/play.gd -- {{.CLI_ARGS}} 2>&1 | grep -v -e '^Godot Engine' -e '^$'"
 
   smoke:
-    desc: Run the game headless for a few frames. Fails on a SCRIPT ERROR.
+    desc: Run the game headless for a few frames, and start a run in the text player. Fails on a SCRIPT ERROR.
     deps: [import]
     cmds:
       - "{{.GODOT_CHECK}} 60 '' --path {{.PROJECT_PATH}} --quit-after 5"
+      - "{{.GODOT_CHECK}} 60 'Traits:' --path {{.PROJECT_PATH}} -s res://tools/play.gd -- -s {{.ROOT_DIR}}/.task/smoke_session.json new 1"
 
   shots:
     desc: Take screenshots of each screen into shots/ (not in git). It opens a window. Delete them after the review.

@@ -92,86 +92,86 @@ func preview_links(id: int, x: int, y: int, rot: int, to_bay := false) -> Array:
 
 ## Places a cargo in the hold, or in the shock bay with to_bay (SPEC Sections 8.2 and 31.1).
 func place_cargo(id: int, x: int, y: int, rot: int, to_bay := false) -> String:
-	return _act(func(r: Run) -> String: return r.place_cargo(id, Vector2i(x, y), rot, to_bay))
+	return _act(Defs.ACT_PLACE, [id, x, y, rot, to_bay])
 
 
 func load_all() -> String:
-	return _act(func(r: Run) -> String: return r.load_all())
+	return _act(Defs.ACT_LOAD_ALL)
 
 
 func dock_cargo(id: int) -> String:
-	return _act(func(r: Run) -> String: return r.dock_cargo(id))
+	return _act(Defs.ACT_DOCK, [id])
 
 
 func rotate_cargo(id: int) -> String:
-	return _act(func(r: Run) -> String: return r.rotate_cargo(id))
+	return _act(Defs.ACT_ROTATE, [id])
 
 
 func clamp_cargo(id: int) -> String:
-	return _act(func(r: Run) -> String: return r.clamp_cargo(id))
+	return _act(Defs.ACT_CLAMP, [id])
 
 
 func unclamp_cargo(id: int) -> String:
-	return _act(func(r: Run) -> String: return r.unclamp_cargo(id))
+	return _act(Defs.ACT_UNCLAMP, [id])
 
 
 func accept_contract(index: int) -> String:
-	return _act(func(r: Run) -> String: return r.accept_contract(index))
+	return _act(Defs.ACT_ACCEPT, [index])
 
 
 func cancel_contract(index: int) -> String:
-	return _act(func(r: Run) -> String: return r.cancel_contract(index))
+	return _act(Defs.ACT_CANCEL, [index])
 
 
 func buy_kit(index: int) -> String:
-	return _act(func(r: Run) -> String: return r.buy_kit(index))
+	return _act(Defs.ACT_BUY_KIT, [index])
 
 
 func reroll() -> String:
-	return _act(func(r: Run) -> String: return r.reroll())
+	return _act(Defs.ACT_REROLL)
 
 
 func buy_clamp() -> String:
-	return _act(func(r: Run) -> String: return r.buy_clamp())
+	return _act(Defs.ACT_BUY_CLAMP)
 
 
 func reinforce_hull() -> String:
-	return _act(func(r: Run) -> String: return r.reinforce_hull())
+	return _act(Defs.ACT_REINFORCE)
 
 
 ## Installs the shock bay, or makes it larger (SPEC Section 17.2).
 func buy_shock_bay() -> String:
-	return _act(func(r: Run) -> String: return r.buy_shock_bay())
+	return _act(Defs.ACT_BUY_BAY)
 
 
 func sell_kit(id: int) -> String:
-	return _act(func(r: Run) -> String: return r.sell_kit(id))
+	return _act(Defs.ACT_SELL_KIT, [id])
 
 
 func clear_scrap(id: int) -> String:
-	return _act(func(r: Run) -> String: return r.clear_scrap(id))
+	return _act(Defs.ACT_CLEAR_SCRAP, [id])
 
 
 func warp() -> String:
-	return _act(func(r: Run) -> String: return r.warp())
+	return _act(Defs.ACT_WARP)
 
 
 func continue_run() -> String:
-	return _act(func(r: Run) -> String: return r.continue_run())
+	return _act(Defs.ACT_CONTINUE)
 
 
 func make_payment() -> String:
-	return _act(func(r: Run) -> String: return r.make_payment())
+	return _act(Defs.ACT_PAY)
 
 
 ## Selects a choice of the event of the station (SPEC Section 26.2).
 func choose_event(index: int) -> String:
-	return _act(func(r: Run) -> String: return r.choose_event(index))
+	return _act(Defs.ACT_CHOOSE_EVENT, [index])
 
 
 ## Selects a mod of the mod choice (SPEC Section 27.1).
 func choose_mod(index: int) -> String:
-	return _act(func(r: Run) -> String: return r.choose_mod(index))
+	return _act(Defs.ACT_CHOOSE_MOD, [index])
 
 
 ## Reports whether the player can take back an action at this station (SPEC Section 20.2).
@@ -190,10 +190,10 @@ func undo() -> String:
 	return err
 
 
-func _act(action: Callable) -> String:
+func _act(name: String, args: Array = []) -> String:
 	if run == null:
 		return NO_RUN_TEXT
-	var err := _record.act(action)
+	var err := _record.act(name, args)
 	if err == "":
 		state_changed.emit()
 	return err

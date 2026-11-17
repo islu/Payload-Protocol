@@ -124,6 +124,10 @@ msgstr "貨艙太重，無法跳躍。請卸下貨物，或強化船體。"
 msgid "There is nothing to undo at this station."
 msgstr "這個站點沒有可以復原的動作。"
 
+#: project/rules/run_record.gd
+msgid "There is no such action."
+msgstr "沒有這個動作。"
+
 #: project/rules/run_view.gd
 msgid "Helps {count} of your freight"
 msgstr "可幫助你 {count} 件貨物"
