@@ -242,6 +242,8 @@ func _check() -> void:
 			_fail("environments: the environment %s needs a name and a text" % id)
 	if not cargo.has(debris) or cargo[debris].shape.size() != 1:
 		_fail("rules: the debris %s is not a cargo of 1 cell" % debris)
+	if contracts.any(func(t: ContractTemplate) -> bool: return debris in t.freight):
+		_fail("rules: the debris %s is the freight of a contract" % debris)
 	if meteor_force < 1:
 		_fail("rules: the meteor force must be 1 or more")
 

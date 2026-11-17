@@ -13,7 +13,6 @@ extends SceneTree
 ## Use -s <file> as the first arguments for another session file.
 
 const DEFAULT_SESSION := "playtest/sessions/session.json"
-const LETTERS := "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 const ACTIONS := {
 	"accept": "accept <contract>",
 	"cancel": "cancel <contract>",
@@ -111,6 +110,10 @@ func _command(path: String, args: Array) -> int:
 ## An undo takes back the last action of the session (SPEC Section 20.2).
 func _step(rec: RunRecord, session: Dictionary, parts: Array) -> bool:
 	var undo: bool = parts[0] == "undo"
+	# The traits of each cargo before the warp: a delivered cargo leaves the run.
+	var traits := {}
+	for c: Dictionary in RunView.view(rec.run)["cargo"]:
+		traits[c["id"]] = c["traits"]
 	var err := rec.undo() if undo else rec.act(func(r: Run) -> String: return _act(r, parts))
 	if err != "":
 		_say("> %s: %s" % [" ".join(parts), err])
@@ -121,7 +124,7 @@ func _step(rec: RunRecord, session: Dictionary, parts: Array) -> bool:
 	else:
 		session["actions"].append(parts)
 	if parts[0] == "warp":
-		_render_warp(rec.run)
+		_render_warp(rec.run, traits)
 	return true
 
 
@@ -178,35 +181,34 @@ func _usage() -> void:
 	for k: String in ACTIONS:
 		_say("  " + ACTIONS[k])
 	_say("Cells: x goes right from 0, y goes down from 0. A rotation turns 90° clockwise.")
+	_say("A cargo has one ID. The grids show it, and the actions take it.")
 
 
 # --- Render: only what the player sees ---
 
 
-func _letter(id: int) -> String:
-	return LETTERS[(id - 1) % LETTERS.length()]
+## The width of a cell of a grid: the digits of the largest cargo ID.
+func _cell_width(cargo: Array) -> int:
+	var top := 1
+	for c: Dictionary in cargo:
+		top = maxi(top, c["id"])
+	return str(top).length()
 
 
 func _render(run: Run) -> void:
 	var v := RunView.view(run)
 	_say("")
-	_say(
-		(
-			"== Leg %d/%d · Jump %d/%d · %s · credits %d · payment %d after %d jump(s) · clamps %d/%d free"
-			% [
-				v["leg"],
-				v["legs"],
-				v["jump"],
-				v["jumps"],
-				v["phase"],
-				v["credits"],
-				v["payment"],
-				v["jumps_to_payment"],
-				v["free_clamps"],
-				v["clamps"]
-			]
-		)
+	var head := (
+		"== Leg %d/%d · Jump %d/%d · %s · credits %d"
+		% [v["leg"], v["legs"], v["jump"], v["jumps"], v["phase"], v["credits"]]
 	)
+	# The run end has no payment and no clamps to use.
+	if v["phase"] != Defs.PHASE_END:
+		head += (
+			" · payment %d after %d jump(s) · clamps %d/%d free"
+			% [v["payment"], v["jumps_to_payment"], v["free_clamps"], v["clamps"]]
+		)
+	_say(head)
 	var m: Dictionary = v["mass"]
 	var over := ""
 	if m["hold"] > m["max"]:
@@ -231,6 +233,7 @@ func _render(run: Run) -> void:
 		Defs.PHASE_EVENT:
 			_render_event(v["event"])
 			_render_station(v)
+			_render_traits(run)
 		Defs.PHASE_MOD:
 			_say("Select a ship mod. Command: choose <n>")
 			for i in v["mod_offer"].size():
@@ -238,6 +241,7 @@ func _render(run: Run) -> void:
 				_say("  %d: %s: %s" % [i, mo["name"], mo["text"]])
 		Defs.PHASE_STATION:
 			_render_station(v)
+			_render_traits(run)
 		Defs.PHASE_ARRIVAL:
 			_render_arrival(v)
 			_render_hold(v)
@@ -262,6 +266,13 @@ func _render(run: Run) -> void:
 					% ["WIN" if e["won"] else "LOSS", e["score"], e["seed"], e["stats"]]
 				)
 			)
+
+
+## The rule and the break force of each trait in this leg (SPEC Sections 8.4 and 28.2).
+func _render_traits(run: Run) -> void:
+	_say("Traits:")
+	for t: Dictionary in RunView.terms(run.cat, run):
+		_say("  %s: %s" % [t["name"], GameText.format(t["rule"])])
 
 
 func _render_event(e: Dictionary) -> void:
@@ -298,7 +309,7 @@ func _render_station(v: Dictionary) -> void:
 	if v["front_wall"] != "":
 		_say(
 			(
-				"Front wall of step 1: %s (cargo there takes a jolt of its weight)"
+				"Front wall of step 1: %s (cargo there takes a wall jolt; JOLT RISK marks a reaction)"
 				% v["front_wall"].to_upper()
 			)
 		)
@@ -328,12 +339,13 @@ func _render_station(v: Dictionary) -> void:
 			bonus += " · LONG: delivered after %d jumps" % k["jumps"]
 		_say(
 			(
-				"  [%d]%s %s: %s · pay %d each%s"
+				"  [%d]%s %s: %s · mass %d · pay %d each%s"
 				% [
 					k["index"],
 					" ACCEPTED" if k["accepted"] else "",
 					k["client_name"],
 					", ".join(names),
+					k["mass"],
 					k["pay"],
 					bonus
 				]
@@ -358,7 +370,10 @@ func _render_station(v: Dictionary) -> void:
 		)
 	_say(
 		(
-			"  reroll %d · clamp %d (max %d) · shock bay %s · clear scrap %d/cell · sell kit at half"
+			(
+				"  reroll %d · clamp %d (max %d) · shock bay %s · reinforce +%d mass for %d"
+				+ " · clear scrap %d/cell · sell kit at half"
+			)
 			% [
 				s["reroll_price"],
 				s["clamp_price"],
@@ -375,6 +390,8 @@ func _render_station(v: Dictionary) -> void:
 						]
 					)
 				),
+				s["reinforce_amount"],
+				s["reinforce_price"],
 				s["scrap_cell"],
 			]
 		)
@@ -385,19 +402,20 @@ func _render_hold(v: Dictionary) -> void:
 	var cols: int = v["hold"]["columns"]
 	var rows: int = v["hold"]["rows"]
 	var grid := _grid(cols, rows, v["cargo"], false)
+	var w := _cell_width(v["cargo"])
 	var header := "    "
 	for x in cols:
-		header += str(x) + " "
+		header += str(x).rpad(w) + " "
 	_say("Hold %dx%d:" % [cols, rows])
-	_say(header)
+	_say(header.strip_edges(false, true))
 	for y in rows:
-		_say("  %d %s" % [y, " ".join(grid[y])])
+		_say(("  %d %s" % [y, " ".join(grid[y])]).strip_edges(false, true))
 	for c: Dictionary in v["cargo"]:
 		if c["in_hold"]:
 			_say("  " + _cargo_line(c))
 	_render_bay(v)
 	for l: Dictionary in v["links"]:
-		_say("  link %s: %s-%s" % [l["kind"], _letter(l["from"]), _letter(l["to"])])
+		_say("  link %s: %s-%s" % [l["kind"], str(l["from"]), str(l["to"])])
 
 
 ## The shock bay: its own cells from (0, 0). The warp does not move or hit it (SPEC Section 31).
@@ -410,25 +428,26 @@ func _render_bay(v: Dictionary) -> void:
 		"Shock bay %dx%d (no slide, no hits; command: placebay):" % [size["columns"], size["rows"]]
 	)
 	for y: int in size["rows"]:
-		_say("  %d %s" % [y, " ".join(grid[y])])
+		_say(("  %d %s" % [y, " ".join(grid[y])]).strip_edges(false, true))
 	for c: Dictionary in v["cargo"]:
 		if c["in_bay"]:
 			_say("  " + _cargo_line(c))
 
 
 ## Returns the rows of an area (the hold, or the shock bay with in_bay): "." for an
-## empty cell, and the letter of the cargo in a cell.
+## empty cell, and the ID of the cargo in a cell. Each cell has the same width.
 func _grid(cols: int, rows: int, cargo: Array, in_bay: bool) -> Array:
+	var w := _cell_width(cargo)
 	var grid := []
 	for y in rows:
 		var row := []
 		row.resize(cols)
-		row.fill(".")
+		row.fill(".".rpad(w))
 		grid.append(row)
 	for c: Dictionary in cargo:
 		if c["in_bay"] if in_bay else c["in_hold"]:
 			for cell: Dictionary in c["shape"]:
-				grid[c["y"] + cell["y"]][c["x"] + cell["x"]] = _letter(c["id"])
+				grid[c["y"] + cell["y"]][c["x"] + cell["x"]] = str(c["id"]).rpad(w)
 	return grid
 
 
@@ -454,9 +473,8 @@ func _cargo_line(c: Dictionary) -> String:
 			" %s(%d,%d) rot %d" % ["in bay at " if c["in_bay"] else "at ", c["x"], c["y"], c["rot"]]
 		)
 	return (
-		"%s id %d %s [%s %s%s]%s %s"
+		"%d %s [%s %s%s]%s %s"
 		% [
-			_letter(c["id"]),
 			c["id"],
 			c["name"],
 			c["kind"],
@@ -479,7 +497,8 @@ func _shape_text(shape: Array) -> String:
 	return "[" + " ".join(cells) + "]"
 
 
-func _render_warp(run: Run) -> void:
+## Prints the log of the last warp. traits has the traits of each cargo by ID.
+func _render_warp(run: Run, traits: Dictionary) -> void:
 	var w := run.last_warp
 	if w.get("fuel_fee", 0) > 0:
 		_say("  fuel fee -%d" % w["fuel_fee"])
@@ -495,7 +514,7 @@ func _render_warp(run: Run) -> void:
 		if not step.has("direction"):
 			_say("-- Incident: " + _incident_text(step))
 			if step["debris"] != 0:
-				_say("  a debris %s appears" % _letter(step["debris"]))
+				_say("  a debris %s appears" % str(step["debris"]))
 			_render_events(step)
 			continue
 		i += 1
@@ -503,6 +522,7 @@ func _render_warp(run: Run) -> void:
 		if step.has("options"):
 			fork = " (fork: %s)" % " or ".join(step["options"]).to_upper()
 		_say("-- Shift step %d: %s%s" % [i, step["direction"].to_upper(), fork])
+		_render_slides(step, traits)
 		_render_events(step)
 
 
@@ -518,21 +538,46 @@ func _incident_text(inc: Dictionary) -> String:
 	)
 
 
-## Prints the hits and the reactions of a step or an incident.
-func _render_events(step: Dictionary) -> void:
-	for h: Dictionary in step["hits"]:
-		if h.get("jolt", false):
-			_say(
-				"  %s is jolted at the front wall with force %d" % [_letter(h["cargo"]), h["force"]]
+## Prints the slides of a shift step. A Thruster slides 1 cell at most, and it makes
+## no hit when it stops by itself (SPEC Section 10.2).
+func _render_slides(step: Dictionary, traits: Dictionary) -> void:
+	for sl: Dictionary in step["slides"]:
+		var thruster: bool = Defs.TRAIT_THRUSTER in traits.get(sl["cargo"], [])
+		var note := " (Thruster: 1 cell at most)" if thruster else ""
+		_say(
+			(
+				"  %d slides %d to (%d,%d)%s"
+				% [sl["cargo"], sl["distance"], sl["to"]["x"], sl["to"]["y"], note]
 			)
-			continue
-		var target := "the wall" if h["wall"] else _letter(h["other"])
-		_say("  %s hits %s with force %d" % [_letter(h["cargo"]), target, h["force"]])
-	for r: Dictionary in step["reactions"]:
+		)
+
+
+## Prints the hits and the reactions of a step or an incident. A hit shows the
+## reactions that it starts, and a reaction of a chain shows its cause.
+func _render_events(step: Dictionary) -> void:
+	var reactions: Array = step["reactions"]
+	for h: Dictionary in step["hits"]:
+		var line := ""
+		if h.get("meteor", false):
+			line = "METEOR hits %d with force %d" % [h["cargo"], h["force"]]
+		elif h["jolt"]:
+			line = "%d is jolted at the front wall with force %d" % [h["cargo"], h["force"]]
+		else:
+			var target := "the wall" if h["wall"] else str(h["other"])
+			line = "%d hits %s with force %d" % [h["cargo"], target, h["force"]]
+		var started := PackedStringArray()
+		for r: Dictionary in reactions:
+			if r["cause"] < 0 and (r["cargo"] == h["cargo"] or r["cargo"] == h["other"]):
+				started.append("%d %s" % [r["cargo"], r["kind"].to_upper()])
+		_say("  " + line + (" -> " + ", ".join(started) if not started.is_empty() else ""))
+	for r: Dictionary in reactions:
 		var extra := ""
 		if r["kind"] == Defs.REACT_SHIELD:
-			extra = " (Shield %s cancels a %s)" % [_letter(r["shield"]), r["canceled"]]
-		_say("  %s: %s%s" % [r["kind"].to_upper(), _letter(r["cargo"]), extra])
+			extra = " (Shield %d cancels a %s)" % [r["shield"], r["canceled"]]
+		if r["cause"] >= 0:
+			var from: Dictionary = reactions[r["cause"]]
+			extra += " (after %s of %d)" % [from["kind"].to_upper(), from["cargo"]]
+		_say("  %s: %d%s" % [r["kind"].to_upper(), r["cargo"], extra])
 
 
 func _render_arrival(v: Dictionary) -> void:

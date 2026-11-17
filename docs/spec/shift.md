@@ -173,6 +173,7 @@ An **incident** is an event of the route that happens before the first shift ste
 | **Ion Pulse** | A row | Each Electronic cargo with a cell in that row shorts. It becomes scrap. |
 | **Hull Breach** | A cell | When the cell is empty, a debris appears in it: a scrap of 1 cell. When a cargo is in the cell, that cargo becomes scrap, and no debris appears. |
 
+- A debris has the name Hull Debris. No contract has it as freight.
 - The reactions of an incident are reactions of Section 11: a Shield can cancel them, and they can start a chain.
 - The power check of Section 12.2 happens before the incident.
 

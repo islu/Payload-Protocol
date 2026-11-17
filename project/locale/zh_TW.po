@@ -884,6 +884,10 @@ msgstr "燃料桶"
 msgid "Helper Bot"
 msgstr "小幫手機器人"
 
+#: project/data/cargo/hull_debris.json
+msgid "Hull Debris"
+msgstr "船體碎片"
+
 #: project/data/cargo/hydroponic_garden.json
 msgid "Hydroponic Garden"
 msgstr "水耕菜園"

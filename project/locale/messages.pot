@@ -857,6 +857,10 @@ msgstr ""
 msgid "Helper Bot"
 msgstr ""
 
+#: project/data/cargo/hull_debris.json
+msgid "Hull Debris"
+msgstr ""
+
 #: project/data/cargo/hydroponic_garden.json
 msgid "Hydroponic Garden"
 msgstr ""

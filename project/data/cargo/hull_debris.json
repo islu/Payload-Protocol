@@ -1,0 +1,8 @@
+{
+	"id": "hull_debris",
+	"name": "Hull Debris",
+	"kind": "freight",
+	"weight": "standard",
+	"traits": [],
+	"shape": [[0, 0]]
+}

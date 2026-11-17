@@ -5,7 +5,12 @@ extends TestCase
 func test_the_real_data_loads() -> void:
 	var cat := DataFiles.catalog()
 	eq(cat.errors, PackedStringArray(), "the data check finds no errors (content.md)")
-	eq(cat.cargo.size(), 49, "the first content has 43 freight and 6 kit (content.md)")
+	eq(cat.cargo.size(), 50, "the first content has 43 freight, 6 kit, and the debris (content.md)")
+	eq(
+		cat.cargo[cat.debris].name,
+		"Hull Debris",
+		"the debris of a Hull Breach has the name Hull Debris (SPEC Section 29.2)"
+	)
 
 
 ## The contract rules of content.md.
@@ -34,7 +39,8 @@ func test_contract_rules() -> void:
 				"contract %s: Perishable freight is only in legs 2 and 3 (content.md)" % t.id
 			)
 	for id: String in cat.cargo:
-		if cat.cargo[id].kind == Defs.KIND_FREIGHT:
+		# The debris of a Hull Breach is in no contract (SPEC Section 29.2).
+		if cat.cargo[id].kind == Defs.KIND_FREIGHT and id != cat.debris:
 			check(in_contract.has(id), "freight %s is in one contract at least (content.md)" % id)
 
 
@@ -46,6 +52,16 @@ func test_leg_1_has_no_route_rule() -> void:
 		Catalog.from_data(d).errors.size(),
 		2,
 		"the data check rejects an environment and incidents in leg 1 (SPEC Sections 28.1 and 29.1)"
+	)
+
+
+func test_debris_is_not_contract_freight() -> void:
+	var d := Fixture.data()
+	d["rules"]["incidents"]["debris"] = "box"
+	eq(
+		Catalog.from_data(d).errors.size(),
+		1,
+		"the data check rejects a debris that a contract has as freight (SPEC Section 29.2)"
 	)
 
 

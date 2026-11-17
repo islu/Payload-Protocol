@@ -28,6 +28,7 @@ static func data() -> Dictionary:
 		}
 	add.call("light", "freight", "light", [], one)
 	add.call("box", "freight", "standard", [], one)
+	add.call("debris", "freight", "standard", [], one)
 	add.call("heavy", "freight", "heavy", [], one)
 	add.call("bar", "freight", "standard", [], [[0, 0], [1, 0]])
 	add.call("ell", "freight", "standard", [], [[0, 0], [0, 1], [1, 1]])
@@ -150,7 +151,7 @@ static func data() -> Dictionary:
 				"radiation_belt": {"electronic": 2},
 				"heat_zone": {"volatile": 2, "fluid": 1},
 			},
-			"incidents": {"meteor_force": 3, "debris": "box"},
+			"incidents": {"meteor_force": 3, "debris": "debris"},
 			"mass":
 			{"limit": 40, "over_percent": 25, "fuel_fee": 3, "reinforce": 8, "offer_percent": 130},
 			"legs":

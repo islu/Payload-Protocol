@@ -107,6 +107,6 @@
 	},
 	"incidents": {
 		"meteor_force": 3,
-		"debris": "cargo_crate"
+		"debris": "hull_debris"
 	}
 }

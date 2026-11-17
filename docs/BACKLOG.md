@@ -35,15 +35,6 @@ This file keeps each problem that is found and not fixed yet. Each item is in on
 - **[Balance · Data] The numbers of mass, fork steps, and payments** (found 2026-11-12, by /playtest seed 2026). Playtest seed 22 (2026-11-14) had no pressure: each persona paid each leg by jump 1 or 2, and the fuel fee 2 was less than the pay per mass. The values are now payments 100 / 240 / 420 and fuel fee 3. Other values: mass limit 24, the maximum 125%, Reinforce hull +6 for 12 (+8). Check in the next playtest: can a newcomer make each payment, and is overload still always best?
 - **[Balance · Rules] Full rows make the hold safe** (found 2026-11-12, by /game-design; confirmed 2026-11-14, by /playtest seed 22). All 3 personas filled full rows or columns against the known walls. Then no cargo slides, and no trait matters. Padded Walls removes the wall jolt, and the free clamp fills the last gap. The run had 0 scrap for each persona.
   To decide             Options: (a) a hidden step or a hidden fork direction, so one block cannot answer each jump. (b) A shear step that moves only some rows. (c) Incidents that open gaps in a full row. (d) 1 free clamp for each leg, not for each jump. Needs a change of the spec.
-- **[UX · Tests] The text player log** (found 2026-11-12, by /playtest seed 2026). A hit line does not say if it caused a reaction. A Thruster stop has no line. Each cargo has a letter and an ID. Playtest seed 22 found: `place A 5 0` fails with "There is no such cargo" (only the ID works), and the letters are used again later. The meteor line "r hits z with force 3" reads as if one cargo hit another.
-- **[UX · Scenes] Small issues of the playtests** (found 2026-11-12, by /playtest round 2; more on 2026-11-14, by /playtest seed 22).
-  - The end screen of the text player still shows "payment 350 after 1 jump(s)".
-  - The text player does not show the Reinforce hull price.
-  - With Padded Walls, the station still says that the front wall gives a jolt, and the log still says "hits the wall with force 2".
-  - A contract offer does not show its mass in the text player (SPEC Section 20 shows it on the screen).
-  - The hull breach debris has the name "Cargo Crate".
-  - Nothing in the text player tells the force that breaks each trait.
-
 - **[UX · Scenes] Shaders for the effects** (found 2026-11-13, by Claude). The pixelfx sheets are flat sprites. Three options can make them stronger:
   (a) Light with additive blend: `make_fx.mjs` exports the light buffer of pixelfx as a second sheet, and `FxLayer` draws it with `BLEND_MODE_ADD`. Low cost. The best first step.
   (b) A palette swap shader: one gray sheet, colored by the trait of the cargo. Fewer files.

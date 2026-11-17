@@ -74,6 +74,9 @@
  "helper_bot": {
   "source": "sorted/scifi-objects/robot-small-friendly-round-blue-eye_20260225_032501.png"
  },
+ "hull_debris": {
+  "source": "sorted/scifi-items/hull-plate-metal-panel-armor-piece_20260225_124015.png"
+ },
  "hydroponic_garden": {
   "source": "sorted/scifi-pro/hydroponic-garden-plants-led-grow-lights-green-pods_20260225_012345.png",
   "scale": "fit"

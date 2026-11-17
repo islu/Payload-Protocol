@@ -33,7 +33,7 @@ This file has the design rules of the game content. The data files in `project/d
 
 ## First Content (Version 1)
 
-The first content has 43 freight and 6 kit. The freight has themes: supplies, tech, food, medical, contraband, weapons, robots, and Earth relics. The data files set the shapes and the values.
+The first content has 43 freight in contracts, 6 kit, and the Hull Debris (SPEC Section 29.2). The freight has themes: supplies, tech, food, medical, contraband, weapons, robots, and Earth relics. The data files set the shapes and the values.
 
 ### Freight
 
