@@ -43,7 +43,7 @@ func refresh() -> void:
 	_price_button(
 		self,
 		tr(REROLL_TEXT).format({"price": s["reroll_price"]}),
-		s["reroll_price"],
+		s["reroll_afford"],
 		func() -> void: screen._act(GameState.reroll(), "coin")
 	)
 
@@ -56,17 +56,16 @@ func _build_services(s: Dictionary) -> void:
 	list.add_theme_constant_override("separation", 6)
 	box.add_child(list)
 	service_texts.clear()
-	var max_clamps: int = s["clamp_max"]
 	var clamp_text := tr(CLAMP_SERVICE_TEXT).format(
-		{"now": s["clamps"], "after": mini(s["clamps_after"], max_clamps), "max": max_clamps}
+		{"now": s["clamps"], "after": s["clamps_after"], "max": s["clamp_max"]}
 	)
 	var clamp_row := _service_row(list, "clamp", clamp_text)
 	_price_button(
 		clamp_row,
 		tr(PRICE_TEXT).format({"price": s["clamp_price"]}),
-		s["clamp_price"],
+		s["clamp_afford"],
 		func() -> void: screen._act(GameState.buy_clamp(), "coin"),
-		s["clamps"] < max_clamps
+		s["can_buy_clamp"]
 	)
 	# The shock bay: none → 2×2 → 2×3 (SPEC Sections 17.2 and 31).
 	var bay: Dictionary = s["bay"]
@@ -79,7 +78,7 @@ func _build_services(s: Dictionary) -> void:
 		_price_button(
 			_service_row(list, "bay", bay_text),
 			tr(PRICE_TEXT).format({"price": bay["price"]}),
-			bay["price"],
+			bay["afford"],
 			func() -> void: screen._act(GameState.buy_shock_bay(), "coin")
 		)
 	var hull_text := tr(HULL_SERVICE_TEXT).format(
@@ -89,7 +88,7 @@ func _build_services(s: Dictionary) -> void:
 	_price_button(
 		hull_row,
 		tr(PRICE_TEXT).format({"price": s["reinforce_price"]}),
-		s["reinforce_price"],
+		s["reinforce_afford"],
 		func() -> void: screen._act(GameState.reinforce_hull(), "coin")
 	)
 
@@ -142,7 +141,7 @@ func _offer_card(o: Dictionary) -> void:
 		buy = _price_button(
 			info,
 			tr(BUY_TEXT).format({"price": o["price"]}),
-			o["price"],
+			o["afford"],
 			func() -> void: screen._act(GameState.buy_kit(index), "coin")
 		)
 	buy.size_flags_horizontal = Control.SIZE_SHRINK_END
@@ -151,10 +150,10 @@ func _offer_card(o: Dictionary) -> void:
 
 ## A button with a price. A price that is more than the credits shows in red (SPEC Section 20.2).
 func _price_button(
-	parent: Control, text: String, price: int, action: Callable, enabled := true
+	parent: Control, text: String, afford: bool, action: Callable, enabled := true
 ) -> Button:
 	var b := screen._button(parent, text, action, enabled)
-	if price > screen._run["credits"]:
+	if not afford:
 		b.add_theme_color_override("font_color", Palette.BAD)
 		b.add_theme_color_override("font_hover_color", Palette.BAD)
 	return b

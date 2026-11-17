@@ -141,3 +141,29 @@ func test_scrap_does_not_react_again() -> void:
 		[Defs.REACT_BREAK],
 		"scrap does not react again (SPEC Section 11)"
 	)
+
+
+## The log tells what each reaction does to its cargo, so that the warp screen does not
+## decide it (SPEC Section 21).
+func test_reaction_results() -> void:
+	put("bomb", 3, 0)
+	var vase := put("vase", 5, 2)
+	var scrap := put("box", 0, 1)
+	scrap.kind = Defs.KIND_SCRAP
+	var logs := shift([Defs.DIR_LEFT])
+	var results := {}
+	for st: Dictionary in logs:
+		for r: Dictionary in st["reactions"]:
+			results[r["kind"]] = r["result"]
+	eq(
+		results[Defs.REACT_EXPLOSION],
+		Defs.RESULT_REMOVED,
+		"an explosion removes its cargo (SPEC Section 11.2)"
+	)
+	eq(
+		results[Defs.REACT_CLEAR],
+		Defs.RESULT_REMOVED,
+		"a blast removes a scrap (SPEC Section 11.2)"
+	)
+	eq(results[Defs.REACT_BREAK], Defs.RESULT_SCRAP, "a break makes scrap (SPEC Section 11.1)")
+	check(vase.kind == Defs.KIND_SCRAP, "the vase broke at the wall")

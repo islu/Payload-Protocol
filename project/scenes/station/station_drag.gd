@@ -178,7 +178,8 @@ func drop_at(mouse: Vector2) -> void:
 	var id: int = drag["id"]
 	var c := _screen._cargo(id)
 	if _screen._sell_area.get_global_rect().has_point(mouse):
-		if c["kind"] == Defs.KIND_SCRAP:
+		# A freight cannot go to the sell area: sell_kit gives its error (SPEC Section 17.1).
+		if c["sell_action"] == Defs.ACT_CLEAR_SCRAP:
 			_screen._act(GameState.clear_scrap(id), "coin")
 		else:
 			_screen._act(GameState.sell_kit(id), "coin")

@@ -38,6 +38,8 @@ const SELL_HEIGHT := 48.0
 ## The cell of the cargo on the dock (SPEC Section 20.2).
 const DOCK_CELL := 48.0
 
+## The sell area with no drag (SPEC Section 20.2).
+const SELL_IDLE := "idle"
 var _view: Dictionary = {}
 var _run: Dictionary = {}
 ## The drag of a cargo or a clamp (SPEC Sections 8.2, 8.3, and 13).
@@ -72,8 +74,9 @@ var _clamp_box: HBoxContainer
 var _clamp_label: Label
 var _sell_area: PanelContainer
 var _sell_label: Label
-## What the sell area shows now: "idle", "sell", "clear", or "none" (SPEC Section 20.2).
-var _sell_mode := "idle"
+## What the sell area shows now: SELL_IDLE with no drag, or the sell_action of the
+## dragged cargo ("" when it cannot go there) (SPEC Section 20.2).
+var _sell_mode := SELL_IDLE
 var _warp_button: Button
 var _undo_button: Button
 var _pilot_label: Label
@@ -294,7 +297,7 @@ func refresh() -> void:
 	_checklist.set_view(_run)
 	_count_credits(_run["credits"])
 	# The Warp button does not work over the maximum mass (SPEC Section 25).
-	_warp_button.disabled = _run["mass"]["hold"] > _run["mass"]["max"]
+	_warp_button.disabled = not _run["can_warp"]
 	_show_mods()
 	_show_pilot()
 	_undo_button.disabled = not GameState.can_undo()
@@ -495,29 +498,27 @@ func _refresh_contracts() -> void:
 ## Shows the sell area for a dragged cargo view, or idle for {} (SPEC Section 20.2).
 func _show_sell(c: Dictionary) -> void:
 	var color := Palette.PANEL_LINE
-	_sell_mode = "idle"
+	_sell_mode = SELL_IDLE
 	_sell_label.text = tr(SELL_IDLE_TEXT)
 	_sell_label.add_theme_color_override("font_color", Palette.TEXT_DIM)
 	if not c.is_empty():
-		match c.get("kind", Defs.KIND_FREIGHT):
-			Defs.KIND_KIT:
-				_sell_mode = "sell"
+		_sell_mode = c.get("sell_action", "")
+		match _sell_mode:
+			Defs.ACT_SELL_KIT:
 				color = Palette.GOOD
 				_sell_label.text = tr(SELL_KIT_TEXT).format(
 					{"name": tr(c["name"]), "price": c.get("sell_price", 0)}
 				)
-			Defs.KIND_SCRAP:
-				_sell_mode = "clear"
+			Defs.ACT_CLEAR_SCRAP:
 				color = Palette.BAD
 				_sell_label.text = tr(CLEAR_SCRAP_TEXT).format({"price": c.get("clear_price", 0)})
 			_:
-				_sell_mode = "none"
 				_sell_label.text = tr(NO_SELL_TEXT)
-		if _sell_mode != "none":
+		if _sell_mode != "":
 			_sell_label.add_theme_color_override("font_color", color)
 	var style: StyleBoxFlat = _sell_area.get_theme_stylebox("panel").duplicate()
 	style.border_color = color
-	style.bg_color = Palette.PANEL if _sell_mode in ["idle", "none"] else Color(color, 0.15)
+	style.bg_color = Palette.PANEL if _sell_mode in [SELL_IDLE, ""] else Color(color, 0.15)
 	_sell_area.add_theme_stylebox_override("panel", style)
 
 

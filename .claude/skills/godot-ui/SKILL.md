@@ -8,7 +8,7 @@ description: Conventions of the Payload Protocol scenes and UI (project/scenes) 
 ## 1. Hard Rules
 
 - A scene reads `GameState.view()` and calls the actions of `GameState`. It keeps no game state.
-- A scene does not calculate a game value. If the screen needs a value, add it to `RunView` (see `game-rules`).
+- A scene does not calculate a game value. If the screen needs a value, add it to `RunView` (see `game-rules`). This includes the decisions: read `can_warp`, `mass.state`, `afford`, `can_buy_clamp`, `sell_action`, and the `result` of a reaction. Do not compare credits, masses, or kinds.
 - A scene does not change a `Run` directly. Use the actions of `GameState`.
 - Connect to `GameState.state_changed` and draw the view again. Do not keep a copy of the view between frames for rules.
 - A drag shows the preview of `GameState.drop_preview()` (SPEC Section 8.3): each cell free or not, the cargo in the way, and the nearest valid place. Do not check the cells in the scene.

@@ -63,6 +63,13 @@ func test_overweight_stops_the_warp() -> void:
 		"the warp does not start over the maximum (SPEC Section 25)"
 	)
 	eq(run.phase, Defs.PHASE_STATION, "the run stays at the station (SPEC Section 25)")
+	var v := RunView.view(run)
+	eq(
+		v["mass"]["state"],
+		Defs.MASS_OVER,
+		"the view shows a mass over the maximum (SPEC Section 25)"
+	)
+	eq(v["can_warp"], false, "the view disables the warp over the maximum (SPEC Section 25)")
 
 
 func test_reinforce_hull() -> void:
@@ -81,6 +88,8 @@ func test_mass_view() -> void:
 		[45, 40, 50, 15],
 		"the top bar shows the mass and the fee (SPEC Section 25)"
 	)
+	eq(m["state"], Defs.MASS_FEE, "the view shows a mass with a fuel fee (SPEC Section 25)")
+	eq(RunView.view(run)["can_warp"], true, "a mass with a fee can warp (SPEC Section 25)")
 	eq(
 		RunView.view(run)["cargo"][0]["mass"],
 		3,

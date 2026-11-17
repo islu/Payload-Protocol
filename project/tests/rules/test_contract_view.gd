@@ -47,13 +47,17 @@ func test_contract_mass_after() -> void:
 		3 + 4 + 4,
 		"the mass after: the hold and the dock, plus the contract (SPEC Section 20.2)"
 	)
-	eq(k["mass_state"], "ok", "a mass at the limit or less is ok (SPEC Section 20.2)")
+	eq(k["mass_state"], Defs.MASS_OK, "a mass at the limit or less is ok (SPEC Section 20.2)")
 	run.mass_limit = 10
 	k = _board(["box", "box"])
-	eq(k["mass_state"], "fee", "a mass above the limit takes a fuel fee (SPEC Section 20.2)")
+	eq(
+		k["mass_state"],
+		Defs.MASS_FEE,
+		"a mass above the limit takes a fuel fee (SPEC Section 20.2)"
+	)
 	run.mass_limit = 8
 	k = _board(["box", "box"])
-	eq(k["mass_state"], "over", "a mass above the maximum is too heavy (SPEC Section 20.2)")
+	eq(k["mass_state"], Defs.MASS_OVER, "a mass above the maximum is too heavy (SPEC Section 20.2)")
 
 
 func test_contract_loaded() -> void:

@@ -63,12 +63,13 @@ func set_view(run: Dictionary) -> void:
 	var m: Dictionary = run["mass"]
 	var parts := PackedStringArray([tr(MASS_TEXT).format(m)])
 	var color := Palette.TEXT
-	if m["hold"] > m["max"]:
-		parts.append(tr(OVER_MAX_TEXT).format(m))
-		color = Palette.BAD
-	elif m["fee"] > 0:
-		parts.append(tr(FUEL_TEXT).format(m))
-		color = Palette.WARN
+	match m["state"]:
+		Defs.MASS_OVER:
+			parts.append(tr(OVER_MAX_TEXT).format(m))
+			color = Palette.BAD
+		Defs.MASS_FEE:
+			parts.append(tr(FUEL_TEXT).format(m))
+			color = Palette.WARN
 	_mass_label.text = " · ".join(parts)
 	_mass_label.add_theme_color_override("font_color", color)
 	mass_bar.set_values(m["hold"], m["max"], [m["limit"]], color)

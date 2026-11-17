@@ -171,6 +171,18 @@ const LINE_EVENTS: PackedStringArray = [
 	LINE_LOSE,
 ]
 
+## The state of a mass: at the limit or less, above the limit (a fuel fee), or above
+## the maximum (no warp) (SPEC Section 25).
+const MASS_OK := "ok"
+const MASS_FEE := "fee"
+const MASS_OVER := "over"
+
+## What a reaction does to its cargo (SPEC Sections 11 and 21): it becomes scrap, it
+## leaves the hold, or it stays (a Shield canceled the reaction).
+const RESULT_SCRAP := "scrap"
+const RESULT_REMOVED := "removed"
+const RESULT_KEPT := "kept"
+
 ## The actions of the player. A recorded action is {name, args} (RunRecord).
 const ACT_PLACE := "place"
 const ACT_LOAD_ALL := "load_all"

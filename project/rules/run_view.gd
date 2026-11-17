@@ -172,7 +172,9 @@ static func view(run: Run) -> Dictionary:
 			"limit": run.mass_limit,
 			"max": run.max_mass(),
 			"fee": run.fuel_fee(),
+			"state": mass_state(run, run.hold_mass()),
 		},
+		"can_warp": run.hold_mass() <= run.max_mass(),
 		"warp": run.last_warp,
 		"arrival": run.last_arrival,
 		"payment_screen": {},
@@ -210,6 +212,7 @@ static func view(run: Run) -> Dictionary:
 					"def_id": d.id,
 					"name": d.name,
 					"price": d.price,
+					"afford": d.price <= run.credits,
 					"bought": run.shop[i]["bought"],
 					"weight": d.weight,
 					"weight_value": cat.weight_value(d.weight),
@@ -224,20 +227,25 @@ static func view(run: Run) -> Dictionary:
 	v["shop"] = {
 		"offers": offers,
 		"reroll_price": run.reroll_price(),
+		"reroll_afford": run.reroll_price() <= run.credits,
 		"clamp_price": cat.price("clamp"),
+		"clamp_afford": cat.price("clamp") <= run.credits,
 		"clamp_max": cat.price("clamp_max"),
+		"can_buy_clamp": run.clamps < cat.price("clamp_max"),
 		"bay":
 		{
 			"now": _size(run.bay_size),
 			"after": _size(bay_offer.get("size", Vector2i.ZERO)),
 			"price": bay_offer.get("price", 0),
+			"afford": bay_offer.get("price", 0) <= run.credits,
 		},
 		"breach_fee": cat.price("breach_fee"),
 		"reinforce_price": run.reinforce_price(),
+		"reinforce_afford": run.reinforce_price() <= run.credits,
 		"reinforce_amount": cat.reinforce_amount,
 		"scrap_cell": cat.price("scrap_cell"),
 		"clamps": run.clamps,
-		"clamps_after": run.clamps + 1,
+		"clamps_after": mini(run.clamps + 1, cat.price("clamp_max")),
 		"mass_limit": run.mass_limit,
 		"mass_limit_after": run.mass_limit + cat.reinforce_amount,
 	}
@@ -254,6 +262,22 @@ static func view(run: Run) -> Dictionary:
 			"won": run.won, "score": run.score(), "seed": v["seed"], "stats": run.stats.duplicate()
 		}
 	return v
+
+
+## Returns the state of a mass: Defs.MASS_OK, MASS_FEE, or MASS_OVER (SPEC Section 25).
+static func mass_state(run: Run, mass: int) -> String:
+	if mass > run.max_mass():
+		return Defs.MASS_OVER
+	return Defs.MASS_FEE if mass > run.mass_limit else Defs.MASS_OK
+
+
+static func _sell_action(c: Cargo) -> String:
+	match c.kind:
+		Defs.KIND_KIT:
+			return Defs.ACT_SELL_KIT
+		Defs.KIND_SCRAP:
+			return Defs.ACT_CLEAR_SCRAP
+	return ""
 
 
 ## Returns the view of each cargo in the hold, in the order of the IDs.
@@ -298,6 +322,8 @@ static func _cargo(run: Run, c: Cargo, hold: Array[Cargo], powered: Dictionary) 
 		"pay": 0,
 		"sell_price": run.sell_price(c.def) if c.kind == Defs.KIND_KIT else 0,
 		"clear_price": run.clear_price(c) if c.kind == Defs.KIND_SCRAP else 0,
+		# The action of the sell area for this cargo, or "" (SPEC Section 17.1).
+		"sell_action": _sell_action(c),
 		"no_cooler":
 		(
 			# The warnings of SPEC Section 12.3.
@@ -403,9 +429,7 @@ static func _contract_card(run: Run, k: Contract, kv: Dictionary, carried: int) 
 	kv["total_pay"] = k.template.pay * kv["freight"].size()
 	kv["mass"] = mass
 	kv["mass_after"] = after
-	kv["mass_state"] = (
-		"over" if after > run.max_mass() else "fee" if after > run.mass_limit else "ok"
-	)
+	kv["mass_state"] = mass_state(run, after)
 	kv["loaded"] = loaded
 
 

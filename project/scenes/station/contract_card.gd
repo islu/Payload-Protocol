@@ -117,8 +117,12 @@ func _first_line(box: Control, k: Dictionary, details: PackedStringArray) -> Str
 		tr(TOTALS_TEXT).format({"pieces": k["pieces"], "pay": k["pay"], "total": k["total_pay"]})
 	)
 	if not k["accepted"]:
-		var texts := {"ok": MASS_OK_TEXT, "fee": MASS_FEE_TEXT, "over": MASS_OVER_TEXT}
-		var colors := {"ok": Palette.TEXT_DIM, "fee": Palette.WARN, "over": Palette.BAD}
+		var texts := {
+			Defs.MASS_OK: MASS_OK_TEXT, Defs.MASS_FEE: MASS_FEE_TEXT, Defs.MASS_OVER: MASS_OVER_TEXT
+		}
+		var colors := {
+			Defs.MASS_OK: Palette.TEXT_DIM, Defs.MASS_FEE: Palette.WARN, Defs.MASS_OVER: Palette.BAD
+		}
 		mass_color = colors[k["mass_state"]]
 		var limit: int = screen._run["mass"]["limit"]
 		var after := {"mass": k["mass"], "after": k["mass_after"], "limit": limit}

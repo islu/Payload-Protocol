@@ -334,6 +334,7 @@ static func _apply(
 						"canceled": kind,
 						"loss": 0,
 						"chain": chain,
+						"result": Defs.RESULT_KEPT,
 					}
 				)
 			)
@@ -341,7 +342,14 @@ static func _apply(
 	var loss := 0
 	if kind != Defs.REACT_CLEAR and c.kind == Defs.KIND_FREIGHT:
 		loss = run.pay_of(c)
-	var rec := {"kind": kind, "cargo": id, "cause": cause, "loss": loss, "chain": chain}
+	var rec := {
+		"kind": kind,
+		"cargo": id,
+		"cause": cause,
+		"loss": loss,
+		"chain": chain,
+		"result": Defs.RESULT_SCRAP,
+	}
 	var next: Array = []
 	match kind:
 		Defs.REACT_BREAK, Defs.REACT_SHORT, Defs.REACT_BLAST:
@@ -353,6 +361,7 @@ static func _apply(
 					next.append([Defs.REACT_SHORT, o.id, index])
 		Defs.REACT_CLEAR:
 			run.remove_cargo(id)
+			rec["result"] = Defs.RESULT_REMOVED
 		Defs.REACT_EXPLOSION:
 			var area := blast_area(run, c)
 			var cells := []
@@ -360,6 +369,7 @@ static func _apply(
 				cells.append(_cell(cell))
 			rec["area"] = cells
 			run.remove_cargo(id)
+			rec["result"] = Defs.RESULT_REMOVED
 			run.stats["explosions"] += 1
 			for o in run.hold_cargo():
 				if not o.touches(area):

@@ -790,9 +790,9 @@ func _check_shop(station: StationScreen) -> void:
 				GameText.format(o["helps"]) in card["text"],
 				"a kit card shows how it helps the freight (SPEC Section 20.2)"
 			)
-	# A price that is more than the credits shows in red.
-	var credits: int = station._run["credits"]
-	station._run["credits"] = 0
+	# A price that is more than the credits shows in red: the view says so.
+	for o: Dictionary in station._run["shop"]["offers"]:
+		o["afford"] = false
 	station._shop.refresh()
 	if not station._shop.offer_cards.is_empty():
 		var buy: Button = station._shop.offer_cards[0]["buy"]
@@ -800,15 +800,13 @@ func _check_shop(station: StationScreen) -> void:
 			buy.get_theme_color("font_color") == Palette.BAD,
 			"a price that is more than the credits shows in red (SPEC Section 20.2)"
 		)
-	station._run["credits"] = credits
+	for o: Dictionary in station._run["shop"]["offers"]:
+		o["afford"] = true
 	station._shop.refresh()
 	if not station._shop.offer_cards.is_empty():
 		var buy: Button = station._shop.offer_cards[0]["buy"]
 		_check(
-			(
-				shop["offers"][0]["price"] > credits
-				or buy.get_theme_color("font_color") != Palette.BAD
-			),
+			buy.get_theme_color("font_color") != Palette.BAD,
 			"a price that the player can pay is not red (SPEC Section 20.2)"
 		)
 	var texts: Dictionary = station._services.service_texts
@@ -836,19 +834,22 @@ func _check_shop(station: StationScreen) -> void:
 		station._sell_area.size.y <= StationScreen.SELL_HEIGHT + 4.0,
 		"the sell area is a small bar: %d (SPEC Section 20.2)" % station._sell_area.size.y
 	)
-	_check(station._sell_mode == "idle", "the sell area is idle with no drag (SPEC Section 20.2)")
-	station._show_sell({"kind": Defs.KIND_KIT, "name": "Cooler Unit", "sell_price": 4})
 	_check(
-		station._sell_mode == "sell" and "4" in station._sell_label.text,
+		station._sell_mode == StationScreen.SELL_IDLE,
+		"the sell area is idle with no drag (SPEC Section 20.2)"
+	)
+	station._show_sell({"sell_action": Defs.ACT_SELL_KIT, "name": "Cooler Unit", "sell_price": 4})
+	_check(
+		station._sell_mode == Defs.ACT_SELL_KIT and "4" in station._sell_label.text,
 		"a drag of a kit shows the sell price (SPEC Section 20.2)"
 	)
 	_check(
 		station._sell_area.get_theme_stylebox("panel").border_color == Palette.GOOD,
 		"a drag of a kit makes the sell area green (SPEC Section 20.2)"
 	)
-	station._show_sell({"kind": Defs.KIND_SCRAP, "clear_price": 6})
+	station._show_sell({"sell_action": Defs.ACT_CLEAR_SCRAP, "clear_price": 6})
 	_check(
-		station._sell_mode == "clear" and "6" in station._sell_label.text,
+		station._sell_mode == Defs.ACT_CLEAR_SCRAP and "6" in station._sell_label.text,
 		"a drag of a scrap shows the clear price (SPEC Section 20.2)"
 	)
 	_check(
@@ -857,10 +858,13 @@ func _check_shop(station: StationScreen) -> void:
 	)
 	if not run["cargo"].is_empty():
 		station._drag.begin_cargo(run["cargo"][0]["id"], Vector2.ZERO)
-		_check(station._sell_mode != "idle", "a drag changes the sell area (SPEC Section 20.2)")
+		_check(
+			station._sell_mode != StationScreen.SELL_IDLE,
+			"a drag changes the sell area (SPEC Section 20.2)"
+		)
 		station._drag.end()
 	_check(
-		station._sell_mode == "idle",
+		station._sell_mode == StationScreen.SELL_IDLE,
 		"the end of a drag makes the sell area idle (SPEC Section 20.2)"
 	)
 

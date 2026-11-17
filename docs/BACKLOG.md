@@ -47,9 +47,6 @@ This file keeps each problem that is found and not fixed yet. Each item is in on
 
 ## To Do
 
-- **[Refactor · Scenes] The values that scenes still calculate** (found 2026-11-16, by /simplify). The station disables Warp with `hold > max` (`station_screen.gd`, `top_bar.gd`). `ShopPanel` caps the clamps and decides "too expensive". `StationScreen` and `StationDrag` choose between sell and clear by the kind. The mass state is the literal "ok", "fee", or "over". `WarpScreen._to_scrap` and `_play_reaction` decide which reaction removes a cargo.
-  To do                 Fix: add `can_warp`, a list of services with `can_buy`, the sell action of each cargo, `Defs.MASS_*` constants, and the result of each reaction to the view and the log.
-
 - **[Refactor · Scenes] Private members as an API** (found 2026-11-16, by /simplify). `StationDrag`, `ShopPanel`, and `ContractCard` call about 60 private members of `StationScreen` (`_act`, `_hold`, `_run`, `_show_sell`, ...). The UI checks read about 140 private members. `shots.gd` changes `GameState._record.run` directly.
   To do                 Fix: give `StationScreen` a small public interface, as `TopBar` has. Add a test seam to `GameState` that sets up a scenario through the record.
 

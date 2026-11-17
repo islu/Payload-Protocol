@@ -84,3 +84,32 @@ func test_services_before_and_after() -> void:
 		run.mass_limit + run.cat.reinforce_amount,
 		"the mass limit after Reinforce hull (SPEC Section 20.2)"
 	)
+
+
+func test_services_can_buy() -> void:
+	run.credits = run.reroll_price() - 1
+	var s: Dictionary = RunView.view(run)["shop"]
+	eq(s["reroll_afford"], false, "a price above the credits shows in red (SPEC Section 20.2)")
+	run.credits = 1000
+	run.clamps = run.cat.price("clamp_max")
+	s = RunView.view(run)["shop"]
+	eq(s["reroll_afford"], true, "a price at the credits or less is not red (SPEC Section 20.2)")
+	eq(s["can_buy_clamp"], false, "the ship has the most clamps: no purchase (SPEC Section 17.2)")
+	eq(s["clamps_after"], run.clamps, "the clamps after stay at the most (SPEC Section 20.2)")
+
+
+func test_sell_action_of_cargo() -> void:
+	var kit := put("foam", 0, 0)
+	var scrap := put("box", 3, 0)
+	scrap.kind = Defs.KIND_SCRAP
+	put("vase", 5, 0)
+	var actions := {}
+	for c: Dictionary in RunView.view(run)["cargo"]:
+		actions[c["id"]] = c["sell_action"]
+	eq(actions[kit.id], Defs.ACT_SELL_KIT, "a kit in the sell area sells (SPEC Section 17.1)")
+	eq(
+		actions[scrap.id],
+		Defs.ACT_CLEAR_SCRAP,
+		"a scrap in the sell area is cleared (SPEC Section 17.1)"
+	)
+	eq(actions.values().count(""), 1, "a freight cannot go to the sell area (SPEC Section 17.1)")

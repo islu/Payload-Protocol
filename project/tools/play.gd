@@ -209,10 +209,11 @@ func _render(run: Run) -> void:
 	_say(head)
 	var m: Dictionary = v["mass"]
 	var over := ""
-	if m["hold"] > m["max"]:
-		over = " · TOO HEAVY TO WARP (max %d)" % m["max"]
-	elif m["fee"] > 0:
-		over = " · fuel fee %d at the warp" % m["fee"]
+	match m["state"]:
+		Defs.MASS_OVER:
+			over = " · TOO HEAVY TO WARP (max %d)" % m["max"]
+		Defs.MASS_FEE:
+			over = " · fuel fee %d at the warp" % m["fee"]
 	_say("Mass %d/%d (max %d)%s" % [m["hold"], m["limit"], m["max"], over])
 	if v["line"] != "":
 		_say(GameText.PILOT_NAME + ": " + v["line"])

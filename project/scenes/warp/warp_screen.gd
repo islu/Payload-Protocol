@@ -353,30 +353,31 @@ func _play_reaction(r: Dictionary) -> void:
 	if c.is_empty():
 		return
 	var at := _hold.cargo_center(c)
+	# The log tells what the reaction does to the cargo; the kind picks the effect.
+	match r.get("result", Defs.RESULT_KEPT):
+		Defs.RESULT_SCRAP:
+			_to_scrap(c)
+		Defs.RESULT_REMOVED:
+			_remove(r["cargo"])
 	match r["kind"]:
 		Defs.REACT_BREAK, Defs.REACT_BLAST:
 			_fx.shards(at)
-			_to_scrap(c)
 			Sound.play(self, "glass_break")
 		Defs.REACT_LEAK:
 			_fx.leak(at)
-			_to_scrap(c)
 			Sound.play(self, "splash")
 		Defs.REACT_SHORT:
 			_fx.bolts(at)
-			_to_scrap(c)
 			Sound.play(self, "buzz")
 		Defs.REACT_EXPLOSION:
 			var cells := []
 			for cell: Dictionary in r.get("area", []):
 				cells.append(Vector2i(cell["x"], cell["y"]))
 			_fx.explosion(at, cells)
-			_remove(r["cargo"])
 			Sound.play(self, "explosion")
 			_shake_screen(28.0)
 		Defs.REACT_CLEAR:
 			_fx.shards(at)
-			_remove(r["cargo"])
 		Defs.REACT_SHIELD:
 			_fx.bubble(at)
 			Sound.play(self, "shield")
