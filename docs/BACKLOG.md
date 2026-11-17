@@ -47,9 +47,6 @@ This file keeps each problem that is found and not fixed yet. Each item is in on
 
 ## To Do
 
-- **[Refactor · Rules] One function for the force of a hit** (found 2026-11-16, by /simplify). `Shift` calculates the force of a hit at four places (a wall, a cargo, a jolt, a meteor), and it builds the hit dictionary four times. The Cushion rule is a little different at each place.
-  To do                 Fix: one `hit_force(run, c, raw, ctx)` that applies each modifier, and one builder for the hit of the log. The tests of Sections 10 to 12 must pass with no change.
-
 - **[Refactor · Rules] Actions as data** (found 2026-11-16, by /simplify). Each action is in `Run`, in `GameState`, and in the commands of `play.gd`. `RunRecord` keeps Callables, so a record cannot be saved. An undo plays the whole run again from the seed.
   To do                 Fix: an action is `{name, args}` with one `Run.do()`. Keep a checkpoint at the station start, so that an undo plays only the actions of the station. Hints can then listen to the actions.
 

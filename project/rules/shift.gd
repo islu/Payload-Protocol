@@ -124,36 +124,42 @@ static func _hits(run: Run, direction: String, dist: Dictionary, out: Dictionary
 				others[occ[n]].append(_cell(cell))
 		# A Thruster that stops by itself has no wall and no cargo in front: no hit.
 		if not wall.is_empty():
-			var f := taken(run, c, 0 if c.has(Defs.TRAIT_CUSHION) else force)
-			out["hits"].append(
-				{
-					"cargo": c.id,
-					"other": 0,
-					"wall": true,
-					"jolt": false,
-					"force": f,
-					"contact": wall
-				}
-			)
+			var f := hit_force(run, c, force)
+			out["hits"].append(_hit(c, 0, f, wall))
 			_take(forces, c.id, f)
 		var ids := others.keys()
 		ids.sort()
 		for id: int in ids:
-			var cushion: bool = c.has(Defs.TRAIT_CUSHION) or run.cargo[id].has(Defs.TRAIT_CUSHION)
-			var f := 0 if cushion else force
-			out["hits"].append(
-				{
-					"cargo": c.id,
-					"other": id,
-					"wall": false,
-					"jolt": false,
-					"force": taken(run, c, f),
-					"contact": others[id]
-				}
-			)
-			_take(forces, c.id, taken(run, c, f))
-			_take(forces, id, taken(run, run.cargo[id], f))
+			var o: Cargo = run.cargo[id]
+			var f := hit_force(run, c, force, o)
+			out["hits"].append(_hit(c, id, f, others[id]))
+			_take(forces, c.id, f)
+			_take(forces, id, hit_force(run, o, force, c))
 	return forces
+
+
+## Returns the force that a cargo takes from a hit of a raw force (SPEC Sections 10.3,
+## 11.3, and 27.2): 0 when it or the other cargo of the hit is Cushion, then less with
+## Shock Floor. other is null for a wall, a jolt, or a meteor.
+static func hit_force(run: Run, c: Cargo, raw: int, other: Cargo = null) -> int:
+	var cushion := c.has(Defs.TRAIT_CUSHION) or (other != null and other.has(Defs.TRAIT_CUSHION))
+	return _taken(run, c, 0 if cushion else raw)
+
+
+## Returns a hit of the log. other is the ID of the other cargo, or 0 for a wall, a
+## jolt, or a meteor.
+static func _hit(
+	c: Cargo, other: int, force: int, contact: Array, jolt := false, meteor := false
+) -> Dictionary:
+	return {
+		"cargo": c.id,
+		"other": other,
+		"wall": other == 0 and not meteor,
+		"jolt": jolt,
+		"meteor": meteor,
+		"force": force,
+		"contact": contact,
+	}
 
 
 ## Gives the wall jolt to a cargo that did not slide and is next to the front wall:
@@ -167,16 +173,14 @@ static func _jolt(run: Run, c: Cargo, delta: Vector2i, out: Dictionary, forces: 
 	if contact.is_empty():
 		return
 	var f := jolt_force(run, c)
-	out["hits"].append(
-		{"cargo": c.id, "other": 0, "wall": true, "jolt": true, "force": f, "contact": contact}
-	)
+	out["hits"].append(_hit(c, 0, f, contact, true))
 	_take(forces, c.id, f)
 
 
 ## Returns the force of the wall jolt of a cargo: its weight value, 0 for Cushion.
 ## The Padded Walls mod makes it less by its value, and 0 at least (SPEC Sections 10.4 and 27.2).
 static func jolt_force(run: Run, c: Cargo) -> int:
-	var f := taken(run, c, 0 if c.has(Defs.TRAIT_CUSHION) else force_weight(run, c))
+	var f := hit_force(run, c, force_weight(run, c))
 	if run.has_mod(Defs.MOD_PADDED_WALLS):
 		f = maxi(0, f - run.cat.mod_value(Defs.MOD_PADDED_WALLS, "less"))
 	return f
@@ -192,7 +196,7 @@ static func force_weight(run: Run, c: Cargo) -> int:
 
 ## Returns the force that a cargo takes from a hit. With the Shock Floor mod, a cargo
 ## with a cell in the bottom row takes less by the mod value, and 0 at least (SPEC Section 27.2).
-static func taken(run: Run, c: Cargo, force: int) -> int:
+static func _taken(run: Run, c: Cargo, force: int) -> int:
 	if run.has_mod(Defs.MOD_SHOCK_FLOOR):
 		for cell in c.cells():
 			if cell.y == run.rows - 1:
@@ -272,19 +276,9 @@ static func incident(run: Run, inc: Dictionary) -> Dictionary:
 						top = c
 						top_y = cell.y
 			if top != null:
-				var f := taken(run, top, 0 if top.has(Defs.TRAIT_CUSHION) else run.cat.meteor_force)
+				var f := hit_force(run, top, run.cat.meteor_force)
 				var contact := [_cell(Vector2i(inc["x"], top_y))]
-				out["hits"].append(
-					{
-						"cargo": top.id,
-						"other": 0,
-						"wall": false,
-						"jolt": false,
-						"meteor": true,
-						"force": f,
-						"contact": contact
-					}
-				)
+				out["hits"].append(_hit(top, 0, f, contact, false, true))
 				_react(run, {top.id: f}, powered, out)
 		Defs.INCIDENT_ION_PULSE:
 			for c in run.hold_cargo():
