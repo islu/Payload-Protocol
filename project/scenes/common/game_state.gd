@@ -174,6 +174,16 @@ func choose_mod(index: int) -> String:
 	return _act(Defs.ACT_CHOOSE_MOD, [index])
 
 
+## Changes the run directly, then draws the screens again. Only the screenshots and
+## the UI checks use it, to set up a scene: the record does not keep the change, so an
+## undo loses it.
+func set_up(change: Callable) -> void:
+	if run == null:
+		return
+	change.call(run)
+	state_changed.emit()
+
+
 ## Reports whether the player can take back an action at this station (SPEC Section 20.2).
 func can_undo() -> bool:
 	return _record != null and _record.can_undo()

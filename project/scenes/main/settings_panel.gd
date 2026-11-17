@@ -21,6 +21,12 @@ func _ready() -> void:
 	super()
 
 
+## A slider saves at the end of its drag. The close of the panel saves too, for a
+## change with the mouse wheel.
+func _exit_tree() -> void:
+	Settings.save()
+
+
 func _build() -> void:
 	heading(SETTINGS_TEXT)
 	_slider(MUSIC_TEXT, "music_volume")
@@ -74,5 +80,9 @@ func _slider(text: String, key: String) -> void:
 	s.step = 5
 	s.custom_minimum_size.x = 240
 	s.value = Settings.get_value(key)
-	s.value_changed.connect(func(v: float) -> void: Settings.set_value(key, int(v)))
+	# A drag changes the volume at each step, and saves the file at its end. A key
+	# changes it too: the file saves when the slider loses the focus.
+	s.value_changed.connect(func(v: float) -> void: Settings.set_value(key, int(v), false))
+	s.drag_ended.connect(func(_changed: bool) -> void: Settings.save())
+	s.focus_exited.connect(Settings.save)
 	row.add_child(s)

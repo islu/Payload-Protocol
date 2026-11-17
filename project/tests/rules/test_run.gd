@@ -251,8 +251,7 @@ func test_hazard() -> void:
 
 func test_payments() -> void:
 	for jump in 3:
-		if run.phase == Defs.PHASE_EVENT:
-			run.choose_event(run.event.choices.size() - 1)
+		skip_event()
 		eq(run.warp(), "", "warp")
 		eq(run.continue_run(), "", "continue")
 	eq(

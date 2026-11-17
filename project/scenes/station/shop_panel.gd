@@ -31,7 +31,7 @@ func _init() -> void:
 
 
 func refresh() -> void:
-	var run: Dictionary = screen._run
+	var run: Dictionary = screen.run_data
 	Ui.clear(self)
 	var s: Dictionary = run["shop"]
 	offer_cards.clear()
@@ -44,7 +44,7 @@ func refresh() -> void:
 		self,
 		tr(REROLL_TEXT).format({"price": s["reroll_price"]}),
 		s["reroll_afford"],
-		func() -> void: screen._act(GameState.reroll(), "coin")
+		func() -> void: screen.act(GameState.reroll(), "coin")
 	)
 
 
@@ -64,7 +64,7 @@ func _build_services(s: Dictionary) -> void:
 		clamp_row,
 		tr(PRICE_TEXT).format({"price": s["clamp_price"]}),
 		s["clamp_afford"],
-		func() -> void: screen._act(GameState.buy_clamp(), "coin"),
+		func() -> void: screen.act(GameState.buy_clamp(), "coin"),
 		s["can_buy_clamp"]
 	)
 	# The shock bay: none → 2×2 → 2×3 (SPEC Sections 17.2 and 31).
@@ -79,7 +79,7 @@ func _build_services(s: Dictionary) -> void:
 			_service_row(list, "bay", bay_text),
 			tr(PRICE_TEXT).format({"price": bay["price"]}),
 			bay["afford"],
-			func() -> void: screen._act(GameState.buy_shock_bay(), "coin")
+			func() -> void: screen.act(GameState.buy_shock_bay(), "coin")
 		)
 	var hull_text := tr(HULL_SERVICE_TEXT).format(
 		{"now": s["mass_limit"], "after": s["mass_limit_after"]}
@@ -89,7 +89,7 @@ func _build_services(s: Dictionary) -> void:
 		hull_row,
 		tr(PRICE_TEXT).format({"price": s["reinforce_price"]}),
 		s["reinforce_afford"],
-		func() -> void: screen._act(GameState.reinforce_hull(), "coin")
+		func() -> void: screen.act(GameState.reinforce_hull(), "coin")
 	)
 
 
@@ -105,8 +105,8 @@ func _offer_card(o: Dictionary) -> void:
 	card.add_child(row)
 	var chip := CargoChip.new().setup(o, OFFER_CELL)
 	chip.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	chip.mouse_entered.connect(func() -> void: screen._show_tip(o))
-	chip.mouse_exited.connect(screen._hide_tip)
+	chip.mouse_entered.connect(func() -> void: screen.show_tip(o))
+	chip.mouse_exited.connect(screen.hide_tip)
 	row.add_child(chip)
 	var info := VBoxContainer.new()
 	info.add_theme_constant_override("separation", 2)
@@ -117,7 +117,7 @@ func _offer_card(o: Dictionary) -> void:
 	title.text = tr(o["name"])
 	text.append(title.text)
 	for t: String in o["traits"]:
-		var rule_text := GameText.trait_line(screen._view["terms"], t)
+		var rule_text := GameText.trait_line(screen.view_data["terms"], t)
 		if rule_text == "":
 			continue
 		var line := HBoxContainer.new()
@@ -135,14 +135,14 @@ func _offer_card(o: Dictionary) -> void:
 		text.append(helps.text)
 	var buy: Button
 	if o["bought"]:
-		buy = screen._button(info, tr(SOLD_TEXT), func() -> void: pass, false)
+		buy = screen.add_button(info, tr(SOLD_TEXT), func() -> void: pass, false)
 	else:
 		var index: int = o["index"]
 		buy = _price_button(
 			info,
 			tr(BUY_TEXT).format({"price": o["price"]}),
 			o["afford"],
-			func() -> void: screen._act(GameState.buy_kit(index), "coin")
+			func() -> void: screen.act(GameState.buy_kit(index), "coin")
 		)
 	buy.size_flags_horizontal = Control.SIZE_SHRINK_END
 	offer_cards.append({"buy": buy, "text": "\n".join(text)})
@@ -152,7 +152,7 @@ func _offer_card(o: Dictionary) -> void:
 func _price_button(
 	parent: Control, text: String, afford: bool, action: Callable, enabled := true
 ) -> Button:
-	var b := screen._button(parent, text, action, enabled)
+	var b := screen.add_button(parent, text, action, enabled)
 	if not afford:
 		b.add_theme_color_override("font_color", Palette.BAD)
 		b.add_theme_color_override("font_hover_color", Palette.BAD)

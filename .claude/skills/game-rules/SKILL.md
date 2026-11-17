@@ -46,7 +46,7 @@ description: Conventions of the Payload Protocol rules layer (project/rules) and
 ## 4. Tests
 
 - A test file is `project/tests/rules/test_<topic>.gd`. It extends `RuleTest`. Each method that starts with `test_` runs on a new instance, so methods do not share state.
-- `RuleTest` gives a `Run` on the fixture catalog (`fixture.gd`), at a station, with an empty hold. Helpers: `put(def, x, y, rot)`, `on_dock(def)`, `accept([template ids])`, `shift([dirs])`, `warp_with([dirs])`, `gone(cargo)`, `reaction_kinds(logs)`, `hits_of(step, id)`.
+- `RuleTest` gives a `Run` on the fixture catalog (`fixture.gd`), at a station, with an empty hold. Helpers: `put(def, x, y, rot)`, `on_dock(def)`, `accept([template ids])`, `shift([dirs])` (it charges the Shields with `Shift.charge_shields()`, as a warp does), `warp_with([dirs])`, `skip_event()`, `gone(cargo)`, `reaction_kinds(logs)`, `hits_of(step, id)`.
 - Use `check(ok, what)` and `eq(got, want, what)`. Give the spec section in `what`.
 - Write a comment that tells the board of each setup: where each cargo goes, and why.
 - Use the fixture data for rules. Use the real data only in `test_data.gd`.

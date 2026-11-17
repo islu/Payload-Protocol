@@ -73,6 +73,14 @@ def skipped(path):
     return any(part in SKIP_DIRS for part in path.relative_to(PROJECT).parts)
 
 
+def game_files(pattern):
+    """Yields each file of the game that matches a pattern, in order. It skips the
+    tests and the tools. glyphs.py uses it too."""
+    for path in sorted(PROJECT.rglob(pattern)):
+        if not skipped(path):
+            yield path
+
+
 def collect_gd(cat, path):
     src = path.read_text(encoding="utf-8")
     rel = path.as_posix()
@@ -190,12 +198,10 @@ def parse_po(text):
 def main():
     check = "--check" in sys.argv
     cat = Catalog()
-    for path in sorted(PROJECT.rglob("*.gd")):
-        if not skipped(path):
-            collect_gd(cat, path)
-    for path in sorted(PROJECT.rglob("*.tscn")):
-        if not skipped(path):
-            collect_scene(cat, path)
+    for path in game_files("*.gd"):
+        collect_gd(cat, path)
+    for path in game_files("*.tscn"):
+        collect_scene(cat, path)
     for path in sorted((PROJECT / "data").rglob("*.json")):
         collect_data(cat, path)
     files = {POT: render(cat, "", {})}

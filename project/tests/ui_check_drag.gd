@@ -27,7 +27,7 @@ static func check(ui: Node, station: StationScreen) -> void:
 		"after a drag from the dock into the hold, the next cargo is picked up (SPEC Section 8.2)"
 	)
 	# The next cargo over the first one: the drop is not valid.
-	var hold := station._hold
+	var hold := station.hold_view
 	var over := _cell_center(hold, _first_cell(station, first))
 	drag.update(over)
 	var p := hold.preview
@@ -69,14 +69,14 @@ static func check(ui: Node, station: StationScreen) -> void:
 
 ## The grab cell of a cargo: the first cell of its shape in its rotation now.
 static func _grab(station: StationScreen, id: int) -> Vector2:
-	var c := station._cargo(id)
+	var c := station.cargo_view(id)
 	var first: Dictionary = c["rotations"][c["rot"]][0]
 	return Vector2(first["x"], first["y"])
 
 
 ## The first cell of a cargo in the hold.
 static func _first_cell(station: StationScreen, id: int) -> Vector2i:
-	var c := station._cargo(id)
+	var c := station.cargo_view(id)
 	var s: Dictionary = c["rotations"][c["rot"]][0]
 	return Vector2i(c["x"] + s["x"], c["y"] + s["y"])
 
@@ -84,16 +84,24 @@ static func _first_cell(station: StationScreen, id: int) -> Vector2i:
 ## The global position of the center of a cell of the hold: the grab cell of a held
 ## cargo goes there (SPEC Section 8.3).
 static func _cell_center(hold: HoldView, at: Vector2i) -> Vector2:
-	return hold.global_position + hold.grid_origin() + (Vector2(at) + Vector2(0.5, 0.5)) * hold.cell
+	return hold.cell_global(Vector2(at) + Vector2(0.5, 0.5))
 
 
 ## The global position of a valid drop of a cargo in the hold, or Vector2.INF.
 static func _free_place(station: StationScreen, id: int) -> Vector2:
-	var run: Dictionary = GameState.view()["run"]
 	var grab := _grab(station, id)
-	var rot: int = station._cargo(id)["rot"]
-	for y in run["hold"]["rows"]:
-		for x in run["hold"]["columns"]:
+	var cell := free_cell(id, station.cargo_view(id)["rot"])
+	if cell.x < 0:
+		return Vector2.INF
+	return _cell_center(station.hold_view, cell + Vector2i(grab))
+
+
+## Returns the first cell of the hold where a cargo fits in a rotation, or (-1, -1).
+## The UI checks use it to place a cargo.
+static func free_cell(id: int, rot: int) -> Vector2i:
+	var run: Dictionary = GameState.view()["run"]
+	for y: int in run["hold"]["rows"]:
+		for x: int in run["hold"]["columns"]:
 			if GameState.can_place(id, x, y, rot):
-				return _cell_center(station._hold, Vector2i(x, y) + Vector2i(grab))
-	return Vector2.INF
+				return Vector2i(x, y)
+	return Vector2i(-1, -1)

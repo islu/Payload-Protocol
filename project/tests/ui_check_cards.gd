@@ -78,16 +78,16 @@ static func check(ui: Node, station: StationScreen) -> void:
 			"the dock shows its cargo at 48 pixels for each cell (SPEC Section 20.2)"
 		)
 	# An empty dock is one line of text.
-	var saved: Array = station._run["dock"]
-	station._run["dock"] = []
-	var cargo: Array = station._run["cargo"]
-	station._run["cargo"] = cargo.filter(func(c: Dictionary) -> bool: return c["in_hold"])
+	var saved: Array = station.run_data["dock"]
+	station.run_data["dock"] = []
+	var cargo: Array = station.run_data["cargo"]
+	station.run_data["cargo"] = cargo.filter(func(c: Dictionary) -> bool: return c["in_hold"])
 	station._refresh_dock()
 	await ui.get_tree().process_frame
 	ui._check(
-		station._dock_panel.size.y < 70.0,
-		"an empty dock is one line: %d (SPEC Section 20.2)" % station._dock_panel.size.y
+		station.dock_panel.size.y < 70.0,
+		"an empty dock is one line: %d (SPEC Section 20.2)" % station.dock_panel.size.y
 	)
-	station._run["dock"] = saved
-	station._run["cargo"] = cargo
+	station.run_data["dock"] = saved
+	station.run_data["cargo"] = cargo
 	station._refresh_dock()

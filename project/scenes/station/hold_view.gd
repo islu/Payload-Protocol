@@ -145,6 +145,12 @@ func grid_origin() -> Vector2:
 	return o
 
 
+## Returns the global position of a point of the grid in cells: (0.5, 0.5) is the
+## center of the cell (0, 0).
+func cell_global(at: Vector2) -> Vector2:
+	return global_position + grid_origin() + at * cell
+
+
 ## Returns the cell at a global position, also outside the grid.
 func cell_at(global_pos: Vector2) -> Vector2i:
 	var local := global_pos - global_position - grid_origin()

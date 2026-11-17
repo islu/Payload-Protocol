@@ -47,15 +47,6 @@ This file keeps each problem that is found and not fixed yet. Each item is in on
 
 ## To Do
 
-- **[Refactor · Scenes] Private members as an API** (found 2026-11-16, by /simplify). `StationDrag`, `ShopPanel`, and `ContractCard` call about 60 private members of `StationScreen` (`_act`, `_hold`, `_run`, `_show_sell`, ...). The UI checks read about 140 private members. `shots.gd` changes `GameState._record.run` directly.
-  To do                 Fix: give `StationScreen` a small public interface, as `TopBar` has. Add a test seam to `GameState` that sets up a scenario through the record.
-
-- **[Refactor · Scenes] The station builds all of its lists again after each action** (found 2026-11-16, by /simplify). Each `state_changed` frees and makes again the hazard, the dock, the contract cards, the shop, the services, and the mod bar: about 200 Controls. A cargo move changes only some of them. Also, `Settings.set_value` saves the file and sets the locale again at each tick of a volume slider.
-  To do                 Fix: keep the last view part of each section, and build a section again only when it changes. Apply and save only the setting that changed, and save a slider at the end of its drag.
-
-- **[Cleanup · Tests] Duplicated helpers in the tests and the tools** (found 2026-11-16, by /simplify). The tests repeat "skip the event, set the hazard, warp" (5 places), "place in the first free cell" (4 places), and "the global position of a cell" (4 places). `RuleTest.shift()` copies the Shield charge reset of `Run.warp()`. Each rule test builds the fixture catalog again. `ui_check` waits 3.7 s of real time for the pilot line and the hold move. `glyphs.py` repeats the file walker of `i18n.py`. `import_art.py` repeats its image load and its prune steps.
-  To do                 Fix: add `RuleTest.skip_event()`, `first_free()`, and `HoldView.cell_global()`. Extract `Run._prepare_jump()`. Finish the tweens in the UI check instead of a wait. Share the walker and the image steps of the tools.
-
 - **[Balance · Data] The offer rate of the new contracts** (found 2026-11-14, by /playtest seed 22). The 3 personas saw 27 stations, and only `greenhouse` was offered (once). `prosthetics` and `warp_core` were not offered. The pay of `prosthetics` (now 4 each) and `greenhouse` (now 13 each) changed from the data, not from play. `warp_core` (24 + 10) pays 5.7 for each point of mass, more than the leg 3 median 4.7, but a wall jolt explodes it.
   To do                 Fix: count the offers of each contract over many seeds, and play the 3 contracts in a playtest.
 

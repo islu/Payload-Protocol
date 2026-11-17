@@ -173,17 +173,14 @@ func _check_hints() -> void:
 		),
 		"the pilot box shows the portrait (SPEC Section 22)"
 	)
-	await get_tree().create_timer(3.0).timeout
+	_finish_tweens()
 	_check(
 		is_equal_approx(station._pilot_label.visible_ratio, 1.0),
 		"the line ends typed out (SPEC Section 22)"
 	)
 	var run: Dictionary = GameState.view()["run"]
-	var placed := false
-	for y in run["hold"]["rows"]:
-		for x in run["hold"]["columns"]:
-			if not placed and GameState.can_place(run["dock"][0], x, y, 0):
-				placed = GameState.place_cargo(run["dock"][0], x, y, 0) == ""
+	var free := UiCheckDrag.free_cell(run["dock"][0], 0)
+	GameState.place_cargo(run["dock"][0], free.x, free.y, 0)
 	await get_tree().process_frame
 	_check(
 		text.call().contains(Hints.text(Hints.ROTATE)), "then: rotate a cargo (SPEC Section 23.3)"
@@ -250,8 +247,8 @@ func _play_warp(main: Control) -> void:
 			inside and warp._top_fx.get_index() > warp._report.get_index(),
 			"the gold sparkle is on the arrival report, in front of it (SPEC Section 21.4)"
 		)
-	# The hold moves in 0.4 seconds.
-	await get_tree().create_timer(0.7).timeout
+	# The hold moves in 0.4 seconds, and the delivered freight fades in 0.6 seconds.
+	_finish_tweens()
 	# The fade of delivered freight ends at half alpha, not at 0.
 	for k: Dictionary in GameState.view()["run"]["arrival"]["contracts"]:
 		for p: Dictionary in k["pieces"]:
@@ -414,7 +411,7 @@ func _check_layout(station: StationScreen) -> void:
 		if font_size != -1 and not font_size in sizes:
 			wrong.append("%s %d %s" % [n.get_class(), font_size, station.get_path_to(n)])
 	_check(wrong.is_empty(), "the station text has the four sizes: %s (SPEC Section 4.2)" % [wrong])
-	var hold := station._hold
+	var hold := station.hold_view
 	_check(hold.cell == 100.0, "each cell is 100 pixels: %s px (SPEC Section 20.2)" % hold.cell)
 	var grid := Rect2(hold.grid_origin(), Vector2(hold.columns, hold.rows) * hold.cell)
 	_check(
@@ -519,18 +516,10 @@ func _check_chain(station: StationScreen) -> void:
 	var release := InputEventMouseButton.new()
 	release.button_index = MOUSE_BUTTON_LEFT
 	station._input(release)
-	var hold := station._hold
-	for y in run["hold"]["rows"]:
-		for x in run["hold"]["columns"]:
-			if not station._drag.state.get("id", -1) == first:
-				continue
-			if GameState.can_place(first, x, y, station._drag.state["rot"]):
-				var at := (
-					hold.global_position
-					+ hold.grid_origin()
-					+ (Vector2(x, y) + Vector2(0.7, 0.7)) * hold.cell
-				)
-				station._drag.drop_at(at)
+	if station._drag.state.get("id", -1) == first:
+		var free := UiCheckDrag.free_cell(first, station._drag.state["rot"])
+		if free.x >= 0:
+			station._drag.drop_at(station.hold_view.cell_global(Vector2(free) + Vector2(0.7, 0.7)))
 	var placed: Array = GameState.view()["run"]["cargo"].filter(
 		func(c: Dictionary) -> bool: return c["id"] == first
 	)
@@ -624,18 +613,16 @@ func _play_station(state: Node, station: StationScreen) -> void:
 	await get_tree().process_frame
 	run = state.view()["run"]
 	for c: Dictionary in run["cargo"]:
-		station._show_tip(c)
+		station.show_tip(c)
 		if c["in_hold"] or c["in_bay"]:
 			continue
-		var placed := false
-		for y in run["hold"]["rows"]:
-			for x in run["hold"]["columns"]:
-				if not placed and state.can_place(c["id"], x, y, 0):
-					placed = state.place_cargo(c["id"], x, y, 0) == ""
+		var free := UiCheckDrag.free_cell(c["id"], 0)
+		if free.x >= 0:
+			state.place_cargo(c["id"], free.x, free.y, 0)
 	for i in run["contracts"].size():
-		station._set_hover_contract(i)
-	station._set_hover_contract(-1)
-	station._hide_tip()
+		station.set_hover_contract(i)
+	station.set_hover_contract(-1)
+	station.hide_tip()
 	run = state.view()["run"]
 	if not run["cargo"].is_empty():
 		_check_pick_up(station, run["cargo"][0]["id"])
@@ -645,10 +632,10 @@ func _play_station(state: Node, station: StationScreen) -> void:
 		station._drag.end()
 	station._drag.begin_clamp()
 	station._drag.end()
-	station._act("", "coin")
+	station.act("", "coin")
 	_check(station._fx.played.has("coin"), "a coin sound shows a gold sparkle (SPEC Section 21.4)")
 	_check(
-		station._hold.columns == run["hold"]["columns"],
+		station.hold_view.columns == run["hold"]["columns"],
 		"the hold view has the size of the hold (SPEC Section 5)"
 	)
 	await get_tree().process_frame
@@ -702,19 +689,19 @@ func _check_hazard_hover(station: StationScreen) -> void:
 		)
 		station._set_hover_step(i)
 		_check(
-			station._hold.front_walls == want,
+			station.hold_view.front_walls == want,
 			(
 				"the mouse on hazard card %d marks its front wall: %s, want %s (SPEC Section 20.2)"
-				% [i + 1, station._hold.front_walls, want]
+				% [i + 1, station.hold_view.front_walls, want]
 			)
 		)
 		_check(
-			station._hold.show_jolts == (i == 0),
+			station.hold_view.show_jolts == (i == 0),
 			"the wall jolt warnings are for the first step only (SPEC Section 20.2)"
 		)
 	station._set_hover_step(-1)
 	_check(
-		station._hold.front_walls == PackedStringArray([run["front_wall"]]),
+		station.hold_view.front_walls == PackedStringArray([run["front_wall"]]),
 		"the hold marks the first step again when the mouse leaves (SPEC Section 12.3)"
 	)
 	var seen := StationScreen.step_card(
@@ -791,7 +778,7 @@ func _check_shop(station: StationScreen) -> void:
 				"a kit card shows how it helps the freight (SPEC Section 20.2)"
 			)
 	# A price that is more than the credits shows in red: the view says so.
-	for o: Dictionary in station._run["shop"]["offers"]:
+	for o: Dictionary in station.run_data["shop"]["offers"]:
 		o["afford"] = false
 	station._shop.refresh()
 	if not station._shop.offer_cards.is_empty():
@@ -800,7 +787,7 @@ func _check_shop(station: StationScreen) -> void:
 			buy.get_theme_color("font_color") == Palette.BAD,
 			"a price that is more than the credits shows in red (SPEC Section 20.2)"
 		)
-	for o: Dictionary in station._run["shop"]["offers"]:
+	for o: Dictionary in station.run_data["shop"]["offers"]:
 		o["afford"] = true
 	station._shop.refresh()
 	if not station._shop.offer_cards.is_empty():
@@ -831,29 +818,29 @@ func _check_shop(station: StationScreen) -> void:
 	)
 	# The sell area is a small bar. A drag colors it.
 	_check(
-		station._sell_area.size.y <= StationScreen.SELL_HEIGHT + 4.0,
-		"the sell area is a small bar: %d (SPEC Section 20.2)" % station._sell_area.size.y
+		station.sell_area.size.y <= StationScreen.SELL_HEIGHT + 4.0,
+		"the sell area is a small bar: %d (SPEC Section 20.2)" % station.sell_area.size.y
 	)
 	_check(
 		station._sell_mode == StationScreen.SELL_IDLE,
 		"the sell area is idle with no drag (SPEC Section 20.2)"
 	)
-	station._show_sell({"sell_action": Defs.ACT_SELL_KIT, "name": "Cooler Unit", "sell_price": 4})
+	station.show_sell({"sell_action": Defs.ACT_SELL_KIT, "name": "Cooler Unit", "sell_price": 4})
 	_check(
 		station._sell_mode == Defs.ACT_SELL_KIT and "4" in station._sell_label.text,
 		"a drag of a kit shows the sell price (SPEC Section 20.2)"
 	)
 	_check(
-		station._sell_area.get_theme_stylebox("panel").border_color == Palette.GOOD,
+		station.sell_area.get_theme_stylebox("panel").border_color == Palette.GOOD,
 		"a drag of a kit makes the sell area green (SPEC Section 20.2)"
 	)
-	station._show_sell({"sell_action": Defs.ACT_CLEAR_SCRAP, "clear_price": 6})
+	station.show_sell({"sell_action": Defs.ACT_CLEAR_SCRAP, "clear_price": 6})
 	_check(
 		station._sell_mode == Defs.ACT_CLEAR_SCRAP and "6" in station._sell_label.text,
 		"a drag of a scrap shows the clear price (SPEC Section 20.2)"
 	)
 	_check(
-		station._sell_area.get_theme_stylebox("panel").border_color == Palette.BAD,
+		station.sell_area.get_theme_stylebox("panel").border_color == Palette.BAD,
 		"a drag of a scrap makes the sell area red (SPEC Section 20.2)"
 	)
 	if not run["cargo"].is_empty():
@@ -872,10 +859,9 @@ func _check_shop(station: StationScreen) -> void:
 ## The shape snaps to the cells under the cursor: the cell under the mouse is the
 ## grab cell, from the dock too, and after a rotation (SPEC Section 8.3).
 func _check_snap(station: StationScreen) -> void:
-	var hold := station._hold
-	var base := hold.global_position + hold.grid_origin()
+	var hold := station.hold_view
 	for at: Vector2 in [Vector2(3.5, 2.5), Vector2(3.1, 2.1), Vector2(3.9, 2.9)]:
-		var origin := hold.snap_origin(base + at * hold.cell, Vector2(1, 0))
+		var origin := hold.snap_origin(hold.cell_global(at), Vector2(1, 0))
 		_check(
 			origin == Vector2i(2, 2),
 			(
@@ -918,3 +904,9 @@ func _check_snap(station: StationScreen) -> void:
 		)
 		station._drag.end()
 		break
+
+
+## Ends each tween that runs now, so that a check does not wait in real time.
+func _finish_tweens() -> void:
+	for t: Tween in get_tree().get_processed_tweens():
+		t.custom_step(10.0)

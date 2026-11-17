@@ -10,20 +10,17 @@ Run it from the repository root. task lint runs it.
 
 import sys
 import unicodedata
-from pathlib import Path
 
 from fontTools.ttLib import TTFont
 
-PROJECT = Path("project")
+from i18n import PROJECT, game_files
+
 FONT = PROJECT / "art/fonts/jf-openhuninn-2.1.ttf"
-SKIP_DIRS = {"tests", "tools", ".godot", "addons"}
 
 
 def files():
     for pattern in ("*.gd", "*.json", "*.po"):
-        for path in sorted(PROJECT.rglob(pattern)):
-            if not SKIP_DIRS.intersection(path.parts):
-                yield path
+        yield from game_files(pattern)
 
 
 def main():

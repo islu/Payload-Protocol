@@ -37,18 +37,40 @@ static func _load() -> ConfigFile:
 	return _config
 
 
-## Saves a setting, keeps the other settings, and applies it.
-static func set_value(key: String, value: Variant) -> void:
+## Sets a setting, keeps the other settings, and applies it. With save false, it
+## does not write the file: a slider saves at the end of its drag (save()).
+static func set_value(key: String, value: Variant, save_now := true) -> void:
 	_load().set_value(SECTION, key, value)
-	_config.save(PATH)
-	apply()
+	if save_now:
+		save()
+	_apply_key(key)
+
+
+## Writes the settings to the file.
+static func save() -> void:
+	_load().save(PATH)
 
 
 ## Applies all settings: the volumes, the window, and the language.
 static func apply() -> void:
-	_set_bus("Music", get_value("music_volume"))
-	_set_bus("SFX", get_value("sound_volume"))
-	TranslationServer.set_locale(get_value("locale"))
+	for key: String in ["music_volume", "sound_volume", "locale", "fullscreen"]:
+		_apply_key(key)
+
+
+## Applies one setting. The other settings have no effect until a screen reads them.
+static func _apply_key(key: String) -> void:
+	match key:
+		"music_volume":
+			_set_bus("Music", get_value(key))
+		"sound_volume":
+			_set_bus("SFX", get_value(key))
+		"locale":
+			TranslationServer.set_locale(get_value(key))
+		"fullscreen":
+			_set_window()
+
+
+static func _set_window() -> void:
 	if DisplayServer.get_name() == "headless":
 		return
 	var full: bool = get_value("fullscreen")

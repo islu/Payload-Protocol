@@ -63,8 +63,7 @@ func test_long_stays() -> void:
 	)
 	eq(run.credits, before, "it does not pay at the first arrival (SPEC Section 30.2)")
 	eq(run.continue_run(), "", "continue")
-	if run.phase == Defs.PHASE_EVENT:
-		run.choose_event(run.event.choices.size() - 1)
+	skip_event()
 	check(
 		k in run.contracts and k.accepted,
 		"the contract stays accepted at the next station (SPEC Section 30.2)"
@@ -95,8 +94,7 @@ func test_long_stays() -> void:
 func test_long_on_dock_is_breached() -> void:
 	var k := _long_to_next_station()
 	run.continue_run()
-	if run.phase == Defs.PHASE_EVENT:
-		run.choose_event(run.event.choices.size() - 1)
+	skip_event()
 	eq(run.dock_cargo(k.cargo[0]), "", "move the freight to the dock")
 	run.hazard = PackedStringArray([Defs.DIR_DOWN])
 	run.incident = {}
@@ -114,8 +112,7 @@ func test_long_on_dock_is_breached() -> void:
 func _long_to_delivery(on_dock: bool) -> Contract:
 	var k := _long_to_next_station()
 	run.continue_run()
-	if run.phase == Defs.PHASE_EVENT:
-		run.choose_event(run.event.choices.size() - 1)
+	skip_event()
 	if on_dock:
 		eq(run.dock_cargo(k.cargo[0]), "", "move the freight to the dock")
 	run.hazard = PackedStringArray([Defs.DIR_DOWN])

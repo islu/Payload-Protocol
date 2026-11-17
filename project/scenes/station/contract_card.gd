@@ -75,19 +75,19 @@ func setup(station: StationScreen, k: Dictionary) -> void:
 	# The details show in the tip of the station (SPEC Section 20.2).
 	mouse_entered.connect(
 		func() -> void:
-			screen._set_hover_contract(index)
+			screen.set_hover_contract(index)
 			_show_details()
 	)
 	mouse_exited.connect(
 		func() -> void:
-			screen._set_hover_contract(-1)
-			screen._hide_tip()
+			screen.set_hover_contract(-1)
+			screen.hide_tip()
 	)
 
 
 ## Shows the details of the card in the tip of the station.
 func _show_details() -> void:
-	screen._show_text_tip(_title, _details)
+	screen.show_text_tip(_title, _details)
 
 
 ## The mouse leaves a freight image: the tip shows the details of the card again when
@@ -96,7 +96,7 @@ func _on_chip_exited() -> void:
 	if get_global_rect().has_point(get_global_mouse_position()):
 		_show_details()
 	else:
-		screen._hide_tip()
+		screen.hide_tip()
 
 
 ## The first line: the client, the total pay, the mass, and the state or the button.
@@ -124,7 +124,7 @@ func _first_line(box: Control, k: Dictionary, details: PackedStringArray) -> Str
 			Defs.MASS_OK: Palette.TEXT_DIM, Defs.MASS_FEE: Palette.WARN, Defs.MASS_OVER: Palette.BAD
 		}
 		mass_color = colors[k["mass_state"]]
-		var limit: int = screen._run["mass"]["limit"]
+		var limit: int = screen.run_data["mass"]["limit"]
 		var after := {"mass": k["mass"], "after": k["mass_after"], "limit": limit}
 		details.append(tr(texts[k["mass_state"]]).format(after))
 	var mass := Ui.label(head, "", TextSize.BODY, mass_color)
@@ -140,12 +140,12 @@ func _first_line(box: Control, k: Dictionary, details: PackedStringArray) -> Str
 		var loaded := Ui.label(head, "", TextSize.SMALL, Palette.ACCENT)
 		loaded.text = tr(LOADED_TEXT).format(k)
 		line.append(loaded.text)
-		screen._button(
-			head, tr(CANCEL_TEXT), func() -> void: screen._act(GameState.cancel_contract(index))
+		screen.add_button(
+			head, tr(CANCEL_TEXT), func() -> void: screen.act(GameState.cancel_contract(index))
 		)
 	else:
-		screen._button(
-			head, tr(ACCEPT_TEXT), func() -> void: screen._act(GameState.accept_contract(index))
+		screen.add_button(
+			head, tr(ACCEPT_TEXT), func() -> void: screen.act(GameState.accept_contract(index))
 		)
 	first_line = " ".join(line)
 	return first_line
@@ -168,7 +168,7 @@ func _trait_rules(groups: Array) -> PackedStringArray:
 			if seen.has(t):
 				continue
 			seen[t] = true
-			var line := GameText.trait_line(screen._view["terms"], t)
+			var line := GameText.trait_line(screen.view_data["terms"], t)
 			if line != "":
 				out.append(line)
 	return out
@@ -190,7 +190,7 @@ func _groups(parent: Control, groups: Array) -> HFlowContainer:
 		var chip := CargoChip.new().setup(g, cell)
 		chip.mouse_filter = Control.MOUSE_FILTER_PASS
 		chip.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-		chip.mouse_entered.connect(func() -> void: screen._show_tip(g))
+		chip.mouse_entered.connect(func() -> void: screen.show_tip(g))
 		chip.mouse_exited.connect(_on_chip_exited)
 		item.add_child(chip)
 		var count := Ui.label(item, "", TextSize.BODY)

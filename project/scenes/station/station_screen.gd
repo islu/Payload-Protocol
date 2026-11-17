@@ -40,8 +40,19 @@ const DOCK_CELL := 48.0
 
 ## The sell area with no drag (SPEC Section 20.2).
 const SELL_IDLE := "idle"
-var _view: Dictionary = {}
-var _run: Dictionary = {}
+## The view of the state now, and its run part (GameState.view()).
+var view_data: Dictionary = {}
+var run_data: Dictionary = {}
+var hold_view: HoldView
+## The shock bay above the hold (SPEC Section 31.2).
+var bay_view: HoldView
+var dock_panel: PanelContainer
+var sell_area: PanelContainer
+## The cargo or the clamp of the drag, at the mouse (SPEC Section 8.2).
+var drag_layer: DragLayer
+
+## The view part of each list when it was built, by the name of the list (_changed).
+var _built := {}
 ## The drag of a cargo or a clamp (SPEC Sections 8.2, 8.3, and 13).
 var _drag := StationDrag.new(self)
 var _hover_contract := -1
@@ -49,10 +60,6 @@ var _hover_contract := -1
 var _shown_credits := -1
 ## The tween that counts the credits, while it runs.
 var _credits_tween: Tween
-
-var _hold: HoldView
-## The shock bay above the hold (SPEC Section 31.2).
-var _bay: HoldView
 ## The top bar: the leg, the credits, the mass, and the environment (SPEC Section 20.2).
 var _top_bar: TopBar
 ## The warp checklist above the Warp button (SPEC Section 20.2).
@@ -63,7 +70,6 @@ var _credits_label: Label
 var _mod_bar: ModBar
 var _hazard_box: VBoxContainer
 var _dock_title: Label
-var _dock_panel: PanelContainer
 var _dock_flow: HFlowContainer
 var _contracts_box: VBoxContainer
 var _contract_cards: Array[ContractCard] = []
@@ -72,7 +78,6 @@ var _shop: ShopPanel
 var _services: ShopPanel
 var _clamp_box: HBoxContainer
 var _clamp_label: Label
-var _sell_area: PanelContainer
 var _sell_label: Label
 ## What the sell area shows now: SELL_IDLE with no drag, or the sell_action of the
 ## dragged cargo ("" when it cannot go there) (SPEC Section 20.2).
@@ -85,7 +90,6 @@ var _type_tween: Tween
 var _tip: CargoTip
 var _toast: Label
 var _confirm: ConfirmationDialog
-var _drag_layer: DragLayer
 ## The gold sparkle of a coin sound (SPEC Section 21.4).
 var _fx: FxLayer
 
@@ -135,13 +139,13 @@ func _build() -> void:
 	left.add_child(dock_head)
 	_dock_title = Ui.label(dock_head, DOCK_TEXT, TextSize.HEADING, Palette.ACCENT)
 	_dock_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_button(dock_head, tr(LOAD_ALL_TEXT), func() -> void: _act(GameState.load_all(), "clack"))
+	add_button(dock_head, tr(LOAD_ALL_TEXT), func() -> void: act(GameState.load_all(), "clack"))
 	# The dock fits its cargo. An empty dock is one line (SPEC Section 20.2).
-	_dock_panel = Ui.panel(left)
+	dock_panel = Ui.panel(left)
 	_dock_flow = HFlowContainer.new()
 	_dock_flow.add_theme_constant_override("h_separation", 10)
 	_dock_flow.add_theme_constant_override("v_separation", 10)
-	_dock_panel.add_child(_dock_flow)
+	dock_panel.add_child(_dock_flow)
 	Ui.label(left, CONTRACTS_TEXT, TextSize.HEADING, Palette.ACCENT)
 	var scroll := ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -186,20 +190,20 @@ func _build() -> void:
 	ship.add_theme_constant_override("separation", 0)
 	row.add_child(ship)
 	# The shock bay hangs above the hold (SPEC Section 31.2).
-	_bay = HoldView.new()
-	_bay.bay = true
-	_bay.visible = false
-	_bay.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_bay.cargo_pressed.connect(_on_hold_pressed)
-	_bay.cargo_hovered.connect(_on_hold_hovered)
-	ship.add_child(_bay)
-	_hold = HoldView.new()
-	_hold.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	_hold.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_hold.cargo_pressed.connect(_on_hold_pressed)
-	_hold.clamp_pressed.connect(func(id: int) -> void: _act(GameState.unclamp_cargo(id)))
-	_hold.cargo_hovered.connect(_on_hold_hovered)
-	ship.add_child(_hold)
+	bay_view = HoldView.new()
+	bay_view.bay = true
+	bay_view.visible = false
+	bay_view.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	bay_view.cargo_pressed.connect(_on_hold_pressed)
+	bay_view.cargo_hovered.connect(_on_hold_hovered)
+	ship.add_child(bay_view)
+	hold_view = HoldView.new()
+	hold_view.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	hold_view.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	hold_view.cargo_pressed.connect(_on_hold_pressed)
+	hold_view.clamp_pressed.connect(func(id: int) -> void: act(GameState.unclamp_cargo(id)))
+	hold_view.cargo_hovered.connect(_on_hold_hovered)
+	ship.add_child(hold_view)
 	# Below the hold: the mod bar, and the hint of the controls (SPEC Section 20.2).
 	var bottom := HBoxContainer.new()
 	bottom.alignment = BoxContainer.ALIGNMENT_CENTER
@@ -229,19 +233,19 @@ func _build() -> void:
 	_clamp_label = Ui.label(right, "", TextSize.SMALL, Palette.TEXT_DIM)
 	_clamp_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	# The sell area is a small bar. A drag colors it (SPEC Section 20.2).
-	_sell_area = Ui.panel(right)
-	_sell_area.custom_minimum_size.y = SELL_HEIGHT
-	_sell_label = Ui.label(_sell_area, "", TextSize.SMALL, Palette.TEXT_DIM)
+	sell_area = Ui.panel(right)
+	sell_area.custom_minimum_size.y = SELL_HEIGHT
+	_sell_label = Ui.label(sell_area, "", TextSize.SMALL, Palette.TEXT_DIM)
 	_sell_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_sell_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	_show_sell({})
+	show_sell({})
 	var spacer := Control.new()
 	spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	right.add_child(spacer)
 	_checklist = WarpChecklist.new()
 	right.add_child(_checklist)
 	# Undo takes back the last action at this station (SPEC Section 20.2).
-	_undo_button = _button(right, tr(UNDO_TEXT), _undo, false)
+	_undo_button = add_button(right, tr(UNDO_TEXT), _undo, false)
 	_warp_button = Button.new()
 	_warp_button.text = tr(WARP_TEXT)
 	_warp_button.custom_minimum_size = Vector2(0, 72)
@@ -252,14 +256,14 @@ func _build() -> void:
 	_confirm = ConfirmationDialog.new()
 	TextSize.apply_to_dialog(_confirm)
 	_confirm.title = tr(CONFIRM_TITLE_TEXT)
-	_confirm.confirmed.connect(func() -> void: _act(GameState.warp()))
+	_confirm.confirmed.connect(func() -> void: act(GameState.warp()))
 	add_child(_confirm)
 
-	_drag_layer = DragLayer.new()
-	_drag_layer.hold = _hold
-	add_child(_drag_layer)
+	drag_layer = DragLayer.new()
+	drag_layer.hold = hold_view
+	add_child(drag_layer)
 	_fx = FxLayer.new()
-	_fx.hold = _hold
+	_fx.hold = hold_view
 	add_child(_fx)
 
 	_tip = CargoTip.new()
@@ -274,7 +278,7 @@ func _build() -> void:
 	add_child(_toast)
 
 
-func _button(parent: Control, text: String, action: Callable, enabled := true) -> Button:
+func add_button(parent: Control, text: String, action: Callable, enabled := true) -> Button:
 	var b := Button.new()
 	b.text = text
 	b.disabled = not enabled
@@ -288,52 +292,75 @@ func _button(parent: Control, text: String, action: Callable, enabled := true) -
 
 
 func refresh() -> void:
-	_view = GameState.view()
-	_run = _view["run"]
+	view_data = GameState.view()
+	run_data = view_data["run"]
 	# The station shows behind an event and a mod choice (SPEC Sections 20.8 and 20.9).
-	if _run.is_empty() or not _run["phase"] in STATION_PHASES:
+	if run_data.is_empty() or not run_data["phase"] in STATION_PHASES:
 		return
-	_top_bar.set_view(_run)
-	_checklist.set_view(_run)
-	_count_credits(_run["credits"])
+	_top_bar.set_view(run_data)
+	_checklist.set_view(run_data)
+	_count_credits(run_data["credits"])
 	# The Warp button does not work over the maximum mass (SPEC Section 25).
-	_warp_button.disabled = not _run["can_warp"]
-	_show_mods()
-	_show_pilot()
+	_warp_button.disabled = not run_data["can_warp"]
+	show_pilot()
 	_undo_button.disabled = not GameState.can_undo()
-	_hold.set_view(_run)
-	_bay.set_view(_run)
-	_refresh_hazard()
-	_refresh_dock()
-	_refresh_contracts()
-	_shop.refresh()
-	_services.refresh()
-	_refresh_clamps()
-	_update_marks()
+	hold_view.set_view(run_data)
+	bay_view.set_view(run_data)
+	# Each list is built again only when its part of the view changed: a cargo move
+	# changes only some of them.
+	if _changed("mods", run_data.get("mods", [])):
+		_show_mods()
+	var incident: Dictionary = run_data.get("incident", {})
+	if _changed("hazard", [run_data.get("environment", {}), incident, run_data["hazard"]]):
+		_refresh_hazard()
+	if _changed("dock", run_data["cargo"].filter(_on_dock)):
+		_refresh_dock()
+	if _changed("contracts", [run_data["contracts"], run_data["mass"]]):
+		_refresh_contracts()
+	if _changed("shop", [run_data["shop"], view_data["terms"]]):
+		_shop.refresh()
+		_services.refresh()
+	if _changed("clamps", [run_data["free_clamps"], run_data["clamps"]]):
+		_refresh_clamps()
+	update_marks()
+
+
+## Reports whether the view part of a list changed since the list was built. The
+## language is a part too: a list has translated text.
+func _changed(list: String, part: Variant) -> bool:
+	var key := [TranslationServer.get_locale(), part]
+	if _built.get(list) == key:
+		return false
+	_built[list] = key
+	return true
+
+
+static func _on_dock(c: Dictionary) -> bool:
+	return not c["in_hold"] and not c["in_bay"]
 
 
 ## Shows the mod bar (SPEC Section 20.2).
 func _show_mods() -> void:
-	_mod_bar.set_mods(_run.get("mods", []), _set_hover_mod)
+	_mod_bar.set_mods(run_data.get("mods", []), _set_hover_mod)
 
 
 ## Marks the area of the mod under the mouse on the hold, and shows its name and its
 ## rule in the tip. {} marks none (SPEC Section 20.2).
 func _set_hover_mod(m: Dictionary) -> void:
-	_hold.hover_mod = m.get("id", "")
-	_hold.queue_redraw()
+	hold_view.hover_mod = m.get("id", "")
+	hold_view.queue_redraw()
 	if m.is_empty():
-		_hide_tip()
+		hide_tip()
 	else:
-		_show_text_tip(tr(m["name"]), PackedStringArray([GameText.format(m["text"])]))
+		show_text_tip(tr(m["name"]), PackedStringArray([GameText.format(m["text"])]))
 
 
 ## Shows the hint of the first runs in the pilot box, or the line of the pilot (SPEC Section 23.3).
-func _show_pilot() -> void:
-	var hint := Hints.current(_run)
+func show_pilot() -> void:
+	var hint := Hints.current(run_data)
 	var text := ""
 	if hint == "":
-		text = GameText.PILOT_NAME + ": " + tr(_run["line"])
+		text = GameText.PILOT_NAME + ": " + tr(run_data["line"])
 		_pilot_label.add_theme_color_override("font_color", Palette.ACCENT)
 	else:
 		# The font has "→" (tools/i18n/glyphs.py checks each character).
@@ -383,13 +410,13 @@ func _set_credits(value: int) -> void:
 func _refresh_hazard() -> void:
 	Ui.clear(_hazard_box)
 	# The environment and the incident come before the shift steps (SPEC Sections 28.1 and 29.3).
-	if not _run.get("environment", {}).is_empty():
-		var tag := RouteCards.env_tag(_hazard_box, _run["environment"])
+	if not run_data.get("environment", {}).is_empty():
+		var tag := RouteCards.env_tag(_hazard_box, run_data["environment"])
 		_env_tip_on(tag)
-	if not _run.get("incident", {}).is_empty():
-		RouteCards.incident_card(_hazard_box, _run["incident"])
+	if not run_data.get("incident", {}).is_empty():
+		RouteCards.incident_card(_hazard_box, run_data["incident"])
 	var i := 0
-	for step: Dictionary in _run["hazard"]:
+	for step: Dictionary in run_data["hazard"]:
 		var index := i
 		i += 1
 		var color: Color = Palette.BAD if step["fork"] else Palette.WARN
@@ -404,7 +431,7 @@ func _refresh_hazard() -> void:
 		var box := VBoxContainer.new()
 		box.add_theme_constant_override("separation", 0)
 		card.add_child(box)
-		var look := step_card(step, _view)
+		var look := step_card(step, view_data)
 		var big := Ui.label(box, "", 52, color)
 		big.text = look["arrow"]
 		big.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -444,13 +471,13 @@ static func step_card(step: Dictionary, view: Dictionary) -> Dictionary:
 ## Marks the front wall of a step in the hold, or of the first step for -1. The
 ## wall jolt warnings are for the first step only (SPEC Sections 12.3 and 20.2).
 func _set_hover_step(index: int) -> void:
-	var hazard: Array = _run.get("hazard", [])
+	var hazard: Array = run_data.get("hazard", [])
 	if index < 0 or index >= hazard.size():
-		_hold.show_front_walls(PackedStringArray([_run.get("front_wall", "")]), true)
+		hold_view.show_front_walls(PackedStringArray([run_data.get("front_wall", "")]), true)
 		return
 	var step: Dictionary = hazard[index]
 	var walls := PackedStringArray(step["directions"] if step["known"] == "" else [step["known"]])
-	_hold.show_front_walls(walls, index == 0)
+	hold_view.show_front_walls(walls, index == 0)
 
 
 ## Returns the arrow and the name of a direction.
@@ -470,25 +497,25 @@ static func direction_name(d: String, view: Dictionary) -> String:
 
 func _refresh_dock() -> void:
 	Ui.clear(_dock_flow)
-	_dock_title.text = tr(DOCK_COUNT_TEXT).format({"count": _run["dock"].size()})
-	if _run["dock"].is_empty():
+	_dock_title.text = tr(DOCK_COUNT_TEXT).format({"count": run_data["dock"].size()})
+	if run_data["dock"].is_empty():
 		Ui.label(_dock_flow, EMPTY_DOCK_TEXT, TextSize.SMALL, Palette.TEXT_DIM)
-	for c: Dictionary in _run["cargo"]:
+	for c: Dictionary in run_data["cargo"]:
 		if c["in_hold"] or c["in_bay"]:
 			continue
 		var chip := CargoChip.new().setup(c, DOCK_CELL)
 		chip.pressed.connect(
 			func(chip: CargoChip) -> void: _drag.begin_cargo(c["id"], Vector2(chip.press_cell))
 		)
-		chip.mouse_entered.connect(func() -> void: _show_tip(c))
-		chip.mouse_exited.connect(_hide_tip)
+		chip.mouse_entered.connect(func() -> void: show_tip(c))
+		chip.mouse_exited.connect(hide_tip)
 		_dock_flow.add_child(chip)
 
 
 func _refresh_contracts() -> void:
 	Ui.clear(_contracts_box)
 	_contract_cards.clear()
-	for k: Dictionary in _run["contracts"]:
+	for k: Dictionary in run_data["contracts"]:
 		var card := ContractCard.new()
 		_contracts_box.add_child(card)
 		card.setup(self, k)
@@ -496,7 +523,7 @@ func _refresh_contracts() -> void:
 
 
 ## Shows the sell area for a dragged cargo view, or idle for {} (SPEC Section 20.2).
-func _show_sell(c: Dictionary) -> void:
+func show_sell(c: Dictionary) -> void:
 	var color := Palette.PANEL_LINE
 	_sell_mode = SELL_IDLE
 	_sell_label.text = tr(SELL_IDLE_TEXT)
@@ -516,55 +543,55 @@ func _show_sell(c: Dictionary) -> void:
 				_sell_label.text = tr(NO_SELL_TEXT)
 		if _sell_mode != "":
 			_sell_label.add_theme_color_override("font_color", color)
-	var style: StyleBoxFlat = _sell_area.get_theme_stylebox("panel").duplicate()
+	var style: StyleBoxFlat = sell_area.get_theme_stylebox("panel").duplicate()
 	style.border_color = color
 	style.bg_color = Palette.PANEL if _sell_mode in [SELL_IDLE, ""] else Color(color, 0.15)
-	_sell_area.add_theme_stylebox_override("panel", style)
+	sell_area.add_theme_stylebox_override("panel", style)
 
 
 func _refresh_clamps() -> void:
 	Ui.clear(_clamp_box)
-	for i in _run["free_clamps"]:
+	for i in run_data["free_clamps"]:
 		var chip := ClampChip.new()
 		chip.pressed.connect(func() -> void: _drag.begin_clamp())
 		_clamp_box.add_child(chip)
 	_clamp_label.text = tr(FREE_CLAMPS_TEXT).format(
-		{"free": _run["free_clamps"], "total": _run["clamps"]}
+		{"free": run_data["free_clamps"], "total": run_data["clamps"]}
 	)
 
 
-func _set_hover_contract(index: int) -> void:
+func set_hover_contract(index: int) -> void:
 	_hover_contract = index
-	_update_marks()
+	update_marks()
 
 
 ## Marks the freight of the contract under the mouse, and the zone of its bonus (SPEC Section 20.2).
-func _update_marks() -> void:
+func update_marks() -> void:
 	var marked := []
 	var zone := []
-	if _hover_contract >= 0 and _hover_contract < _run["contracts"].size():
-		for c: Dictionary in _run["cargo"]:
+	if _hover_contract >= 0 and _hover_contract < run_data["contracts"].size():
+		for c: Dictionary in run_data["cargo"]:
 			if c["contract"] == _hover_contract:
 				marked.append(c["id"])
-		var b: Dictionary = _run["contracts"][_hover_contract]["bonus"]
+		var b: Dictionary = run_data["contracts"][_hover_contract]["bonus"]
 		if not b.is_empty():
 			zone = b["zone"]
 	# A drag of the freight of a zone contract shows the zone (SPEC Section 15.3).
 	if _drag.is_active() and _drag.state["kind"] == "cargo":
-		var c := _cargo(_drag.state["id"])
+		var c := cargo_view(_drag.state["id"])
 		if c.get("contract", -1) >= 0:
-			var b: Dictionary = _run["contracts"][c["contract"]]["bonus"]
+			var b: Dictionary = run_data["contracts"][c["contract"]]["bonus"]
 			if not b.is_empty():
 				zone = b["zone"]
-	_hold.marked = marked
-	_hold.zone = zone
-	_hold.queue_redraw()
-	_bay.marked = marked
-	_bay.queue_redraw()
+	hold_view.marked = marked
+	hold_view.zone = zone
+	hold_view.queue_redraw()
+	bay_view.marked = marked
+	bay_view.queue_redraw()
 
 
-func _cargo(id: int) -> Dictionary:
-	for c: Dictionary in _run.get("cargo", []):
+func cargo_view(id: int) -> Dictionary:
+	for c: Dictionary in run_data.get("cargo", []):
 		if c["id"] == id:
 			return c
 	return {}
@@ -574,7 +601,7 @@ func _cargo(id: int) -> Dictionary:
 
 
 ## Shows the error of an action and plays the deny sound, or plays ok_sound when it works.
-func _act(err: String, ok_sound := "") -> void:
+func act(err: String, ok_sound := "") -> void:
 	if err != "":
 		_show_toast(tr(err))
 		Sound.play(self, "deny")
@@ -586,7 +613,7 @@ func _act(err: String, ok_sound := "") -> void:
 
 ## Takes back the last action at this station (SPEC Section 20.2).
 func _undo() -> void:
-	_act(GameState.undo())
+	act(GameState.undo())
 
 
 func _show_toast(text: String) -> void:
@@ -600,11 +627,11 @@ func _show_toast(text: String) -> void:
 func _on_warp_pressed() -> void:
 	Hints.done(Hints.HAZARD)
 	Hints.done(Hints.WARP)
-	if not _run["dock"].is_empty():
-		_confirm.dialog_text = tr(CONFIRM_TEXT).format({"fee": _run["shop"]["breach_fee"]})
+	if not run_data["dock"].is_empty():
+		_confirm.dialog_text = tr(CONFIRM_TEXT).format({"fee": run_data["shop"]["breach_fee"]})
 		_confirm.popup_centered()
 		return
-	_act(GameState.warp())
+	act(GameState.warp())
 
 
 func _on_hold_pressed(id: int, grab: Vector2i, button: int) -> void:
@@ -612,7 +639,7 @@ func _on_hold_pressed(id: int, grab: Vector2i, button: int) -> void:
 		return
 	if button == MOUSE_BUTTON_RIGHT:
 		var err := GameState.rotate_cargo(id)
-		_act(err, "clack")
+		act(err, "clack")
 		if err == "":
 			Hints.done(Hints.ROTATE)
 	elif button == MOUSE_BUTTON_LEFT:
@@ -639,16 +666,16 @@ func _input(event: InputEvent) -> void:
 
 func _on_hold_hovered(id: int) -> void:
 	if id < 0 or _drag.is_active():
-		_hide_tip()
+		hide_tip()
 	else:
-		_show_tip(_cargo(id))
+		show_tip(cargo_view(id))
 
 
 ## Shows the tooltip of a cargo view, unless a drag is on (SPEC Section 8.4). The
 ## contract cards and the shop call it too.
-func _show_tip(c: Dictionary) -> void:
+func show_tip(c: Dictionary) -> void:
 	if not _drag.is_active():
-		_tip.show_cargo(c, _view)
+		_tip.show_cargo(c, view_data)
 
 
 ## Shows the environment of the leg in the tip while the mouse is on a control: its
@@ -656,20 +683,20 @@ func _show_tip(c: Dictionary) -> void:
 func _env_tip_on(control: Control) -> void:
 	control.mouse_filter = Control.MOUSE_FILTER_STOP
 	control.mouse_entered.connect(_show_env_tip)
-	control.mouse_exited.connect(_hide_tip)
+	control.mouse_exited.connect(hide_tip)
 
 
 func _show_env_tip() -> void:
-	var env: Dictionary = _run.get("environment", {})
+	var env: Dictionary = run_data.get("environment", {})
 	if not env.is_empty():
-		_show_text_tip(tr(env["name"]), PackedStringArray([tr(env["text"])]))
+		show_text_tip(tr(env["name"]), PackedStringArray([tr(env["text"])]))
 
 
 ## Shows the tip with a title and lines of text, when no drag is active (SPEC Section 20.2).
-func _show_text_tip(title: String, lines: PackedStringArray) -> void:
+func show_text_tip(title: String, lines: PackedStringArray) -> void:
 	if not _drag.is_active():
 		_tip.show_text(title, lines)
 
 
-func _hide_tip() -> void:
+func hide_tip() -> void:
 	_tip.visible = false

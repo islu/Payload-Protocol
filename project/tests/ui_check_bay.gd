@@ -6,11 +6,11 @@ class_name UiCheckBay
 ## Buys the shock bay and drags a cargo of the dock into it (SPEC Sections 17.2 and 31).
 ## The cargo stays there, so that the warp shows the shock bay too.
 static func check(ui: Node, state: Node, station: StationScreen) -> void:
-	ui._check(not station._bay.visible, "before the purchase, the station shows no shock bay")
+	ui._check(not station.bay_view.visible, "before the purchase, the station shows no shock bay")
 	ui._check(state.buy_shock_bay() == "", "buy the shock bay (SPEC Section 17.2)")
 	await ui.get_tree().process_frame
 	ui._check(
-		station._bay.visible,
+		station.bay_view.visible,
 		"after the purchase, the shock bay hangs above the hold (SPEC Section 31.2)"
 	)
 	var run: Dictionary = state.view()["run"]
@@ -19,8 +19,8 @@ static func check(ui: Node, state: Node, station: StationScreen) -> void:
 			continue
 		var first: Dictionary = c["rotations"][c["rot"]][0]
 		var grab := Vector2(first["x"], first["y"])
-		var bay: HoldView = station._bay
-		var at := bay.global_position + bay.grid_origin() + (grab + Vector2(0.5, 0.5)) * bay.cell
+		var bay: HoldView = station.bay_view
+		var at := bay.cell_global(grab + Vector2(0.5, 0.5))
 		station._drag.begin_cargo(c["id"], grab)
 		station._drag.update()
 		station._drag.drop_at(at)

@@ -167,10 +167,7 @@ func warp() -> String:
 	warp_log["before"] = RunView.hold_views(self)
 	# The shock bay does not change in the warp: the UI shows it still (SPEC Section 31.2).
 	warp_log["bay"] = RunView.bay_views(self)
-	charges = {}
-	for c in hold_cargo():
-		if c.has(Defs.TRAIT_SHIELD):
-			charges[c.id] = 1
+	Shift.charge_shields(self)
 	# The incident comes before the first shift step (SPEC Section 29).
 	if not incident.is_empty():
 		var inc := Shift.incident(self, incident)

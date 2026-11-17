@@ -59,17 +59,35 @@ def download(source: str) -> Path:
     return path
 
 
+def load(entry: dict) -> Image.Image:
+    """Opens the image of an entry: its "crop" box, or else the box of its pixels."""
+    img = Image.open(download(entry["source"])).convert("RGBA")
+    if "crop" in entry:
+        x, y, w, h = entry["crop"]
+        return img.crop((x, y, x + w, y + h))
+    return img.crop(img.getbbox())
+
+
+def prune(folder: Path, known: set, suffixes: tuple) -> None:
+    """Removes the files of a folder that are not in known: their entry left the table."""
+    for f in folder.iterdir():
+        if f.suffix in suffixes and f.name not in known:
+            f.unlink()
+
+
+def report_missing(defs: Path, table: dict, what: str) -> None:
+    """Prints each definition of the data that has no entry in the table."""
+    missing = sorted(p.stem for p in defs.glob("*.json") if p.stem not in table)
+    if missing:
+        print(f"art: no {what} for " + ", ".join(missing))
+
+
 def make(cargo_id: str, entry: dict) -> None:
     shape = json.loads((CARGO / f"{cargo_id}.json").read_text())["shape"]
     cols = max(c[0] for c in shape) + 1
     rows = max(c[1] for c in shape) + 1
     box_w, box_h = cols * CELL, rows * CELL
-    img = Image.open(download(entry["source"])).convert("RGBA")
-    if "crop" in entry:
-        x, y, w, h = entry["crop"]
-        img = img.crop((x, y, x + w, y + h))
-    else:
-        img = img.crop(img.getbbox())
+    img = load(entry)
     fit = min(box_w / img.width, box_h / img.height)
     scale = entry.get("scale", 1.0 if fit >= 1.0 else 0.5 if fit >= 0.5 else fit)
     if scale == "fit":
@@ -97,8 +115,7 @@ def make(cargo_id: str, entry: dict) -> None:
 
 def make_icon(entry: dict) -> None:
     """The project icon: the image in the center of a square, at scale 1 when it fits."""
-    img = Image.open(download(entry["source"])).convert("RGBA")
-    img = img.crop(img.getbbox())
+    img = load(entry)
     fit = (ICON_SIZE - 16) / max(img.width, img.height)
     if fit < 1.0:
         img = img.resize((round(img.width * fit), round(img.height * fit)), Image.Resampling.LANCZOS)
@@ -110,10 +127,8 @@ def make_icon(entry: dict) -> None:
 
 def make_portrait(speaker_id: str, entry: dict) -> None:
     """The portrait of a speaker: the figure, scaled to a head of HEAD_SIZE pixels."""
-    img = Image.open(download(entry["source"])).convert("RGBA")
-    if "crop" in entry:
-        x, y, w, h = entry["crop"]
-        img = img.crop((x, y, x + w, y + h))
+    img = load(entry)
+    # A crop box can have empty margins: the figure starts at its first pixel.
     img = img.crop(img.getbbox())
     scale = HEAD_SIZE / entry["head"]
     size = (round(img.width * scale), round(img.height * scale))
@@ -128,12 +143,8 @@ def make_portraits() -> None:
     SPEAKER_OUT.mkdir(parents=True, exist_ok=True)
     for speaker_id, entry in table.items():
         make_portrait(speaker_id, entry)
-    for f in SPEAKER_OUT.iterdir():
-        if f.suffix == ".png" and f.stem not in table:
-            f.unlink()
-    missing = sorted(p.stem for p in SPEAKERS.glob("*.json") if p.stem not in table)
-    if missing:
-        print("art: no portrait for " + ", ".join(missing))
+    prune(SPEAKER_OUT, {f"{s}.png" for s in table}, (".png",))
+    report_missing(SPEAKERS, table, "portrait")
 
 
 def main() -> int:
@@ -144,13 +155,8 @@ def main() -> int:
     for cargo_id, entry in table.items():
         make(cargo_id, entry)
         known.update({f"{cargo_id}.png", f"{cargo_id}_scrap.png", f"{cargo_id}.json"})
-    # Remove the files of cargo that left the table.
-    for f in OUT.iterdir():
-        if f.suffix in (".png", ".json") and f.name not in known:
-            f.unlink()
-    missing = sorted(p.stem for p in CARGO.glob("*.json") if p.stem not in table)
-    if missing:
-        print("art: no image for " + ", ".join(missing))
+    prune(OUT, known, (".png", ".json"))
+    report_missing(CARGO, table, "image")
     make_portraits()
     return 0
 

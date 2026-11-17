@@ -38,10 +38,7 @@ func on_dock(def_id: String) -> Cargo:
 
 ## Plays shift steps as a warp does, with no dock and no arrival.
 func shift(dirs: Array) -> Array:
-	run.charges = {}
-	for c in run.hold_cargo():
-		if c.has(Defs.TRAIT_SHIELD):
-			run.charges[c.id] = 1
+	Shift.charge_shields(run)
 	var logs := []
 	for d: String in dirs:
 		logs.append(Shift.step(run, d))
@@ -52,6 +49,13 @@ func shift(dirs: Array) -> Array:
 func warp_with(dirs: Array) -> void:
 	run.hazard = PackedStringArray(dirs)
 	eq(run.warp(), "", "the warp works")
+
+
+## Selects the last choice of the event of the station, if the station has one
+## (SPEC Section 26.1).
+func skip_event() -> void:
+	if run.phase == Defs.PHASE_EVENT:
+		eq(run.choose_event(run.event.choices.size() - 1), "", "skip the event")
 
 
 func gone(c: Cargo) -> bool:

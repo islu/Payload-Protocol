@@ -251,6 +251,14 @@ static func _run_queue(run: Run, queue: Array, powered: Dictionary, out: Diction
 		queue.append_array(_apply(run, p[0], p[1], p[2], powered, out))
 
 
+## Gives each Shield in the hold its one charge for the jump (SPEC Section 12.2).
+static func charge_shields(run: Run) -> void:
+	run.charges = {}
+	for c in run.hold_cargo():
+		if c.has(Defs.TRAIT_SHIELD):
+			run.charges[c.id] = 1
+
+
 ## Plays an incident before the first shift step (SPEC Section 29). incident is
 ## {kind, x, y}. It returns the log: {kind, x, y, hits, reactions, after, debris}.
 ## debris is the ID of a new debris, or 0.

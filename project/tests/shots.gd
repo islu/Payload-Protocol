@@ -122,13 +122,13 @@ func _station() -> void:
 		station._input(release)
 	for c: Dictionary in run["cargo"]:
 		if c["in_hold"]:
-			station._show_tip(c)
+			station.show_tip(c)
 			break
 	await _wait(0.4)
 	await _shot("05_station_loaded")
 	station._drag.end()
 	await _drag_blocked(station)
-	station._hide_tip()
+	station.hide_tip()
 	var pause: Overlay = _main.open_overlay(PauseMenu.new())
 	pause.add_child(SettingsPanel.new())
 	await _wait(0.4)
@@ -145,31 +145,35 @@ func _mod_choice() -> void:
 	if run["phase"] == Defs.PHASE_EVENT:
 		await _shot("09_event")
 		GameState.choose_event(run["event"]["choices"].size() - 1)
-	StationEvents.offer_mods(GameState._record.run)
-	GameState.state_changed.emit()
+	GameState.set_up(StationEvents.offer_mods)
 	await _wait(0.6)
 	await _shot("10_mod_choice")
 	GameState.choose_mod(0)
 	await _wait(0.6)
 	await _shot("11_station_mod")
 	# The route: an environment, an incident, and special contracts (SPEC Sections 28 to 30).
-	var r: Run = GameState._record.run
+	GameState.set_up(_set_route)
+	await _wait(0.6)
+	await _shot("12_station_route")
+	# The shock bay above the hold, with a cargo in it (SPEC Section 31.2).
+	GameState.set_up(_set_bay)
+	await _wait(0.6)
+	await _shot("13_station_bay")
+
+
+func _set_route(r: Run) -> void:
 	r.environment = Defs.ENV_HEAT_ZONE
 	r.incident = {"kind": Defs.INCIDENT_METEOR, "x": 2}
 	r.contracts[0] = Contract.new(900, r.cat.contract("vip_embassy"))
 	r.contracts[1] = Contract.new(901, r.cat.contract("long_mine"))
 	r.contracts[2] = Contract.new(902, r.cat.contract("statue_loan"))
-	GameState.state_changed.emit()
-	await _wait(0.6)
-	await _shot("12_station_route")
-	# The shock bay above the hold, with a cargo in it (SPEC Section 31.2).
+
+
+func _set_bay(r: Run) -> void:
 	r.credits += 50
 	r.bay_size = r.cat.bay_sizes[-1]
 	var c := r.new_cargo(r.cat.cargo["energy_crystal"])
 	r.place_cargo(c.id, Vector2i(1, 0), 0, true)
-	GameState.state_changed.emit()
-	await _wait(0.6)
-	await _shot("13_station_bay")
 
 
 func _warp() -> void:
@@ -194,7 +198,7 @@ func _drag_blocked(station: StationScreen) -> void:
 		return
 	var a: Dictionary = placed[0]
 	var b: Dictionary = placed[1]
-	var hold := station._hold
+	var hold := station.hold_view
 	var s: Dictionary = a["rotations"][a["rot"]][0]
 	var at := Vector2(a["x"] + s["x"], a["y"] + s["y"]) + Vector2(0.5, 0.5)
 	station._drag.begin_cargo(b["id"], UiCheckDrag._grab(station, b["id"]))

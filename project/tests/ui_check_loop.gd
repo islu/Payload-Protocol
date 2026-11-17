@@ -126,7 +126,7 @@ static func choose(ui: Node, main: Control) -> void:
 				"the mouse on a mod card shows its name and its rule at once (SPEC Section 20.2)"
 			)
 			ui._check(
-				station._hold.hover_mod == m["id"],
+				station.hold_view.hover_mod == m["id"],
 				"the mouse on a mod card marks its area on the hold (SPEC Section 20.2)"
 			)
 			bar.cards[i].mouse_exited.emit()
@@ -134,7 +134,7 @@ static func choose(ui: Node, main: Control) -> void:
 		for id in Defs.MODS:
 			ui._check(ModIcon.has_icon(id), "the mod %s has an icon (SPEC Section 20.2)" % id)
 		ui._check(
-			station._hold.mod_areas == run["mod_areas"],
+			station.hold_view.mod_areas == run["mod_areas"],
 			"the hold shows the areas of the mods (SPEC Section 27.2)"
 		)
 	if run["mods"].size() > mods:
@@ -161,7 +161,7 @@ static func route_station(ui: Node, station: StationScreen) -> int:
 		var card := station._hazard_box.get_node_or_null("Incident")
 		ui._check(card != null, "the hazard panel shows the incident (SPEC Section 29.3)")
 		ui._check(
-			station._hold.incident_cells == run["incident"]["cells"],
+			station.hold_view.incident_cells == run["incident"]["cells"],
 			"the hold marks the place of the incident (SPEC Section 29.3)"
 		)
 	return seen
