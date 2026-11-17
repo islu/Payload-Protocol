@@ -224,7 +224,8 @@ func _render(run: Run) -> void:
 				"Mods: "
 				+ "; ".join(
 					v["mods"].map(
-						func(m: Dictionary) -> String: return "%s (%s)" % [m["name"], m["text"]]
+						func(m: Dictionary) -> String:
+							return "%s (%s)" % [m["name"], GameText.format(m["text"])]
 					)
 				)
 			)
@@ -238,7 +239,7 @@ func _render(run: Run) -> void:
 			_say("Select a ship mod. Command: choose <n>")
 			for i in v["mod_offer"].size():
 				var mo: Dictionary = v["mod_offer"][i]
-				_say("  %d: %s: %s" % [i, mo["name"], mo["text"]])
+				_say("  %d: %s: %s" % [i, mo["name"], GameText.format(mo["text"])])
 		Defs.PHASE_STATION:
 			_render_station(v)
 			_render_traits(run)

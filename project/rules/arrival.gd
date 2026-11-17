@@ -116,10 +116,12 @@ static func spoil_check(run: Run) -> Array[Cargo]:
 	return out
 
 
-## Returns the insurance of a lost piece: half of its pay, rounded down, with the
-## Insurance mod (SPEC Section 27.2).
+## Returns the insurance of a lost piece: the percent of the Insurance mod of its pay,
+## rounded down (SPEC Section 27.2).
 static func _insurance(run: Run, k: Contract) -> int:
-	return k.template.pay / 2 if run.has_mod(Defs.MOD_INSURANCE) else 0
+	if not run.has_mod(Defs.MOD_INSURANCE):
+		return 0
+	return k.template.pay * run.cat.mod_value(Defs.MOD_INSURANCE, "percent") / 100
 
 
 ## Reports whether a Cooler of the hold keeps a cargo fresh (SPEC Section 12.1).
@@ -131,12 +133,12 @@ static func cooled(run: Run, c: Cargo, hold: Array[Cargo]) -> bool:
 
 
 ## Reports whether a Cooler keeps a Perishable cargo fresh: next to it, or within
-## 2 cells with the Cryo Line mod (SPEC Sections 12.1 and 27.2).
+## the range of the Cryo Line mod (SPEC Sections 12.1 and 27.2).
 static func cools(run: Run, cooler: Cargo, c: Cargo) -> bool:
 	if not cooler.has(Defs.TRAIT_COOLER) or not c.has(Defs.TRAIT_PERISHABLE):
 		return false
 	if run.has_mod(Defs.MOD_CRYO_LINE):
-		return Cargo.within(cooler, c, 2)
+		return Cargo.within(cooler, c, run.cat.mod_value(Defs.MOD_CRYO_LINE, "range"))
 	return Cargo.next_to(cooler, c)
 
 

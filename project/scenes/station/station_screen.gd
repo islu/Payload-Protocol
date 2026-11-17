@@ -322,7 +322,7 @@ func _set_hover_mod(m: Dictionary) -> void:
 	if m.is_empty():
 		_hide_tip()
 	else:
-		_show_text_tip(tr(m["name"]), PackedStringArray([tr(m["text"])]))
+		_show_text_tip(tr(m["name"]), PackedStringArray([GameText.format(m["text"])]))
 
 
 ## Shows the hint of the first runs in the pilot box, or the line of the pilot (SPEC Section 23.3).

@@ -1477,7 +1477,7 @@ msgid "Array Power"
 msgstr ""
 
 #: project/data/mods/array_power.json
-msgid "A Battery powers each Shield within 2 cells."
+msgid "A Battery powers each Shield within {range} cells."
 msgstr ""
 
 #: project/data/mods/cryo_line.json
@@ -1485,7 +1485,7 @@ msgid "Cryo Line"
 msgstr ""
 
 #: project/data/mods/cryo_line.json
-msgid "A Cooler keeps each Perishable cargo within 2 cells fresh."
+msgid "A Cooler keeps each Perishable cargo within {range} cells fresh."
 msgstr ""
 
 #: project/data/mods/gravity_damper.json
@@ -1497,7 +1497,7 @@ msgid "Heavy cargo hits with the force of standard cargo. Its mass does not chan
 msgstr ""
 
 #: project/data/mods/insurance.json
-msgid "Each scrap, spoiled, or lost piece of a contract pays half of its pay."
+msgid "Each scrap, spoiled, or lost piece of a contract pays {percent}% of its pay."
 msgstr ""
 
 #: project/data/mods/padded_walls.json
@@ -1505,7 +1505,7 @@ msgid "Padded Walls"
 msgstr ""
 
 #: project/data/mods/padded_walls.json
-msgid "Each wall jolt has a force 1 less."
+msgid "Each wall jolt has a force {less} less."
 msgstr ""
 
 #: project/data/mods/shock_floor.json
@@ -1513,7 +1513,7 @@ msgid "Shock Floor"
 msgstr ""
 
 #: project/data/mods/shock_floor.json
-msgid "Cargo with a cell in the bottom row takes each hit with a force 1 less."
+msgid "Cargo with a cell in the bottom row takes each hit with a force {less} less."
 msgstr ""
 
 #: project/data/speakers/auditor.json

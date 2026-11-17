@@ -47,9 +47,6 @@ This file keeps each problem that is found and not fixed yet. Each item is in on
 
 ## To Do
 
-- **[Refactor · Rules] The numbers of the mods are in the code** (found 2026-11-16, by /simplify). `Shift` and `Arrival` have the values of the mods: Padded Walls -1, Shock Floor -1, the range 2 of Array Power and Cryo Line, and the insurance share 1/2. `data/mods/*.json` has only the name and the text, so the text repeats the numbers by hand. CLAUDE.md says: do not hard-code balance values.
-  To do                 Fix: give each mod JSON its values (`range`, `force_delta`, `insurance_share`). Read them in one pass that applies the active mods, not in branches on the mod ID.
-
 - **[Refactor · Rules] One function for the force of a hit** (found 2026-11-16, by /simplify). `Shift` calculates the force of a hit at four places (a wall, a cargo, a jolt, a meteor), and it builds the hit dictionary four times. The Cushion rule is a little different at each place.
   To do                 Fix: one `hit_force(run, c, raw, ctx)` that applies each modifier, and one builder for the hit of the log. The tests of Sections 10 to 12 must pass with no change.
 

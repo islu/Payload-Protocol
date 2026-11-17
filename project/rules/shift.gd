@@ -174,11 +174,11 @@ static func _jolt(run: Run, c: Cargo, delta: Vector2i, out: Dictionary, forces: 
 
 
 ## Returns the force of the wall jolt of a cargo: its weight value, 0 for Cushion.
-## The Padded Walls mod makes it 1 less, and 0 at least (SPEC Sections 10.4 and 27.2).
+## The Padded Walls mod makes it less by its value, and 0 at least (SPEC Sections 10.4 and 27.2).
 static func jolt_force(run: Run, c: Cargo) -> int:
 	var f := taken(run, c, 0 if c.has(Defs.TRAIT_CUSHION) else force_weight(run, c))
 	if run.has_mod(Defs.MOD_PADDED_WALLS):
-		f = maxi(0, f - 1)
+		f = maxi(0, f - run.cat.mod_value(Defs.MOD_PADDED_WALLS, "less"))
 	return f
 
 
@@ -191,12 +191,12 @@ static func force_weight(run: Run, c: Cargo) -> int:
 
 
 ## Returns the force that a cargo takes from a hit. With the Shock Floor mod, a cargo
-## with a cell in the bottom row takes 1 less, and 0 at least (SPEC Section 27.2).
+## with a cell in the bottom row takes less by the mod value, and 0 at least (SPEC Section 27.2).
 static func taken(run: Run, c: Cargo, force: int) -> int:
 	if run.has_mod(Defs.MOD_SHOCK_FLOOR):
 		for cell in c.cells():
 			if cell.y == run.rows - 1:
-				return maxi(0, force - 1)
+				return maxi(0, force - run.cat.mod_value(Defs.MOD_SHOCK_FLOOR, "less"))
 	return force
 
 
@@ -435,13 +435,13 @@ static func power_check(run: Run) -> Dictionary:
 	return powered
 
 
-## Reports whether a Battery powers a Shield: next to it, or within 2 cells with the
+## Reports whether a Battery powers a Shield: next to it, or within the range of the
 ## Array Power mod (SPEC Sections 12.2 and 27.2). It does not check the environment.
 static func powers(run: Run, battery: Cargo, shield: Cargo) -> bool:
 	if not battery.has(Defs.TRAIT_BATTERY) or not shield.has(Defs.TRAIT_SHIELD):
 		return false
 	if run.has_mod(Defs.MOD_ARRAY_POWER):
-		return Cargo.within(battery, shield, 2)
+		return Cargo.within(battery, shield, run.cat.mod_value(Defs.MOD_ARRAY_POWER, "range"))
 	return Cargo.next_to(battery, shield)
 
 

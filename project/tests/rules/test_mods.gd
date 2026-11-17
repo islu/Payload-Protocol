@@ -125,3 +125,30 @@ func test_array_power() -> void:
 	check(powered.has(near.id), "a Battery powers each Shield within 2 cells (SPEC Section 27.2)")
 	check(not powered.has(far.id), "a Shield 3 cells away has no power (SPEC Section 27.2)")
 	check(not powered.has(lone.id), "a Shield with no Battery has no power (SPEC Section 27.2)")
+
+
+## The rules read the values of the mods from the data (SPEC Section 27.2).
+func test_mod_values_come_from_data() -> void:
+	run.cat.mods[Defs.MOD_PADDED_WALLS]["values"]["less"] = 2
+	run.cat.mods[Defs.MOD_ARRAY_POWER]["values"]["range"] = 3
+	run.mods.append_array([Defs.MOD_PADDED_WALLS, Defs.MOD_ARRAY_POWER])
+	# The Battery is at (0, 0). The Shield is 3 cells away (3, 0). The glass is at the
+	# left wall: the jolt of a standard cargo is 2.
+	put("battery", 0, 0)
+	var far := put("shield", 3, 0)
+	var glass := put("glass", 0, 2)
+	check(
+		Shift.power_check(run).has(far.id),
+		"the range of Array Power comes from its data (SPEC Section 27.2)"
+	)
+	var logs := shift([Defs.DIR_LEFT])
+	eq(
+		hits_of(logs[0], glass.id)[0]["force"],
+		0,
+		"the force less of Padded Walls comes from its data: 2 - 2 (SPEC Section 27.2)"
+	)
+	eq(
+		RunView.mods(run, [Defs.MOD_PADDED_WALLS])[0]["text"]["args"],
+		{"less": 2},
+		"the text of a mod has its values (SPEC Section 27.2)"
+	)

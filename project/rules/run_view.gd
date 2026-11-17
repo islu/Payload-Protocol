@@ -476,7 +476,13 @@ static func mods(run: Run, ids: PackedStringArray) -> Array:
 	var out := []
 	for id in ids:
 		var m: Dictionary = run.cat.mods.get(id, {})
-		out.append({"id": id, "name": m.get("name", id), "text": m.get("text", "")})
+		out.append(
+			{
+				"id": id,
+				"name": m.get("name", id),
+				"text": text(m.get("text", ""), m.get("values", {}))
+			}
+		)
 	return out
 
 

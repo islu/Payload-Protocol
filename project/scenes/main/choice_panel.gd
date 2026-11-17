@@ -27,7 +27,7 @@ func _build_mods(offer: Array) -> void:
 	heading(MOD_CHOICE_TEXT)
 	for i in offer.size():
 		var m: Dictionary = offer[i]
-		var text := "%s\n%s" % [tr(m["name"]), tr(m["text"])]
+		var text := "%s\n%s" % [tr(m["name"]), GameText.format(m["text"])]
 		var b := _choice(text, func() -> void: _pick(GameState.choose_mod(i)))
 		# An empty icon keeps room for the mod icon at the left of the text.
 		b.icon = ImageTexture.create_from_image(Image.create(56, 48, false, Image.FORMAT_RGBA8))

@@ -5,6 +5,14 @@ extends RefCounted
 
 ## The number of lines that each event of the pilot needs (content.md).
 const MIN_LINES := 4
+## The values that the rules of each mod read from its data (SPEC Section 27.2).
+const MOD_VALUES := {
+	Defs.MOD_SHOCK_FLOOR: ["less"],
+	Defs.MOD_PADDED_WALLS: ["less"],
+	Defs.MOD_CRYO_LINE: ["range"],
+	Defs.MOD_ARRAY_POWER: ["range"],
+	Defs.MOD_INSURANCE: ["percent"],
+}
 
 var errors: PackedStringArray = []
 
@@ -101,7 +109,13 @@ static func from_data(data: Dictionary) -> Catalog:
 	for name: String in _sorted(files):
 		var m: Dictionary = files[name]
 		cat._check_id(str(m.get("id", "")), name, "mod")
-		cat.mods[name] = {"name": str(m.get("name", "")), "text": str(m.get("text", ""))}
+		var values := {}
+		var raw: Dictionary = m.get("values", {})
+		for key: String in raw:
+			values[key] = int(raw[key])
+		cat.mods[name] = {
+			"name": str(m.get("name", "")), "text": str(m.get("text", "")), "values": values
+		}
 	files = data.get("environments", {})
 	for name: String in _sorted(files):
 		var m: Dictionary = files[name]
@@ -197,6 +211,12 @@ func jumps(leg: int) -> int:
 
 
 ## Returns the name of a term: terms[group][id].name.
+## Returns a value of a mod from its data, for example the range of Array Power
+## (SPEC Section 27.2).
+func mod_value(id: String, key: String) -> int:
+	return mods[id]["values"][key]
+
+
 func term_name(group: String, id: String) -> String:
 	return str(terms.get(group, {}).get(id, {}).get("name", id))
 
@@ -233,6 +253,9 @@ func _check() -> void:
 	for id in Defs.MODS:
 		if mods.get(id, {}).get("name", "") == "" or mods.get(id, {}).get("text", "") == "":
 			_fail("mods: the mod %s needs a name and a text" % id)
+		for key: String in MOD_VALUES.get(id, []):
+			if mods.get(id, {}).get("values", {}).get(key, 0) < 1:
+				_fail("mods: the mod %s needs the value %s, 1 or more" % [id, key])
 	for id: String in mods:
 		if not id in Defs.MODS:
 			_fail("mods: %s is not a mod of the code" % id)

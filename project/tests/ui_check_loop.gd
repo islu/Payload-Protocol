@@ -120,7 +120,7 @@ static func choose(ui: Node, main: Control) -> void:
 			ui._check(
 				(
 					station._tip.visible
-					and TranslationServer.translate(m["text"]) in station._tip.text()
+					and GameText.format(m["text"]) in station._tip.text()
 					and TranslationServer.translate(m["name"]) in station._tip.text()
 				),
 				"the mouse on a mod card shows its name and its rule at once (SPEC Section 20.2)"

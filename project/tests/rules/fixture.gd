@@ -228,8 +228,16 @@ static func events() -> Dictionary:
 	}
 
 
+## The values are the values of the real data (SPEC Section 27.2).
 static func mods() -> Dictionary:
+	var values := {
+		Defs.MOD_SHOCK_FLOOR: {"less": 1},
+		Defs.MOD_PADDED_WALLS: {"less": 1},
+		Defs.MOD_CRYO_LINE: {"range": 2},
+		Defs.MOD_ARRAY_POWER: {"range": 2},
+		Defs.MOD_INSURANCE: {"percent": 50},
+	}
 	var out := {}
 	for id in Defs.MODS:
-		out[id] = {"id": id, "name": id, "text": "rule of " + id}
+		out[id] = {"id": id, "name": id, "text": "rule of " + id, "values": values.get(id, {})}
 	return out

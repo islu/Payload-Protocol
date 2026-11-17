@@ -65,6 +65,16 @@ func test_debris_is_not_contract_freight() -> void:
 	)
 
 
+func test_mod_needs_its_values() -> void:
+	var d := Fixture.data()
+	d["mods"][Defs.MOD_PADDED_WALLS]["values"] = {}
+	eq(
+		Catalog.from_data(d).errors.size(),
+		1,
+		"the data check rejects a mod with no value for its rule (SPEC Section 27.2)"
+	)
+
+
 ## A bot accepts each contract, packs the freight where it fits, and warps. The
 ## runs must end with no script error, and each phase must follow the spec.
 func test_bot_runs_end() -> void:
