@@ -33,7 +33,7 @@ Contracts and the dock:
 - Each contract card shows on its first line the client, the total pay, and the mass of the contract. The second line shows the freight and the bonus. The same freight shows one time, with its image, "×N", and its trait icons.
 - The mouse on a contract card shows the details: the number of pieces, the pay for each piece, the rules of the traits, and the mass after it is accepted (the mass of the hold and the dock, plus the mass of the contract).
 - The mass of a contract that is not accepted is yellow when the mass after it is above the mass limit (a fuel fee), and red when it is above the maximum.
-- An accepted contract has a bright border and shows "Loaded N/M": N pieces of its M pieces are in the hold or in the shock bay.
+- An accepted contract has a bright border and shows "Loaded N/M": N pieces of its M pieces are in the hold.
 - When the mouse is on a contract card, the hold marks the freight of that contract.
 - The dock title shows the number of cargo on the dock. The dock shows its cargo at 48 pixels for each cell. An empty dock is one line of text.
 

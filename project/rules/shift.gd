@@ -4,8 +4,10 @@ class_name Shift
 ##
 ## A step returns its event log for the UI:
 ## {direction, powered: [id], slides: [{cargo, from, to, distance}],
-##  hits: [{cargo, other, wall, force, contact}], reactions: [...], after: [{cargo, x, y, kind}]}.
-## A cell in the log is {x, y}. "other" is 0 for a wall.
+##  hits: [{cargo, other, wall, jolt, meteor, press, force, contact}], reactions: [...],
+##  after: [{cargo, x, y, kind}]}.
+## A cell in the log is {x, y}. "other" is 0 for a wall. In a press, "cargo" presses
+## and "other" takes the force.
 
 
 ## Plays one shift step on the run (SPEC Section 9).
@@ -109,7 +111,7 @@ static func _hits(run: Run, direction: String, dist: Dictionary, out: Dictionary
 	for c in run.hold_cargo():
 		var d: int = dist.get(c.id, 0)
 		if d < 1:
-			_jolt(run, c, delta, out, forces)
+			_still(run, c, delta, occ, out, forces)
 			continue
 		var force := force_weight(run, c) * d
 		var wall: Array = []
@@ -149,7 +151,7 @@ static func hit_force(run: Run, c: Cargo, raw: int, other: Cargo = null) -> int:
 ## Returns a hit of the log. other is the ID of the other cargo, or 0 for a wall, a
 ## jolt, or a meteor.
 static func _hit(
-	c: Cargo, other: int, force: int, contact: Array, jolt := false, meteor := false
+	c: Cargo, other: int, force: int, contact: Array, jolt := false, meteor := false, press := false
 ) -> Dictionary:
 	return {
 		"cargo": c.id,
@@ -157,9 +159,65 @@ static func _hit(
 		"wall": other == 0 and not meteor,
 		"jolt": jolt,
 		"meteor": meteor,
+		"press": press,
 		"force": force,
 		"contact": contact,
 	}
+
+
+## Gives the hits of a cargo that did not slide: its wall jolt and its presses
+## (SPEC Sections 10.4 and 10.5). occ is the occupancy after the slide.
+static func _still(
+	run: Run, c: Cargo, delta: Vector2i, occ: Dictionary, out: Dictionary, forces: Dictionary
+) -> void:
+	_jolt(run, c, delta, out, forces)
+	_press(run, c, delta, occ, out, forces)
+
+
+## Gives the presses of a cargo that did not slide: one hit on each cargo directly in
+## front of it, with the force of its weight value. Only the cargo in front takes it.
+## A clamped cargo does not press (SPEC Section 10.5).
+static func _press(
+	run: Run, c: Cargo, delta: Vector2i, occ: Dictionary, out: Dictionary, forces: Dictionary
+) -> void:
+	if c.clamped:
+		return
+	var fronts := {}
+	for cell in c.cells():
+		var id: int = occ.get(cell + delta, c.id)
+		if id != c.id:
+			if not fronts.has(id):
+				fronts[id] = []
+			fronts[id].append(_cell(cell))
+	var ids := fronts.keys()
+	ids.sort()
+	for id: int in ids:
+		var f := hit_force(run, run.cargo[id], force_weight(run, c), c)
+		out["hits"].append(_hit(c, id, f, fronts[id], false, false, true))
+		_take(forces, id, f)
+
+
+## Returns the force that each cargo would take from its wall jolt and its presses in
+## the first shift step, by ID (SPEC Section 12.3). It tries the slide, then puts each
+## cargo back.
+static func first_step_forces(run: Run) -> Dictionary:
+	var forces := {}
+	if run.hazard.is_empty():
+		return forces
+	var direction := run.hazard[0]
+	var delta := Defs.delta(direction)
+	var from := {}
+	for c in run.hold_cargo():
+		from[c.id] = c.pos
+	var out := {"slides": [], "hits": []}
+	var dist := _slide(run, direction, out)
+	var occ := run.occupancy()
+	for c in run.hold_cargo():
+		if dist.get(c.id, 0) < 1:
+			_still(run, c, delta, occ, out, forces)
+	for c in run.hold_cargo():
+		c.pos = from[c.id]
+	return forces
 
 
 ## Gives the wall jolt to a cargo that did not slide and is next to the front wall:

@@ -18,7 +18,7 @@ const PAGE_2_TEXT := """[b]The warp[/b]
 
 • Each shift step slides all cargo to a wall or a stopped cargo.
 • Force = weight × cells slid. Light {light}, standard {standard}, heavy {heavy}.
-• Cargo at the front wall takes a jolt. From leg 2, the last step is a fork."""
+• Cargo at the front wall takes a jolt. Cargo that does not slide presses on the cargo in front of it. From leg 2, the last step is a fork."""
 const PAGE_3_TEXT := """[b]Traits and reactions[/b]
 
 • Fragile breaks at force {fragile}. Broken cargo becomes scrap and stays.

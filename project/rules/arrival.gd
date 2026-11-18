@@ -156,9 +156,6 @@ static func bonus_met(run: Run, k: Contract, delivered: Array[Cargo]) -> bool:
 			return true
 		Defs.BONUS_ZONE:
 			for d in delivered:
-				# The shock bay is outside each zone (SPEC Section 31.1).
-				if d.in_bay:
-					return false
 				for cell in d.cells():
 					if not k.template.in_zone(cell, run.columns, run.rows):
 						return false

@@ -67,7 +67,7 @@
 			"incident_percent": 50
 		},
 		{
-			"payment": 420,
+			"payment": 380,
 			"hazard_steps": [[2, 3], [2, 3], [2, 3]],
 			"kit_pool": [
 				"foam_pad",

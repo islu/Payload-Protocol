@@ -54,7 +54,7 @@ Each contract has:
 The arrival has these steps, in this order:
 
 1. **Spoil:** each Perishable cargo that no Cooler keeps fresh becomes scrap (Section 12.1).
-2. **Delivery:** each intact freight leaves the hold and the shock bay. Its contract pays its pay. The freight of a long contract stays until its last jump (Section 30.2).
+2. **Delivery:** each intact freight leaves the hold. Its contract pays its pay. The freight of a long contract stays until its last jump (Section 30.2).
 3. **Bonus:** each contract with a true condition pays its bonus.
 4. **Breach:** each breach fee is paid (Section 15.4).
 5. **Penalty:** each VIP contract with a piece that is not delivered pays its penalty (Section 30.1).
@@ -117,13 +117,14 @@ The arrival has these steps, in this order:
 
 - When a Sensor that is not scrap is in the hold or in the shock bay, the station shows the direction of the fork step that will happen.
 - When the player takes the Sensor out of the hold, the station shows the fork step as two directions again.
+- When an action takes the last Sensor out of the hold and the shock bay, and the fork step was known, the station shows a warning: "No Sensor: the fork step is hidden again."
 
 ## 19. Payments and the End of the Run
 
 ### 19.1 Payments
 
 - After the arrival of the last jump of a leg, the freight company takes the payment of that leg.
-- The payments are 100, 240, and 420 credits. An event can make the payment of a leg smaller (Section 26.2).
+- The payments are 100, 240, and 380 credits. An event can make the payment of a leg smaller (Section 26.2).
 - If the credits are less than the payment, the run ends in a loss.
 - If not, the game takes the payment, and the next leg starts at a new station.
 

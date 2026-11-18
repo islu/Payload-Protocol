@@ -207,6 +207,31 @@ func test_jolt_risk_view() -> void:
 	)
 
 
+func test_press_risk_view() -> void:
+	# The first step is DOWN. In column 3, a heavy cargo presses on the glass with force 3.
+	# In column 1, the glass slides to the floor: a hit, not a press or a jolt.
+	run.hazard = PackedStringArray([Defs.DIR_DOWN, Defs.DIR_LEFT])
+	run.fork_options = PackedStringArray()
+	put("heavy", 3, 3)
+	var pressed := put("glass", 3, 4)
+	var box := put("box", 3, 5)
+	var slides := put("glass", 1, 1)
+	var risk := {}
+	for c: Dictionary in RunView.view(run)["cargo"]:
+		risk[c["id"]] = c["jolt_risk"]
+	check(
+		risk[pressed.id],
+		"a cargo that a press in the first step would break shows a warning (SPEC Section 12.3)"
+	)
+	check(not risk[box.id], "a cargo with no trait shows no warning")
+	check(not risk[slides.id], "a cargo that slides shows no warning (SPEC Section 12.3)")
+	eq(
+		[pressed.pos, slides.pos],
+		[Vector2i(3, 4), Vector2i(1, 1)],
+		"the view puts each cargo back after it tries the first step"
+	)
+
+
 func test_padded_walls_jolt_risk() -> void:
 	# In a Heat Zone, Volatile breaks at 2. The heavy bomb at the left wall takes a
 	# jolt of 3 - 1 = 2 with Padded Walls, so it still explodes.

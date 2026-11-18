@@ -110,9 +110,9 @@ func test_no_distance_no_hit() -> void:
 	var c := put("vase", 1, 0)
 	var s: Dictionary = shift([Defs.DIR_LEFT])[0]
 	eq(
-		hits_of(s, c.id),
+		hits_of(s, c.id).filter(func(h: Dictionary) -> bool: return not h["press"]),
 		[],
-		"a cargo with a distance of 0 away from the front wall makes no hit (SPEC Section 10.3)"
+		"a cargo with a distance of 0 makes no hit, only a press (SPEC Sections 10.3 and 10.5)"
 	)
 	eq(c.kind, Defs.KIND_FREIGHT, "the vase is intact (SPEC Section 10.3)")
 
@@ -188,12 +188,17 @@ func test_wall_jolt() -> void:
 
 
 func test_wall_jolt_limits() -> void:
-	# Light Fragile at the wall: force 1, no break. A box behind it: no jolt.
+	# Light Fragile at the wall: force 1, no break. A light cargo behind it: no jolt, and
+	# a press of 1 only (SPEC Section 10.5).
 	var vase := put("vase", 5, 0)
-	var box := put("box", 4, 0)
+	var back := put("light", 4, 0)
 	var s: Dictionary = shift([Defs.DIR_RIGHT])[0]
 	eq(vase.kind, Defs.KIND_FREIGHT, "a light Fragile cargo holds at force 1 (SPEC Section 10.4)")
-	eq(hits_of(s, box.id), [], "the jolt does not go to the cargo behind (SPEC Section 10.4)")
+	eq(
+		hits_of(s, back.id).filter(func(h: Dictionary) -> bool: return h["jolt"]),
+		[],
+		"the jolt does not go to the cargo behind (SPEC Section 10.4)"
+	)
 
 
 func test_wall_jolt_clamp_and_cushion() -> void:

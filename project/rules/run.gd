@@ -25,6 +25,7 @@ const IN_DEBT_TEXT := "You cannot buy while your credits are below 0."
 const CLAMPS_MAXED_TEXT := "You have the most clamps already."
 const BAY_MAXED_TEXT := "The shock bay cannot grow more."
 const BAY_CLAMP_TEXT := "A cargo in the shock bay cannot have a clamp."
+const BAY_FREIGHT_TEXT := "Freight cannot go in the shock bay."
 const NO_MOD_LEFT_TEXT := "The ship has each mod already."
 const CANNOT_SELL_TEXT := "You can sell only kit."
 const NOT_SCRAP_TEXT := "That cargo is not scrap."
@@ -389,6 +390,7 @@ func can_place(id: int, pos: Vector2i, rot: int, to_bay := false) -> bool:
 		and cargo.has(id)
 		and rot >= 0
 		and rot < 4
+		and not (to_bay and cargo[id].kind == Defs.KIND_FREIGHT)
 		and fits(cargo[id], pos, rot, to_bay)
 	)
 
@@ -412,6 +414,9 @@ func place_cargo(id: int, pos: Vector2i, rot: int, to_bay := false) -> String:
 	if rot < 0 or rot > 3:
 		return BAD_ROTATION_TEXT
 	var c: Cargo = cargo[id]
+	# Only kit and scrap go in the shock bay (SPEC Section 31.1).
+	if to_bay and c.kind == Defs.KIND_FREIGHT:
+		return BAY_FREIGHT_TEXT
 	if not fits(c, pos, rot, to_bay):
 		return NO_FIT_TEXT
 	c.pos = pos
@@ -624,24 +629,22 @@ func _offer_mass(templates: Array) -> int:
 # --- Mass (SPEC Section 25) ---
 
 
-## Returns the mass of a definition: its weight value multiplied by its cells.
+## Returns the mass of a definition: its weight value multiplied by its cells. Kit
+## has mass as freight does (SPEC Section 25).
 func def_mass(def: CargoDef) -> int:
-	# Kit has no mass (SPEC Section 25).
-	if def.kind == Defs.KIND_KIT:
-		return 0
 	return cat.weight_value(def.weight) * def.shape.size()
 
 
-## Returns the mass of a cargo now. Kit has no mass. Scrap is light, also the scrap
-## of a kit (SPEC Section 25).
+## Returns the mass of a cargo now. Scrap is light, also the scrap of a kit. Cargo in
+## the shock bay has no mass (SPEC Sections 25 and 31.1).
 func cargo_mass(c: Cargo) -> int:
-	if c.kind == Defs.KIND_KIT:
+	if c.in_bay:
 		return 0
 	return cat.weight_value(c.weight()) * c.def.shape.size()
 
 
-## Returns the mass of the cargo in the hold and in the shock bay. The dock does not
-## count (SPEC Section 25).
+## Returns the mass of the cargo in the hold. The shock bay and the dock do not count
+## (SPEC Sections 25 and 31.1).
 func hold_mass() -> int:
 	var total := 0
 	for c in ship_cargo():

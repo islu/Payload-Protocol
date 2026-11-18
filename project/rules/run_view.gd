@@ -31,22 +31,14 @@ static func terms(cat: Catalog, run: Run = null) -> Array:
 	return out
 
 
-## Returns the IDs of the cargo at the front wall of the first shift step that would
-## react to its wall jolt, as a set (SPEC Sections 10.4 and 12.3).
+## Returns the IDs of the cargo that would react to its wall jolt or a press in the
+## first shift step, as a set (SPEC Sections 10.4, 10.5, and 12.3).
 static func jolt_risks(run: Run) -> Dictionary:
 	var out := {}
-	if run.hazard.is_empty():
-		return out
-	var delta := Defs.delta(run.hazard[0])
-	for c in run.hold_cargo():
-		var at_wall := false
-		for cell in c.cells():
-			if not run.inside(cell + delta):
-				at_wall = true
-		if not at_wall:
-			continue
-		if Shift.reaction_at(run, c, Shift.jolt_force(run, c)) != "":
-			out[c.id] = true
+	var forces := Shift.first_step_forces(run)
+	for id: int in forces:
+		if Shift.reaction_at(run, run.cargo[id], forces[id]) != "":
+			out[id] = true
 	return out
 
 
@@ -365,10 +357,12 @@ static func drop_preview(run: Run, id: int, pos: Vector2i, rot: int, to_bay := f
 	var c: Cargo = run.cargo[id]
 	var occ := run.occupancy(to_bay)
 	var area := run.bay_size if to_bay else Vector2i(run.columns, run.rows)
+	# Freight cannot go in the shock bay (SPEC Section 31.1).
+	var refused := to_bay and c.kind == Defs.KIND_FREIGHT
 	for cell in Shapes.cells_at(c.def.shape, rot, pos):
 		var inside := cell.x >= 0 and cell.y >= 0 and cell.x < area.x and cell.y < area.y
 		var other: int = occ.get(cell, id)
-		out["cells"].append({"cell": cell, "free": inside and other == id})
+		out["cells"].append({"cell": cell, "free": inside and other == id and not refused})
 		if other != id and not other in out["blocking"]:
 			out["blocking"].append(other)
 	out["ok"] = run.can_place(id, pos, rot, to_bay)

@@ -80,6 +80,10 @@ msgid "A cargo in the shock bay cannot have a clamp."
 msgstr ""
 
 #: project/rules/run.gd
+msgid "Freight cannot go in the shock bay."
+msgstr ""
+
+#: project/rules/run.gd
 msgid "The ship has each mod already."
 msgstr ""
 
@@ -222,7 +226,7 @@ msgid ""
 "\n"
 "• Each shift step slides all cargo to a wall or a stopped cargo.\n"
 "• Force = weight × cells slid. Light {light}, standard {standard}, heavy {heavy}.\n"
-"• Cargo at the front wall takes a jolt. From leg 2, the last step is a fork."
+"• Cargo at the front wall takes a jolt. Cargo that does not slide presses on the cargo in front of it. From leg 2, the last step is a fork."
 msgstr ""
 
 #: project/scenes/main/how_to_play.gd
@@ -613,6 +617,10 @@ msgid "Sensor"
 msgstr ""
 
 #: project/scenes/station/station_screen.gd
+msgid "No Sensor: the fork step is hidden again."
+msgstr ""
+
+#: project/scenes/station/station_screen.gd
 msgid "Load all"
 msgstr ""
 
@@ -657,11 +665,11 @@ msgid "Dock empty"
 msgstr ""
 
 #: project/scenes/station/warp_checklist.gd
-msgid "Wall jolt: {count} cargo"
+msgid "Jolt risk: {count} cargo"
 msgstr ""
 
 #: project/scenes/station/warp_checklist.gd
-msgid "No wall jolt"
+msgid "No jolt risk"
 msgstr ""
 
 #: project/scenes/station/warp_checklist.gd

@@ -172,7 +172,7 @@ func _set_route(r: Run) -> void:
 func _set_bay(r: Run) -> void:
 	r.credits += 50
 	r.bay_size = r.cat.bay_sizes[-1]
-	var c := r.new_cargo(r.cat.cargo["energy_crystal"])
+	var c := r.new_cargo(r.cat.cargo["sensor_array"])
 	r.place_cargo(c.id, Vector2i(1, 0), 0, true)
 
 

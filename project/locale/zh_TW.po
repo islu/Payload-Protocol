@@ -81,6 +81,10 @@ msgid "A cargo in the shock bay cannot have a clamp."
 msgstr "防震艙裡的貨物不能上卡榫。"
 
 #: project/rules/run.gd
+msgid "Freight cannot go in the shock bay."
+msgstr "合約貨物不能放進防震艙。"
+
+#: project/rules/run.gd
 msgid "The ship has each mod already."
 msgstr "船上已經裝了全部的改裝模組。"
 
@@ -228,13 +232,13 @@ msgid ""
 "\n"
 "• Each shift step slides all cargo to a wall or a stopped cargo.\n"
 "• Force = weight × cells slid. Light {light}, standard {standard}, heavy {heavy}.\n"
-"• Cargo at the front wall takes a jolt. From leg 2, the last step is a fork."
+"• Cargo at the front wall takes a jolt. Cargo that does not slide presses on the cargo in front of it. From leg 2, the last step is a fork."
 msgstr ""
 "[b]跳躍[/b]\n"
 "\n"
 "• 每一次位移，所有貨物會滑到撞上牆壁或停住的貨物為止。\n"
 "• 撞擊力 = 重量 × 滑動格數。輕 {light}、中 {standard}、重 {heavy}。\n"
-"• 貼著前牆的貨物會受到震動。從第 2 期開始，最後一步是二選一位移。"
+"• 貼著前牆的貨物會受到震動。沒有滑動的貨物會擠壓前方的貨物。從第 2 期開始，最後一步是二選一位移。"
 
 #: project/scenes/main/how_to_play.gd
 msgid ""
@@ -640,6 +644,10 @@ msgid "Sensor"
 msgstr "感測器"
 
 #: project/scenes/station/station_screen.gd
+msgid "No Sensor: the fork step is hidden again."
+msgstr "沒有感測器：二選一位移又看不到了。"
+
+#: project/scenes/station/station_screen.gd
 msgid "Load all"
 msgstr "全部裝入"
 
@@ -684,12 +692,12 @@ msgid "Dock empty"
 msgstr "碼頭已清空"
 
 #: project/scenes/station/warp_checklist.gd
-msgid "Wall jolt: {count} cargo"
-msgstr "撞牆震動：{count} 件貨物"
+msgid "Jolt risk: {count} cargo"
+msgstr "震動風險：{count} 件貨物"
 
 #: project/scenes/station/warp_checklist.gd
-msgid "No wall jolt"
-msgstr "沒有撞牆震動"
+msgid "No jolt risk"
+msgstr "沒有震動風險"
 
 #: project/scenes/station/warp_checklist.gd
 msgid "Incident: {text}"

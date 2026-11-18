@@ -112,11 +112,11 @@ A cargo can have more than one trait.
 
 ## 25. Mass
 
-- Each freight and each scrap has a **mass**: its weight value (Section 6.1) multiplied by the number of its cells.
+- Each cargo has a **mass**: its weight value (Section 6.1) multiplied by the number of its cells.
   - Example: a Steel Ingot (heavy, 2 cells) has a mass of 6. A Reactor Core (heavy, 4 cells) has a mass of 12.
-- Freight and scrap have mass. Scrap is light, so each cell of scrap has a mass of 1.
-- Kit has a mass of 0. Its weight still sets the force of its hits (Section 10.3).
-- The **hold mass** is the sum of the mass of each cargo in the hold and in the shock bay. Cargo on the dock does not count.
+- Scrap is light, so each cell of scrap has a mass of 1.
+- Kit has mass as freight does. Example: a Cooler Unit (standard, 2 cells) has a mass of 4.
+- The **hold mass** is the sum of the mass of each cargo in the hold. Cargo in the shock bay and on the dock does not count (Section 31.1).
 - The ship has a **mass limit**. A run starts with a mass limit of 24. The **Reinforce hull** service adds to it (Section 17.2).
 - The hold mass can be more than the mass limit by 25% at most, rounded down. Example: with a mass limit of 24, the maximum is 30.
 - When the hold mass is more than the maximum, the Warp button does not work. The top bar shows the mass in red.
@@ -131,13 +131,11 @@ The **shock bay** is a small area of cells next to the hold. The warp does not m
 
 - A run starts with no shock bay. The player buys it as a service (Section 17.2).
 - The first purchase gives a shock bay of 2 columns and 2 rows. The second purchase adds 1 column at the right. The maximum is 3 columns and 2 rows.
-- The player moves cargo into and out of the shock bay as in the hold (Section 8). Freight, kit, and scrap can go in it.
-- Cargo in the shock bay does not slide. It takes no hits, no wall jolts, and no incidents.
+- The player moves cargo into and out of the shock bay as in the hold (Section 8). Kit and scrap can go in it. Freight cannot go in it.
+- Cargo in the shock bay does not slide. It takes no hits, no wall jolts, no presses, and no incidents.
 - The player cannot put a clamp on a cargo in the shock bay.
-- Cargo in the shock bay counts for the hold mass (Section 25).
-- At the arrival, freight in the shock bay is delivered as freight in the hold is (Section 16).
+- Cargo in the shock bay has no mass. It does not count for the hold mass (Section 25).
 - Two cargo are next to each other only when both are in the hold, or both are in the shock bay. Links and the range of a mod do not go between the hold and the shock bay (Sections 12 and 27.2).
-- A `zone` bonus counts a piece in the shock bay as outside the zone (Section 15.3).
 - A Sensor in the shock bay shows the fork step (Section 18.1).
 
 ### 31.2 Display

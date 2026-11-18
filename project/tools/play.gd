@@ -12,6 +12,8 @@ extends SceneTree
 ##   task play -- look
 ## Use -s <file> as the first arguments for another session file.
 
+## The warning of the station when the last Sensor leaves the hold (SPEC Section 18.1).
+const SENSOR_LOST_TEXT := "No Sensor: the fork step is hidden again."
 const DEFAULT_SESSION := "playtest/sessions/session.json"
 const ACTIONS := {
 	"accept": "accept <contract>",
@@ -134,11 +136,16 @@ func _step(rec: RunRecord, session: Dictionary, parts: Array) -> bool:
 	var traits := {}
 	for c: Dictionary in RunView.view(rec.run)["cargo"]:
 		traits[c["id"]] = c["traits"]
+	var known := _fork_known(rec.run)
+	var at := [rec.run.leg, rec.run.jump]
 	var err := rec.undo() if undo else _act(rec, parts)
 	if err != "":
 		_say("> %s: %s" % [" ".join(parts), err])
 		return false
 	_say("> " + " ".join(parts))
+	# The same station, and its fork step is hidden again (SPEC Section 18.1).
+	if known and at == [rec.run.leg, rec.run.jump] and not _fork_known(rec.run):
+		_say("WARNING: " + SENSOR_LOST_TEXT)
 	if undo:
 		session["actions"].pop_back()
 	else:
@@ -171,6 +178,13 @@ func _act(rec: RunRecord, parts: Array) -> String:
 	if a.is_empty():
 		return "unknown command %s" % parts[0]
 	return rec.act(a["name"], a["args"])
+
+
+## Reports whether the fork step of the next jump is known: a Sensor shows it
+## (SPEC Section 18.1).
+func _fork_known(run: Run) -> bool:
+	var hazard := RunView.hazard(run)
+	return not hazard.is_empty() and hazard[-1]["fork"] and hazard[-1]["known"] != ""
 
 
 func _usage() -> void:
@@ -290,6 +304,9 @@ func _render_station(v: Dictionary) -> void:
 	for step: Dictionary in v["hazard"]:
 		if step["fork"] and step["known"] == "":
 			dirs.append("(%s)" % " or ".join(step["directions"]).to_upper())
+		elif step["fork"]:
+			# A fork step that a Sensor shows (SPEC Section 18.1).
+			dirs.append("%s (fork, Sensor)" % str(step["known"]).to_upper())
 		else:
 			dirs.append(str(step["known"]).to_upper())
 	if not v["environment"].is_empty():
@@ -300,12 +317,11 @@ func _render_station(v: Dictionary) -> void:
 		_say("Incident before the first step: " + _incident_text(v["incident"]))
 	_say("Hazard of the next jump: " + " then ".join(dirs))
 	if v["front_wall"] != "":
-		_say(
-			(
-				"Front wall of step 1: %s (cargo there takes a wall jolt; JOLT RISK marks a reaction)"
-				% v["front_wall"].to_upper()
-			)
+		var wall_text := (
+			"Front wall of step 1: %s (cargo there takes a wall jolt; cargo that does not slide"
+			+ " presses on the cargo in front; JOLT RISK marks a reaction)"
 		)
+		_say(wall_text % v["front_wall"].to_upper())
 	_render_hold(v)
 	_say("Dock:" + ("" if not v["dock"].is_empty() else " (empty)"))
 	for c: Dictionary in v["cargo"]:
@@ -555,6 +571,8 @@ func _render_events(step: Dictionary) -> void:
 			line = "METEOR hits %d with force %d" % [h["cargo"], h["force"]]
 		elif h["jolt"]:
 			line = "%d is jolted at the front wall with force %d" % [h["cargo"], h["force"]]
+		elif h.get("press", false):
+			line = "%d presses on %d with force %d" % [h["cargo"], h["other"], h["force"]]
 		else:
 			var target := "the wall" if h["wall"] else str(h["other"])
 			line = "%d hits %s with force %d" % [h["cargo"], target, h["force"]]

@@ -17,7 +17,7 @@ This file is part of the [game specification](../spec.md). The section numbers a
 - Each shift step has these parts, in this order:
   1. The power check (Section 12.2).
   2. The slide (Section 10).
-  3. The hits (Section 10.3).
+  3. The hits, the wall jolts, and the presses (Sections 10.3 to 10.5).
   4. The reactions (Section 11).
 - After the last shift step, the arrival starts (Section 16).
 
@@ -47,7 +47,7 @@ This file is part of the [game specification](../spec.md). The section numbers a
 - When other cargo stops it, it makes one hit on each cargo that blocks it. The cargo and each cargo that blocks it take the hit. All of them take the same force.
 - A cargo that a wall and other cargo stop together makes a hit on the wall and a hit on each cargo.
 - If the cargo or a cargo that blocks it has the Cushion trait, the force of that hit is 0 for both.
-- A cargo with a distance of 0 makes no hit. It can still take a hit from a cargo that stops on it, and a wall jolt (Section 10.4).
+- A cargo with a distance of 0 makes no hit of this section. It presses (Section 10.5). It can still take a hit from a cargo that stops on it, a wall jolt (Section 10.4), and a press.
 - A cargo can take more than one hit in a shift step. Each hit checks the break limits alone. The forces do not add.
 - The screen shows the force of each hit (Section 21.2).
 
@@ -61,6 +61,18 @@ This file is part of the [game specification](../spec.md). The section numbers a
 - A cargo that slid into the front wall takes its hit of Section 10.3, and no wall jolt.
 - The wall jolt does not go to the cargo behind the cargo at the wall.
 - The Padded Walls mod makes the force of each wall jolt 1 less, and 0 at least (Section 27.2).
+
+### 10.5 Press
+
+- After the slide, each cargo with a distance of 0 **presses** on each cargo directly in front of it, in the direction of the step.
+- A press is a hit. Its force is the weight value of the cargo that presses. The cargo in front takes it.
+  - Example: in a step down, a heavy cargo (3) on top of a Fragile cargo presses with a force of 3. The Fragile cargo breaks.
+- A cargo that slid makes its hit of Section 10.3. It does not press.
+- A clamped cargo does not press. It can take a press.
+- A Cushion cargo presses with a force of 0, and takes a press with a force of 0.
+- A press goes only to the cargo directly in front. The weights of the cargo further behind do not add.
+- A cargo can take hits, a wall jolt, and presses in one shift step. Each checks the break limits alone (Section 10.3).
+- The mods that change the force of a hit change a press too (Section 27.2). The Padded Walls mod does not change a press.
 
 ## 11. Reactions
 
@@ -121,7 +133,7 @@ A **link** is a rule between two cargo that are next to each other.
 - A Perishable cargo with no Cooler next to it shows a warning icon.
 - A Shield with no power shows a "no power" icon.
 - The hold marks the front wall of the first shift step of the next jump (Section 10.4) with a band of yellow and black stripes.
-- Each cargo at that wall shows a warning icon when its wall jolt would make it react (Section 11). The station shows this for the first step only: the places in the next steps depend on the slides.
+- Each cargo shows a warning icon when its wall jolt or a press in the first step would make it react (Sections 10.5 and 11). The station shows this for the first step only: the places in the next steps depend on the slides.
 
 ## 13. Clamps
 
@@ -130,6 +142,7 @@ A **link** is a rule between two cargo that are next to each other.
 - A cargo can have one clamp at most.
 - A clamped cargo does not slide in any shift step (Section 10.2).
 - A clamped cargo takes hits as other cargo do. A clamp does not stop a reaction.
+- A clamped cargo does not press (Section 10.5).
 - When a clamped cargo leaves the hold or is removed, its clamp goes back to the clamp panel.
 - A clamp can go on scrap.
 - The player cannot put a clamp on a cargo on the dock.

@@ -29,6 +29,8 @@ const OR_TEXT := "or"
 const UNDO_TEXT := "Undo (Ctrl+Z)"
 ## The mark of a fork step that a Sensor shows (SPEC Section 20.2).
 const SENSOR_TEXT := "Sensor"
+## The warning when the last Sensor leaves the hold (SPEC Section 18.1).
+const SENSOR_LOST_TEXT := "No Sensor: the fork step is hidden again."
 ## The characters of a pilot line that type out in each second (SPEC Section 22).
 const TYPE_SPEED := 40.0
 const ARROWS := {Defs.DIR_LEFT: "←", Defs.DIR_RIGHT: "→", Defs.DIR_UP: "↑", Defs.DIR_DOWN: "↓"}
@@ -53,6 +55,8 @@ var drag_layer: DragLayer
 
 ## The view part of each list when it was built, by the name of the list (_changed).
 var _built := {}
+## The station of the last refresh and whether its fork step was known: [leg, jump, known].
+var _fork_seen := []
 ## The drag of a cargo or a clamp (SPEC Sections 8.2, 8.3, and 13).
 var _drag := StationDrag.new(self)
 var _hover_contract := -1
@@ -299,6 +303,7 @@ func refresh() -> void:
 		return
 	_top_bar.set_view(run_data)
 	_checklist.set_view(run_data)
+	_check_sensor_lost()
 	_count_credits(run_data["credits"])
 	# The Warp button does not work over the maximum mass (SPEC Section 25).
 	_warp_button.disabled = not run_data["can_warp"]
@@ -614,6 +619,17 @@ func act(err: String, ok_sound := "") -> void:
 ## Takes back the last action at this station (SPEC Section 20.2).
 func _undo() -> void:
 	act(GameState.undo())
+
+
+## Warns when a known fork step is hidden again at the same station: the last Sensor
+## left the hold (SPEC Section 18.1). A new station does not warn.
+func _check_sensor_lost() -> void:
+	var hazard: Array = run_data["hazard"]
+	var known: bool = not hazard.is_empty() and hazard[-1]["fork"] and hazard[-1]["known"] != ""
+	var at := [run_data["leg"], run_data["jump"]]
+	if _fork_seen.size() == 3 and _fork_seen.slice(0, 2) == at and _fork_seen[2] and not known:
+		_show_toast(tr(SENSOR_LOST_TEXT))
+	_fork_seen = at + [known]
 
 
 func _show_toast(text: String) -> void:

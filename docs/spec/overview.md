@@ -92,7 +92,7 @@ Use these terms in the spec, the code, the data, and the text of the game. Do no
 | **leg** | A group of 3 jumps that ends with a payment. |
 | **hazard** | The list of shift steps of a jump (Section 18). |
 | **fork step** | A shift step with two possible directions. The warp shows which one happens (Section 18). |
-| **mass** | The load of a freight or a scrap: its weight value multiplied by its cells. Kit has no mass (Section 25). |
+| **mass** | The load of a cargo: its weight value multiplied by its cells. Cargo in the shock bay has no mass (Section 25). |
 | **mass limit** | The mass that the ship can carry with no fuel fee (Section 25). |
 | **fuel fee** | The credits that the player pays at the warp for each point of mass over the mass limit (Section 25). |
 | **shift step** | One direction of a hazard. All cargo slides in that direction (Section 10). |
@@ -101,6 +101,7 @@ Use these terms in the spec, the code, the data, and the text of the game. Do no
 | **force** | The strength of a hit (Section 10.3). |
 | **front wall** | The wall in the direction of a shift step (Section 10.4). |
 | **wall jolt** | The hit that a cargo at the front wall takes when it does not slide (Section 10.4). |
+| **press** | The hit that a cargo that does not slide makes on the cargo directly in front of it (Section 10.5). |
 | **next to** | Two cargo are next to each other when a cell of one shares an edge with a cell of the other. Diagonal cells are not next to each other. |
 | **credits** | The money of the player. |
 | **contract** | An order to carry freight to the next station for pay (Section 15). |

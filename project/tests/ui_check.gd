@@ -596,6 +596,7 @@ func _play_station(state: Node, station: StationScreen) -> void:
 	if not _bay_checked:
 		_bay_checked = true
 		await UiCheckBay.check(self, state, station)
+		await UiCheckSensor.check(self, station)
 	if not _contracts_checked:
 		_contracts_checked = true
 		await UiCheckCards.check(self, station)
@@ -769,7 +770,7 @@ func _check_shop(station: StationScreen) -> void:
 				"a kit card shows the rule of its trait %s (SPEC Section 20.2)" % t
 			)
 		_check(
-			str(o["price"]) in card["buy"].text,
+			o["bought"] or str(o["price"]) in card["buy"].text,
 			"a kit card shows its price on the Buy button (SPEC Section 20.2)"
 		)
 		if not o["helps"].is_empty():
@@ -777,9 +778,11 @@ func _check_shop(station: StationScreen) -> void:
 				GameText.format(o["helps"]) in card["text"],
 				"a kit card shows how it helps the freight (SPEC Section 20.2)"
 			)
-	# A price that is more than the credits shows in red: the view says so.
+	# A price that is more than the credits shows in red: the view says so. The shock bay
+	# check bought a kit: the fake view has no bought kit.
 	for o: Dictionary in station.run_data["shop"]["offers"]:
 		o["afford"] = false
+		o["bought"] = false
 	station._shop.refresh()
 	if not station._shop.offer_cards.is_empty():
 		var buy: Button = station._shop.offer_cards[0]["buy"]

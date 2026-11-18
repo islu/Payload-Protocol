@@ -113,3 +113,12 @@ func test_sell_action_of_cargo() -> void:
 		"a scrap in the sell area is cleared (SPEC Section 17.1)"
 	)
 	eq(actions.values().count(""), 1, "a freight cannot go to the sell area (SPEC Section 17.1)")
+
+
+func test_kit_offer_mass() -> void:
+	var o := _offers(["cooler", "foam"])
+	eq(
+		[o[0]["mass"], o[1]["mass"]],
+		[2, 1],
+		"a kit offer shows the mass of the kit (SPEC Sections 20.2 and 25)"
+	)

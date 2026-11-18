@@ -44,7 +44,7 @@ description: Conventions of the Payload Protocol scenes and UI (project/scenes) 
 - Use `_drag.drop_at(position)` and `_drag.update(position)` in a check: the headless mouse does not move. `UiCheckDrag` (`tests/ui_check_drag.gd`) has the checks of the drag feedback.
 - The contract cards and the shop show a tooltip with `screen._show_tip(cargo_view)`. It shows nothing during a drag.
 - "Load all" calls `GameState.load_all()`. The scene does not search for places.
-- `HoldView` draws the front wall of the first step (`front_wall` of the view) and a jolt icon on each cargo with `jolt_risk` (SPEC Section 12.3). `show_front_walls()` marks the walls of the hazard card under the mouse, with no jolt icons after the first step (SPEC Section 20.2).
+- `HoldView` draws the front wall of the first step (`front_wall` of the view) and a jolt icon on each cargo with `jolt_risk`: its wall jolt or a press in the first step would make it react (SPEC Section 12.3). `show_front_walls()` marks the walls of the hazard card under the mouse, with no jolt icons after the first step (SPEC Section 20.2).
 - A rotation in place that does not fit moves the cargo 1 cell (`Run.ROTATE_KICKS`). The scene only calls `GameState.rotate_cargo()`.
 - Do not bend the screen in a shader. The mouse must point at the cell that the player sees (SPEC Section 4.2).
 - A drop goes to the first target under the mouse: the sell area, the dock, or the hold. A drop anywhere else does nothing.
@@ -52,7 +52,7 @@ description: Conventions of the Payload Protocol scenes and UI (project/scenes) 
 
 ## 5. The Warp
 
-- `WarpScreen` copies `warp.before` and `warp.bay` and changes the copy with each slide and reaction of the log. The shock bay (`_bay`, a child of `_hold`) shares `fades` and `checks` with the hold; a step does not remove cargo that is `in_bay`. It calculates no result. A removed cargo stays in the copy with a fade of 0, so that a line of the report can mark it: the mouse on a group of pieces sends `pieces_hovered` of `ReportPanel`, and `_mark_pieces()` marks them. Replay plays the same log again.
+- `WarpScreen` copies `warp.before` and `warp.bay` and changes the copy with each slide and reaction of the log. The shock bay (`_bay`, a child of `_hold`) shares `fades` and `checks` with the hold; a step does not remove cargo that is `in_bay`. It calculates no result. The force number of a hit shows on `cargo`, and of a press on `other` (SPEC Section 10.5). A removed cargo stays in the copy with a fade of 0, so that a line of the report can mark it: the mouse on a group of pieces sends `pieces_hovered` of `ReportPanel`, and `_mark_pieces()` marks them. Replay plays the same log again.
 - Wait with `_wait(seconds)`. It divides by `speed`, and it stops during the pause menu. Do not use a timer that runs during the pause.
 - Call `Sound.play(self, "<name>")` for each event of Section 21. A new name goes in `Sound.NAMES` and in `tools/sfx/make_sfx.py`. Then run `task sfx`. The UI check fails when a name has no file.
 - A new cargo needs an image: add it to `tools/art/cargo_art.json`, then run `task art` and `task import`. The UI check fails when a cargo has no image. A new speaker needs a portrait in `tools/art/speaker_art.json` the same way, with `head`: the height of its head in the source image. `task art` scales each portrait to the same head size.
@@ -71,6 +71,7 @@ description: Conventions of the Payload Protocol scenes and UI (project/scenes) 
 
 - `StationScreen` has a small public interface for its helpers (`StationDrag`, `ShopPanel`, `ContractCard`): `view_data`, `run_data`, `hold_view`, `bay_view`, `dock_panel`, `sell_area`, `drag_layer`, `act()`, `add_button()`, `cargo_view()`, `show_tip()`, `show_text_tip()`, `hide_tip()`, `show_sell()`, `show_pilot()`, `set_hover_contract()`, `update_marks()`. A helper does not use a member that starts with `_`.
 - `refresh()` builds a list again only when its part of the view changed (`_changed()`). A new list needs its own `_changed()` key with each view value that it reads.
+- `_check_sensor_lost()` (in `refresh()`) shows `SENSOR_LOST_TEXT` in the toast when a known fork step is hidden again at the same station (SPEC Section 18.1). `_fork_seen` keeps the leg, the jump, and `known` of the last refresh. `UiCheckSensor` checks it. The text player prints the same warning, and marks a known fork step "(fork, Sensor)".
 
 ## 8. Checks
 

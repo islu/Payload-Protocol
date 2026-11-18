@@ -116,3 +116,12 @@ func _bot_station(r: Run) -> void:
 				if not placed and r.can_place(id, Vector2i(x, y), 0):
 					r.place_cargo(id, Vector2i(x, y), 0)
 					placed = true
+
+
+func test_payments() -> void:
+	var cat := DataFiles.catalog()
+	eq(
+		cat.legs.map(func(l: Dictionary) -> int: return l["payment"]),
+		[100, 240, 380],
+		"the payments are 100, 240, and 380 credits (SPEC Section 19)"
+	)

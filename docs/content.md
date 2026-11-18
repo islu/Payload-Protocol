@@ -26,7 +26,7 @@ This file has the design rules of the game content. The data files in `project/d
 - A large shape (4 or 5 cells) is hard to pack. Give it more pay, or make it a good wall.
 - Heavy cargo makes strong hits. It is a danger for its neighbors and a safe wall when it is clamped.
 - Kit helps freight. A kit is never a target of a contract.
-- Kit has no mass (SPEC Section 25). Its costs are its price and its cells.
+- Kit has mass as freight does (SPEC Section 25). Its costs are its price, its cells, and its mass. In the shock bay, it has no mass.
 - One cell is one standard cargo crate, about 1 m. Give each cargo the size of the real object, relative to the crate and to the other cargo.
 - Small goods travel in one crate: 1 cell. Examples are a phone, a can of soda, a bottle, and a sample.
 - Each cargo has an image (SPEC Section 4.2). Select an image that fits the shape. Add the image to `tools/art/cargo_art.json` and run `task art`.

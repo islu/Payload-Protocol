@@ -337,7 +337,9 @@ func _play_hits(step: Dictionary, d: String) -> void:
 			sum += Vector2(cell["x"], cell["y"]) + Vector2(0.5, 0.5) + Vector2(delta) * 0.5
 		var at: Vector2 = _hold.grid_origin() + sum / h["contact"].size() * _hold.cell
 		_fx.spark(at, -Vector2(delta))
-		_fx.number(_hold.cargo_center(c), h["force"])
+		# In a press, the cargo in front takes the force (SPEC Section 10.5).
+		var target: Dictionary = _cargo.get(h["other"], c) if h.get("press", false) else c
+		_fx.number(_hold.cargo_center(target), h["force"])
 		strongest = maxi(strongest, h["force"])
 	if step["hits"].is_empty():
 		return
