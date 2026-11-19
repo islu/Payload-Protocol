@@ -362,7 +362,8 @@ func _set_hover_mod(m: Dictionary) -> void:
 
 ## Shows the hint of the first runs in the pilot box, or the line of the pilot (SPEC Section 23.3).
 func show_pilot() -> void:
-	var hint := Hints.current(run_data)
+	# The tutorial has its own guide: no hints in it (SPEC Section 23.4).
+	var hint := Hints.current(run_data) if view_data.get("tutorial", {}).is_empty() else ""
 	var text := ""
 	if hint == "":
 		text = GameText.PILOT_NAME + ": " + tr(run_data["line"])
@@ -618,7 +619,45 @@ func act(err: String, ok_sound := "") -> void:
 
 ## Takes back the last action at this station (SPEC Section 20.2).
 func _undo() -> void:
+	# Only the target of a tutorial step works (SPEC Section 23.4).
+	if not view_data.get("tutorial", {}).is_empty():
+		return
 	act(GameState.undo())
+
+
+## Returns the areas that a tutorial step opens on the station (SPEC Section 23.4). A
+## try step opens the hold, the dock, the shock bay, the clamps, and the Warp button.
+func tutorial_rects(step: Dictionary) -> Array[Rect2]:
+	var t: Dictionary = step.get("target", {})
+	var parts: Array[Control] = []
+	if step.get("try", false):
+		parts = [hold_view, bay_view, dock_panel, _clamp_box, _warp_button]
+	else:
+		match str(t.get("kind", "")):
+			"contract":
+				var i: int = t.get("index", 0)
+				if i < _contract_cards.size():
+					parts = [_contract_cards[i]]
+			"cargo":
+				parts = [hold_view, bay_view, dock_panel]
+			"clamps":
+				parts = [_clamp_box, hold_view]
+			"shop":
+				var i: int = t.get("index", 0)
+				if i < _shop.offer_cards.size():
+					parts = [_shop.offer_cards[i]["buy"]]
+			"hazard":
+				parts = [_hazard_box]
+			"top_bar":
+				parts = [_top_bar]
+			"button":
+				if t.get("button", "") == Defs.ACT_WARP:
+					parts = [_warp_button]
+	var out: Array[Rect2] = []
+	for c in parts:
+		if c != null and c.is_visible_in_tree():
+			out.append(c.get_global_rect())
+	return out
 
 
 ## Warns when a known fork step is hidden again at the same station: the last Sensor

@@ -66,8 +66,6 @@ This file keeps each problem that is found and not fixed yet. Each item is in on
 
 ## To Do
 
-- **[UX · Scenes] Tutorial phase 2: the screens** (found 2026-11-19, by /game-design). SPEC Sections 20.1 and 23.4.
-  To do                 Fix: add the guide overlay (dark screen, the target, the pilot box, Next, Skip Tutorial), the lock of the other controls, the Tutorial button of the title, the flag in the settings, and the go-back of a try step. Add a UI check that plays the tutorial.
 - **[UX · Data] Tutorial phase 3: the hints** (found 2026-11-19, by /game-design). SPEC Sections 23.3 and 23.4.
   To do                 Fix: change the hints to the list of Section 23.3. The pilot lines of the tutorial are in `data/tutorial.json` and translated (phase 1, 2026-11-19); review them after a real playtest.
 

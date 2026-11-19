@@ -530,3 +530,13 @@ func _process(delta: float) -> void:
 		_shake = lerpf(_shake, 0.0, minf(1.0, delta * 10.0 * speed))
 	elif _stage.position != Vector2.ZERO:
 		_stage.position = Vector2.ZERO
+
+
+## Returns the areas that a tutorial step opens on the warp: the Continue button of
+## the report (SPEC Section 23.4).
+func tutorial_rects(step: Dictionary) -> Array[Rect2]:
+	var b: Button = _report.continue_button
+	var out: Array[Rect2] = []
+	if step.get("target", {}).get("button", "") == Defs.ACT_CONTINUE and b.is_visible_in_tree():
+		out.append(b.get_global_rect())
+	return out

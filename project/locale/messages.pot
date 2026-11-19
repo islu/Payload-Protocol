@@ -215,6 +215,7 @@ msgid "{n} / {total}"
 msgstr ""
 
 #: project/scenes/main/how_to_play.gd
+#: project/scenes/main/tutorial_guide.gd
 msgid "Next"
 msgstr ""
 
@@ -276,6 +277,10 @@ msgstr ""
 #: project/scenes/main/main.gd
 #: project/scenes/main/phase_panel.gd
 msgid "New Run"
+msgstr ""
+
+#: project/scenes/main/main.gd
+msgid "Tutorial"
 msgstr ""
 
 #: project/scenes/main/main.gd
@@ -375,6 +380,26 @@ msgstr ""
 
 #: project/scenes/main/settings_panel.gd
 msgid "Language"
+msgstr ""
+
+#: project/scenes/main/tutorial_guide.gd
+msgid "Try Again"
+msgstr ""
+
+#: project/scenes/main/tutorial_guide.gd
+msgid "Skip Tutorial"
+msgstr ""
+
+#: project/scenes/main/tutorial_guide.gd
+msgid "Skip the tutorial and start a run?"
+msgstr ""
+
+#: project/scenes/main/tutorial_guide.gd
+msgid "Tutorial complete. I will tell you about the rest when you see it."
+msgstr ""
+
+#: project/scenes/main/tutorial_guide.gd
+msgid "Start a Run"
 msgstr ""
 
 #: project/scenes/main/tutorial_picture.gd

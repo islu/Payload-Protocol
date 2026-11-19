@@ -73,7 +73,16 @@ description: Conventions of the Payload Protocol scenes and UI (project/scenes) 
 - `refresh()` builds a list again only when its part of the view changed (`_changed()`). A new list needs its own `_changed()` key with each view value that it reads.
 - `_check_sensor_lost()` (in `refresh()`) shows `SENSOR_LOST_TEXT` in the toast when a known fork step is hidden again at the same station (SPEC Section 18.1). `_fork_seen` keeps the leg, the jump, and `known` of the last refresh. `UiCheckSensor` checks it. The text player prints the same warning, and marks a known fork step "(fork, Sensor)".
 
-## 8. Checks
+## 8. The Tutorial Guide
+
+- `TutorialGuide` (`scenes/main/tutorial_guide.gd`) is in its own `CanvasLayer` (layer 5), over the screen and under the overlays. It reads `view.tutorial` (SPEC Section 23.4).
+- It draws the screen dark except for `open_rects`. `_has_point()` is false in an open area, so a click goes to the screen below. Only the target works.
+- Each screen gives the open areas of a step with `tutorial_rects(step) -> Array[Rect2]`: `StationScreen`, `WarpScreen` (the Continue button), and `PhasePanel` (the Pay button). A new target kind needs a case in the screen and in `Defs.TARGETS`.
+- `TutorialGuide.start_run()` starts the tutorial until the setting `tutorial_done` is true. `finish()` sets it and starts a normal run. The Tutorial button of the title calls `GameState.start_tutorial()`.
+- In the tutorial, the station shows no hints, and Ctrl+Z does nothing.
+- `UiCheckTutorial` plays the tutorial through the screens. `ui_check.gd` sets `tutorial_done` before the other checks.
+
+## 9. Checks
 
 - `task test:ui` (`tests/ui_check.tscn`) plays a full run through the screens and calls the station functions (tooltip, marks, drag, warp). Add a call there for each new screen function. It is a scene, so that the autoload `GameState` exists.
 - `task smoke` runs the main scene for 5 frames, starts a run in the text player, and fails on an error.

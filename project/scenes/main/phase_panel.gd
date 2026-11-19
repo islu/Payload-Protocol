@@ -91,5 +91,13 @@ func _add_button(text: String, action: Callable) -> void:
 
 
 func _new_run() -> void:
-	Hints.run_started()
-	GameState.new_run()
+	TutorialGuide.start_run()
+
+
+## Returns the areas that a tutorial step opens on the payment screen: the Pay button
+## (SPEC Section 23.4).
+func tutorial_rects(step: Dictionary) -> Array[Rect2]:
+	var out: Array[Rect2] = []
+	if step.get("target", {}).get("button", "") == Defs.ACT_PAY and _buttons.get_child_count() > 0:
+		out.append((_buttons.get_child(0) as Control).get_global_rect())
+	return out

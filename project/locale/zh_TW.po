@@ -216,6 +216,7 @@ msgid "{n} / {total}"
 msgstr "{n} / {total}"
 
 #: project/scenes/main/how_to_play.gd
+#: project/scenes/main/tutorial_guide.gd
 msgid "Next"
 msgstr "下一頁"
 
@@ -300,6 +301,10 @@ msgstr "裝好貨艙，撐過跳躍。"
 #: project/scenes/main/phase_panel.gd
 msgid "New Run"
 msgstr "開始航程"
+
+#: project/scenes/main/main.gd
+msgid "Tutorial"
+msgstr "教學"
 
 #: project/scenes/main/main.gd
 #: project/scenes/main/pause_menu.gd
@@ -399,6 +404,26 @@ msgstr "自動拿起下一件貨物"
 #: project/scenes/main/settings_panel.gd
 msgid "Language"
 msgstr "語言"
+
+#: project/scenes/main/tutorial_guide.gd
+msgid "Try Again"
+msgstr "再試一次"
+
+#: project/scenes/main/tutorial_guide.gd
+msgid "Skip Tutorial"
+msgstr "跳過教學"
+
+#: project/scenes/main/tutorial_guide.gd
+msgid "Skip the tutorial and start a run?"
+msgstr "要跳過教學，直接開始一局嗎？"
+
+#: project/scenes/main/tutorial_guide.gd
+msgid "Tutorial complete. I will tell you about the rest when you see it."
+msgstr "教學完成。其他的東西，等你遇到時我再告訴你。"
+
+#: project/scenes/main/tutorial_guide.gd
+msgid "Start a Run"
+msgstr "開始一局"
 
 #: project/scenes/main/tutorial_picture.gd
 msgid "{weight} × {cells} = {force}"

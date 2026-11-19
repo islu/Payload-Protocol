@@ -15,6 +15,7 @@ var _shop_checked := false
 var _contracts_checked := false
 var _snap_checked := false
 var _bay_checked := false
+var _tutorial_checked := false
 ## The number of warps with a loss or a chain. The checks of SPEC Section 21.5 need one.
 var _losses_seen := 0
 ## The number of stations with an environment or an incident.
@@ -84,6 +85,10 @@ func _run() -> void:
 
 func _play_run(main: Control) -> void:
 	var state: Node = GameState
+	await get_tree().process_frame
+	if not _tutorial_checked:
+		_tutorial_checked = true
+		await UiCheckTutorial.check(self, main)
 	var new_run: Button = main.screen().find_child("NewRunButton", true, false)
 	_check(new_run != null, "the title shows first (SPEC Section 20.1)")
 	await get_tree().process_frame
@@ -152,6 +157,8 @@ func _check_hints() -> void:
 	var main: Control = MAIN_SCENE.instantiate()
 	add_child(main)
 	await get_tree().process_frame
+	# The hints are for the normal runs after the tutorial (UiCheckTutorial checks it).
+	Settings.set_value("tutorial_done", true)
 	main.start_run()
 	await get_tree().process_frame
 	var station: StationScreen = main.screen()

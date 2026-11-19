@@ -18,6 +18,8 @@ const DEFAULTS := {
 	# The progress of the hints (SPEC Section 23.3).
 	"hints_seen": [],
 	"runs_started": 0,
+	# The tutorial ran or was skipped one time (SPEC Section 23.4).
+	"tutorial_done": false,
 }
 const LOCALES: PackedStringArray = ["en", "zh_TW"]
 

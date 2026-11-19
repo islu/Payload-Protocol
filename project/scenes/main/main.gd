@@ -8,6 +8,7 @@ const TITLE_TEXT := "PAYLOAD\nPROTOCOL"
 const TAGLINE_TEXT := "Pack the hold. Survive the warp."
 const NEW_RUN_TEXT := "New Run"
 const HOW_TO_PLAY_TEXT := "How to Play"
+const TUTORIAL_TEXT := "Tutorial"
 const SETTINGS_TEXT := "Settings"
 const QUIT_TEXT := "Quit"
 ## The music loop (SPEC Section 4.3). docs/assets.md has its source.
@@ -15,6 +16,8 @@ const MUSIC_PATH := "res://audio/music/vintage_menu.ogg"
 
 ## The gear button of the station and the warp (SPEC Section 20.7).
 var gear: GearButton
+## The guide of the tutorial (SPEC Section 23.4).
+var guide: TutorialGuide
 ## The event or the mod choice on top of the station (SPEC Sections 20.8 and 20.9):
 ## an EventPanel or a ChoicePanel.
 var choice: Overlay
@@ -36,6 +39,13 @@ func _ready() -> void:
 	_overlays = CanvasLayer.new()
 	_overlays.layer = 10
 	add_child(_overlays)
+	# The tutorial guide is over the screen and under the overlays (SPEC Section 23.4).
+	var guide_layer := CanvasLayer.new()
+	guide_layer.layer = 5
+	add_child(guide_layer)
+	guide = TutorialGuide.new()
+	guide.screen_of = screen
+	guide_layer.add_child(guide)
 	gear = GearButton.new()
 	gear.pressed.connect(open_pause)
 	add_child(gear)
@@ -154,10 +164,9 @@ func _process(_delta: float) -> void:
 	_crt.visible = Settings.get_value("crt")
 
 
-## Starts a new run, and counts it for the hints (SPEC Section 23.3).
+## Starts a new run: the tutorial the first time (SPEC Sections 23.3 and 23.4).
 static func start_run() -> void:
-	Hints.run_started()
-	GameState.new_run()
+	TutorialGuide.start_run()
 
 
 ## Returns the screen now. The UI check uses it.
@@ -237,6 +246,8 @@ func _title() -> Control:
 	box.add_child(gap)
 	var new_run := _title_button(box, NEW_RUN_TEXT, start_run)
 	new_run.name = "NewRunButton"
+	var tutorial := _title_button(box, TUTORIAL_TEXT, func() -> void: GameState.start_tutorial())
+	tutorial.name = "TutorialButton"
 	_title_button(box, HOW_TO_PLAY_TEXT, func() -> void: open_overlay(HowToPlay.new()))
 	_title_button(box, SETTINGS_TEXT, func() -> void: open_overlay(SettingsPanel.new()))
 	if not OS.has_feature("web"):

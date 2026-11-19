@@ -159,6 +159,13 @@ func _mod_choice() -> void:
 	GameState.set_up(_set_bay)
 	await _wait(0.6)
 	await _shot("13_station_bay")
+	# The tutorial: a step with no action, and the contract step (SPEC Section 23.4).
+	GameState.start_tutorial()
+	await _wait(0.6)
+	await _shot("14_tutorial_next")
+	GameState.tutorial_next()
+	await _wait(0.6)
+	await _shot("15_tutorial_target")
 
 
 func _set_route(r: Run) -> void:
