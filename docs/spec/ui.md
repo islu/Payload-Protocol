@@ -180,6 +180,7 @@ The warp:
 
 - When hints are on, the pilot gives hints in the first runs. Each hint is for a new thing that the tutorial does not teach (Section 23.4). It shows the first time that the player sees that thing.
 - The hints are: a mod choice, an event, an environment, an incident, a fork step, the Sensor, the shock bay, a long contract, and a VIP contract.
+- The hint of an event or a mod choice shows in its panel, above the text. It wraps to the width of the panel. It does not cover the station.
 - After the first win or the first 3 runs, the game turns hints off. The player can turn them on in the settings.
 
 ### 23.4 Tutorial

@@ -66,9 +66,6 @@ This file keeps each problem that is found and not fixed yet. Each item is in on
 
 ## To Do
 
-- **[UX · Scenes] The pilot hint of an event covers the contract cards** (found 2026-11-19, by task shots). The hint label of the event panel (SPEC Section 23.3) is one long line above the speaker. With the text sizes of 2026-11-19, it goes over the contract cards at the left, and a long contract name is cut ("Earth Heritage Muse"; the tip has the full name).
-  To do                 Fix: put the hint in the dialogue box, above the name of the speaker, and wrap it to the width of the box.
-
 - **[Balance · Rules] Insurance pays for a spoil, and the Sensor sells at the last station** (found 2026-11-18, by Playtest seed 77 round 3 (2026-11-18, kit mass)). The Gambler took Perishable freight with no Cooler on purpose, and Insurance paid 16 for the spoil. The Optimizer sold the Sensor at the last station for 7: the fork is set when the station opens, so the reveal is already used.
   To decide             Options: (a) Insurance does not pay for a spoil. (b) Insurance pays less for a spoil. (c) Keep it. For the Sensor: (a) keep it, a small reward. (b) The sell price of kit is lower at the last station. Needs a change of SPEC Section 27.2.
 - **[UX · Scenes] Blind rerolls** (found 2026-11-18, by Playtest seed 77 round 3 (2026-11-18, kit mass)). The Optimizer spent 12 credits on rerolls and no Cooler came. The shop does not show which kit a station can offer.

@@ -58,6 +58,16 @@ static func check(ui: Node, main_scene: PackedScene) -> void:
 			panel.hint != null and panel.hint.text.contains(Hints.text(Hints.EVENT)),
 			"the first event has a pilot hint (SPEC Section 23.3)"
 		)
+		await ui.get_tree().process_frame
+		if panel.hint != null:
+			var box := panel.dialogue.get_global_rect()
+			ui._check(
+				box.encloses(panel.hint.get_global_rect()),
+				(
+					"the hint of an event is in the dialogue box: %s in %s (SPEC Section 23.3)"
+					% [panel.hint.get_global_rect(), box]
+				)
+			)
 		panel.choices[-1].pressed.emit()
 		await ui.get_tree().process_frame
 		ui._check(

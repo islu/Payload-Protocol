@@ -70,12 +70,16 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 ## Adds the pilot hint of an event or a mod choice (Hints.EVENT or Hints.MOD), when
-## the player did not see it (SPEC Section 23.3). It returns the label, or null.
-func pilot_hint(id: String) -> Label:
+## the player did not see it (SPEC Section 23.3). It goes in parent, the box of the
+## panel by default, and wraps to its width. It returns the label, or null.
+func pilot_hint(id: String, parent: Control = null) -> Label:
 	if Hints.for_panel(id) == "":
 		return null
 	var l := Ui.label(
-		box, GameText.PILOT_NAME + " → " + tr(Hints.text(id)), TextSize.BODY, Palette.WARN
+		parent if parent != null else box,
+		GameText.PILOT_NAME + " → " + tr(Hints.text(id)),
+		TextSize.BODY,
+		Palette.WARN
 	)
 	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	l.custom_minimum_size.x = 640

@@ -33,6 +33,8 @@ var choices: Array[Button] = []
 ## The pilot hint of the first event, or null (SPEC Section 23.3).
 var hint: Label
 var speaker_portrait: TextureRect
+## The dialogue box at the right of the speaker.
+var dialogue: Control
 var speaker_name: Label
 ## The tip of the panel: why a choice is disabled (SPEC Section 26.2). The station tip
 ## is below the panel, so the panel has its own.
@@ -45,7 +47,6 @@ func _build() -> void:
 	if run.get("phase", "") != Defs.PHASE_EVENT:
 		return
 	var e: Dictionary = run["event"]
-	hint = pilot_hint(Hints.EVENT)
 	# The speaker stands outside a frame: the overlay panel shows no frame here.
 	panel.add_theme_stylebox_override("panel", StyleBoxEmpty.new())
 	var row := HBoxContainer.new()
@@ -98,12 +99,15 @@ func _speaker(speaker: Dictionary) -> Control:
 ## button for each choice with its cost and its effects.
 func _dialogue(e: Dictionary) -> Control:
 	var frame := PanelContainer.new()
+	dialogue = frame
 	frame.size_flags_vertical = Control.SIZE_SHRINK_END
 	frame.add_theme_stylebox_override("panel", Ui.panel_style(Palette.ACCENT, 2, 8, 28))
 	var col := VBoxContainer.new()
 	col.add_theme_constant_override("separation", 12)
 	col.custom_minimum_size.x = BOX_WIDTH
 	frame.add_child(col)
+	# The hint is in the box, above the text: it does not cover the station (SPEC Section 23.3).
+	hint = pilot_hint(Hints.EVENT, col)
 	speaker_name = Ui.label(col, e["speaker"]["name"], TextSize.HEADING, Palette.ACCENT)
 	TextSize.display(Ui.label(col, e["name"], TITLE_SIZE, Palette.TEXT))
 	var body := Ui.label(col, e["text"], TextSize.HEADING, Palette.TEXT)
