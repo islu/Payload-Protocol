@@ -131,7 +131,7 @@ static func data() -> Dictionary:
 		"rules":
 		{
 			"start": {"credits": 40, "clamps": 1, "hold": {"columns": 6, "rows": 6}},
-			"shock_bay": {"sizes": [[2, 2], [3, 2]], "prices": [20, 30]},
+			"shock_bay": {"sizes": [[2, 2], [2, 3]], "prices": [20, 30]},
 			"weights": {"light": 1, "standard": 2, "heavy": 3},
 			"break_limits": {"fragile": 2, "volatile": 3, "fluid": 2},
 			"offers": {"contracts": 3, "kit": 3},

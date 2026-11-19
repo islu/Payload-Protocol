@@ -4,7 +4,7 @@ This file is part of the [game specification](../spec.md). The section numbers a
 
 ## 9. The Warp
 
-- The Warp button at the station starts the jump.
+- The Launch button at the station starts the jump.
 - If cargo is on the dock, a dialog asks the player to confirm. It shows what happens to that cargo (Section 15.4):
   - Freight on the dock stays at the station. Its contract pays a breach fee.
   - Kit on the dock is sold at the sell price (Section 17.3).
@@ -158,7 +158,7 @@ An **environment** is a rule of the route for all jumps of a leg.
 ### 28.1 When Environments Happen
 
 - Leg 1 has no environment. The seed selects one environment for leg 2 and one for leg 3. The two are not the same.
-- The station shows the environment of the leg in the top bar and in the hazard panel. The mouse on it shows its rule. The warp shows it in the banner before the first step.
+- The station shows the environment of the leg in the top bar and on the route bar. The mouse on it shows its rule. The warp shows it in the banner before the first step.
 
 ### 28.2 The Environments
 
@@ -196,6 +196,6 @@ An **incident** is an event of the route that happens before the first shift ste
 
 ### 29.3 Display
 
-- The hazard panel shows the incident as the first card, before the shift steps: its name and its place ("Meteor · Column 4").
+- The route bar shows the incident as the first card, before the shift steps: its name and its place ("Meteor · Column 4").
 - The hold marks the place of the incident: the column, the row, or the cell.
 - The warp plays the incident before the first shift step, with a banner.

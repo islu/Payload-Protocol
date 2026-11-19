@@ -1,5 +1,5 @@
 extends RuleTest
-## The shock bay (SPEC Section 31). The fixture sells it at 20 (2×2), then 30 (3×2).
+## The shock bay (SPEC Section 31). The fixture sells it at 20 (2×2), then 30 (2×3).
 ## Only kit and scrap go in it: the tests use kit, or freight that is scrap.
 
 
@@ -36,10 +36,10 @@ func test_buy() -> void:
 	eq(run.buy_shock_bay(), "", "buy the second size")
 	eq(
 		[run.bay_size, run.credits],
-		[Vector2i(3, 2), 50],
-		"the second purchase gives 3×2 for 30 (SPEC Section 17.2)"
+		[Vector2i(2, 3), 50],
+		"the second purchase gives 2×3 for 30 (SPEC Section 17.2)"
 	)
-	eq(run.buy_shock_bay(), Run.BAY_MAXED_TEXT, "3×2 is the maximum (SPEC Section 31.1)")
+	eq(run.buy_shock_bay(), Run.BAY_MAXED_TEXT, "2×3 is the maximum (SPEC Section 31.1)")
 
 
 func test_place() -> void:
@@ -242,7 +242,7 @@ func test_view() -> void:
 		if c["id"] == cooler.id:
 			cv = c
 	check(cv["in_bay"] and not cv["in_hold"], "the cargo view says the area (SPEC Section 31.2)")
-	eq(v["shop"]["bay"]["after"], {"columns": 3, "rows": 2}, "the next size is 3×2")
+	eq(v["shop"]["bay"]["after"], {"columns": 2, "rows": 3}, "the next size is 2×3")
 
 
 func test_drop_preview_in_bay() -> void:

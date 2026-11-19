@@ -127,6 +127,15 @@ func test_payments() -> void:
 	)
 
 
+func test_bay_sizes() -> void:
+	var cat := DataFiles.catalog()
+	eq(
+		cat.bay_sizes,
+		[Vector2i(2, 2), Vector2i(2, 3)],
+		"the shock bay is 2×2, then 2×3: it fits at the left of the hold (SPEC Section 17.2)"
+	)
+
+
 func test_tutorial_check() -> void:
 	var data := Fixture.data()
 	data["tutorial"]["jumps"][0]["contracts"] = ["no_such_contract"]

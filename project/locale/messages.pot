@@ -536,6 +536,19 @@ msgstr ""
 msgid "A mod changes a rule of the ship for the rest of the run. Pick one."
 msgstr ""
 
+#: project/scenes/station/route_bar.gd
+msgid "Depart"
+msgstr ""
+
+#: project/scenes/station/route_bar.gd
+msgid "Arrive"
+msgstr ""
+
+#: project/scenes/station/route_bar.gd
+#: project/data/terms.json
+msgid "Sensor"
+msgstr ""
+
 #: project/scenes/station/route_cards.gd
 msgid "Meteor · Column {x}"
 msgstr ""
@@ -613,10 +626,6 @@ msgid "Clamps"
 msgstr ""
 
 #: project/scenes/station/station_screen.gd
-msgid "Next jump:"
-msgstr ""
-
-#: project/scenes/station/station_screen.gd
 msgid "Sell kit or clear scrap: drop it here"
 msgstr ""
 
@@ -633,7 +642,7 @@ msgid "Freight cannot be sold"
 msgstr ""
 
 #: project/scenes/station/station_screen.gd
-msgid "WARP"
+msgid "LAUNCH"
 msgstr ""
 
 #: project/scenes/station/station_screen.gd
@@ -670,11 +679,6 @@ msgstr ""
 
 #: project/scenes/station/station_screen.gd
 msgid "Undo (Ctrl+Z)"
-msgstr ""
-
-#: project/scenes/station/station_screen.gd
-#: project/data/terms.json
-msgid "Sensor"
 msgstr ""
 
 #: project/scenes/station/station_screen.gd
@@ -1800,7 +1804,7 @@ msgid "Right click a cargo, or press R, to rotate it. Rotate the Steel Ingot."
 msgstr ""
 
 #: project/data/tutorial.json
-msgid "The hazard shows each shift step of the next jump. This jump has one step: RIGHT."
+msgid "The route above the hold shows the next jump, from Depart to Arrive. This jump has one shift step: RIGHT."
 msgstr ""
 
 #: project/data/tutorial.json
@@ -1816,7 +1820,7 @@ msgid "The crystal broke. A slide into the wall, or a cargo behind it, hit it wi
 msgstr ""
 
 #: project/data/tutorial.json
-msgid "Try it: place the cargo so that the crystal does not break. Then press Warp."
+msgid "Try it: place the cargo so that the crystal does not break. Then press Launch."
 msgstr ""
 
 #: project/data/tutorial.json

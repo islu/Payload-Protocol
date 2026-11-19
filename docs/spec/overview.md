@@ -64,7 +64,7 @@ These games are references for mechanics only. Do not copy their art, names, ite
 - The font is jf open huninn 2.1 (SIL Open Font License 1.1). It has Latin and Traditional Chinese glyphs.
 - The text has four sizes only: heading 28, body 22, small 18, and button 24 pixels. The sizes are for a screen of 1920 by 1080 pixels.
 - Text with no other size has the body size.
-- Display text is the exception: the title of the game and its tagline, the Warp button, the arrows of the hazard cards, the title of each panel, the name of an event, and the banners and the numbers of the warp.
+- Display text is the exception: the title of the game and its tagline, the Launch button, the arrows of the hazard cards, the title of each panel, the name of an event, and the banners and the numbers of the warp.
 - When a text does not fit at its size, make the text shorter. Do not make the size smaller. Put the full text in the tooltip.
 
 ### 4.3 Sound
@@ -98,6 +98,7 @@ Use these terms in the spec, the code, the data, and the text of the game. Do no
 | **mass** | The load of a cargo: its weight value multiplied by its cells. Cargo in the shock bay has no mass (Section 25). |
 | **mass limit** | The mass that the ship can carry with no fuel fee (Section 25). |
 | **fuel fee** | The credits that the player pays at the warp for each point of mass over the mass limit (Section 25). |
+| **route bar** | The row above the hold that shows the next jump as a route: depart, the incident, the shift steps, and arrive (Section 20.2). |
 | **shift step** | One direction of a hazard. All cargo slides in that direction (Section 10). |
 | **slide** | The movement of cargo in a shift step. |
 | **slide limit** | The most cells that a cargo can slide in a shift step (Section 10.2). |

@@ -332,15 +332,19 @@ func _check_overlays(main: Control) -> void:
 	_check(not get_tree().paused, "Resume ends the pause (SPEC Section 20.7)")
 
 
-## Returns the number of cards of the hazard panel: the environment, the incident,
-## and each step (SPEC Sections 20.2, 28.1, and 29.3).
-static func _route_cards(run: Dictionary) -> int:
-	var n: int = run["hazard"].size()
-	n += 0 if run["environment"].is_empty() else 1
-	return n + (0 if run["incident"].is_empty() else 1)
+## Returns the names of the points of the route bar: depart, the incident, each
+## step, and arrive (SPEC Sections 20.2 and 29.3).
+static func _route_points(run: Dictionary) -> PackedStringArray:
+	var names := PackedStringArray(["Depart"])
+	if not run["incident"].is_empty():
+		names.append("Incident")
+	for i in run["hazard"].size():
+		names.append("Step%d" % (i + 1))
+	names.append("Arrive")
+	return names
 
 
-## The hold fills the center, and the hazard panel is above it (SPEC Section 20.2).
+## The hold fills the center, and the route bar is above it (SPEC Section 20.2).
 ## The text has four sizes (SPEC Section 4.2).
 func _check_layout(station: StationScreen) -> void:
 	UiCheckText.check(self, station, "the station")
@@ -351,25 +355,62 @@ func _check_layout(station: StationScreen) -> void:
 		Rect2(Vector2.ZERO, hold.size).encloses(grid),
 		"the grid fits in the hold (SPEC Section 20.2)"
 	)
-	var panel := station._hazard_box.get_global_rect()
 	var top := hold.global_position.y + grid.position.y
-	_check(
-		station._hazard_box.get_child_count() == _route_cards(GameState.view()["run"]),
-		"the hazard panel has one card for each step (SPEC Sections 20.2 and 29.3)"
-	)
 	var left := hold.global_position.x + grid.position.x
-	var cards := station._hazard_box.get_children()
+	var bar := station.route_bar
+	var run_now: Dictionary = GameState.view()["run"]
+	var names := PackedStringArray()
+	for p in bar.points:
+		names.append(p.name)
+	_check(
+		names == _route_points(run_now),
+		(
+			"the route bar has depart, the incident, each step, and arrive: %s (SPEC Section 20.2)"
+			% [names]
+		)
+	)
+	var xs_grow := true
+	for k in range(1, bar.points.size()):
+		xs_grow = xs_grow and bar.points[k].global_position.x > bar.points[k - 1].global_position.x
+	var rect := bar.get_global_rect()
 	_check(
 		(
-			panel.end.x <= left
-			and panel.position.y >= top
-			and panel.end.y <= top + grid.size.y
-			and (cards.size() < 2 or cards[1].global_position.y > cards[0].global_position.y)
+			xs_grow
+			and rect.end.y <= top
+			and rect.end.x > left
+			and rect.position.x < left + grid.size.x
 		),
 		(
-			"the hazard panel is at the left of the hold: %s, grid %s (SPEC Section 20.2)"
-			% [panel, Rect2(Vector2(left, top), grid.size)]
+			"the route bar is above the hold, from left to right: %s, grid %s (SPEC Section 20.2)"
+			% [rect, Rect2(Vector2(left, top), grid.size)]
 		)
+	)
+	_check(
+		(bar.find_child("Environment", true, false) == null) == run_now["environment"].is_empty(),
+		"the route bar shows the environment of the leg (SPEC Sections 20.2 and 28.1)"
+	)
+	var view := get_viewport().get_visible_rect()
+	_check(
+		(
+			view.encloses(station._warp_button.get_global_rect())
+			and view.encloses(hold.get_global_rect())
+			and (not station.bay_view.visible or view.encloses(station.bay_view.get_global_rect()))
+		),
+		(
+			"the station fits on the screen: Launch %s, hold %s, bay %s (SPEC Section 20.2)"
+			% [
+				station._warp_button.get_global_rect(),
+				hold.get_global_rect(),
+				station.bay_view.get_global_rect()
+			]
+		)
+	)
+	_check(
+		(
+			station._warp_button.text == tr(StationScreen.WARP_TEXT)
+			and StationScreen.WARP_TEXT == "LAUNCH"
+		),
+		"the Launch button says LAUNCH (SPEC Section 20.2)"
 	)
 	# The mouse on a cargo shows a bright frame on its cells (SPEC Section 4.2).
 	var run: Dictionary = GameState.view()["run"]
@@ -432,6 +473,11 @@ func _check_language(station: StationScreen) -> void:
 		texts.call(main.screen()).has(want.call(StationScreen.WARP_TEXT)),
 		"the station shows the new language (SPEC Section 23.1)"
 	)
+	if TranslationServer.get_locale().begins_with("zh"):
+		_check(
+			(main.screen() as StationScreen)._warp_button.text == "出發",
+			"the Launch button says 出發 in zh-TW (SPEC Section 20.2)"
+		)
 	Settings.set_value("locale", start)
 	pause.close()
 	await get_tree().process_frame

@@ -559,6 +559,19 @@ msgstr "這是事件：每個選項都有代價和效果。兩個都看清楚再
 msgid "A mod changes a rule of the ship for the rest of the run. Pick one."
 msgstr "改裝模組會在這一局剩下的時間改變船的一條規則。選一個。"
 
+#: project/scenes/station/route_bar.gd
+msgid "Depart"
+msgstr "出發點"
+
+#: project/scenes/station/route_bar.gd
+msgid "Arrive"
+msgstr "抵達"
+
+#: project/scenes/station/route_bar.gd
+#: project/data/terms.json
+msgid "Sensor"
+msgstr "感測器"
+
 #: project/scenes/station/route_cards.gd
 msgid "Meteor · Column {x}"
 msgstr "隕石 · 第 {x} 欄"
@@ -636,10 +649,6 @@ msgid "Clamps"
 msgstr "卡榫"
 
 #: project/scenes/station/station_screen.gd
-msgid "Next jump:"
-msgstr "下一次跳躍："
-
-#: project/scenes/station/station_screen.gd
 msgid "Sell kit or clear scrap: drop it here"
 msgstr "賣出裝備或清除廢料：拖到這裡"
 
@@ -656,8 +665,8 @@ msgid "Freight cannot be sold"
 msgstr "貨物不能賣"
 
 #: project/scenes/station/station_screen.gd
-msgid "WARP"
-msgstr "跳躍"
+msgid "LAUNCH"
+msgstr "出發"
 
 #: project/scenes/station/station_screen.gd
 msgid "{free} of {total} free"
@@ -698,11 +707,6 @@ msgstr "或"
 #: project/scenes/station/station_screen.gd
 msgid "Undo (Ctrl+Z)"
 msgstr "復原 (Ctrl+Z)"
-
-#: project/scenes/station/station_screen.gd
-#: project/data/terms.json
-msgid "Sensor"
-msgstr "感測器"
 
 #: project/scenes/station/station_screen.gd
 msgid "No Sensor: the fork step is hidden again."
@@ -1827,8 +1831,8 @@ msgid "Right click a cargo, or press R, to rotate it. Rotate the Steel Ingot."
 msgstr "在貨物上按右鍵，或按 R，就能旋轉它。把鋼錠轉個方向。"
 
 #: project/data/tutorial.json
-msgid "The hazard shows each shift step of the next jump. This jump has one step: RIGHT."
-msgstr "危險預報會列出下一次跳躍的每一段位移。這次只有一段：向右。"
+msgid "The route above the hold shows the next jump, from Depart to Arrive. This jump has one shift step: RIGHT."
+msgstr "船艙上方的航線會列出下一次跳躍，從出發點到抵達。這次只有一段位移：向右。"
 
 #: project/data/tutorial.json
 msgid "In a step, each cargo slides until a wall or a stopped cargo stops it. The force of its hit is its weight × the cells it slid: light 1, standard 2, heavy 3."
@@ -1843,8 +1847,8 @@ msgid "The crystal broke. A slide into the wall, or a cargo behind it, hit it wi
 msgstr "水晶碎了。它滑去撞牆，或被後面的貨物撞到，撞擊力到了 2 以上。我們再試一次。"
 
 #: project/data/tutorial.json
-msgid "Try it: place the cargo so that the crystal does not break. Then press Warp."
-msgstr "試試看：把貨物擺好，別讓水晶碎掉。然後按下跳躍。"
+msgid "Try it: place the cargo so that the crystal does not break. Then press Launch."
+msgstr "試試看：把貨物擺好，別讓水晶碎掉。然後按下出發。"
 
 #: project/data/tutorial.json
 msgid "Delivered! Each intact freight pays. A broken cargo becomes scrap and stays in the hold. Press Continue."

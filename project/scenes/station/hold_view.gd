@@ -16,8 +16,10 @@ signal cargo_hovered(id: int)
 const CELL := 100.0
 ## The free space around the grid, in cells: the marks of the front wall are there.
 const MARGIN := 0.8
-## The free space around the shock bay, in cells: the coupling is below it.
-const BAY_MARGIN := 0.5
+## The space at the right of the shock bay, in pixels: the coupling to the hold.
+const BAY_COUPLING := 16.0
+## The space around the cells of the shock bay, in pixels: its padded frame.
+const BAY_PAD := 12.0
 ## The width of the frame around the grid, in pixels.
 const FRAME := 14.0
 ## The color of the area of each mod.
@@ -83,7 +85,9 @@ func set_view(run: Dictionary) -> void:
 		for l: Dictionary in run["links"]:
 			if _mine(_cargo(l["from"])) and _mine(_cargo(l["to"])):
 				links.append(l)
-		custom_minimum_size = Vector2(columns + BAY_MARGIN, rows + BAY_MARGIN) * CELL
+		# The padded frame, and the coupling to the hold at the right (SPEC Section 31.2).
+		var pad := 2.0 * BAY_PAD
+		custom_minimum_size = Vector2(columns * CELL + pad + BAY_COUPLING, rows * CELL + pad)
 	else:
 		columns = run["hold"]["columns"]
 		rows = run["hold"]["rows"]
@@ -140,8 +144,8 @@ static func _cells_of(c: Dictionary) -> Array[Vector2i]:
 func grid_origin() -> Vector2:
 	var o := ((size - Vector2(columns, rows) * cell) / 2.0).floor()
 	if bay:
-		# The shock bay sits at the top: the coupling fills the space below it.
-		o.y = FRAME + 4.0
+		# The shock bay sits at the left: the coupling fills the space at its right.
+		o.x = BAY_PAD
 	return o
 
 
@@ -377,7 +381,7 @@ func _draw_frame(o: Vector2) -> void:
 	var grid := Rect2(o, Vector2(columns, rows) * cell)
 	var outer := grid.grow(FRAME)
 	if bay:
-		_draw_bay_frame(grid, outer)
+		_draw_bay_frame(grid, grid.grow(BAY_PAD - 2.0))
 		return
 	draw_rect(outer, Palette.PANEL_LINE.darkened(0.35))
 	draw_rect(outer, Palette.PANEL_LINE, false, 2.0)
@@ -395,13 +399,13 @@ func _draw_frame(o: Vector2) -> void:
 
 
 ## Draws the frame of the shock bay: soft padding with seams, and the coupling to
-## the hold below it (SPEC Section 31.2).
+## the hold at its right (SPEC Section 31.2).
 func _draw_bay_frame(grid: Rect2, outer: Rect2) -> void:
 	var pad: Color = Palette.TRAIT_COLORS[Defs.TRAIT_CUSHION]
 	var bottom := outer.end.y
 	for side in [-1.0, 1.0]:
-		var x: float = grid.get_center().x + side * cell * 0.25
-		draw_line(Vector2(x, bottom), Vector2(x, size.y), Palette.PANEL_LINE, 6.0)
+		var y: float = grid.get_center().y + side * cell * 0.25
+		draw_line(Vector2(outer.end.x, y), Vector2(size.x, y), Palette.PANEL_LINE, 6.0)
 	draw_rect(outer, Color(pad, 0.35).darkened(0.4))
 	draw_rect(outer, pad, false, 2.0)
 	var seam := Color(pad, 0.6)

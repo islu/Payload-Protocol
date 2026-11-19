@@ -37,7 +37,7 @@
 					"cargo": "steel_ingot"
 				},
 				{
-					"text": "The hazard shows each shift step of the next jump. This jump has one step: RIGHT.",
+					"text": "The route above the hold shows the next jump, from Depart to Arrive. This jump has one shift step: RIGHT.",
 					"target": {
 						"kind": "hazard",
 						"index": 0
@@ -57,7 +57,7 @@
 					"until": "next"
 				},
 				{
-					"text": "Try it: place the cargo so that the crystal does not break. Then press Warp.",
+					"text": "Try it: place the cargo so that the crystal does not break. Then press Launch.",
 					"target": {
 						"kind": "button",
 						"button": "warp"

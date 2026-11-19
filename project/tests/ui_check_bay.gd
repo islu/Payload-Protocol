@@ -11,7 +11,20 @@ static func check(ui: Node, state: Node, station: StationScreen) -> void:
 	await ui.get_tree().process_frame
 	ui._check(
 		station.bay_view.visible,
-		"after the purchase, the shock bay hangs above the hold (SPEC Section 31.2)"
+		"after the purchase, the station shows the shock bay (SPEC Section 31.2)"
+	)
+	var bay := station.bay_view.get_global_rect()
+	var hold := station.hold_view
+	var grid := Rect2(
+		hold.global_position + hold.grid_origin(), Vector2(hold.columns, hold.rows) * hold.cell
+	)
+	ui._check(
+		(
+			bay.end.x <= grid.position.x
+			and bay.get_center().y > grid.position.y
+			and bay.get_center().y < grid.end.y
+		),
+		"the shock bay is at the left of the hold: %s, grid %s (SPEC Section 31.2)" % [bay, grid]
 	)
 	var freight := _on_dock(state, true)
 	if not freight.is_empty():

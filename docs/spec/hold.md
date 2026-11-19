@@ -119,7 +119,7 @@ A cargo can have more than one trait.
 - The **hold mass** is the sum of the mass of each cargo in the hold. Cargo in the shock bay and on the dock does not count (Section 31.1).
 - The ship has a **mass limit**. A run starts with a mass limit of 24. The **Reinforce hull** service adds to it (Section 17.2).
 - The hold mass can be more than the mass limit by 25% at most, rounded down. Example: with a mass limit of 24, the maximum is 30.
-- When the hold mass is more than the maximum, the Warp button does not work. The top bar shows the mass in red.
+- When the hold mass is more than the maximum, the Launch button does not work. The top bar shows the mass in red.
 - When the hold mass is more than the mass limit, the warp takes the **fuel fee**: 3 credits for each point of mass over the limit. The credits can go below 0 (Section 16).
 - The top bar shows the hold mass against the mass limit and the maximum (Section 20.2). The warp checklist shows the fuel fee of the warp now.
 
@@ -140,6 +140,6 @@ The **shock bay** is a small area of cells next to the hold. The warp does not m
 
 ### 31.2 Display
 
-- The shock bay hangs above the hold, at its center, on a short coupling. Its cells have the size of the cells of the hold. It has a padded frame.
+- The shock bay is at the left of the hold, at its center, on a short coupling. Its cells have the size of the cells of the hold. It has a padded frame.
 - The station shows it only after the purchase.
-- During the warp, the shock bay shows above the hold, and its cargo stays still.
+- During the warp, the shock bay shows at the left of the hold, and its cargo stays still.

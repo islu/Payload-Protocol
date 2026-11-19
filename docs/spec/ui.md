@@ -18,15 +18,15 @@ The station screen has these areas:
 | --- | --- | --- |
 | Top bar | Top | Four groups: (1) the leg, and a dot for each jump of the leg; (2) the credits, and a bar of the credits against the payment of this leg, with the jumps before the payment; (3) a bar of the hold mass, with a mark at the mass limit and a mark at the maximum (Section 25); (4) a badge with the icon and the name of the environment of the leg, with its rule when the mouse is on it (Section 28). A gear button at the right opens the pause menu (Section 20.7). |
 | Pilot box | Bottom left | The portrait and the line of the pilot, in a wide box (Section 22). |
-| Hazard panel | Center, at the left of the hold, from top to bottom | The shift steps of the next jump in order (Section 18). Each step is a card with a large arrow, its number, and its direction. A fork step shows its two directions and a question mark. |
+| Route bar | Center, above the hold | The route of the next jump, from left to right: the depart point (the ship), the incident (Section 29), each shift step in order (Section 18), and the arrive point (the station). A line joins the points. Each step is a card with a large arrow, its number, and its direction. A fork step shows its two directions and a question mark. The environment of the leg is a band below the line (Section 28). |
 | Dock | Left, top | The cargo on the dock (Section 8.1). |
 | Contract board | Left, below the dock | The 4 contracts, with Accept and Cancel buttons (Section 15). |
 | Hold | Center | The grid and its cargo, the links, and the clamps. Each cell is 100 pixels, the size of the cargo images (Section 4.2). |
-| Shock bay | Above the hold | The cells of the shock bay, after its purchase (Section 31.2). |
+| Shock bay | Left of the hold | The cells of the shock bay, after its purchase (Section 31.2). |
 | Mod bar | Below the hold | A card with the icon of each mod of the ship (Section 27). The mouse on a card shows the name and the rule of the mod, and marks the area of the mod on the hold. |
 | Shop | Right | The kit offers, Reroll, the services, and the sell area (Section 17). |
 | Clamp panel | Right, below the services | The free clamps and their count (Section 13). The mouse on them shows how to use a clamp. |
-| Warp button | Bottom right | Starts the warp (Section 9). The warp checklist is above it. |
+| Launch button | Bottom right | Starts the warp (Section 9). Its text is "Launch". The warp checklist is above it. |
 
 Contracts and the dock:
 
@@ -46,17 +46,18 @@ The shop and the services:
 
 - Each kit offer shows its image, each trait with its icon and its rule, its weight, and its price on the Buy button. A price that is more than the credits shows in red.
 - Each kit offer shows how it helps the accepted freight on the dock and in the hold: "Helps N of your freight". A Cooler counts Perishable freight. A Cushion counts Fragile freight. A Shield counts freight that is Fragile, Volatile, Fluid, or Electronic. A Battery counts the Shield kit on the dock and in the hold. A Sensor shows "The next jump has a fork step" when it does. Other kit and a count of 0 show nothing.
-- Each service shows the value now and the value after the purchase: the clamps (1/4 → 2/4), the shock bay (none → 2×2, or 2×2 → 3×2), and the mass limit (24 → 30).
+- Each service shows the value now and the value after the purchase: the clamps (1/4 → 2/4), the shock bay (none → 2×2, or 2×2 → 2×3), and the mass limit (24 → 30).
 - The sell area is a small bar. During a drag of a kit, it is green and shows the sell price. During a drag of a scrap, it is red and shows the clear price.
 
 The warp:
 
-- The **warp checklist** above the Warp button shows: the fuel fee, the number of cargo on the dock, the number of cargo with a wall jolt warning (Section 12.3), and the incident of the jump (Section 29.3).
+- The **warp checklist** above the Launch button shows: the fuel fee, the number of cargo on the dock, the number of cargo with a wall jolt warning (Section 12.3), and the incident of the jump (Section 29.3).
 - An Undo button and Ctrl+Z take back the last action at this station: a placement, a contract, a purchase, a sale, a reroll, or a service. Undo does not go back past the arrival at the station. After an undo, the same action gives the same result again.
 
 ### 20.3 Warp
 
-- The hold stays at the center. The other panels go out of the screen.
+- The hold stays at the center, and the route bar stays above it. The other panels go out of the screen.
+- The ship on the route bar moves to the point that plays now: the incident, then each shift step. At the end, it is at the arrive point.
 - The background shows the warp: stars become lines.
 - Before the first shift step, a banner shows the environment of the leg. Then the incident plays, with a banner (Section 29.3).
 - For each shift step:

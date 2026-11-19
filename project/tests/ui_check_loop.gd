@@ -154,13 +154,13 @@ static func route_station(ui: Node, station: StationScreen) -> int:
 			"the top bar shows the environment of the leg (SPEC Section 28.1)"
 		)
 		ui._check(
-			station._hazard_box.get_child(0).name == "Environment",
-			"the hazard panel shows the environment first (SPEC Section 28.1)"
+			station.route_bar.find_child("Environment", true, false) != null,
+			"the route bar shows the environment (SPEC Section 28.1)"
 		)
 	if not run["incident"].is_empty():
 		seen = 1
-		var card := station._hazard_box.get_node_or_null("Incident")
-		ui._check(card != null, "the hazard panel shows the incident (SPEC Section 29.3)")
+		var card := station.route_bar.find_child("Incident", true, false)
+		ui._check(card != null, "the route bar shows the incident (SPEC Section 29.3)")
 		ui._check(
 			station.hold_view.incident_cells == run["incident"]["cells"],
 			"the hold marks the place of the incident (SPEC Section 29.3)"
@@ -170,6 +170,15 @@ static func route_station(ui: Node, station: StationScreen) -> int:
 
 ## The warp plays the incident before the first step (SPEC Section 29.3).
 static func route_warp(ui: Node, warp: WarpScreen) -> void:
+	var bar := warp.route_bar
+	var all := range(bar.points.size())
+	ui._check(
+		bar.visible and bar.visited == all,
+		(
+			"the ship on the route bar goes to each point in order: %s, want %s (SPEC Section 20.3)"
+			% [bar.visited, all]
+		)
+	)
 	var inc: Dictionary = GameState.view()["run"]["warp"].get("incident", {})
 	if not inc.is_empty():
 		ui._check(

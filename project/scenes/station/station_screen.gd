@@ -11,12 +11,11 @@ const DOCK_COUNT_TEXT := "Dock ({count})"
 const CONTRACTS_TEXT := "Contracts"
 const SHOP_TEXT := "Shop"
 const CLAMPS_TEXT := "Clamps"
-const NEXT_JUMP_TEXT := "Next jump:"
 const SELL_IDLE_TEXT := "Sell kit or clear scrap: drop it here"
 const SELL_KIT_TEXT := "Sell {name}: +{price} cr"
 const CLEAR_SCRAP_TEXT := "Clear the scrap: -{price} cr"
 const NO_SELL_TEXT := "Freight cannot be sold"
-const WARP_TEXT := "WARP"
+const WARP_TEXT := "LAUNCH"
 # gdlint:ignore = max-line-length
 const FREE_CLAMPS_TEXT := "{free} of {total} free"
 const CLAMP_HELP_TEXT := "Drag a clamp onto a cargo. Click a clamp to take it off."
@@ -29,14 +28,13 @@ const HINT_TEXT := "Drag cargo, or click to pick it up and click to drop it. Rig
 const OR_TEXT := "or"
 const UNDO_TEXT := "Undo (Ctrl+Z)"
 ## The mark of a fork step that a Sensor shows (SPEC Section 20.2).
-const SENSOR_TEXT := "Sensor"
 ## The warning when the last Sensor leaves the hold (SPEC Section 18.1).
 const SENSOR_LOST_TEXT := "No Sensor: the fork step is hidden again."
 ## The characters of a pilot line that type out in each second (SPEC Section 22).
 const TYPE_SPEED := 40.0
 const ARROWS := {Defs.DIR_LEFT: "←", Defs.DIR_RIGHT: "→", Defs.DIR_UP: "↑", Defs.DIR_DOWN: "↓"}
 const LOAD_ALL_TEXT := "Load all"
-const SIDE_WIDTH := 500.0
+const SIDE_WIDTH := 486.0
 const SELL_HEIGHT := 48.0
 ## The cell of the cargo on the dock (SPEC Section 20.2).
 const DOCK_CELL := 48.0
@@ -54,6 +52,8 @@ var sell_area: PanelContainer
 ## The cargo or the clamp of the drag, at the mouse (SPEC Section 8.2).
 var drag_layer: DragLayer
 
+## The route bar above the hold (SPEC Section 20.2).
+var route_bar: RouteBar
 ## The view part of each list when it was built, by the name of the list (_changed).
 var _built := {}
 ## The station of the last refresh and whether its fork step was known: [leg, jump, known].
@@ -73,7 +73,6 @@ var _checklist: WarpChecklist
 var _credits_label: Label
 ## The mod bar below the hold (SPEC Section 20.2).
 var _mod_bar: ModBar
-var _hazard_box: VBoxContainer
 var _dock_title: Label
 var _dock_flow: HFlowContainer
 var _contracts_box: VBoxContainer
@@ -136,7 +135,7 @@ func _build() -> void:
 
 	var body := HBoxContainer.new()
 	body.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	body.add_theme_constant_override("separation", 20)
+	body.add_theme_constant_override("separation", 14)
 	root.add_child(body)
 
 	var left := VBoxContainer.new()
@@ -178,39 +177,29 @@ func _build() -> void:
 	center.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	center.add_theme_constant_override("separation", 8)
 	body.add_child(center)
-	var row := HBoxContainer.new()
-	row.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	row.add_theme_constant_override("separation", 8)
-	center.add_child(row)
-	# The hazard panel: one card for each shift step, from top to bottom, at the
-	# left of the hold (SPEC Section 20.2).
-	var hazard := VBoxContainer.new()
-	hazard.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	hazard.add_theme_constant_override("separation", 10)
-	row.add_child(hazard)
-	var next_jump := Ui.label(hazard, NEXT_JUMP_TEXT, TextSize.BODY, Palette.WARN)
-	next_jump.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_hazard_box = VBoxContainer.new()
-	# The arrows of the hazard cards are display text (SPEC Section 4.2).
-	TextSize.display(_hazard_box)
-	_hazard_box.add_theme_constant_override("separation", 10)
-	hazard.add_child(_hazard_box)
-	var ship := VBoxContainer.new()
+	# The route bar: the next jump as a route, above the hold (SPEC Section 20.2).
+	route_bar = RouteBar.new()
+	route_bar.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	route_bar.step_hovered.connect(_set_hover_step)
+	center.add_child(route_bar)
+	# The shock bay is at the left of the hold (SPEC Section 31.2).
+	var ship := HBoxContainer.new()
 	ship.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	ship.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	ship.add_theme_constant_override("separation", 0)
-	row.add_child(ship)
-	# The shock bay hangs above the hold (SPEC Section 31.2).
+	ship.alignment = BoxContainer.ALIGNMENT_CENTER
+	# The coupling of the shock bay goes into the free margin of the hold.
+	ship.add_theme_constant_override("separation", -int(HoldView.MARGIN * HoldView.CELL / 2.0))
+	center.add_child(ship)
 	bay_view = HoldView.new()
 	bay_view.bay = true
 	bay_view.visible = false
-	bay_view.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	# The hold and the shock bay are right below the route bar, so that the guide of
+	# the tutorial does not cover the hold (SPEC Section 23.4).
+	bay_view.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
 	bay_view.cargo_pressed.connect(_on_hold_pressed)
 	bay_view.cargo_hovered.connect(_on_hold_hovered)
 	ship.add_child(bay_view)
 	hold_view = HoldView.new()
-	hold_view.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	hold_view.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	hold_view.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
 	hold_view.cargo_pressed.connect(_on_hold_pressed)
 	hold_view.clamp_pressed.connect(func(id: int) -> void: act(GameState.unclamp_cargo(id)))
 	hold_view.cargo_hovered.connect(_on_hold_hovered)
@@ -432,49 +421,14 @@ func _set_credits(value: int) -> void:
 	_top_bar.set_credits(value)
 
 
-## Shows each step of the hazard. A fork step shows its two directions, or the one
-## that happens when a Sensor is in the hold (SPEC Section 18).
+## Shows the route of the next jump on the route bar. A fork step shows its two
+## directions, or the one that a Sensor shows (SPEC Sections 18 and 20.2).
 func _refresh_hazard() -> void:
-	Ui.clear(_hazard_box)
-	# The environment and the incident come before the shift steps (SPEC Sections 28.1 and 29.3).
-	if not run_data.get("environment", {}).is_empty():
-		var tag := RouteCards.env_tag(_hazard_box, run_data["environment"])
-		_env_tip_on(tag)
-	if not run_data.get("incident", {}).is_empty():
-		RouteCards.incident_card(_hazard_box, run_data["incident"])
-	var i := 0
-	for step: Dictionary in run_data["hazard"]:
-		var index := i
-		i += 1
-		var color: Color = Palette.BAD if step["fork"] else Palette.WARN
-		var card := Ui.panel(_hazard_box)
-		var style: StyleBoxFlat = card.get_theme_stylebox("panel")
-		style.border_color = color
-		card.custom_minimum_size = Vector2(120, 0)
-		# The mouse on a card marks the front wall of its step (SPEC Section 20.2).
-		card.mouse_filter = Control.MOUSE_FILTER_PASS
-		card.mouse_entered.connect(func() -> void: _set_hover_step(index))
-		card.mouse_exited.connect(func() -> void: _set_hover_step(-1))
-		var box := VBoxContainer.new()
-		box.add_theme_constant_override("separation", 0)
-		card.add_child(box)
-		var look := step_card(step, view_data)
-		var big := Ui.label(box, "", 52, color)
-		big.text = look["arrow"]
-		big.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		var name_label := Ui.label(box, "", 17, color)
-		name_label.text = "%d · %s" % [i, look["names"]]
-		name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		if look["sensor"]:
-			# The Sensor icon of the shop: the font has no glyph for it (SPEC Section 20.2).
-			var row := HBoxContainer.new()
-			row.alignment = BoxContainer.ALIGNMENT_CENTER
-			row.add_theme_constant_override("separation", 4)
-			box.add_child(row)
-			var icon := ShopPanel.trait_icon(Defs.TRAIT_SENSOR)
-			icon.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-			row.add_child(icon)
-			Ui.label(row, "", TextSize.SMALL, Palette.ACCENT).text = tr(SENSOR_TEXT)
+	route_bar.set_route(
+		run_data.get("environment", {}), run_data.get("incident", {}), run_data["hazard"], view_data
+	)
+	if route_bar.env_band != null:
+		_env_tip_on(route_bar.env_band)
 
 
 ## Returns how a hazard card looks: {arrow, names, sensor}. A fork step shows its
@@ -668,7 +622,7 @@ func tutorial_rects(step: Dictionary) -> Array[Rect2]:
 				if i < _shop.offer_cards.size():
 					parts = [_shop.offer_cards[i]["buy"]]
 			"hazard":
-				parts = [_hazard_box]
+				parts = [route_bar]
 			"top_bar":
 				parts = [_top_bar]
 			"button":

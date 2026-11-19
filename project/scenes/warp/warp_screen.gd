@@ -33,6 +33,8 @@ var loss_text := ""
 ## The text of the incident that the warp played (SPEC Section 29.3). The UI check reads it.
 var incident_shown := ""
 
+## The route bar above the hold: the ship goes to the point that plays (SPEC Section 20.3).
+var route_bar: RouteBar
 var _view: Dictionary = {}
 var _cargo: Dictionary = {}
 var _stars: Starfield
@@ -65,7 +67,7 @@ func _ready() -> void:
 	_hold.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_hold.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	_stage.add_child(_hold)
-	# The shock bay hangs above the hold and moves with it (SPEC Section 31.2).
+	# The shock bay is at the left of the hold and moves with it (SPEC Section 31.2).
 	_bay = HoldView.new()
 	_bay.bay = true
 	_bay.visible = false
@@ -73,22 +75,25 @@ func _ready() -> void:
 	_bay.fades = _hold.fades
 	_bay.checks = _hold.checks
 	_hold.add_child(_bay)
+	route_bar = RouteBar.new()
+	_hold.add_child(route_bar)
 	_fx = FxLayer.new()
 	_fx.hold = _hold
 	_hold.add_child(_fx)
 	_banner = Label.new()
 	TextSize.display(_banner, 64)
 	_banner.add_theme_color_override("font_color", Palette.WARN)
-	_banner.set_anchors_and_offsets_preset(Control.PRESET_CENTER_TOP)
-	_banner.offset_top = 40
+	# The banners are below the hold: the route bar is above it (SPEC Section 20.3).
+	_banner.set_anchors_and_offsets_preset(Control.PRESET_CENTER_BOTTOM)
+	_banner.offset_top = -220
 	_banner.grow_horizontal = Control.GROW_DIRECTION_BOTH
 	_banner.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	add_child(_banner)
 	_loss_label = Label.new()
 	TextSize.display(_loss_label, 48)
 	_loss_label.add_theme_color_override("font_color", Palette.BAD)
-	_loss_label.set_anchors_and_offsets_preset(Control.PRESET_CENTER_TOP)
-	_loss_label.offset_top = 130
+	_loss_label.set_anchors_and_offsets_preset(Control.PRESET_CENTER_BOTTOM)
+	_loss_label.offset_top = -135
 	_loss_label.grow_horizontal = Control.GROW_DIRECTION_BOTH
 	_loss_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_loss_label.modulate.a = 0.0
@@ -161,12 +166,15 @@ func _play() -> void:
 	for c: Dictionary in warp_log.get("before", []) + warp_log.get("bay", []):
 		_cargo[c["id"]] = c.duplicate(true)
 	_show_hold(run)
+	_show_route(run, warp_log)
 	await _wait(0.4)
 	await _play_route(run, warp_log)
 	var n := 0
 	for step: Dictionary in warp_log.get("steps", []):
 		n += 1
+		route_bar.go_to("Step%d" % n)
 		await _play_step(n, step, run)
+	route_bar.go_to("Arrive")
 	_stars.speed = 1.0
 	_stage.rotation = 0.0
 	var loss: int = warp_log.get("loss", 0)
@@ -185,16 +193,43 @@ func _show_hold(run: Dictionary) -> void:
 		cargo.append(_cargo[id])
 	_hold.set_view({"hold": run["hold"], "cargo": cargo, "links": []})
 	_bay.set_view({"shock_bay": run["shock_bay"], "cargo": cargo, "links": []})
+	_place_parts.call_deferred()
+
+
+## Builds the route bar of the jump from the log. A fork step shows "?" until the
+## warp reaches it: the banner shows its direction then (SPEC Sections 9 and 20.3).
+func _show_route(run: Dictionary, warp_log: Dictionary) -> void:
+	var steps := []
+	for step: Dictionary in warp_log.get("steps", []):
+		var fork: bool = step.has("options")
+		(
+			steps
+			. append(
+				{
+					"directions": step.get("options", [step["direction"]]),
+					"fork": fork,
+					"known": "" if fork else step["direction"],
+				}
+			)
+		)
+	route_bar.set_route(run.get("environment", {}), warp_log.get("incident", {}), steps, _view)
+	_place_parts.call_deferred()
+
+
+## Puts the shock bay at the left of the grid of the hold, and the route bar above
+## it, after the hold has its size (SPEC Sections 20.3 and 31.2).
+func _place_parts() -> void:
+	var grid := Rect2(_hold.grid_origin(), Vector2(_hold.columns, _hold.rows) * _hold.cell)
 	if _bay.visible:
-		# Room above the hold for the shock bay: the grid of the hold moves down.
-		_hold.offset_top = _bay.custom_minimum_size.y
-		_place_bay.call_deferred()
-
-
-## Puts the shock bay above the grid of the hold, after the hold has its new size.
-func _place_bay() -> void:
-	_bay.size = _bay.custom_minimum_size
-	_bay.position = Vector2((_hold.size.x - _bay.size.x) / 2.0, _hold.grid_origin().y - _bay.size.y)
+		_bay.size = _bay.custom_minimum_size
+		_bay.position = Vector2(
+			grid.position.x - HoldView.FRAME - _bay.size.x, grid.get_center().y - _bay.size.y / 2.0
+		)
+	route_bar.size = route_bar.get_combined_minimum_size()
+	route_bar.position = Vector2(
+		grid.get_center().x - route_bar.size.x / 2.0,
+		grid.position.y - HoldView.FRAME - 16.0 - route_bar.size.y
+	)
 
 
 func _sorted_ids() -> Array:
@@ -271,6 +306,7 @@ func _play_route(run: Dictionary, warp_log: Dictionary) -> void:
 	var inc: Dictionary = warp_log.get("incident", {})
 	if inc.is_empty():
 		return
+	route_bar.go_to("Incident")
 	incident_shown = RouteCards.incident_text(inc)
 	_banner.modulate.a = 1.0
 	_banner.text = incident_shown

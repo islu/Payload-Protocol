@@ -35,7 +35,7 @@ static func check(ui: Node, station: StationScreen) -> void:
 			"the mouse on the badge shows the rule of the environment (SPEC Section 28.1)"
 		)
 		bar.env_badge.mouse_exited.emit()
-		var tag := station._hazard_box.find_child("Environment", false, false) as Control
+		var tag := station.route_bar.find_child("Environment", true, false) as Control
 		if tag != null:
 			tag.mouse_entered.emit()
 			ui._check(
