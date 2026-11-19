@@ -97,6 +97,7 @@ Use these terms in the spec, the code, the data, and the text of the game. Do no
 | **fuel fee** | The credits that the player pays at the warp for each point of mass over the mass limit (Section 25). |
 | **shift step** | One direction of a hazard. All cargo slides in that direction (Section 10). |
 | **slide** | The movement of cargo in a shift step. |
+| **slide limit** | The most cells that a cargo can slide in a shift step (Section 10.2). |
 | **hit** | What happens when cargo stops after a slide (Section 10.3). |
 | **force** | The strength of a hit (Section 10.3). |
 | **front wall** | The wall in the direction of a shift step (Section 10.4). |

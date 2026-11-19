@@ -88,17 +88,23 @@ static func _slide(run: Run, direction: String, out: Dictionary) -> Dictionary:
 static func _can_step(
 	run: Run, c: Cargo, delta: Vector2i, occ: Dictionary, dist: Dictionary
 ) -> bool:
-	# A clamped cargo does not slide. A Thruster slides 1 cell at most (SPEC Section 10.2).
-	if c.clamped or (c.has(Defs.TRAIT_THRUSTER) and dist.get(c.id, 0) >= 1):
-		return false
-	# Low Gravity: a cargo slides a few cells at most (SPEC Section 28.2).
-	if dist.get(c.id, 0) >= run.env_value(Defs.ENV_LOW_GRAVITY, "max_slide", 1 << 30):
+	# A clamped cargo does not slide (SPEC Section 13).
+	if c.clamped or dist.get(c.id, 0) >= slide_limit(run, c):
 		return false
 	for cell in c.cells():
 		var n := cell + delta
 		if not run.inside(n) or occ.get(n, c.id) != c.id:
 			return false
 	return true
+
+
+## Returns the slide limit of a cargo: 1 for a Thruster, the number of Low Gravity, or
+## no limit (SPEC Sections 10.2 and 28.2).
+static func slide_limit(run: Run, c: Cargo) -> int:
+	var limit: int = run.env_value(Defs.ENV_LOW_GRAVITY, "max_slide", 1 << 30)
+	if c.has(Defs.TRAIT_THRUSTER):
+		limit = mini(limit, 1)
+	return limit
 
 
 ## Finds the hit of each cargo that slid (SPEC Section 10.3). It returns the
@@ -133,6 +139,9 @@ static func _hits(run: Run, direction: String, dist: Dictionary, out: Dictionary
 		ids.sort()
 		for id: int in ids:
 			var o: Cargo = run.cargo[id]
+			# Two cargo that stop at their slide limits moved together: no hit (SPEC Section 10.2).
+			if d >= slide_limit(run, c) and dist.get(id, 0) >= slide_limit(run, o):
+				continue
 			var f := hit_force(run, c, force, o)
 			out["hits"].append(_hit(c, id, f, others[id]))
 			_take(forces, c.id, f)

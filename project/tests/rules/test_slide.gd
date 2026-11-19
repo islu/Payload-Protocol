@@ -63,6 +63,19 @@ func test_thruster_slides_one_cell() -> void:
 	eq(c.pos, Vector2i(2, 2), "a Thruster slides 1 cell at most in each step (SPEC Section 10.2)")
 
 
+func test_thruster_pair() -> void:
+	# Two drones side by side slide 1 cell to the left together, with no wall in front.
+	var front := put("drone", 3, 3)
+	var back := put("drone", 4, 3)
+	var logs := shift([Defs.DIR_LEFT])
+	eq([front.pos, back.pos], [Vector2i(2, 3), Vector2i(3, 3)], "both drones slide 1 cell")
+	eq(
+		hits_of(logs[0], back.id),
+		[],
+		"two Thruster cargo that stop at their slide limits make no hit on each other (SPEC Section 10.2)"
+	)
+
+
 func test_scrap_slides() -> void:
 	var c := put("box", 2, 2)
 	c.kind = Defs.KIND_SCRAP

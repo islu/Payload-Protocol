@@ -39,7 +39,30 @@ func test_low_gravity() -> void:
 	eq(
 		hits_of(logs[0], box.id),
 		[],
-		"a cargo that stops with nothing in front makes no hit (SPEC Section 28.2)"
+		"a cargo that stops at its slide limit with nothing in front makes no hit (SPEC Section 10.2)"
+	)
+
+
+func test_low_gravity_block() -> void:
+	run.environment = Defs.ENV_LOW_GRAVITY
+	# Column 1: two vases slide up 2 cells together and stop at the limit.
+	var front := put("vase", 1, 4)
+	var back := put("vase", 1, 5)
+	# Column 3: the vase stops at the wall after 1 cell. The box behind it slides 2.
+	var held := put("vase", 3, 1)
+	var box := put("box", 3, 3)
+	var logs := shift([Defs.DIR_UP])
+	eq([front.pos, back.pos], [Vector2i(1, 2), Vector2i(1, 3)], "both vases slide 2 cells")
+	eq(
+		[front.kind, back.kind, hits_of(logs[0], back.id)],
+		[Defs.KIND_FREIGHT, Defs.KIND_FREIGHT, []],
+		"two cargo that stop at their slide limits make no hit on each other (SPEC Section 10.2)"
+	)
+	eq(box.pos, Vector2i(3, 1), "the box slides 2 cells to the vase")
+	eq(
+		held.kind,
+		Defs.KIND_SCRAP,
+		"a cargo at its limit hits a cargo that did not stop at its limit (SPEC Section 10.2)"
 	)
 
 

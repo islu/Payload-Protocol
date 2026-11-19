@@ -35,8 +35,12 @@ This file is part of the [game specification](../spec.md). The section numbers a
 
 - A clamped cargo does not slide (Section 13). It blocks other cargo as a wall does.
 - A Thruster cargo slides 1 cell at most in each shift step.
-- A Thruster cargo that stops after 1 cell with no wall and no cargo in front of it makes no hit.
 - In Low Gravity, each cargo slides 2 cells at most in each shift step (Section 28.2).
+- The **slide limit** of a cargo is the most cells that it can slide in a shift step: 1 for a Thruster cargo, 2 in Low Gravity.
+- A cargo that stops at its slide limit with no wall and no cargo in front of it makes no hit.
+- Two cargo that both stop at their slide limits make no hit on each other. They moved together.
+  - Example: in Low Gravity, two vases, one behind the other, slide up 2 cells. Both stay intact.
+- A cargo that stops at its slide limit next to a wall, or next to a cargo that did not stop at its limit, makes its hit (Section 10.3).
 
 ### 10.3 Hits
 
@@ -160,7 +164,7 @@ An **environment** is a rule of the route for all jumps of a leg.
 
 | Environment | Rule |
 | --- | --- |
-| **Low Gravity** | Each cargo slides 2 cells at most in each shift step. |
+| **Low Gravity** | Each cargo slides 2 cells at most in each shift step (the slide limit, Section 10.2). |
 | **Magnetic Storm** | No Shield has power. The Array Power mod does not change this. |
 | **Radiation Belt** | An Electronic cargo that takes a hit with a force of 2 or more shorts. It becomes scrap. |
 | **Heat Zone** | The break limit of Volatile is 2, and the break limit of Fluid is 1. |
