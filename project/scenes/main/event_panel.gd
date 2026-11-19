@@ -30,6 +30,8 @@ void fragment() {
 
 ## The parts, for the checks.
 var choices: Array[Button] = []
+## The pilot hint of the first event, or null (SPEC Section 23.3).
+var hint: Label
 var speaker_portrait: TextureRect
 var speaker_name: Label
 ## The tip of the panel: why a choice is disabled (SPEC Section 26.2). The station tip
@@ -43,6 +45,7 @@ func _build() -> void:
 	if run.get("phase", "") != Defs.PHASE_EVENT:
 		return
 	var e: Dictionary = run["event"]
+	hint = pilot_hint(Hints.EVENT)
 	# The speaker stands outside a frame: the overlay panel shows no frame here.
 	panel.add_theme_stylebox_override("panel", StyleBoxEmpty.new())
 	var row := HBoxContainer.new()
@@ -137,6 +140,8 @@ func _dialogue(e: Dictionary) -> Control:
 func _pick(err: String) -> void:
 	if err != "":
 		Sound.play(self, "deny")
+	else:
+		Hints.done(Hints.EVENT)
 
 
 ## The player must select a choice: Esc does nothing.

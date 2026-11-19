@@ -524,24 +524,40 @@ msgid "On its way · {jumps} jump(s) left"
 msgstr "運送中 · 還剩 {jumps} 次跳躍"
 
 #: project/scenes/station/hints.gd
-msgid "Accept a contract on the left. Its freight goes to the dock."
-msgstr "在左邊接下一張合約，貨物會送到碼頭。"
+msgid "This leg has an environment. Point at it in the top bar to read its rule. It holds for each jump of the leg."
+msgstr "這一期有航線環境。把滑鼠移到上方列的環境上，就能看它的規則。整期的每次跳躍都適用。"
 
 #: project/scenes/station/hints.gd
-msgid "Drag a cargo from the dock into the hold. Or click it, then click a cell."
-msgstr "把碼頭上的貨物拖進貨艙，或點一下貨物再點一個格子。"
+msgid "An incident hits before the first step. The hold marks its place."
+msgstr "事故會在第一段位移之前發生。貨艙上會標出它的位置。"
 
 #: project/scenes/station/hints.gd
-msgid "Right click a cargo in the hold to rotate it. While you hold one, press R."
-msgstr "在貨艙裡對貨物按右鍵可以旋轉；拿著貨物時按 R。"
+msgid "The last step is a fork: one of two directions. A Sensor in the hold shows which one."
+msgstr "最後一段是二選一位移：兩個方向其中之一。貨艙裡有感測器，就能看出是哪一個。"
 
 #: project/scenes/station/hints.gd
-msgid "Read the hazard at the top: each step slides all cargo that way. Fragile cargo breaks at a strong hit."
-msgstr "看看上方的危險預報：每一段位移都會讓所有貨物往那個方向滑。易碎品被重撞就會碎。"
+msgid "A LONG contract stays in the hold for more than one jump. It pays at its last jump."
+msgstr "長程合約的貨物要在貨艙裡待超過一次跳躍，最後一次跳躍時才付款。"
 
 #: project/scenes/station/hints.gd
-msgid "When the hold is ready, press WARP."
-msgstr "貨艙整理好了，就按「跳躍」。"
+msgid "A VIP contract pays a penalty for each piece that does not arrive intact."
+msgstr "VIP 合約的貨物，每件沒有完好送達都要付罰款。"
+
+#: project/scenes/station/hints.gd
+msgid "The Sensor shows the fork step only while it is in the hold or the shock bay."
+msgstr "感測器只有放在貨艙或防震艙裡時，才會顯示二選一位移的方向。"
+
+#: project/scenes/station/hints.gd
+msgid "Cargo in the shock bay does not slide, takes no hits, and has no mass. Only kit and scrap go in it."
+msgstr "防震艙裡的貨物不會滑動、不受撞擊，也不算載重。只有裝備和廢鐵能放進去。"
+
+#: project/scenes/station/hints.gd
+msgid "An event: each choice has a cost and an effect. Read both before you pick."
+msgstr "這是事件：每個選項都有代價和效果。兩個都看清楚再選。"
+
+#: project/scenes/station/hints.gd
+msgid "A mod changes a rule of the ship for the rest of the run. Pick one."
+msgstr "改裝模組會在這一局剩下的時間改變船的一條規則。選一個。"
 
 #: project/scenes/station/route_cards.gd
 msgid "Meteor · Column {x}"

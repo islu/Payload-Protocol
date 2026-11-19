@@ -69,6 +69,19 @@ func _unhandled_input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 
 
+## Adds the pilot hint of an event or a mod choice (Hints.EVENT or Hints.MOD), when
+## the player did not see it (SPEC Section 23.3). It returns the label, or null.
+func pilot_hint(id: String) -> Label:
+	if Hints.for_panel(id) == "":
+		return null
+	var l := Ui.label(
+		box, GameText.PILOT_NAME + " → " + tr(Hints.text(id)), TextSize.BODY, Palette.WARN
+	)
+	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	l.custom_minimum_size.x = 640
+	return l
+
+
 func heading(text: String) -> Label:
 	var l := Label.new()
 	l.text = tr(text)

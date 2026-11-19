@@ -38,7 +38,7 @@ func _run() -> void:
 	var saved := FileAccess.get_file_as_string(Settings.PATH)
 	DirAccess.remove_absolute(Settings.PATH)
 	Settings._config = null
-	await _check_hints()
+	await UiCheckHints.check(self, MAIN_SCENE)
 	for sound in Sound.NAMES:
 		_check(Sound.exists(sound), "the sound %s has a file (SPEC Section 4.3)" % sound)
 	_check_cargo_art()
@@ -152,71 +152,6 @@ func _play_run(main: Control) -> void:
 
 ## The hints of the first run come in order, and each ends when the player does
 ## its thing (SPEC Section 23.3).
-func _check_hints() -> void:
-	TranslationServer.set_locale("en")
-	var main: Control = MAIN_SCENE.instantiate()
-	add_child(main)
-	await get_tree().process_frame
-	# The hints are for the normal runs after the tutorial (UiCheckTutorial checks it).
-	Settings.set_value("tutorial_done", true)
-	main.start_run()
-	await get_tree().process_frame
-	var station: StationScreen = main.screen()
-	var text := func() -> String: return station._pilot_label.text
-	_check(
-		text.call().contains(Hints.text(Hints.ACCEPT)),
-		"the first hint is: accept a contract (SPEC Section 23.3)"
-	)
-	GameState.accept_contract(0)
-	await get_tree().process_frame
-	_check(text.call().contains(Hints.text(Hints.DRAG)), "then: drag a cargo (SPEC Section 23.3)")
-	_check(station._pilot_label.visible_ratio < 1.0, "a new line types out (SPEC Section 22)")
-	_check(
-		not (
-			station
-			. find_children("*", "", true, false)
-			. filter(func(n: Node) -> bool: return n is PilotFace)
-			. is_empty()
-		),
-		"the pilot box shows the portrait (SPEC Section 22)"
-	)
-	_finish_tweens()
-	_check(
-		is_equal_approx(station._pilot_label.visible_ratio, 1.0),
-		"the line ends typed out (SPEC Section 22)"
-	)
-	var run: Dictionary = GameState.view()["run"]
-	var free := UiCheckDrag.free_cell(run["dock"][0], 0)
-	GameState.place_cargo(run["dock"][0], free.x, free.y, 0)
-	await get_tree().process_frame
-	_check(
-		text.call().contains(Hints.text(Hints.ROTATE)), "then: rotate a cargo (SPEC Section 23.3)"
-	)
-	Hints.done(Hints.ROTATE)
-	station.refresh()
-	_check(
-		text.call().contains(Hints.text(Hints.HAZARD)), "then: read the hazard (SPEC Section 23.3)"
-	)
-	Hints.done(Hints.HAZARD)
-	station.refresh()
-	_check(text.call().contains(Hints.text(Hints.WARP)), "then: warp (SPEC Section 23.3)")
-	Hints.done(Hints.WARP)
-	station.refresh()
-	_check(
-		text.call().begins_with("MAGELLAN: "),
-		"after the last hint, the pilot speaks its line (SPEC Section 22)"
-	)
-	for i in Hints.RUNS_WITH_HINTS:
-		Hints.run_started()
-	_check(
-		not Settings.get_value("hints"),
-		"the hints turn off after the first runs (SPEC Section 23.3)"
-	)
-	GameState.abandon_run()
-	main.queue_free()
-	await get_tree().process_frame
-
-
 ## Plays the warp fast, and checks that the report shows at the end (SPEC Sections 20.3 and 20.4).
 func _play_warp(main: Control) -> void:
 	await get_tree().process_frame

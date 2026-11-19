@@ -501,23 +501,39 @@ msgid "On its way · {jumps} jump(s) left"
 msgstr ""
 
 #: project/scenes/station/hints.gd
-msgid "Accept a contract on the left. Its freight goes to the dock."
+msgid "This leg has an environment. Point at it in the top bar to read its rule. It holds for each jump of the leg."
 msgstr ""
 
 #: project/scenes/station/hints.gd
-msgid "Drag a cargo from the dock into the hold. Or click it, then click a cell."
+msgid "An incident hits before the first step. The hold marks its place."
 msgstr ""
 
 #: project/scenes/station/hints.gd
-msgid "Right click a cargo in the hold to rotate it. While you hold one, press R."
+msgid "The last step is a fork: one of two directions. A Sensor in the hold shows which one."
 msgstr ""
 
 #: project/scenes/station/hints.gd
-msgid "Read the hazard at the top: each step slides all cargo that way. Fragile cargo breaks at a strong hit."
+msgid "A LONG contract stays in the hold for more than one jump. It pays at its last jump."
 msgstr ""
 
 #: project/scenes/station/hints.gd
-msgid "When the hold is ready, press WARP."
+msgid "A VIP contract pays a penalty for each piece that does not arrive intact."
+msgstr ""
+
+#: project/scenes/station/hints.gd
+msgid "The Sensor shows the fork step only while it is in the hold or the shock bay."
+msgstr ""
+
+#: project/scenes/station/hints.gd
+msgid "Cargo in the shock bay does not slide, takes no hits, and has no mass. Only kit and scrap go in it."
+msgstr ""
+
+#: project/scenes/station/hints.gd
+msgid "An event: each choice has a cost and an effect. Read both before you pick."
+msgstr ""
+
+#: project/scenes/station/hints.gd
+msgid "A mod changes a rule of the ship for the rest of the run. Pick one."
 msgstr ""
 
 #: project/scenes/station/route_cards.gd

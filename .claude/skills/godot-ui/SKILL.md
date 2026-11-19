@@ -63,7 +63,9 @@ description: Conventions of the Payload Protocol scenes and UI (project/scenes) 
 
 ## 6. Hints
 
-- `Hints.current(run)` returns the hint to show, from the view and the setting `hints_seen`. A hint that the view cannot show ends with `Hints.done(id)`.
+- The hints are for the things that the tutorial does not teach (SPEC Section 23.3). `Hints.current(run)` returns the first hint of `Hints.ORDER` that the player did not see, for a thing that the station shows. It reads the view and the setting `hints_seen`.
+- A station hint ends at the warp: `_on_warp_pressed()` calls `Hints.done(Hints.current(run_data))`. The event and the mod choice show their hint with `Overlay.pilot_hint(id)`, and end it at the pick.
+- `UiCheckHints` checks the order and the end of the hints.
 - Start a run with `start_run()` of `main.gd` (or `Hints.run_started()` first). It counts the runs, so that the hints turn off after the first runs.
 - The UI check saves `user://settings.cfg` and puts it back at the end. Do the same in each check that writes a setting.
 

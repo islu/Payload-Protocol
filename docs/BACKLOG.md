@@ -66,9 +66,6 @@ This file keeps each problem that is found and not fixed yet. Each item is in on
 
 ## To Do
 
-- **[UX · Data] Tutorial phase 3: the hints** (found 2026-11-19, by /game-design). SPEC Sections 23.3 and 23.4.
-  To do                 Fix: change the hints to the list of Section 23.3. The pilot lines of the tutorial are in `data/tutorial.json` and translated (phase 1, 2026-11-19); review them after a real playtest.
-
 - **[Balance · Rules] Insurance pays for a spoil, and the Sensor sells at the last station** (found 2026-11-18, by Playtest seed 77 round 3 (2026-11-18, kit mass)). The Gambler took Perishable freight with no Cooler on purpose, and Insurance paid 16 for the spoil. The Optimizer sold the Sensor at the last station for 7: the fork is set when the station opens, so the reveal is already used.
   To decide             Options: (a) Insurance does not pay for a spoil. (b) Insurance pays less for a spoil. (c) Keep it. For the Sensor: (a) keep it, a small reward. (b) The sell price of kit is lower at the last station. Needs a change of SPEC Section 27.2.
 - **[UX · Scenes] Blind rerolls** (found 2026-11-18, by Playtest seed 77 round 3 (2026-11-18, kit mass)). The Optimizer spent 12 credits on rerolls and no Cooler came. The shop does not show which kit a station can offer.

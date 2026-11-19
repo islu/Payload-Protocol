@@ -384,7 +384,6 @@ func show_pilot() -> void:
 	if text != _pilot_label.text:
 		_pilot_label.text = text
 		_type_line()
-	_hazard_box.modulate = Color(1.4, 1.4, 1.4) if hint == Hints.HAZARD else Color.WHITE
 
 
 ## Types out the line of the pilot, and moves the mouth of the portrait (SPEC Section 22).
@@ -689,8 +688,8 @@ func _show_toast(text: String) -> void:
 
 
 func _on_warp_pressed() -> void:
-	Hints.done(Hints.HAZARD)
-	Hints.done(Hints.WARP)
+	# The hint of this station ends at the warp (SPEC Section 23.3).
+	Hints.done(Hints.current(run_data))
 	if not run_data["dock"].is_empty():
 		_confirm.dialog_text = tr(CONFIRM_TEXT).format({"fee": run_data["shop"]["breach_fee"]})
 		_confirm.popup_centered()
@@ -704,8 +703,6 @@ func _on_hold_pressed(id: int, grab: Vector2i, button: int) -> void:
 	if button == MOUSE_BUTTON_RIGHT:
 		var err := GameState.rotate_cargo(id)
 		act(err, "clack")
-		if err == "":
-			Hints.done(Hints.ROTATE)
 	elif button == MOUSE_BUTTON_LEFT:
 		_drag.begin_cargo(id, Vector2(grab))
 

@@ -9,6 +9,8 @@ const MOD_CHOICE_TEXT := "Select a ship mod"
 var choices: Array[Button] = []
 ## The icon of each mod card of a mod choice (SPEC Section 20.9).
 var mod_icons: Array[ModIcon] = []
+## The pilot hint of the first mod choice, or null (SPEC Section 23.3).
+var hint: Label
 
 
 func _build() -> void:
@@ -16,6 +18,7 @@ func _build() -> void:
 	mod_icons.clear()
 	var run: Dictionary = GameState.view()["run"]
 	if run.get("phase", "") == Defs.PHASE_MOD:
+		hint = pilot_hint(Hints.MOD)
 		_build_mods(run["mod_offer"])
 	if not choices.is_empty():
 		choices[0].grab_focus.call_deferred()
@@ -52,6 +55,8 @@ func _choice(text: String, action: Callable) -> Button:
 func _pick(err: String) -> void:
 	if err != "":
 		Sound.play(self, "deny")
+	else:
+		Hints.done(Hints.MOD)
 
 
 ## The player must select a choice: Esc does nothing.

@@ -113,7 +113,6 @@ func rotate() -> void:
 	# The same cell of the cargo stays under the cursor (SPEC Section 8.2).
 	state["grab"] = HoldView.rotate_grab(c["rotations"][state["rot"]], state["grab"])
 	state["rot"] = (state["rot"] + 1) % 4
-	Hints.done(Hints.ROTATE)
 	_screen.show_pilot()
 	_screen.drag_layer.start(c, c["rotations"][state["rot"]], state["grab"])
 	update()
