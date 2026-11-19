@@ -132,7 +132,10 @@ The arrival has these steps, in this order:
 
 - The run ends in a win when the player makes the payment of leg 3.
 - The **score** is the credits after the last payment.
-- The run end screen shows: win or loss, the score, the delivered freight, the scrap made, the explosions, and the seed.
+- The run end screen shows: win or loss, the score, the delivered freight, the scrap made, the explosions, and the best jump (the jump with the largest net).
+- It shows one row for each leg that started: its payment, paid or missed, and its net.
+- It shows the ship: the mods, the clamps, the size of the shock bay, the mass limit, and the seed with a Copy button.
+- The pilot speaks a line of a win or a loss.
 - The run end screen has two buttons: New Run and Title.
 
 ## 26. Events

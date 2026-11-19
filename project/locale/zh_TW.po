@@ -342,16 +342,44 @@ msgid "Payment"
 msgstr "還款"
 
 #: project/scenes/main/phase_panel.gd
-msgid "Payment {payment} · credits {credits} · after {after}"
-msgstr "還款 {payment} · 信用點 {credits} · 還款後 {after}"
-
-#: project/scenes/main/phase_panel.gd
 msgid "Pay"
 msgstr "付款"
 
 #: project/scenes/main/phase_panel.gd
-msgid "You cannot make the payment."
-msgstr "還不出這期的款。"
+msgid "Credits"
+msgstr "信用點"
+
+#: project/scenes/main/phase_panel.gd
+msgid "After"
+msgstr "剩餘"
+
+#: project/scenes/main/phase_panel.gd
+msgid "PAID"
+msgstr "已還款"
+
+#: project/scenes/main/phase_panel.gd
+msgid "MISSED"
+msgstr "逾期"
+
+#: project/scenes/main/phase_panel.gd
+msgid "Jump {jump}"
+msgstr "第 {jump} 次跳躍"
+
+#: project/scenes/main/phase_panel.gd
+msgid "{count} delivered"
+msgstr "送達 {count}"
+
+#: project/scenes/main/phase_panel.gd
+msgid "{count} scrap"
+msgstr "廢料 {count}"
+
+#: project/scenes/main/phase_panel.gd
+msgid "{count} explosions"
+msgstr "爆炸 {count}"
+
+#: project/scenes/main/phase_panel.gd
+msgid "Next: Leg {leg} · {jumps} jumps · payment {payment}"
+msgstr "下一期：第 {leg} 期 · {jumps} 次跳躍 · 還款 {payment}"
 
 #: project/scenes/main/phase_panel.gd
 msgid "Route complete!"
@@ -362,8 +390,57 @@ msgid "Run over."
 msgstr "航程結束。"
 
 #: project/scenes/main/phase_panel.gd
-msgid "Score {score} · delivered {delivered} · scrap {scrapped} · explosions {explosions} · seed {seed}"
-msgstr "分數 {score} · 交貨 {delivered} · 廢鐵 {scrapped} · 爆炸 {explosions} · 種子 {seed}"
+msgid "Score"
+msgstr "分數"
+
+#: project/scenes/main/phase_panel.gd
+msgid "Best jump"
+msgstr "最佳跳躍"
+
+#: project/scenes/main/phase_panel.gd
+msgid "Leg {leg} · Jump {jump}"
+msgstr "第 {leg} 期 · 第 {jump} 次跳躍"
+
+#: project/scenes/main/phase_panel.gd
+msgid "Leg {leg}"
+msgstr "第 {leg} 期"
+
+#: project/scenes/main/phase_panel.gd
+msgid "Payment {payment}"
+msgstr "還款 {payment}"
+
+#: project/scenes/main/phase_panel.gd
+msgid "Net {net}"
+msgstr "淨收入 {net}"
+
+#: project/scenes/main/phase_panel.gd
+msgid "Mods: {mods}"
+msgstr "改裝：{mods}"
+
+#: project/scenes/main/phase_panel.gd
+msgid "No mods"
+msgstr "沒有改裝"
+
+#: project/scenes/main/phase_panel.gd
+msgid "Clamps {clamps} · Shock bay {bay} · Mass limit {mass}"
+msgstr "卡榫 {clamps} · 防震艙 {bay} · 載重上限 {mass}"
+
+#: project/scenes/main/phase_panel.gd
+#: project/scenes/station/shop_panel.gd
+msgid "none"
+msgstr "無"
+
+#: project/scenes/main/phase_panel.gd
+msgid "Seed {seed}"
+msgstr "種子 {seed}"
+
+#: project/scenes/main/phase_panel.gd
+msgid "Copy"
+msgstr "複製"
+
+#: project/scenes/main/phase_panel.gd
+msgid "Copied"
+msgstr "已複製"
 
 #: project/scenes/main/phase_panel.gd
 msgid "Title"
@@ -617,10 +694,6 @@ msgid "{columns}×{rows}"
 msgstr "{columns}×{rows}"
 
 #: project/scenes/station/shop_panel.gd
-msgid "none"
-msgstr "無"
-
-#: project/scenes/station/shop_panel.gd
 msgid "Shock bay {now} (maximum)"
 msgstr "防震艙 {now}（最大）"
 
@@ -856,6 +929,14 @@ msgstr "淨收入"
 #: project/scenes/warp/report_panel.gd
 msgid "Credits {before} → {after}"
 msgstr "信用點 {before} → {after}"
+
+#: project/scenes/warp/report_panel.gd
+msgid "Payment {payment} · {jumps} more jump(s)"
+msgstr "還款 {payment} · 還有 {jumps} 次跳躍"
+
+#: project/scenes/warp/report_panel.gd
+msgid "Payment {payment} at the next stop"
+msgstr "下一站還款 {payment}"
 
 #: project/scenes/warp/warp_screen.gd
 msgid "Shift {n}: {arrow} {direction}"

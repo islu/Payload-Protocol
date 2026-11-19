@@ -159,6 +159,20 @@ func _mod_choice() -> void:
 	GameState.set_up(_set_bay)
 	await _wait(0.6)
 	await _shot("13_station_bay")
+	# The payment screen, its Paid stamp, and the run end (SPEC Sections 20.5 and 20.6).
+	GameState.set_up(_set_payment)
+	await _wait(0.6)
+	await _shot("16_payment")
+	var panel: PhasePanel = _main.screen()
+	panel.pay_button.pressed.emit()
+	await _wait(0.9)
+	await _shot("16b_paid")
+	await _wait(1.2)
+	GameState.set_up(_set_last_payment)
+	await _wait(0.3)
+	GameState.make_payment()
+	await _wait(0.6)
+	await _shot("17_run_end")
 	# The tutorial: a step with no action, and the contract step (SPEC Section 23.4).
 	GameState.start_tutorial()
 	await _wait(0.6)
@@ -174,6 +188,29 @@ func _set_route(r: Run) -> void:
 	r.contracts[0] = Contract.new(900, r.cat.contract("vip_embassy"))
 	r.contracts[1] = Contract.new(901, r.cat.contract("long_mine"))
 	r.contracts[2] = Contract.new(902, r.cat.contract("statue_loan"))
+
+
+func _set_payment(r: Run) -> void:
+	r.phase = Defs.PHASE_PAYMENT
+	r.credits = 152
+	r.history.append(
+		{"leg": 1, "jump": 2, "net": 41, "delivered": 5, "scrapped": 0, "explosions": 0}
+	)
+	r.history.append(
+		{"leg": 1, "jump": 3, "net": -6, "delivered": 2, "scrapped": 3, "explosions": 1}
+	)
+
+
+func _set_last_payment(r: Run) -> void:
+	r.phase = Defs.PHASE_PAYMENT
+	r.leg = 3
+	r.credits = 690
+	r.history.append(
+		{"leg": 2, "jump": 1, "net": 88, "delivered": 6, "scrapped": 1, "explosions": 0}
+	)
+	r.history.append(
+		{"leg": 3, "jump": 1, "net": 120, "delivered": 7, "scrapped": 2, "explosions": 1}
+	)
 
 
 func _set_bay(r: Run) -> void:

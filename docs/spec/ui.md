@@ -71,21 +71,26 @@ The warp:
 - The report shows each contract: its pieces (delivered, scrap, spoiled, lost, or breached), its pay, and its bonus. A lost piece is a piece that an explosion removed.
 - The report shows a card for each contract: the client, its pay, and its pieces. Pieces with the same freight and the same state share one image, with "×N" and an icon of the state.
 - Below the cards, a ledger shows the deliveries, the bonuses, the insurance (Section 27.2), the breach fees, the penalties (Section 30.1), the kit sold from the dock, the scrap cleared from the dock (Section 26.3), the fuel fee, and the net. Then it shows the credits before the warp and after the arrival.
+- Below the ledger, a bar shows the credits against the payment of the leg, with the payment and the jumps before it: "Payment 100 · 2 more jumps", or "Payment at the next stop".
 - The pilot speaks a line about the result, with the portrait of the pilot.
 - Delivered freight stays in the hold at half alpha, with a check mark, until Continue.
 - A Continue button goes to the next station, or to the payment screen.
-- When the report covers the hold, the hold moves to the left.
+- The report fits its content. It has no empty area. The hold and the report are one group at the center of the screen.
 - When the mouse is on a line of pieces, the hold marks those pieces at their place at the end of the warp.
 - A Replay button plays the warp again from the start, at half speed. A click or the Space key during the replay makes it faster (Section 20.3). The replay plays no coin sound.
 
 ### 20.5 Payment
 
-- The payment screen shows the credits, the payment, and the credits after the payment.
-- When the player can pay, the button is Pay. When the player cannot pay, the screen shows the loss, and the button goes to the run end screen.
+- The payment screen shows a receipt in large numbers: the credits, the payment, and the credits after the payment.
+- When the player can pay, the button is Pay. After Pay, the credits count down to the credits after the payment, and a "Paid" stamp shows on the receipt. After 1 second, the next screen opens.
+- When the player cannot pay, a red "Missed" stamp shows on the receipt, and the button goes to the run end screen.
+- The screen shows one row for each jump of the leg: its net, the delivered freight, the scrap made, and the explosions.
+- The screen shows the next leg: its number, its jumps, and its payment. The last leg has no next leg.
 
 ### 20.6 Run End
 
 - Section 19.2 has the content.
+- The score shows in large numbers. Each other value of the run is a tile.
 
 ### 20.7 Pause
 

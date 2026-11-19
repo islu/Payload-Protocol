@@ -114,12 +114,8 @@ func _ready() -> void:
 
 func _build_report() -> void:
 	_report = ReportPanel.new()
-	_report.set_anchors_and_offsets_preset(Control.PRESET_RIGHT_WIDE)
-	_report.offset_left = -640
-	_report.offset_right = -30
-	# Below the gear button of the main scene (SPEC Section 20.7).
-	_report.offset_top = GearButton.SIZE + 40
-	_report.offset_bottom = -40
+	# The report fits its content. The warp places it at the right of the hold.
+	_report.fitted.connect(_place_report)
 	_report.visible = false
 	# The mouse on a group of pieces marks them in the hold (SPEC Section 20.4).
 	_report.pieces_hovered.connect(_mark_pieces)
@@ -488,7 +484,6 @@ func _finish(run: Dictionary) -> void:
 		_coin_on_report.call_deferred()
 	_report.show_report(run)
 	_report.visible = true
-	_make_room_for_report.call_deferred()
 	_skip_label.visible = false
 	_banner.text = ""
 	finished = true
@@ -522,19 +517,31 @@ func _mark_pieces(ids: Array) -> void:
 	_bay.queue_redraw()
 
 
-## The report has its place after one frame: the containers sort it then.
+## The report has its place after it fits its content (ReportPanel.fitted).
 func _coin_on_report() -> void:
-	await get_tree().process_frame
+	await _report.fitted
 	_top_fx.coin(_report.head.get_global_rect().get_center())
 
 
-## Moves the hold to the left when the report covers it (SPEC Section 20.4).
-func _make_room_for_report() -> void:
-	await get_tree().process_frame
-	var right := _hold.global_position.x + _hold.grid_origin().x + _hold.columns * _hold.cell
-	var overlap := right + REPORT_GAP - _report.global_position.x
-	if overlap > 0.0:
-		create_tween().tween_property(_hold, "position:x", _hold.position.x - overlap, 0.4)
+## Puts the hold and the report as one group at the center of the screen: the hold
+## (with the shock bay) at the left, and the report at the right (SPEC Section 20.4).
+func _place_report() -> void:
+	if not _report.visible:
+		return
+	_report.reset_size()
+	var screen := get_viewport_rect().size
+	var o := _hold.global_position + _hold.grid_origin()
+	var left := o.x - HoldView.FRAME
+	if _bay.visible:
+		left = minf(left, _hold.global_position.x + _bay.position.x)
+	var right := o.x + _hold.columns * _hold.cell + HoldView.FRAME
+	var width := right - left + REPORT_GAP + _report.size.x
+	var dx := (screen.x - width) / 2.0 - left
+	# Below the gear button of the main scene (SPEC Section 20.7).
+	var top := maxf(GearButton.SIZE + 40.0, (screen.y - _report.size.y) / 2.0)
+	_report.position = Vector2(right + dx + REPORT_GAP, top)
+	if absf(dx) > 0.5:
+		create_tween().tween_property(_hold, "position:x", _hold.position.x + dx, 0.4)
 
 
 ## Returns the center of a cargo in the coordinates of the hold, also for a cargo in

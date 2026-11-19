@@ -4,6 +4,8 @@ extends PanelContainer
 ## after, the pilot, Replay, and Continue (SPEC Section 20.4).
 
 signal pieces_hovered(ids: Array)
+## The report has its size after a new report: the warp places it then.
+signal fitted
 
 const ARRIVAL_TEXT := "Arrival"
 const CONTINUE_TEXT := "Continue"
@@ -34,9 +36,18 @@ const LEDGER_TEXT := {
 ## The lines of the ledger that take credits away.
 const LEDGER_COSTS: PackedStringArray = ["breaches", "penalties", "scrap_cleared", "fuel_fee"]
 const CREDITS_TEXT := "Credits {before} → {after}"
+const PROGRESS_TEXT := "Payment {payment} · {jumps} more jump(s)"
+const PROGRESS_NEXT_TEXT := "Payment {payment} at the next stop"
 const CELL := 40.0
+## The width of the report.
+const WIDTH := 610.0
+## The most height of the cards: more cards scroll.
+const CARDS_MAX := 420.0
 
 var head: Label
+## The bar of the credits against the payment of the leg, and its text (SPEC Section 20.4).
+var progress_bar: TopBar.Gauge
+var progress_label: Label
 var replay: Button
 var continue_button: Button
 ## Each group of pieces on the cards, for the marks: {ids: Array, control: Control, text}.
@@ -45,6 +56,7 @@ var items: Array = []
 var ledger_text := ""
 var pilot_face: PilotFace
 var _cards: VBoxContainer
+var _scroll: ScrollContainer
 var _ledger: GridContainer
 var _credits: Label
 var _pilot: Label
@@ -59,8 +71,9 @@ func _init() -> void:
 	add_child(box)
 	head = Ui.label(box, "", 40, Palette.ACCENT)
 	TextSize.display(head)
+	custom_minimum_size.x = WIDTH
 	var scroll := ScrollContainer.new()
-	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_scroll = scroll
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	box.add_child(scroll)
 	_cards = VBoxContainer.new()
@@ -75,6 +88,10 @@ func _init() -> void:
 	_ledger.add_theme_constant_override("h_separation", 24)
 	ledger_box.add_child(_ledger)
 	_credits = Ui.label(ledger_box, "", TextSize.BODY, Palette.WARN)
+	progress_bar = TopBar.Gauge.new()
+	progress_bar.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	ledger_box.add_child(progress_bar)
+	progress_label = Ui.label(ledger_box, "", TextSize.SMALL, Palette.TEXT_DIM)
 	var pilot := HBoxContainer.new()
 	pilot.add_theme_constant_override("separation", 12)
 	box.add_child(pilot)
@@ -131,6 +148,18 @@ func show_report(run: Dictionary) -> void:
 	)
 	lines.append(_credits.text)
 	ledger_text = "\n".join(lines)
+	# The credits against the payment of the leg (SPEC Section 20.4).
+	var p: Dictionary = run.get("leg_progress", {})
+	progress_bar.visible = not p.is_empty()
+	progress_label.visible = not p.is_empty()
+	if not p.is_empty():
+		var enough: bool = p["credits"] >= p["payment"]
+		progress_bar.set_values(
+			p["credits"], p["payment"], [], Palette.GOOD if enough else Palette.WARN
+		)
+		var key := PROGRESS_NEXT_TEXT if p["jumps_left"] == 0 else PROGRESS_TEXT
+		progress_label.text = tr(key).format({"payment": p["payment"], "jumps": p["jumps_left"]})
+	_fit_cards.call_deferred()
 	_pilot.text = "%s: %s" % [GameText.PILOT_NAME, tr(run["line"])]
 
 
@@ -218,3 +247,13 @@ static func draw_state(canvas: CanvasItem, delivered: bool, color: Color) -> voi
 	else:
 		canvas.draw_line(Vector2(3, 3), Vector2(13, 13), color, 3.0)
 		canvas.draw_line(Vector2(13, 3), Vector2(3, 13), color, 3.0)
+
+
+## The report fits its content: the cards take their height, up to CARDS_MAX, and
+## more cards scroll (SPEC Section 20.4).
+func _fit_cards() -> void:
+	# The cards have their width after one frame: the wrapped text has its height then.
+	await get_tree().process_frame
+	_scroll.custom_minimum_size.y = minf(_cards.get_combined_minimum_size().y, CARDS_MAX)
+	reset_size()
+	fitted.emit()

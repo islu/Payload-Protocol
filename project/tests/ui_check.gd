@@ -136,8 +136,7 @@ func _play_run(main: Control) -> void:
 				await _play_warp(main)
 				state.continue_run()
 			Defs.PHASE_PAYMENT:
-				UiCheckText.check(self, main, "the payment screen")
-				state.make_payment()
+				await UiCheckPhase.payment(self, main)
 			Defs.PHASE_EVENT, Defs.PHASE_MOD:
 				await UiCheckLoop.choose(self, main)
 		await get_tree().process_frame
@@ -145,6 +144,8 @@ func _play_run(main: Control) -> void:
 		state.view()["run"]["phase"] == Defs.PHASE_END,
 		"the run reaches its end (SPEC Section 19.2)"
 	)
+	if state.view()["run"]["phase"] == Defs.PHASE_END:
+		await UiCheckPhase.end(self, main)
 	_check(_route_seen > 0, "the run has a leg with an environment, for SPEC Sections 28 and 29")
 	_check(mods_seen > 0, "the run has a mod choice, for the checks of SPEC Section 20.9")
 	_check(_losses_seen > 0, "the run has a warp with a loss, for the checks of SPEC Section 21.5")
@@ -193,6 +194,7 @@ func _play_warp(main: Control) -> void:
 		)
 	# The hold moves in 0.4 seconds, and the delivered freight fades in 0.6 seconds.
 	_finish_tweens()
+	await UiCheckPhase.report(self, warp)
 	# The fade of delivered freight ends at half alpha, not at 0.
 	for k: Dictionary in GameState.view()["run"]["arrival"]["contracts"]:
 		for p: Dictionary in k["pieces"]:

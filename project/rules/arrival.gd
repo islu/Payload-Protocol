@@ -100,6 +100,11 @@ static func arrive(run: Run) -> void:
 	run.credits += report["total"]
 	_ledger(run, report)
 	run.last_arrival = report
+	# The history of the jumps (SPEC Sections 19.2 and 20.5).
+	var entry := {"leg": run.leg, "jump": run.jump, "net": report["ledger"]["net"]}
+	for key: String in run.stats:
+		entry[key] = run.stats[key] - run.stats_at_warp.get(key, 0)
+	run.history.append(entry)
 	run.phase = Defs.PHASE_ARRIVAL
 	run.say(_line_event(run, report))
 

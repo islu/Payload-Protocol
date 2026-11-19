@@ -312,6 +312,13 @@ func _render_run(run: Run) -> void:
 		Defs.PHASE_ARRIVAL:
 			_render_arrival(v)
 			_render_hold(v)
+			var p: Dictionary = v["leg_progress"]
+			_say(
+				(
+					"Leg: credits %d of payment %d, %d more jump(s) before it"
+					% [p["credits"], p["payment"], p["jumps_left"]]
+				)
+			)
 		Defs.PHASE_PAYMENT:
 			var t: Dictionary = v["payment_screen"]
 			_say(
@@ -325,12 +332,44 @@ func _render_run(run: Run) -> void:
 					]
 				)
 			)
+			for j: Dictionary in t["jumps"]:
+				_say(
+					(
+						"  Jump %d: net %+d, %d delivered, %d scrap, %d explosions"
+						% [j["jump"], j["net"], j["delivered"], j["scrapped"], j["explosions"]]
+					)
+				)
+			if not t["next"].is_empty():
+				_say(
+					(
+						"Next: leg %d, %d jumps, payment %d"
+						% [t["next"]["leg"], t["next"]["jumps"], t["next"]["payment"]]
+					)
+				)
 		Defs.PHASE_END:
 			var e: Dictionary = v["end"]
 			_say(
 				(
 					"Run end: %s · score %d · seed %s · %s"
 					% ["WIN" if e["won"] else "LOSS", e["score"], e["seed"], e["stats"]]
+				)
+			)
+			for l: Dictionary in e["legs"]:
+				_say(
+					(
+						"  Leg %d: payment %d, %s, net %+d"
+						% [l["leg"], l["payment"], "paid" if l["paid"] else "missed", l["net"]]
+					)
+				)
+			if not e["best_jump"].is_empty():
+				var b: Dictionary = e["best_jump"]
+				_say("Best jump: leg %d jump %d, net %+d" % [b["leg"], b["jump"], b["net"]])
+			var sh: Dictionary = e["ship"]
+			var mod_names: Array = sh["mods"].map(func(m: Dictionary) -> String: return m["name"])
+			_say(
+				(
+					"Ship: mods %s, clamps %d, shock bay %s, mass limit %d"
+					% [mod_names, sh["clamps"], sh["shock_bay"], sh["mass_limit"]]
 				)
 			)
 

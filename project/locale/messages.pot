@@ -319,15 +319,43 @@ msgid "Payment"
 msgstr ""
 
 #: project/scenes/main/phase_panel.gd
-msgid "Payment {payment} · credits {credits} · after {after}"
-msgstr ""
-
-#: project/scenes/main/phase_panel.gd
 msgid "Pay"
 msgstr ""
 
 #: project/scenes/main/phase_panel.gd
-msgid "You cannot make the payment."
+msgid "Credits"
+msgstr ""
+
+#: project/scenes/main/phase_panel.gd
+msgid "After"
+msgstr ""
+
+#: project/scenes/main/phase_panel.gd
+msgid "PAID"
+msgstr ""
+
+#: project/scenes/main/phase_panel.gd
+msgid "MISSED"
+msgstr ""
+
+#: project/scenes/main/phase_panel.gd
+msgid "Jump {jump}"
+msgstr ""
+
+#: project/scenes/main/phase_panel.gd
+msgid "{count} delivered"
+msgstr ""
+
+#: project/scenes/main/phase_panel.gd
+msgid "{count} scrap"
+msgstr ""
+
+#: project/scenes/main/phase_panel.gd
+msgid "{count} explosions"
+msgstr ""
+
+#: project/scenes/main/phase_panel.gd
+msgid "Next: Leg {leg} · {jumps} jumps · payment {payment}"
 msgstr ""
 
 #: project/scenes/main/phase_panel.gd
@@ -339,7 +367,56 @@ msgid "Run over."
 msgstr ""
 
 #: project/scenes/main/phase_panel.gd
-msgid "Score {score} · delivered {delivered} · scrap {scrapped} · explosions {explosions} · seed {seed}"
+msgid "Score"
+msgstr ""
+
+#: project/scenes/main/phase_panel.gd
+msgid "Best jump"
+msgstr ""
+
+#: project/scenes/main/phase_panel.gd
+msgid "Leg {leg} · Jump {jump}"
+msgstr ""
+
+#: project/scenes/main/phase_panel.gd
+msgid "Leg {leg}"
+msgstr ""
+
+#: project/scenes/main/phase_panel.gd
+msgid "Payment {payment}"
+msgstr ""
+
+#: project/scenes/main/phase_panel.gd
+msgid "Net {net}"
+msgstr ""
+
+#: project/scenes/main/phase_panel.gd
+msgid "Mods: {mods}"
+msgstr ""
+
+#: project/scenes/main/phase_panel.gd
+msgid "No mods"
+msgstr ""
+
+#: project/scenes/main/phase_panel.gd
+msgid "Clamps {clamps} · Shock bay {bay} · Mass limit {mass}"
+msgstr ""
+
+#: project/scenes/main/phase_panel.gd
+#: project/scenes/station/shop_panel.gd
+msgid "none"
+msgstr ""
+
+#: project/scenes/main/phase_panel.gd
+msgid "Seed {seed}"
+msgstr ""
+
+#: project/scenes/main/phase_panel.gd
+msgid "Copy"
+msgstr ""
+
+#: project/scenes/main/phase_panel.gd
+msgid "Copied"
 msgstr ""
 
 #: project/scenes/main/phase_panel.gd
@@ -594,10 +671,6 @@ msgid "{columns}×{rows}"
 msgstr ""
 
 #: project/scenes/station/shop_panel.gd
-msgid "none"
-msgstr ""
-
-#: project/scenes/station/shop_panel.gd
 msgid "Shock bay {now} (maximum)"
 msgstr ""
 
@@ -828,6 +901,14 @@ msgstr ""
 
 #: project/scenes/warp/report_panel.gd
 msgid "Credits {before} → {after}"
+msgstr ""
+
+#: project/scenes/warp/report_panel.gd
+msgid "Payment {payment} · {jumps} more jump(s)"
+msgstr ""
+
+#: project/scenes/warp/report_panel.gd
+msgid "Payment {payment} at the next stop"
 msgstr ""
 
 #: project/scenes/warp/warp_screen.gd

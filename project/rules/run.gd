@@ -87,6 +87,11 @@ var last_warp: Dictionary = {}
 var last_arrival: Dictionary = {}
 var won := false
 var stats := {"delivered": 0, "scrapped": 0, "explosions": 0}
+## One entry for each jump, at its arrival: {leg, jump, net, delivered, scrapped,
+## explosions} (SPEC Sections 19.2 and 20.5).
+var history: Array = []
+## The stats at the start of the warp: the history counts the change of a jump.
+var stats_at_warp := {}
 ## The line of the pilot now (SPEC Section 22).
 var line: String = ""
 
@@ -173,6 +178,7 @@ func warp() -> String:
 		return NOT_AT_STATION_TEXT
 	if hold_mass() > max_mass():
 		return OVERWEIGHT_TEXT
+	stats_at_warp = stats.duplicate()
 	var warp_log := {
 		"sold": [],
 		"sold_credits": 0,

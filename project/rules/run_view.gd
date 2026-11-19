@@ -241,19 +241,73 @@ static func view(run: Run) -> Dictionary:
 		"mass_limit": run.mass_limit,
 		"mass_limit_after": run.mass_limit + cat.reinforce_amount,
 	}
+	if run.phase == Defs.PHASE_ARRIVAL:
+		# The credits against the payment of the leg (SPEC Section 20.4).
+		v["leg_progress"] = {
+			"credits": run.credits,
+			"payment": run.payment(),
+			"jumps_left": cat.jumps(run.leg) - run.jump,
+		}
 	if run.phase == Defs.PHASE_PAYMENT:
+		var last := run.leg >= cat.legs.size()
+		var next := {}
+		if not last:
+			next = {
+				"leg": run.leg + 1,
+				"jumps": cat.jumps(run.leg + 1),
+				"payment": int(cat.legs[run.leg]["payment"]),
+			}
 		v["payment_screen"] = {
 			"payment": run.payment(),
 			"credits": run.credits,
 			"after": run.credits - run.payment(),
 			"can_pay": run.credits >= run.payment(),
-			"last": run.leg >= cat.legs.size(),
+			"last": last,
+			"jumps": run.history.filter(func(j: Dictionary) -> bool: return j["leg"] == run.leg),
+			"next": next,
 		}
 	if run.phase == Defs.PHASE_END:
 		v["end"] = {
-			"won": run.won, "score": run.score(), "seed": v["seed"], "stats": run.stats.duplicate()
+			"won": run.won,
+			"score": run.score(),
+			"seed": v["seed"],
+			"stats": run.stats.duplicate(),
+			"legs": end_legs(run),
+			"best_jump": best_jump(run),
+			"ship":
+			{
+				"mods": v["mods"],
+				"clamps": run.clamps,
+				"shock_bay": v["shock_bay"],
+				"mass_limit": run.mass_limit,
+			},
 		}
 	return v
+
+
+## Returns a row for each leg that started: {leg, payment, paid, net}. The net of a
+## leg is the sum of the nets of its jumps (SPEC Section 19.2).
+static func end_legs(run: Run) -> Array:
+	var rows := []
+	for leg in range(1, run.leg + 1):
+		var net := 0
+		for j: Dictionary in run.history:
+			if j["leg"] == leg:
+				net += j["net"]
+		var payment: int = (
+			run.payment() if leg == run.leg else int(run.cat.legs[leg - 1]["payment"])
+		)
+		rows.append({"leg": leg, "payment": payment, "paid": leg < run.leg or run.won, "net": net})
+	return rows
+
+
+## Returns the jump with the largest net, or {} (SPEC Section 19.2).
+static func best_jump(run: Run) -> Dictionary:
+	var best := {}
+	for j: Dictionary in run.history:
+		if best.is_empty() or j["net"] > best["net"]:
+			best = j
+	return best.duplicate()
 
 
 ## Returns the state of a mass: Defs.MASS_OK, MASS_FEE, or MASS_OVER (SPEC Section 25).
