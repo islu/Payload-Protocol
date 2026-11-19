@@ -21,6 +21,11 @@ This file keeps each problem that is found and not fixed yet. Each item is in on
 
 ## To Decide
 
+- **[UX · Scenes] The tutorial** (found 2026-11-19, by the user; decided by /game-design). Players did not know how to play, and did not open How to Play. SPEC Section 23.4 adds a tutorial of 3 jumps with fixed content. Check with real players (the agents do not see the screen):
+  - Is the tutorial of 5 to 8 minutes too long?
+  - Does a try step block a player?
+  - After the tutorial, can a newcomer play the first normal run alone?
+
 - **[Balance · Data] Kit with no mass, the new mods, and the shock bay** (found 2026-11-14, by /game-design). The first values of the change of SPEC Sections 25, 27.2, and 31: kit mass 0, "within 2 cells" for Array Power and Cryo Line, Padded Walls -1, and the shock bay 2×2 for 20 and 3×2 for 30. Check in a playtest: does the player fill the hold with Shields and Batteries, does someone still select Padded Walls, and is the shock bay always the first purchase? Decided 2026-11-18 by /game-design: kit has mass as freight does, and cargo in the shock bay has no mass (SPEC Sections 25 and 31.1). See "The press and the shock bay with no freight". Playtest seed 77 (2026-11-18): nobody filled the hold with Shields. Array Power did nothing with no Shields. The shock bay was a safe box for each risky cargo (see "Full rows make the hold safe").
 
 - **[Balance · Data] Environments, incidents, and special contracts** (found 2026-11-14, by /game-design). The first values of SPEC Sections 28 to 30: Low Gravity 2 cells, the meteor force 3, the incident chance 50% in leg 2 and 100% in leg 3, the VIP penalty, and the long contract pay. Check in a playtest: is leg 3 too hard with an incident at each jump, and does Low Gravity make leg 2 too easy? Playtest seed 77 (2026-11-18): the incidents of leg 3 did no damage to any persona. Low Gravity did not matter, because no cargo slid.
@@ -60,6 +65,11 @@ This file keeps each problem that is found and not fixed yet. Each item is in on
   To do                 Fix: lower the Black Market pay to about 1.5 times the pay of safe freight. Run `task test -- data`.
 
 ## To Do
+
+- **[UX · Scenes] Tutorial phase 2: the screens** (found 2026-11-19, by /game-design). SPEC Sections 20.1 and 23.4.
+  To do                 Fix: add the guide overlay (dark screen, the target, the pilot box, Next, Skip Tutorial), the lock of the other controls, the Tutorial button of the title, the flag in the settings, and the go-back of a try step. Add a UI check that plays the tutorial.
+- **[UX · Data] Tutorial phase 3: the hints** (found 2026-11-19, by /game-design). SPEC Sections 23.3 and 23.4.
+  To do                 Fix: change the hints to the list of Section 23.3. The pilot lines of the tutorial are in `data/tutorial.json` and translated (phase 1, 2026-11-19); review them after a real playtest.
 
 - **[Balance · Rules] Insurance pays for a spoil, and the Sensor sells at the last station** (found 2026-11-18, by Playtest seed 77 round 3 (2026-11-18, kit mass)). The Gambler took Perishable freight with no Cooler on purpose, and Insurance paid 16 for the spoil. The Optimizer sold the Sensor at the last station for 7: the fork is set when the station opens, so the reveal is already used.
   To decide             Options: (a) Insurance does not pay for a spoil. (b) Insurance pays less for a spoil. (c) Keep it. For the Sensor: (a) keep it, a small reward. (b) The sell price of kit is lower at the last station. Needs a change of SPEC Section 27.2.

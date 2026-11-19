@@ -108,14 +108,19 @@ var mods: PackedStringArray = []
 ## The IDs of the mods of the open mod choice (SPEC Section 27.1).
 var mod_offer: PackedStringArray = []
 
+## True in the tutorial: the stations have the fixed content of the tutorial (SPEC Section 23.4).
+var is_tutorial := false
+
 var _next_cargo: int = 0
 var _next_contract: int = 0
 var _last_line: Dictionary = {}
 
 
-## Starts a run with the start values of rules.json (SPEC Section 14).
-func _init(catalog: Catalog, run_seed: int) -> void:
-	cat = catalog
+## Starts a run with the start values of rules.json (SPEC Section 14). The tutorial
+## uses the catalog of the tutorial (SPEC Section 23.4).
+func _init(catalog: Catalog, run_seed: int, tutorial := false) -> void:
+	is_tutorial = tutorial
+	cat = catalog.tutorial_catalog() if tutorial else catalog
 	seed_value = run_seed
 	rng.seed = run_seed
 	line_rng.seed = run_seed ^ 0x5DEECE66D
@@ -143,6 +148,23 @@ func _open_station() -> void:
 	incident = Route.make_incident(self)
 	say(Defs.LINE_HAZARD)
 	StationEvents.start_event(self)
+	if is_tutorial:
+		_tutorial_station()
+
+
+## Puts the fixed contracts, kit offers, and hazard of the tutorial in the station
+## (SPEC Section 23.4).
+func _tutorial_station() -> void:
+	var j: Dictionary = cat.tutorial["jumps"][jump - 1]
+	contracts.clear()
+	for id in j["contracts"]:
+		add_contract(cat.contract(id))
+	shop.clear()
+	for id in j["kit"]:
+		shop.append({"def": cat.cargo[id], "bought": false})
+	hazard = j["hazard"].duplicate()
+	fork_options = PackedStringArray()
+	incident = {}
 
 
 ## Starts the jump: the dock, each shift step, and the arrival (SPEC Sections 9 and 16).

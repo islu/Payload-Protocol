@@ -132,6 +132,10 @@ msgstr "這個站點沒有可以復原的動作。"
 msgid "There is no such action."
 msgstr "沒有這個動作。"
 
+#: project/rules/run_record.gd
+msgid "There is no warp to go back to."
+msgstr "沒有可以回到的跳躍。"
+
 #: project/rules/run_view.gd
 msgid "Helps {count} of your freight"
 msgstr "可幫助你 {count} 件貨物"
@@ -180,6 +184,18 @@ msgstr "遊戲資料載入失敗。"
 #: project/scenes/common/game_state.gd
 msgid "No run is in progress."
 msgstr "目前沒有進行中的航程。"
+
+#: project/scenes/common/game_state.gd
+msgid "No tutorial is in progress."
+msgstr "目前沒有在進行教學。"
+
+#: project/scenes/common/game_state.gd
+msgid "Do the action of this step first."
+msgstr "請先完成這一步的動作。"
+
+#: project/scenes/common/game_state.gd
+msgid "The try step did not fail."
+msgstr "這次試試看沒有失敗。"
 
 #: project/scenes/main/event_panel.gd
 msgid "Cost {cost}"
@@ -1159,6 +1175,12 @@ msgstr "拋錨貨船"
 msgid "Museum of Nowhere"
 msgstr "無處博物館"
 
+#: project/data/contracts/tutorial_cold.json
+#: project/data/contracts/tutorial_first.json
+#: project/data/contracts/tutorial_traits.json
+msgid "Flight School"
+msgstr "飛行學校"
+
 #: project/data/contracts/vip_clinic.json
 msgid "Orbital Clinic"
 msgstr "軌道診所"
@@ -1742,3 +1764,107 @@ msgstr "輕"
 #: project/data/terms.json
 msgid "Standard"
 msgstr "中"
+
+#: project/data/tutorial.json
+msgid "Welcome aboard. I am MAGELLAN, the ship AI. I will show you how to carry freight."
+msgstr "歡迎登艦。我是 MAGELLAN，這艘船的 AI。我來教你怎麼運貨。"
+
+#: project/data/tutorial.json
+msgid "This is a contract. Click it to accept it. Its freight goes to the dock."
+msgstr "這是一張合約。點一下就能接下，它的貨物會送到碼頭。"
+
+#: project/data/tutorial.json
+msgid "Drag each cargo from the dock into the hold, the grid in the middle."
+msgstr "把碼頭上的每件貨物拖進貨艙，也就是中間的格子。"
+
+#: project/data/tutorial.json
+msgid "Right click a cargo, or press R, to rotate it. Rotate the Steel Ingot."
+msgstr "在貨物上按右鍵，或按 R，就能旋轉它。把鋼錠轉個方向。"
+
+#: project/data/tutorial.json
+msgid "The hazard shows each shift step of the next jump. This jump has one step: RIGHT."
+msgstr "危險預報會列出下一次跳躍的每一段位移。這次只有一段：向右。"
+
+#: project/data/tutorial.json
+msgid "In a step, each cargo slides until a wall or a stopped cargo stops it. The force of its hit is its weight × the cells it slid: light 1, standard 2, heavy 3."
+msgstr "每一段位移，貨物都會滑到撞上牆壁或停住的貨物為止。撞擊力 = 重量 × 滑動格數：輕 1、中 2、重 3。"
+
+#: project/data/tutorial.json
+msgid "The Energy Crystal is Fragile: a hit with a force of 2 or more breaks it. The striped band marks the front wall."
+msgstr "能量水晶是易碎品：撞擊力 2 以上就會碎。黃黑條紋標出的是前牆。"
+
+#: project/data/tutorial.json
+msgid "The crystal broke. A slide into the wall, or a cargo behind it, hit it with a force of 2 or more. Let us try again."
+msgstr "水晶碎了。它滑去撞牆，或被後面的貨物撞到，撞擊力到了 2 以上。我們再試一次。"
+
+#: project/data/tutorial.json
+msgid "Try it: place the cargo so that the crystal does not break. Then press Warp."
+msgstr "試試看：把貨物擺好，別讓水晶碎掉。然後按下跳躍。"
+
+#: project/data/tutorial.json
+msgid "Delivered! Each intact freight pays. A broken cargo becomes scrap and stays in the hold. Press Continue."
+msgstr "送達了！完好的貨物都會付錢。壞掉的貨物會變成廢鐵，留在貨艙裡。按繼續。"
+
+#: project/data/tutorial.json
+msgid "This contract has traits. Accept it."
+msgstr "這張合約的貨物有特性。接下它。"
+
+#: project/data/tutorial.json
+msgid "Fragile breaks at a force of 2. Fluid leaks at 2. Volatile explodes at 3. Point at a cargo to see its traits."
+msgstr "易碎品撞擊力 2 就會碎，流體 2 會漏，爆裂物 3 會爆。把滑鼠移到貨物上可以看它的特性。"
+
+#: project/data/tutorial.json
+msgid "A cargo that does not slide still takes a hit. At the front wall, it takes a wall jolt of its weight. It also presses on the cargo in front of it with its weight."
+msgstr "沒有滑動的貨物也會受到撞擊。貼著前牆時，會受到等於自身重量的撞牆震動；它也會用自身重量擠壓前方的貨物。"
+
+#: project/data/tutorial.json
+msgid "Drag the freight into the hold."
+msgstr "把貨物拖進貨艙。"
+
+#: project/data/tutorial.json
+msgid "A clamp stops a cargo from sliding. Drag the clamp onto a cargo in the hold."
+msgstr "卡榫能讓貨物不滑動。把卡榫拖到貨艙裡的一件貨物上。"
+
+#: project/data/tutorial.json
+msgid "A piece broke or leaked. Look at the wall jolt and the press, and try again."
+msgstr "有貨物碎了或漏了。注意撞牆震動和擠壓，再試一次。"
+
+#: project/data/tutorial.json
+msgid "Try it: deliver each piece. The step is DOWN. Keep the Specimen Tube and the Coolant Pipe away from the floor and from heavy cargo."
+msgstr "試試看：讓每件貨物都送達。這次往下位移。讓標本管和冷卻液管遠離地板和重貨。"
+
+#: project/data/tutorial.json
+msgid "Good flying. Press Continue."
+msgstr "飛得好。按繼續。"
+
+#: project/data/tutorial.json
+msgid "Space Cheese is Perishable. At the arrival, it must be next to a Cooler, or it spoils. Accept the contract."
+msgstr "太空起司是生鮮品。抵達時必須緊鄰冷藏機，否則會壞掉。接下這張合約。"
+
+#: project/data/tutorial.json
+msgid "Buy the Cooler Unit in the shop. Kit stays in the ship until you sell it."
+msgstr "在商店買下冷藏機。裝備會一直留在船上，直到你賣掉它。"
+
+#: project/data/tutorial.json
+msgid "Each cargo has mass. Over the mass limit, the warp takes a fuel fee. The top bar shows the mass."
+msgstr "每件貨物都有載重。超過載重上限時，跳躍要付燃料費。上方列會顯示載重。"
+
+#: project/data/tutorial.json
+msgid "Put the freight and the Cooler in the hold. Each cheese must be next to the Cooler."
+msgstr "把貨物和冷藏機放進貨艙。每塊起司都要緊鄰冷藏機。"
+
+#: project/data/tutorial.json
+msgid "A piece did not arrive intact or fresh. Place the cheese and the Cooler where the slides keep them together, and try again."
+msgstr "有貨物沒有完好或新鮮地送達。把起司和冷藏機放在位移後還會靠在一起的位置，再試一次。"
+
+#: project/data/tutorial.json
+msgid "Try it: the steps are LEFT, then UP. Only the places at the arrival count. Keep the cheese next to the Cooler."
+msgstr "試試看：這次先向左、再向上。只看抵達時的位置。讓起司一直緊鄰冷藏機。"
+
+#: project/data/tutorial.json
+msgid "The leg ends. Press Continue."
+msgstr "這一期結束了。按繼續。"
+
+#: project/data/tutorial.json
+msgid "At the end of each leg, the freight company takes a payment. Pay it. A run has 3 legs."
+msgstr "每一期結束時，貨運公司會收一筆還款。付清它。一局共有 3 期。"

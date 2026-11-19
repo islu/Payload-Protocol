@@ -131,6 +131,10 @@ msgstr ""
 msgid "There is no such action."
 msgstr ""
 
+#: project/rules/run_record.gd
+msgid "There is no warp to go back to."
+msgstr ""
+
 #: project/rules/run_view.gd
 msgid "Helps {count} of your freight"
 msgstr ""
@@ -178,6 +182,18 @@ msgstr ""
 
 #: project/scenes/common/game_state.gd
 msgid "No run is in progress."
+msgstr ""
+
+#: project/scenes/common/game_state.gd
+msgid "No tutorial is in progress."
+msgstr ""
+
+#: project/scenes/common/game_state.gd
+msgid "Do the action of this step first."
+msgstr ""
+
+#: project/scenes/common/game_state.gd
+msgid "The try step did not fail."
 msgstr ""
 
 #: project/scenes/main/event_panel.gd
@@ -1132,6 +1148,12 @@ msgstr ""
 msgid "Museum of Nowhere"
 msgstr ""
 
+#: project/data/contracts/tutorial_cold.json
+#: project/data/contracts/tutorial_first.json
+#: project/data/contracts/tutorial_traits.json
+msgid "Flight School"
+msgstr ""
+
 #: project/data/contracts/vip_clinic.json
 msgid "Orbital Clinic"
 msgstr ""
@@ -1714,4 +1736,108 @@ msgstr ""
 
 #: project/data/terms.json
 msgid "Standard"
+msgstr ""
+
+#: project/data/tutorial.json
+msgid "Welcome aboard. I am MAGELLAN, the ship AI. I will show you how to carry freight."
+msgstr ""
+
+#: project/data/tutorial.json
+msgid "This is a contract. Click it to accept it. Its freight goes to the dock."
+msgstr ""
+
+#: project/data/tutorial.json
+msgid "Drag each cargo from the dock into the hold, the grid in the middle."
+msgstr ""
+
+#: project/data/tutorial.json
+msgid "Right click a cargo, or press R, to rotate it. Rotate the Steel Ingot."
+msgstr ""
+
+#: project/data/tutorial.json
+msgid "The hazard shows each shift step of the next jump. This jump has one step: RIGHT."
+msgstr ""
+
+#: project/data/tutorial.json
+msgid "In a step, each cargo slides until a wall or a stopped cargo stops it. The force of its hit is its weight × the cells it slid: light 1, standard 2, heavy 3."
+msgstr ""
+
+#: project/data/tutorial.json
+msgid "The Energy Crystal is Fragile: a hit with a force of 2 or more breaks it. The striped band marks the front wall."
+msgstr ""
+
+#: project/data/tutorial.json
+msgid "The crystal broke. A slide into the wall, or a cargo behind it, hit it with a force of 2 or more. Let us try again."
+msgstr ""
+
+#: project/data/tutorial.json
+msgid "Try it: place the cargo so that the crystal does not break. Then press Warp."
+msgstr ""
+
+#: project/data/tutorial.json
+msgid "Delivered! Each intact freight pays. A broken cargo becomes scrap and stays in the hold. Press Continue."
+msgstr ""
+
+#: project/data/tutorial.json
+msgid "This contract has traits. Accept it."
+msgstr ""
+
+#: project/data/tutorial.json
+msgid "Fragile breaks at a force of 2. Fluid leaks at 2. Volatile explodes at 3. Point at a cargo to see its traits."
+msgstr ""
+
+#: project/data/tutorial.json
+msgid "A cargo that does not slide still takes a hit. At the front wall, it takes a wall jolt of its weight. It also presses on the cargo in front of it with its weight."
+msgstr ""
+
+#: project/data/tutorial.json
+msgid "Drag the freight into the hold."
+msgstr ""
+
+#: project/data/tutorial.json
+msgid "A clamp stops a cargo from sliding. Drag the clamp onto a cargo in the hold."
+msgstr ""
+
+#: project/data/tutorial.json
+msgid "A piece broke or leaked. Look at the wall jolt and the press, and try again."
+msgstr ""
+
+#: project/data/tutorial.json
+msgid "Try it: deliver each piece. The step is DOWN. Keep the Specimen Tube and the Coolant Pipe away from the floor and from heavy cargo."
+msgstr ""
+
+#: project/data/tutorial.json
+msgid "Good flying. Press Continue."
+msgstr ""
+
+#: project/data/tutorial.json
+msgid "Space Cheese is Perishable. At the arrival, it must be next to a Cooler, or it spoils. Accept the contract."
+msgstr ""
+
+#: project/data/tutorial.json
+msgid "Buy the Cooler Unit in the shop. Kit stays in the ship until you sell it."
+msgstr ""
+
+#: project/data/tutorial.json
+msgid "Each cargo has mass. Over the mass limit, the warp takes a fuel fee. The top bar shows the mass."
+msgstr ""
+
+#: project/data/tutorial.json
+msgid "Put the freight and the Cooler in the hold. Each cheese must be next to the Cooler."
+msgstr ""
+
+#: project/data/tutorial.json
+msgid "A piece did not arrive intact or fresh. Place the cheese and the Cooler where the slides keep them together, and try again."
+msgstr ""
+
+#: project/data/tutorial.json
+msgid "Try it: the steps are LEFT, then UP. Only the places at the arrival count. Keep the cheese next to the Cooler."
+msgstr ""
+
+#: project/data/tutorial.json
+msgid "The leg ends. Press Continue."
+msgstr ""
+
+#: project/data/tutorial.json
+msgid "At the end of each leg, the freight company takes a payment. Pay it. A run has 3 legs."
 msgstr ""

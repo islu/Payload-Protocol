@@ -10,11 +10,16 @@ signal state_changed
 const VERSION := "0.1.0"
 const NOT_LOADED_TEXT := "The game data did not load."
 const NO_RUN_TEXT := "No run is in progress."
+const NO_TUTORIAL_TEXT := "No tutorial is in progress."
+const NOT_NEXT_TEXT := "Do the action of this step first."
+const NOT_FAILED_TEXT := "The try step did not fail."
 
 var catalog: Catalog
 var run: Run
 ## The seed and the actions of the run, for an undo (SPEC Section 20.2).
 var _record: RunRecord
+## The steps of the tutorial, or null in a normal run (SPEC Section 23.4).
+var _tutorial: Tutorial
 ## The view of the state now, or {} after a change. view() builds it one time for
 ## each change: each scene that reads it gets the same copy. Do not change it.
 var _view: Dictionary = {}
@@ -47,6 +52,7 @@ func view() -> Dictionary:
 			"terms": RunView.terms(catalog, run),
 			"names": RunView.names(catalog, run),
 			"run": RunView.view(run) if run != null else {},
+			"tutorial": _tutorial.view() if _tutorial != null else {},
 		}
 	return _view
 
@@ -59,14 +65,58 @@ func new_run(run_seed: int = 0) -> String:
 		run_seed = randi() + 1
 	_record = RunRecord.new(catalog, run_seed)
 	run = _record.run
+	_tutorial = null
 	state_changed.emit()
 	return ""
+
+
+## Starts the tutorial: a run with the fixed content of the tutorial (SPEC Section 23.4).
+func start_tutorial() -> String:
+	if not is_loaded():
+		return NOT_LOADED_TEXT
+	_record = RunRecord.new(catalog, 1, true)
+	run = _record.run
+	_tutorial = Tutorial.new(catalog.tutorial)
+	_tutorial.update(run)
+	state_changed.emit()
+	return ""
+
+
+## Ends a tutorial step with no action: the Next button (SPEC Section 23.4).
+func tutorial_next() -> String:
+	if _tutorial == null:
+		return NO_TUTORIAL_TEXT
+	if not _tutorial.next():
+		return NOT_NEXT_TEXT
+	_tutorial.update(run)
+	state_changed.emit()
+	return ""
+
+
+## Goes back to the station before the warp after a try step failed (SPEC Section 23.4).
+func tutorial_retry() -> String:
+	if _tutorial == null:
+		return NO_TUTORIAL_TEXT
+	if not _tutorial.failed():
+		return NOT_FAILED_TEXT
+	_record.back_to_warp()
+	run = _record.run
+	_tutorial.retry()
+	_tutorial.update(run)
+	state_changed.emit()
+	return ""
+
+
+## Leaves the tutorial and starts a normal run (SPEC Section 23.4).
+func skip_tutorial() -> String:
+	return new_run()
 
 
 ## Ends the run with no result (SPEC Section 20.7).
 func abandon_run() -> void:
 	run = null
 	_record = null
+	_tutorial = null
 	state_changed.emit()
 
 
@@ -205,5 +255,7 @@ func _act(name: String, args: Array = []) -> String:
 		return NO_RUN_TEXT
 	var err := _record.act(name, args)
 	if err == "":
+		if _tutorial != null:
+			_tutorial.update(run)
 		state_changed.emit()
 	return err

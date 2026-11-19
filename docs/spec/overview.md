@@ -115,4 +115,6 @@ Use these terms in the spec, the code, the data, and the text of the game. Do no
 | **event** | A card at a station with choices. Each choice has effects (Section 26). |
 | **mod** | A permanent part of the ship that changes a rule (Section 27). |
 | **environment** | A rule of the route for all jumps of a leg (Section 28). |
+| **tutorial** | A short run with fixed content that teaches the core rules step by step (Section 23.4). |
+| **try step** | A step of the tutorial with a goal. When the goal fails, the tutorial goes back to the station before the warp (Section 23.4). |
 | **incident** | An event of the route before the first shift step of a warp (Section 29). |

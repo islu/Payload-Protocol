@@ -1,0 +1,7 @@
+{
+	"id": "tutorial_first",
+	"legs": [],
+	"client_name": "Flight School",
+	"freight": ["cargo_crate", "steel_ingot", "energy_crystal"],
+	"pay": 6
+}

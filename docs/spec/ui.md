@@ -6,7 +6,7 @@ This file is part of the [game specification](../spec.md). The section numbers a
 
 ### 20.1 Title
 
-- The title screen has these buttons: New Run, How to Play, Settings, and Quit.
+- The title screen has these buttons: New Run, Tutorial, How to Play, Settings, and Quit (Section 23.4).
 - The background shows a starfield that moves slowly.
 - The title, a tagline, and the buttons are in the center. The version is at the bottom right.
 
@@ -178,6 +178,21 @@ The warp:
 
 ### 23.3 Hints
 
-- When hints are on, the pilot gives hints in the first run: one hint for each new thing that the player sees for the first time.
-- The first hints are: accept a contract, drag a cargo, rotate a cargo, read the hazard, warp.
+- When hints are on, the pilot gives hints in the first runs. Each hint is for a new thing that the tutorial does not teach (Section 23.4). It shows the first time that the player sees that thing.
+- The hints are: a mod choice, an event, an environment, an incident, a fork step, the Sensor, the shock bay, a long contract, and a VIP contract.
 - After the first win or the first 3 runs, the game turns hints off. The player can turn them on in the settings.
+
+### 23.4 Tutorial
+
+- The **tutorial** is a short run with fixed content. It teaches the core rules step by step.
+- The tutorial has 3 jumps. Its contracts, cargo, hazards, and shop are in `data/tutorial.json`. It has no events, mods, environments, or incidents. The rules do not change in it.
+- The first New Run of the player starts the tutorial. After the player completes or skips it once, New Run starts a normal run. The game keeps this in `user://settings.cfg`.
+- The Tutorial button of the title starts the tutorial again.
+- The tutorial is a list of steps. Each step has a pilot line and a target: a contract, a cargo, a cell, a button, or none.
+- During a step, the screen is dark except for the target. Only the target works.
+- A step ends when the player does its action, for example when the player accepts the contract. A step with no action has a Next button.
+- A **try step** gives a goal, for example "Keep the vase intact". During a try step, the player can move cargo in the hold and on the dock freely.
+- When the goal of a try step fails at the arrival, the pilot tells why. Then the tutorial goes back to the station before the warp.
+- A Skip Tutorial button is always on the screen. After a confirm, a normal run starts.
+- At the end, the screen shows "Tutorial complete", and a normal run starts.
+- The tutorial teaches: contracts, drag and rotate, the hazard and the front wall, the slide and the force, the arrival and scrap, the traits, the wall jolt and the press, clamps, the Cooler link, the shop, the mass and the fuel fee, and the payment.

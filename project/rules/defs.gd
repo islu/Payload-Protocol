@@ -205,6 +205,37 @@ const ACT_PAY := "pay"
 const ACT_CHOOSE_EVENT := "choose_event"
 const ACT_CHOOSE_MOD := "choose_mod"
 
+## The actions that end a step of the tutorial (SPEC Section 23.4). TUT_NEXT is the Next
+## button of a step with no action.
+const TUT_NEXT := "next"
+const TUT_ACCEPT := "accept"
+const TUT_ALL_IN_HOLD := "all_in_hold"
+const TUT_ROTATE := "rotate"
+const TUT_CLAMP := "clamp"
+const TUT_BUY := "buy"
+const TUT_FRESH := "fresh"
+const TUT_WARP := "warp"
+const TUT_CONTINUE := "continue"
+const TUT_PAY := "pay"
+const TUT_UNTILS: PackedStringArray = [
+	TUT_NEXT,
+	TUT_ACCEPT,
+	TUT_ALL_IN_HOLD,
+	TUT_ROTATE,
+	TUT_CLAMP,
+	TUT_BUY,
+	TUT_FRESH,
+	TUT_WARP,
+	TUT_CONTINUE,
+	TUT_PAY,
+]
+## The step actions that name a cargo definition in "cargo".
+const TUT_WITH_CARGO: PackedStringArray = [TUT_ROTATE, TUT_BUY]
+## The kinds of the target of a tutorial step: the screen shows it bright (SPEC Section 23.4).
+const TARGETS: PackedStringArray = [
+	"none", "contract", "cargo", "cell", "button", "hazard", "shop", "clamps", "top_bar"
+]
+
 
 ## Returns the cell step of a direction.
 static func delta(direction: String) -> Vector2i:

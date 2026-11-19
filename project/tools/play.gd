@@ -12,6 +12,9 @@ extends SceneTree
 ##   task play -- look
 ## Use -s <file> as the first arguments for another session file.
 
+## The errors of the tutorial commands (SPEC Section 23.4).
+const NOT_NEXT_TEXT := "Do the action of this step first."
+const NOT_FAILED_TEXT := "The try step did not fail."
 ## The warning of the station when the last Sensor leaves the hold (SPEC Section 18.1).
 const SENSOR_LOST_TEXT := "No Sensor: the fork step is hidden again."
 const DEFAULT_SESSION := "playtest/sessions/session.json"
@@ -60,6 +63,8 @@ const COMMANDS := {
 }
 
 var _out: PackedStringArray = []
+## The steps of the tutorial, or null in a normal run (SPEC Section 23.4).
+var _tut: Tutorial
 
 
 func _initialize() -> void:
@@ -91,16 +96,24 @@ func _command(path: String, args: Array) -> int:
 		_say("the data is not valid: " + ", ".join(cat.errors))
 		return 1
 	if args[0] == "new":
-		var run_seed := int(args[1]) if args.size() > 1 else randi() + 1
-		var session := {"seed": run_seed, "actions": []}
+		var tutorial: bool = args.size() > 1 and args[1] == "tutorial"
+		var run_seed := 1 if tutorial else (int(args[1]) if args.size() > 1 else randi() + 1)
+		var session := {"seed": run_seed, "actions": [], "tutorial": tutorial}
 		_write(path, session)
-		_render(Run.new(cat, run_seed))
+		var first := RunRecord.new(cat, run_seed, tutorial)
+		if tutorial:
+			_tut = Tutorial.new(cat.tutorial)
+			_tut.update(first.run)
+		_render(first.run)
 		return 0
 	var session := _read(path)
 	if session.is_empty():
 		_say("no session at %s. Start one: new [seed]" % path)
 		return 1
-	var rec := RunRecord.new(cat, int(session["seed"]))
+	var rec := RunRecord.new(cat, int(session["seed"]), session.get("tutorial", false))
+	if session.get("tutorial", false):
+		_tut = Tutorial.new(cat.tutorial)
+		_tut.update(rec.run)
 	for a: Array in session["actions"]:
 		var err := _act(rec, a)
 		if err != "":
@@ -132,6 +145,10 @@ func _command(path: String, args: Array) -> int:
 ## An undo takes back the last action of the session (SPEC Section 20.2).
 func _step(rec: RunRecord, session: Dictionary, parts: Array) -> bool:
 	var undo: bool = parts[0] == "undo"
+	var last: Array = session["actions"].back() if not session["actions"].is_empty() else []
+	if undo and _tut != null and last in [["next"], ["retry"]]:
+		_say("> undo: a tutorial step cannot be undone")
+		return false
 	# The traits of each cargo before the warp: a delivered cargo leaves the run.
 	var traits := {}
 	for c: Dictionary in RunView.view(rec.run)["cargo"]:
@@ -174,10 +191,25 @@ func _action(run: Run, parts: Array) -> Dictionary:
 
 ## Does a command on the record. It records the action when it works.
 func _act(rec: RunRecord, parts: Array) -> String:
+	if _tut != null and parts[0] == "next":
+		if not _tut.next():
+			return NOT_NEXT_TEXT
+		_tut.update(rec.run)
+		return ""
+	if _tut != null and parts[0] == "retry":
+		if not _tut.failed():
+			return NOT_FAILED_TEXT
+		rec.back_to_warp()
+		_tut.retry()
+		_tut.update(rec.run)
+		return ""
 	var a := _action(rec.run, parts)
 	if a.is_empty():
 		return "unknown command %s" % parts[0]
-	return rec.act(a["name"], a["args"])
+	var err := rec.act(a["name"], a["args"])
+	if err == "" and _tut != null:
+		_tut.update(rec.run)
+	return err
 
 
 ## Reports whether the fork step of the next jump is known: a Sensor shows it
@@ -188,7 +220,10 @@ func _fork_known(run: Run) -> bool:
 
 
 func _usage() -> void:
-	_say('Commands: new [seed] | look | history | do "<action>; <action>" | <action>')
+	_say(
+		'Commands: new [seed] | new tutorial | look | history | do "<action>; <action>" | <action>'
+	)
+	_say("In the tutorial: next (a step with no action) | retry (after a failed try step)")
 	_say("Actions:")
 	for k: String in ACTIONS:
 		_say("  " + ACTIONS[k])
@@ -208,6 +243,31 @@ func _cell_width(cargo: Array) -> int:
 
 
 func _render(run: Run) -> void:
+	_render_run(run)
+	if _tut != null:
+		_render_tutorial()
+
+
+## Prints the tutorial step now (SPEC Section 23.4).
+func _render_tutorial() -> void:
+	var t := _tut.view()
+	if t["done"]:
+		_say("TUTORIAL complete.")
+		return
+	_say("")
+	_say("TUTORIAL step %d/%d: %s" % [t["index"] + 1, t["count"], t["text"]])
+	var target: Dictionary = t["target"]
+	if target.get("kind", "none") != "none":
+		_say("  target: %s" % target)
+	if t["failed"]:
+		_say("  FAILED: %s Use: retry" % t["fail"])
+	elif t["next"]:
+		_say("  Use: next")
+	elif t["try"]:
+		_say("  TRY STEP: you can move cargo freely.")
+
+
+func _render_run(run: Run) -> void:
 	var v := RunView.view(run)
 	_say("")
 	var head := (

@@ -68,6 +68,9 @@ var mods: Dictionary = {}
 var environments: Dictionary = {}
 ## The speakers of the events (SPEC Section 20.8): {name} by ID.
 var speakers: Dictionary = {}
+## The tutorial (SPEC Section 23.4): {credits, payment, jumps: [{contracts, kit, hazard,
+## steps: [{text, target, until, cargo, try, fail}]}]}. fail is the text of a failed try step.
+var tutorial: Dictionary = {}
 
 
 ## Makes a catalog from the parsed data: {rules, terms, cargo, contracts, lines}.
@@ -121,8 +124,71 @@ static func from_data(data: Dictionary) -> Catalog:
 		var m: Dictionary = files[name]
 		cat._check_id(str(m.get("id", "")), name, "environment")
 		cat.environments[name] = {"name": str(m.get("name", "")), "text": str(m.get("text", ""))}
+	cat._read_tutorial(data.get("tutorial", {}))
 	cat._check()
 	return cat
+
+
+func _read_tutorial(t: Dictionary) -> void:
+	var jumps: Array[Dictionary] = []
+	for j: Dictionary in t.get("jumps", []):
+		var steps: Array[Dictionary] = []
+		for s: Dictionary in j.get("steps", []):
+			(
+				steps
+				. append(
+					{
+						"text": str(s.get("text", "")),
+						"target": s.get("target", {"kind": "none"}),
+						"until": str(s.get("until", "")),
+						"cargo": str(s.get("cargo", "")),
+						"try": bool(s.get("try", false)),
+						"fail": str(s.get("fail", {}).get("text", "")),
+					}
+				)
+			)
+		(
+			jumps
+			. append(
+				{
+					"contracts": PackedStringArray(j.get("contracts", [])),
+					"kit": PackedStringArray(j.get("kit", [])),
+					"hazard": PackedStringArray(j.get("hazard", [])),
+					"steps": steps,
+				}
+			)
+		)
+	tutorial = {
+		"credits": int(t.get("credits", 0)), "payment": int(t.get("payment", 0)), "jumps": jumps
+	}
+
+
+## Returns the catalog of the tutorial: this catalog with one leg of the tutorial
+## jumps, its credits and payment, no events, no environment, and no incidents
+## (SPEC Section 23.4). The rules do not change.
+func tutorial_catalog() -> Catalog:
+	var c := Catalog.new()
+	for p: Dictionary in get_property_list():
+		if p["usage"] & PROPERTY_USAGE_SCRIPT_VARIABLE:
+			c.set(p["name"], get(p["name"]))
+	var steps: Array[Vector2i] = []
+	for j: Dictionary in tutorial["jumps"]:
+		steps.append(Vector2i(j["hazard"].size(), j["hazard"].size()))
+	var legs_of: Array[Dictionary] = [
+		{
+			"payment": tutorial["payment"],
+			"hazard_steps": steps,
+			"kit_pool": PackedStringArray(),
+			"fork": false,
+			"environment": false,
+			"incident_percent": 0,
+		}
+	]
+	c.legs = legs_of
+	c.start_credits = tutorial["credits"]
+	c.event_station = 0
+	c.chance_station = 0
+	return c
 
 
 static func _sorted(d: Dictionary) -> Array:
@@ -269,6 +335,36 @@ func _check() -> void:
 		_fail("rules: the debris %s is the freight of a contract" % debris)
 	if meteor_force < 1:
 		_fail("rules: the meteor force must be 1 or more")
+	_check_tutorial()
+
+
+func _check_tutorial() -> void:
+	if tutorial["jumps"].is_empty() or tutorial["payment"] < 1:
+		_fail("tutorial: it needs jumps and a payment of 1 or more")
+	for j: Dictionary in tutorial["jumps"]:
+		for id in j["contracts"]:
+			if contract(id) == null:
+				_fail("tutorial: the contract %s does not exist" % id)
+		for id in j["kit"]:
+			if not cargo.has(id) or cargo[id].kind != Defs.KIND_KIT:
+				_fail("tutorial: the kit %s does not exist" % id)
+		if j["hazard"].is_empty() or j["hazard"].size() > 3:
+			_fail("tutorial: a jump needs 1 to 3 shift steps")
+		for i in j["hazard"].size():
+			if (
+				not j["hazard"][i] in Defs.DIRECTIONS
+				or (i > 0 and j["hazard"][i] == j["hazard"][i - 1])
+			):
+				_fail("tutorial: the hazard %s is not valid (SPEC Section 18)" % j["hazard"])
+		for s: Dictionary in j["steps"]:
+			if s["text"] == "" or not s["until"] in Defs.TUT_UNTILS:
+				_fail('tutorial: the step "%s" needs a text and a known action' % s["text"])
+			if s["until"] in Defs.TUT_WITH_CARGO and not cargo.has(s["cargo"]):
+				_fail('tutorial: the step "%s" needs a cargo' % s["text"])
+			if not str(s["target"].get("kind", "")) in Defs.TARGETS:
+				_fail('tutorial: the step "%s" has an unknown target' % s["text"])
+			if s["try"] and (s["until"] != Defs.TUT_WARP or s["fail"] == ""):
+				_fail('tutorial: the try step "%s" needs the warp and a fail text' % s["text"])
 
 
 func _check_rules() -> void:

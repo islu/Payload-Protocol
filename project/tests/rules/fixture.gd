@@ -100,6 +100,10 @@ static func data() -> Dictionary:
 	contracts["k_long"] = {
 		"id": "k_long", "legs": [], "client_name": "L", "freight": ["box"], "pay": 9, "jumps": 2
 	}
+	# The contract of the tutorial: no leg (SPEC Section 23.4).
+	contracts["k_tut"] = {
+		"id": "k_tut", "legs": [], "client_name": "T", "freight": ["box", "vase"], "pay": 10
+	}
 	var lines := {}
 	for e in Defs.LINE_EVENTS:
 		lines[e] = {
@@ -183,6 +187,72 @@ static func data() -> Dictionary:
 		"speakers": {"s_one": {"id": "s_one", "name": "Speaker One"}},
 		"mods": mods(),
 		"environments": environments(),
+		"tutorial": tutorial(),
+	}
+
+
+## A tutorial of 3 jumps (SPEC Section 23.4). Each jump has k_tut. Jump 1 has a try step.
+static func tutorial() -> Dictionary:
+	return {
+		"credits": 20,
+		"payment": 15,
+		"jumps":
+		[
+			{
+				"contracts": ["k_tut"],
+				"kit": [],
+				"hazard": ["right"],
+				"steps":
+				[
+					{
+						"text": "Accept",
+						"target": {"kind": "contract", "index": 0},
+						"until": "accept"
+					},
+					{"text": "Read", "until": "next"},
+					{
+						"text": "Load",
+						"target": {"kind": "cargo", "cargo": "vase"},
+						"until": "all_in_hold"
+					},
+					{
+						"text": "Try",
+						"target": {"kind": "button", "button": "warp"},
+						"until": "warp",
+						"try": true,
+						"fail": {"text": "It broke"},
+					},
+					{"text": "Go on", "until": "continue"},
+				],
+			},
+			{
+				"contracts": ["k_tut"],
+				"kit": ["foam"],
+				"hazard": ["down"],
+				"steps":
+				[
+					{
+						"text": "Buy",
+						"target": {"kind": "shop", "index": 0},
+						"until": "buy",
+						"cargo": "foam"
+					},
+					{"text": "Warp", "until": "warp"},
+					{"text": "Go on", "until": "continue"},
+				],
+			},
+			{
+				"contracts": ["k_tut"],
+				"kit": [],
+				"hazard": ["right"],
+				"steps":
+				[
+					{"text": "Warp", "until": "warp"},
+					{"text": "Go on", "until": "continue"},
+					{"text": "Pay", "until": "pay"},
+				],
+			},
+		],
 	}
 
 

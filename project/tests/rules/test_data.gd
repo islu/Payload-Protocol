@@ -125,3 +125,82 @@ func test_payments() -> void:
 		[100, 240, 380],
 		"the payments are 100, 240, and 380 credits (SPEC Section 19)"
 	)
+
+
+func test_tutorial_check() -> void:
+	var data := Fixture.data()
+	data["tutorial"]["jumps"][0]["contracts"] = ["no_such_contract"]
+	data["tutorial"]["jumps"][1]["steps"][0]["until"] = "fly"
+	var cat := Catalog.from_data(data)
+	check(
+		cat.errors.size() >= 2,
+		"the data check finds an unknown contract and an unknown step action (SPEC Section 23.4)"
+	)
+
+
+## Plays the real tutorial with a known solution: each step ends, and the tutorial
+## ends with a win (SPEC Section 23.4). Each place is [cargo id, x, y, rotation].
+func test_tutorial_can_finish() -> void:
+	var cat := DataFiles.catalog()
+	var rec := RunRecord.new(cat, 1, true)
+	var t := Tutorial.new(cat.tutorial)
+	var plan := [
+		[["steel_ingot", 5, 2, 1], ["cargo_crate", 5, 1, 0], ["energy_crystal", 5, 0, 0]],
+		[
+			["steel_ingot", 0, 5, 0],
+			["coolant_pipe", 0, 3, 0],
+			["plasma_cell", 3, 5, 0],
+			["specimen_tube", 4, 0, 0]
+		],
+		[
+			["cooler_unit", 0, 0, 0],
+			["space_cheese", 1, 0, 0],
+			["space_cheese", 1, 1, 0],
+			["cargo_crate", 0, 2, 0],
+			["cargo_crate", 1, 2, 0]
+		],
+	]
+	for j in 3:
+		_tut_act(rec, t, Defs.ACT_ACCEPT, [0])
+		if not rec.run.shop.is_empty():
+			_tut_act(rec, t, Defs.ACT_BUY_KIT, [0])
+		for p: Array in plan[j]:
+			var id := -1
+			for d: int in rec.run.dock:
+				if id < 0 and rec.run.cargo[d].def.id == p[0]:
+					id = d
+			_tut_act(rec, t, Defs.ACT_PLACE, [id, p[1], p[2], p[3]])
+		if j == 1:
+			_tut_act(
+				rec,
+				t,
+				Defs.ACT_CLAMP,
+				[
+					(
+						rec
+						. run
+						. hold_cargo()
+						. filter(func(c: Cargo) -> bool: return c.def.id == "specimen_tube")[0]
+						. id
+					)
+				]
+			)
+		_tut_act(rec, t, Defs.ACT_WARP, [])
+		check(not t.failed(), "the try step of jump %d is met (SPEC Section 23.4)" % (j + 1))
+		_tut_act(rec, t, Defs.ACT_CONTINUE, [])
+	_tut_act(rec, t, Defs.ACT_PAY, [])
+	eq(
+		[t.done(), rec.run.won],
+		[true, true],
+		"the tutorial ends with each step done and a win (SPEC Section 23.4)"
+	)
+
+
+## Does an action of the tutorial, then ends each step that it completes, and each
+## step with no action that comes after it.
+func _tut_act(rec: RunRecord, t: Tutorial, name: String, args: Array) -> void:
+	eq(rec.act(name, args), "", "tutorial: %s %s" % [name, args])
+	t.update(rec.run)
+	while t.view().get("next", false):
+		t.next()
+		t.update(rec.run)

@@ -1,0 +1,7 @@
+{
+	"id": "tutorial_cold",
+	"legs": [],
+	"client_name": "Flight School",
+	"freight": ["space_cheese", "space_cheese", "cargo_crate", "cargo_crate"],
+	"pay": 6
+}

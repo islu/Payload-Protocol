@@ -111,6 +111,7 @@ The first content has 43 freight in contracts, 6 kit, and the Hull Debris (SPEC 
 
 - Each event has 2 or 3 choices. One choice has no cost. Most events have one choice with no bad effect too.
 - A choice text tells what the player does. The screen shows the cost and the effects next to it.
+- A contract of the tutorial has `"legs": []` too, and its id starts with `tutorial_` (SPEC Section 23.4). `data/tutorial.json` names it.
 - A contract that only an event gives has `"legs": []`. Give it more pay than an offered contract of the same size: the player did not plan for it.
 - Use the effects of SPEC Section 26.2 only. A new kind of effect needs a code change.
 - Each event names its speaker: one of the characters with a portrait (SPEC Section 20.8). Use a speaker of `speakers/`. A new speaker needs a portrait of the upper body or the full body: add it to `tools/art/speaker_art.json` with the height of its head, and run `task art`.

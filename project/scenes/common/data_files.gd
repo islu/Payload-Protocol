@@ -10,7 +10,11 @@ const DIRS: PackedStringArray = [
 
 ## Returns the parsed data for Catalog.from_data(), from a data folder.
 static func read(dir: String = DATA_DIR) -> Dictionary:
-	var data := {"rules": _read_json(dir + "/rules.json"), "terms": _read_json(dir + "/terms.json")}
+	var data := {
+		"rules": _read_json(dir + "/rules.json"),
+		"terms": _read_json(dir + "/terms.json"),
+		"tutorial": _read_json(dir + "/tutorial.json"),
+	}
 	for sub in DIRS:
 		var files := {}
 		for name in DirAccess.get_files_at(dir + "/" + sub):

@@ -8,6 +8,7 @@ extends RefCounted
 
 const NOTHING_TEXT := "There is nothing to undo at this station."
 const UNKNOWN_TEXT := "There is no such action."
+const NO_WARP_TEXT := "There is no warp to go back to."
 
 ## The run now.
 var run: Run
@@ -15,10 +16,15 @@ var run: Run
 var _actions: Array[Dictionary] = []
 ## The number of actions before the arrival at this station.
 var _station_start := 0
+## The catalog and the mode of the run, to play it again.
+var _catalog: Catalog
+var _tutorial := false
 
 
-func _init(catalog: Catalog, run_seed: int) -> void:
-	run = Run.new(catalog, run_seed)
+func _init(catalog: Catalog, run_seed: int, tutorial := false) -> void:
+	_catalog = catalog
+	_tutorial = tutorial
+	run = Run.new(catalog, run_seed, tutorial)
 
 
 ## Does an action on the run. It records the action when it works.
@@ -49,10 +55,33 @@ func undo() -> String:
 	if not can_undo():
 		return NOTHING_TEXT
 	_actions.pop_back()
-	run = Run.new(run.cat, run.seed_value)
-	for a in _actions:
-		apply(run, a["name"], a["args"])
+	_replay()
 	return ""
+
+
+## Goes back to the station before the last warp: the run plays again with no action
+## from that warp on. The tutorial uses it after a try step fails (SPEC Section 23.4).
+func back_to_warp() -> String:
+	var at := -1
+	for i in _actions.size():
+		if _actions[i]["name"] == Defs.ACT_WARP:
+			at = i
+	if at < 0:
+		return NO_WARP_TEXT
+	_actions.resize(at)
+	_replay()
+	return ""
+
+
+## Plays the run again from the seed with the recorded actions.
+func _replay() -> void:
+	run = Run.new(_catalog, run.seed_value, _tutorial)
+	_station_start = 0
+	for i in _actions.size():
+		var at_station := run.phase == Defs.PHASE_STATION
+		apply(run, _actions[i]["name"], _actions[i]["args"])
+		if not at_station or run.phase != Defs.PHASE_STATION:
+			_station_start = i + 1
 
 
 ## Does one action on a run, and returns its error text, or "".
