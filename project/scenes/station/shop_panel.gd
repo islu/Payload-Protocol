@@ -40,6 +40,9 @@ func refresh() -> void:
 		return
 	for o: Dictionary in s["offers"]:
 		_offer_card(o)
+	# The tutorial has fixed kit offers: no Reroll (SPEC Section 23.4).
+	if not screen.view_data.get("tutorial", {}).is_empty():
+		return
 	_price_button(
 		self,
 		tr(REROLL_TEXT).format({"price": s["reroll_price"]}),

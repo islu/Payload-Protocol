@@ -90,6 +90,9 @@ var _warp_button: Button
 var _undo_button: Button
 var _pilot_label: Label
 var _pilot_face: PilotFace
+## The pilot panel and the row under the hold. The tutorial hides them: its guide has the pilot.
+var _pilot_panel: PanelContainer
+var _bottom_row: HBoxContainer
 var _type_tween: Tween
 var _tip: CargoTip
 var _toast: Label
@@ -161,7 +164,8 @@ func _build() -> void:
 	scroll.add_child(_contracts_box)
 	var pilot := HBoxContainer.new()
 	pilot.add_theme_constant_override("separation", 12)
-	Ui.panel(left).add_child(pilot)
+	_pilot_panel = Ui.panel(left)
+	_pilot_panel.add_child(pilot)
 	_pilot_face = PilotFace.new()
 	pilot.add_child(_pilot_face)
 	_pilot_label = Ui.label(pilot, "", TextSize.BODY, Palette.ACCENT)
@@ -210,6 +214,7 @@ func _build() -> void:
 	ship.add_child(hold_view)
 	# Below the hold: the mod bar, and the hint of the controls (SPEC Section 20.2).
 	var bottom := HBoxContainer.new()
+	_bottom_row = bottom
 	bottom.alignment = BoxContainer.ALIGNMENT_CENTER
 	bottom.add_theme_constant_override("separation", 16)
 	center.add_child(bottom)
@@ -303,6 +308,10 @@ func refresh() -> void:
 		return
 	_top_bar.set_view(run_data)
 	_checklist.set_view(run_data)
+	# The guide of the tutorial has the pilot and covers the row under the hold (SPEC Section 23.4).
+	var tutorial: bool = not view_data.get("tutorial", {}).is_empty()
+	_pilot_panel.visible = not tutorial
+	_bottom_row.visible = not tutorial
 	_check_sensor_lost()
 	_count_credits(run_data["credits"])
 	# The Warp button does not work over the maximum mass (SPEC Section 25).

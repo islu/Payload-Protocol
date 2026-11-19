@@ -47,6 +47,15 @@ static func check(ui: Node, main: Control) -> void:
 		guide.next_button.visible and not guide.retry_button.visible and guide.skip_button.visible,
 		"a step with no action has Next, and Skip Tutorial is on the screen (SPEC Section 23.4)"
 	)
+	var station: StationScreen = main.screen()
+	ui._check(
+		(
+			not station._pilot_panel.is_visible_in_tree()
+			and not station._bottom_row.is_visible_in_tree()
+			and station._shop.get_child_count() == 0
+		),
+		"the tutorial hides the pilot panel, the row under the hold, and Reroll (SPEC Section 23.4)"
+	)
 	guide.next_button.pressed.emit()
 	await _frames(ui, 2)
 	ui._check(

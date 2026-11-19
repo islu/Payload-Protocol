@@ -1768,7 +1768,7 @@ msgid "Welcome aboard. I am MAGELLAN, the ship AI. I will show you how to carry 
 msgstr ""
 
 #: project/data/tutorial.json
-msgid "This is a contract. Click it to accept it. Its freight goes to the dock."
+msgid "This is a contract. Press Accept to take it. Its freight goes to the dock."
 msgstr ""
 
 #: project/data/tutorial.json

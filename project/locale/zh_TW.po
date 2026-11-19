@@ -1795,8 +1795,8 @@ msgid "Welcome aboard. I am MAGELLAN, the ship AI. I will show you how to carry 
 msgstr "歡迎登艦。我是 MAGELLAN，這艘船的 AI。我來教你怎麼運貨。"
 
 #: project/data/tutorial.json
-msgid "This is a contract. Click it to accept it. Its freight goes to the dock."
-msgstr "這是一張合約。點一下就能接下，它的貨物會送到碼頭。"
+msgid "This is a contract. Press Accept to take it. Its freight goes to the dock."
+msgstr "這是一張合約。按「接下」就能接下它，它的貨物會送到碼頭。"
 
 #: project/data/tutorial.json
 msgid "Drag each cargo from the dock into the hold, the grid in the middle."

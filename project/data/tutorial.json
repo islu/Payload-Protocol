@@ -12,7 +12,7 @@
 					"until": "next"
 				},
 				{
-					"text": "This is a contract. Click it to accept it. Its freight goes to the dock.",
+					"text": "This is a contract. Press Accept to take it. Its freight goes to the dock.",
 					"target": {
 						"kind": "contract",
 						"index": 0
