@@ -56,6 +56,7 @@ static func check(ui: Node, main: Control) -> void:
 		),
 		"the tutorial hides the pilot panel, the row under the hold, and Reroll (SPEC Section 23.4)"
 	)
+	UiCheckText.check(ui, guide, "the tutorial guide")
 	guide.next_button.pressed.emit()
 	await _frames(ui, 2)
 	ui._check(

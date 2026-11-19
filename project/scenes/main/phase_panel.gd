@@ -34,13 +34,13 @@ func _ready() -> void:
 	box.add_theme_constant_override("separation", 24)
 	add_child(box)
 	_heading = Label.new()
-	_heading.add_theme_font_size_override("font_size", 48)
+	TextSize.display(_heading, 48)
 	_heading.add_theme_color_override("font_color", Palette.ACCENT)
 	box.add_child(_heading)
 	_body = RichTextLabel.new()
 	_body.bbcode_enabled = true
 	_body.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	_body.add_theme_font_size_override("normal_font_size", 22)
+	_body.add_theme_font_size_override("normal_font_size", TextSize.BODY)
 	box.add_child(_body)
 	_buttons = HBoxContainer.new()
 	_buttons.add_theme_constant_override("separation", 20)

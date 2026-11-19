@@ -116,8 +116,13 @@ func _offer_card(o: Dictionary) -> void:
 	info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.add_child(info)
 	var text := PackedStringArray()
-	var title := Ui.label(info, "", TextSize.BODY)
+	# The Buy button is on the row of the name, so that the card is short (SPEC Section 4.2).
+	var head := HBoxContainer.new()
+	info.add_child(head)
+	var title := Ui.label(head, "", TextSize.BODY)
 	title.text = tr(o["name"])
+	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	title.clip_text = true
 	text.append(title.text)
 	for t: String in o["traits"]:
 		var rule_text := GameText.trait_line(screen.view_data["terms"], t)
@@ -138,16 +143,15 @@ func _offer_card(o: Dictionary) -> void:
 		text.append(helps.text)
 	var buy: Button
 	if o["bought"]:
-		buy = screen.add_button(info, tr(SOLD_TEXT), func() -> void: pass, false)
+		buy = screen.add_button(head, tr(SOLD_TEXT), func() -> void: pass, false)
 	else:
 		var index: int = o["index"]
 		buy = _price_button(
-			info,
+			head,
 			tr(BUY_TEXT).format({"price": o["price"]}),
 			o["afford"],
 			func() -> void: screen.act(GameState.buy_kit(index), "coin")
 		)
-	buy.size_flags_horizontal = Control.SIZE_SHRINK_END
 	offer_cards.append({"buy": buy, "text": "\n".join(text)})
 
 

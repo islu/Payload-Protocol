@@ -51,6 +51,14 @@ func setup(station: StationScreen, k: Dictionary) -> void:
 	var head := _first_line(box, k, details)
 	var second := _groups(box, k["groups"])
 	var tags := PackedStringArray()
+	# The state of an accepted contract is on the second line, so that the name of
+	# the client fits on the first line (SPEC Sections 4.2 and 20.2).
+	if k.get("carried", false):
+		tags.append(
+			_tag(second, tr(ON_ITS_WAY_TEXT).format({"jumps": k["jumps_left"]}), Palette.ACCENT)
+		)
+	elif k["accepted"]:
+		tags.append(_tag(second, tr(LOADED_TEXT).format(k), Palette.ACCENT))
 	if not k["bonus"].is_empty():
 		var b: Dictionary = k["bonus"]
 		tags.append(_tag(second, tr(BONUS_TAG_TEXT).format(b), Palette.WARN))
@@ -131,19 +139,12 @@ func _first_line(box: Control, k: Dictionary, details: PackedStringArray) -> Str
 	mass.text = tr(MASS_TEXT).format(k)
 	var line := PackedStringArray([client.text, pay.text, mass.text])
 	var index: int = k["index"]
-	if k.get("carried", false):
-		# A long contract on its way cannot be canceled (SPEC Section 30.2).
-		var way := Ui.label(head, "", TextSize.SMALL, Palette.ACCENT)
-		way.text = tr(ON_ITS_WAY_TEXT).format({"jumps": k["jumps_left"]})
-		line.append(way.text)
-	elif k["accepted"]:
-		var loaded := Ui.label(head, "", TextSize.SMALL, Palette.ACCENT)
-		loaded.text = tr(LOADED_TEXT).format(k)
-		line.append(loaded.text)
+	# A long contract on its way cannot be canceled (SPEC Section 30.2).
+	if k["accepted"] and not k.get("carried", false):
 		screen.add_button(
 			head, tr(CANCEL_TEXT), func() -> void: screen.act(GameState.cancel_contract(index))
 		)
-	else:
+	elif not k["accepted"]:
 		screen.add_button(
 			head, tr(ACCEPT_TEXT), func() -> void: screen.act(GameState.accept_contract(index))
 		)

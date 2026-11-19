@@ -226,7 +226,7 @@ func _title() -> Control:
 	center.add_child(box)
 	var title := Label.new()
 	title.text = tr(TITLE_TEXT)
-	title.add_theme_font_size_override("font_size", 96)
+	TextSize.display(title, 96)
 	title.add_theme_color_override("font_color", Palette.ACCENT)
 	title.add_theme_color_override("font_shadow_color", Color(Palette.ACCENT, 0.35))
 	title.add_theme_constant_override("shadow_offset_x", 0)
@@ -237,7 +237,7 @@ func _title() -> Control:
 	var tagline := Label.new()
 	tagline.name = "Tagline"
 	tagline.text = tr(TAGLINE_TEXT)
-	tagline.add_theme_font_size_override("font_size", 30)
+	TextSize.display(tagline, 30)
 	tagline.add_theme_color_override("font_color", Palette.TEXT_DIM)
 	tagline.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	box.add_child(tagline)

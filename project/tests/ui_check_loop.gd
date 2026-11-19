@@ -78,6 +78,7 @@ static func choose(ui: Node, main: Control) -> void:
 			return
 		buttons = event_panel.choices
 		_check_event(ui, event_panel, run["event"])
+		UiCheckText.check(ui, event_panel, "the event")
 	else:
 		var panel := main.choice as ChoicePanel
 		ui._check(panel != null, "the mod choice shows in a panel (SPEC Section 20.9)")

@@ -22,12 +22,16 @@ var _marks: Array[Mark] = []
 
 func _init() -> void:
 	add_theme_stylebox_override("panel", Ui.panel_style(Palette.PANEL_LINE, 1, 6, 10, 6))
-	var box := VBoxContainer.new()
-	box.add_theme_constant_override("separation", 2)
+	# Two columns of two rows, so that the right column fits (SPEC Section 4.2).
+	var box := GridContainer.new()
+	box.columns = 2
+	box.add_theme_constant_override("h_separation", 16)
+	box.add_theme_constant_override("v_separation", 2)
 	add_child(box)
 	for i in 4:
 		var row := HBoxContainer.new()
-		row.add_theme_constant_override("separation", 10)
+		row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		row.add_theme_constant_override("separation", 8)
 		box.add_child(row)
 		var mark := Mark.new()
 		row.add_child(mark)

@@ -58,6 +58,7 @@ func _init() -> void:
 	box.add_theme_constant_override("separation", 12)
 	add_child(box)
 	head = Ui.label(box, "", 40, Palette.ACCENT)
+	TextSize.display(head)
 	var scroll := ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
@@ -88,7 +89,7 @@ func _init() -> void:
 	box.add_child(replay)
 	continue_button = Button.new()
 	continue_button.custom_minimum_size = Vector2(0, 70)
-	continue_button.add_theme_font_size_override("font_size", 28)
+	continue_button.add_theme_font_size_override("font_size", TextSize.BUTTON)
 	continue_button.pressed.connect(func() -> void: GameState.continue_run())
 	box.add_child(continue_button)
 	retranslate()

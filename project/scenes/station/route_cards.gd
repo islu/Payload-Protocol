@@ -44,7 +44,7 @@ static func incident_card(parent: Control, inc: Dictionary) -> PanelContainer:
 	card.add_child(box)
 	var mark := Label.new()
 	mark.text = "!"
-	mark.add_theme_font_size_override("font_size", 44)
+	TextSize.display(mark, 44)
 	mark.add_theme_color_override("font_color", INCIDENT_COLOR)
 	mark.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	box.add_child(mark)

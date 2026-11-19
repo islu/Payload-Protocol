@@ -18,7 +18,8 @@ const CLEAR_SCRAP_TEXT := "Clear the scrap: -{price} cr"
 const NO_SELL_TEXT := "Freight cannot be sold"
 const WARP_TEXT := "WARP"
 # gdlint:ignore = max-line-length
-const FREE_CLAMPS_TEXT := "{free} of {total} free. Drag a clamp onto a cargo. Click a clamp to take it off."
+const FREE_CLAMPS_TEXT := "{free} of {total} free"
+const CLAMP_HELP_TEXT := "Drag a clamp onto a cargo. Click a clamp to take it off."
 const EMPTY_DOCK_TEXT := "Empty. Accept a contract or buy kit."
 const CONFIRM_TITLE_TEXT := "Cargo on the dock"
 # gdlint:ignore = max-line-length
@@ -35,7 +36,7 @@ const SENSOR_LOST_TEXT := "No Sensor: the fork step is hidden again."
 const TYPE_SPEED := 40.0
 const ARROWS := {Defs.DIR_LEFT: "←", Defs.DIR_RIGHT: "→", Defs.DIR_UP: "↑", Defs.DIR_DOWN: "↓"}
 const LOAD_ALL_TEXT := "Load all"
-const SIDE_WIDTH := 470.0
+const SIDE_WIDTH := 500.0
 const SELL_HEIGHT := 48.0
 ## The cell of the cargo on the dock (SPEC Section 20.2).
 const DOCK_CELL := 48.0
@@ -190,6 +191,8 @@ func _build() -> void:
 	var next_jump := Ui.label(hazard, NEXT_JUMP_TEXT, TextSize.BODY, Palette.WARN)
 	next_jump.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_hazard_box = VBoxContainer.new()
+	# The arrows of the hazard cards are display text (SPEC Section 4.2).
+	TextSize.display(_hazard_box)
 	_hazard_box.add_theme_constant_override("separation", 10)
 	hazard.add_child(_hazard_box)
 	var ship := VBoxContainer.new()
@@ -236,11 +239,21 @@ func _build() -> void:
 	_services.show_services = true
 	right.add_child(_services)
 	Ui.label(right, CLAMPS_TEXT, TextSize.HEADING, Palette.ACCENT)
+	# The free clamps and their count are on one row. The mouse on them shows how to
+	# use a clamp in the tip (SPEC Sections 4.2 and 13).
+	var clamp_row := HBoxContainer.new()
+	clamp_row.add_theme_constant_override("separation", 12)
+	clamp_row.mouse_filter = Control.MOUSE_FILTER_PASS
+	clamp_row.mouse_entered.connect(
+		func() -> void: show_text_tip(tr(CLAMPS_TEXT), PackedStringArray([tr(CLAMP_HELP_TEXT)]))
+	)
+	clamp_row.mouse_exited.connect(hide_tip)
+	right.add_child(clamp_row)
 	_clamp_box = HBoxContainer.new()
 	_clamp_box.add_theme_constant_override("separation", 8)
-	right.add_child(_clamp_box)
-	_clamp_label = Ui.label(right, "", TextSize.SMALL, Palette.TEXT_DIM)
-	_clamp_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	clamp_row.add_child(_clamp_box)
+	_clamp_label = Ui.label(clamp_row, "", TextSize.SMALL, Palette.TEXT_DIM)
+	_clamp_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	# The sell area is a small bar. A drag colors it (SPEC Section 20.2).
 	sell_area = Ui.panel(right)
 	sell_area.custom_minimum_size.y = SELL_HEIGHT
@@ -258,7 +271,7 @@ func _build() -> void:
 	_warp_button = Button.new()
 	_warp_button.text = tr(WARP_TEXT)
 	_warp_button.custom_minimum_size = Vector2(0, 72)
-	_warp_button.add_theme_font_size_override("font_size", 40)
+	TextSize.display(_warp_button, 40)
 	_warp_button.pressed.connect(_on_warp_pressed)
 	right.add_child(_warp_button)
 

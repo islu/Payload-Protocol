@@ -637,7 +637,11 @@ msgid "WARP"
 msgstr ""
 
 #: project/scenes/station/station_screen.gd
-msgid "{free} of {total} free. Drag a clamp onto a cargo. Click a clamp to take it off."
+msgid "{free} of {total} free"
+msgstr ""
+
+#: project/scenes/station/station_screen.gd
+msgid "Drag a clamp onto a cargo. Click a clamp to take it off."
 msgstr ""
 
 #: project/scenes/station/station_screen.gd

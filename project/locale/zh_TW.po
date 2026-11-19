@@ -660,8 +660,12 @@ msgid "WARP"
 msgstr "跳躍"
 
 #: project/scenes/station/station_screen.gd
-msgid "{free} of {total} free. Drag a clamp onto a cargo. Click a clamp to take it off."
-msgstr "空閒 {free} / {total}。把卡榫拖到貨物上固定，點卡榫可以拆下。"
+msgid "{free} of {total} free"
+msgstr "空閒 {free} / {total}"
+
+#: project/scenes/station/station_screen.gd
+msgid "Drag a clamp onto a cargo. Click a clamp to take it off."
+msgstr "把卡榫拖到貨物上固定，點卡榫可以拆下。"
 
 #: project/scenes/station/station_screen.gd
 msgid "Empty. Accept a contract or buy kit."

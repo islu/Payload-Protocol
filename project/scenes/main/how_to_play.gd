@@ -53,8 +53,8 @@ func _build() -> void:
 	_text.bbcode_enabled = true
 	_text.fit_content = true
 	_text.custom_minimum_size.y = 200
-	_text.add_theme_font_size_override("normal_font_size", 22)
-	_text.add_theme_font_size_override("bold_font_size", 26)
+	_text.add_theme_font_size_override("normal_font_size", TextSize.BODY)
+	_text.add_theme_font_size_override("bold_font_size", TextSize.HEADING)
 	box.add_child(_text)
 	_count = Label.new()
 	_count.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER

@@ -105,7 +105,7 @@ func _dialogue(e: Dictionary) -> Control:
 	col.custom_minimum_size.x = BOX_WIDTH
 	frame.add_child(col)
 	speaker_name = Ui.label(col, e["speaker"]["name"], TextSize.HEADING, Palette.ACCENT)
-	Ui.label(col, e["name"], TITLE_SIZE, Palette.TEXT)
+	TextSize.display(Ui.label(col, e["name"], TITLE_SIZE, Palette.TEXT))
 	var body := Ui.label(col, e["text"], TextSize.HEADING, Palette.TEXT)
 	body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	var gap := Control.new()

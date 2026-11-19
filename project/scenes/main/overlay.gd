@@ -85,7 +85,7 @@ func pilot_hint(id: String) -> Label:
 func heading(text: String) -> Label:
 	var l := Label.new()
 	l.text = tr(text)
-	l.add_theme_font_size_override("font_size", 40)
+	TextSize.display(l, 40)
 	l.add_theme_color_override("font_color", Palette.ACCENT)
 	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	box.add_child(l)

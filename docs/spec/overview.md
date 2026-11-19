@@ -62,7 +62,10 @@ These games are references for mechanics only. Do not copy their art, names, ite
 - Each trait has one color and one icon. Each cargo shows a small badge with the icon of each trait at its top left corner. Do not show a trait with a color only.
 - A **CRT filter** draws scanlines and a vignette on the full screen. It does not bend the image, so that the mouse points at the cell that the player sees. A setting turns it off (Section 23.1).
 - The font is jf open huninn 2.1 (SIL Open Font License 1.1). It has Latin and Traditional Chinese glyphs.
-- The text has four sizes only: heading 24, body 18, small 15, and button 20 pixels. Display text is the exception: the title of the game, the Warp button, and the arrows of the hazard cards.
+- The text has four sizes only: heading 28, body 22, small 18, and button 24 pixels. The sizes are for a screen of 1920 by 1080 pixels.
+- Text with no other size has the body size.
+- Display text is the exception: the title of the game and its tagline, the Warp button, the arrows of the hazard cards, the title of each panel, the name of an event, and the banners and the numbers of the warp.
+- When a text does not fit at its size, make the text shorter. Do not make the size smaller. Put the full text in the tooltip.
 
 ### 4.3 Sound
 

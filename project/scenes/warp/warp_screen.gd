@@ -77,7 +77,7 @@ func _ready() -> void:
 	_fx.hold = _hold
 	_hold.add_child(_fx)
 	_banner = Label.new()
-	_banner.add_theme_font_size_override("font_size", 64)
+	TextSize.display(_banner, 64)
 	_banner.add_theme_color_override("font_color", Palette.WARN)
 	_banner.set_anchors_and_offsets_preset(Control.PRESET_CENTER_TOP)
 	_banner.offset_top = 40
@@ -85,7 +85,7 @@ func _ready() -> void:
 	_banner.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	add_child(_banner)
 	_loss_label = Label.new()
-	_loss_label.add_theme_font_size_override("font_size", 48)
+	TextSize.display(_loss_label, 48)
 	_loss_label.add_theme_color_override("font_color", Palette.BAD)
 	_loss_label.set_anchors_and_offsets_preset(Control.PRESET_CENTER_TOP)
 	_loss_label.offset_top = 130

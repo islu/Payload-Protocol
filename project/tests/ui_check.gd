@@ -116,6 +116,7 @@ func _play_run(main: Control) -> void:
 		),
 		"the version is at the bottom right (SPEC Section 20.1)"
 	)
+	UiCheckText.check(self, main.screen(), "the title")
 	state.new_run(11)
 	await get_tree().process_frame
 	await UiCheckLoop.gear(self, main)
@@ -135,6 +136,7 @@ func _play_run(main: Control) -> void:
 				await _play_warp(main)
 				state.continue_run()
 			Defs.PHASE_PAYMENT:
+				UiCheckText.check(self, main, "the payment screen")
 				state.make_payment()
 			Defs.PHASE_EVENT, Defs.PHASE_MOD:
 				await UiCheckLoop.choose(self, main)
@@ -228,6 +230,7 @@ func _check_report_marks(warp: WarpScreen) -> void:
 func _check_report(warp: WarpScreen) -> void:
 	var a: Dictionary = GameState.view()["run"]["arrival"]
 	var report := warp._report
+	UiCheckText.check(self, report, "the arrival report")
 	var groups := 0
 	for k: Dictionary in a["contracts"]:
 		groups += k["groups"].size()
@@ -315,6 +318,7 @@ func _check_overlays(main: Control) -> void:
 		)
 		_check(points.size() == 3, "a page of How to Play has 3 points (SPEC Section 23.2)")
 	await get_tree().process_frame
+	UiCheckText.check(self, pause, "the pause menu, the settings, and How to Play")
 	for i in 4:
 		help._show(i)
 	for page: Array in TutorialPicture.PAGE_CARGO:
@@ -339,20 +343,7 @@ static func _route_cards(run: Dictionary) -> int:
 ## The hold fills the center, and the hazard panel is above it (SPEC Section 20.2).
 ## The text has four sizes (SPEC Section 4.2).
 func _check_layout(station: StationScreen) -> void:
-	var sizes := [24, 18, 15, 20]
-	var wrong := PackedStringArray()
-	for n in station.find_children("*", "", true, false):
-		# Display text: the Warp button and the arrows of the hazard cards.
-		if n == station._warp_button or station._hazard_box.is_ancestor_of(n):
-			continue
-		var font_size := -1
-		if n is Label or n is Button:
-			font_size = n.get_theme_font_size("font_size")
-		elif n is RichTextLabel:
-			font_size = n.get_theme_font_size("normal_font_size")
-		if font_size != -1 and not font_size in sizes:
-			wrong.append("%s %d %s" % [n.get_class(), font_size, station.get_path_to(n)])
-	_check(wrong.is_empty(), "the station text has the four sizes: %s (SPEC Section 4.2)" % [wrong])
+	UiCheckText.check(self, station, "the station")
 	var hold := station.hold_view
 	_check(hold.cell == 100.0, "each cell is 100 pixels: %s px (SPEC Section 20.2)" % hold.cell)
 	var grid := Rect2(hold.grid_origin(), Vector2(hold.columns, hold.rows) * hold.cell)
