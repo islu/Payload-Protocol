@@ -51,7 +51,10 @@ The first New Run starts a short tutorial. You can skip it, and start it again f
 - Font: jf open huninn 2.1 by justfont (SIL OFL 1.1)
 - Made with [Godot 4.7](https://godotengine.org)
 
-[docs/assets.md](docs/assets.md) has the license of each file.
+## License
+
+- **Code:** the GDScript code and the tool scripts have the [MIT License](LICENSE).
+- **Assets:** the art, the music, the font, and the effect sheets are not under the MIT License. Other creators made them. [docs/assets.md](docs/assets.md) gives the source and the license of each file.
 
 ## For Developers
 
