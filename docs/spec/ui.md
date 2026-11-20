@@ -22,7 +22,7 @@ The station screen has these areas:
 | Route bar | Center, above the hold | The route of the next jump, from left to right: the depart point (the ship), the incident (Section 29), each shift step in order (Section 18), and the arrive point (the station). A line joins the points. Each step is a card with a large arrow, its number, and its direction. A fork step shows its two directions and a question mark. The environment of the leg is a band below the line (Section 28). |
 | Dock | Left, top | The cargo on the dock (Section 8.1). |
 | Contract board | Left, below the dock | The 4 contracts, with Accept and Cancel buttons (Section 15). |
-| Hold | Center | The grid and its cargo, the links, and the clamps. Each cell is 100 pixels, the size of the cargo images (Section 4.2). |
+| Hold | Center | The grid and its cargo, the links, and the clamps, inside a bulkhead (Section 21.6). Each cell is 100 pixels, the size of the cargo images (Section 4.2). |
 | Shock bay | Left of the hold | The cells of the shock bay, after its purchase (Section 31.2). |
 | Mod bar | Below the hold | A card with the icon of each mod of the ship (Section 27). The mouse on a card shows the name and the rule of the mod, and marks the area of the mod on the hold. |
 | Shop | Right | The kit offers, Reroll, the services, and the sell area (Section 17). |
@@ -45,7 +45,7 @@ The hazard:
 
 The shop and the services:
 
-- Each kit offer shows its image, each trait with its icon and its rule, its weight, and its price on the Buy button. A price that is more than the credits shows in red.
+- Each kit offer shows its image, the icon of each trait, its weight, and its price on the Buy button. Its tooltip shows the rule of each trait (Section 20.10). A price that is more than the credits shows in red.
 - Each kit offer shows how it helps the accepted freight on the dock and in the hold: "Helps N of your freight". A Cooler counts Perishable freight. A Cushion counts Fragile freight. A Shield counts freight that is Fragile, Volatile, Fluid, or Electronic. A Battery counts the Shield kit on the dock and in the hold. A Sensor shows "The next jump has a fork step" when it does. Other kit and a count of 0 show nothing.
 - Each service shows the value now and the value after the purchase: the clamps (1/4 → 2/4), the shock bay (none → 2×2, or 2×2 → 2×3), and the mass limit (24 → 30).
 - The sell area is a small bar. During a drag of a kit, it is green and shows the sell price. During a drag of a scrap, it is red and shows the clear price.
@@ -116,6 +116,13 @@ The warp:
 - The mod choice shows a card for each mod: its icon, its name, and its rule. The icon is the same as on the mod bar (Section 20.2). A click on a card selects the mod (Section 27.1).
 - The player must select a mod.
 
+### 20.10 Tooltips
+
+- A screen shows the values that the player compares to decide: prices, pay, mass, "Helps N", and the short rule of the environment. A **tooltip** shows the explanations: the rules of the traits, the details of a contract, and the rule of a mod.
+- A tooltip shows at once when the mouse is on its control, and when the keyboard focus is on it. All tooltips have the same style.
+- A card has one tooltip for the whole card. Its icons have no tooltip of their own. A cargo image shows the tooltip of its cargo (Section 8.4).
+- On a control that the player can only read, the mouse cursor is a question mark. A control that the player can drag or press keeps its cursor.
+
 ## 21. Feedback
 
 ### 21.1 Placement and Slide
@@ -155,6 +162,18 @@ The warp:
 - When a freight becomes scrap in the warp, its lost pay shows above it ("−8"). The event log gives the lost pay. A kit shows no number.
 - From the second reaction of a chain, the warp shows "Chain ×N". N is the number of reactions of that chain so far.
 - At the end of the warp, the warp shows the total lost pay ("Lost −24") before the arrival report.
+
+### 21.6 The Hold
+
+- The hold has a metal **bulkhead** on each side: a frame with a rivet at each grid line and a bracket at each corner. All sides look the same. Only the marks of Sections 12.3 and 20.2 put stripes on a bulkhead.
+- Each cell of the floor is a deck plate with a screw at each corner. The grid lines stay. The plates have a low contrast, so that the cargo is easy to see.
+- The shock bay has the deck plates, its padded frame of Section 31.2, and no lights.
+- Each bulkhead has 2 lights. At the station, the lights are dark blue. In the warp:
+  - When a shift step starts, the lights of its front wall are amber until the slide ends.
+  - A hit on a wall (a slide into the wall or a wall jolt) flashes the lights of that wall white.
+  - An explosion, a meteor, and a hull breach turn all lights red for 1 second.
+  - A leak flashes the nearest light blue. A short flashes the nearest light cyan.
+  - A light flashes 3 times each second or less.
 
 ## 22. The Pilot
 

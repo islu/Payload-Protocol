@@ -100,16 +100,18 @@ func _bay_size(size: Dictionary) -> String:
 	return tr(BAY_NONE_TEXT) if size.is_empty() else tr(BAY_SIZE_TEXT).format(size)
 
 
-## A kit offer: its image, its traits with their rules, how it helps, and Buy (SPEC Section 20.2).
+## A kit offer: its image, the icons of its traits, how it helps, and Buy. Its tooltip
+## shows the rules of the traits: the mouse on the card or the focus on Buy shows it
+## (SPEC Sections 20.2 and 20.10).
 func _offer_card(o: Dictionary) -> void:
 	var card := Ui.panel(self)
+	screen.tip_on(card, screen.show_tip.bind(o), true)
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 12)
 	card.add_child(row)
 	var chip := CargoChip.new().setup(o, OFFER_CELL)
 	chip.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	chip.mouse_entered.connect(func() -> void: screen.show_tip(o))
-	chip.mouse_exited.connect(screen.hide_tip)
+	chip.mouse_filter = Control.MOUSE_FILTER_PASS
 	row.add_child(chip)
 	var info := VBoxContainer.new()
 	info.add_theme_constant_override("separation", 2)
@@ -124,19 +126,11 @@ func _offer_card(o: Dictionary) -> void:
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	title.clip_text = true
 	text.append(title.text)
+	var icons := HBoxContainer.new()
+	icons.add_theme_constant_override("separation", 6)
+	info.add_child(icons)
 	for t: String in o["traits"]:
-		var rule_text := GameText.trait_line(screen.view_data["terms"], t)
-		if rule_text == "":
-			continue
-		var line := HBoxContainer.new()
-		line.add_theme_constant_override("separation", 6)
-		info.add_child(line)
-		line.add_child(trait_icon(t))
-		var rule := Ui.label(line, "", TextSize.SMALL, Palette.TEXT_DIM)
-		rule.text = rule_text
-		rule.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		rule.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		text.append(rule.text)
+		icons.add_child(trait_icon(t))
 	if not o["helps"].is_empty():
 		var helps := Ui.label(info, "", TextSize.SMALL, Palette.GOOD)
 		helps.text = GameText.format(o["helps"])
@@ -152,7 +146,8 @@ func _offer_card(o: Dictionary) -> void:
 			o["afford"],
 			func() -> void: screen.act(GameState.buy_kit(index), "coin")
 		)
-	offer_cards.append({"buy": buy, "text": "\n".join(text)})
+	screen.tip_on(buy, screen.show_tip.bind(o))
+	offer_cards.append({"card": card, "buy": buy, "text": "\n".join(text)})
 
 
 ## A button with a price. A price that is more than the credits shows in red (SPEC Section 20.2).

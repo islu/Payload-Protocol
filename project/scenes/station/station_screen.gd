@@ -81,6 +81,8 @@ var _credits_label: Label
 ## The mod bar below the hold (SPEC Section 20.2).
 var _mod_bar: ModBar
 var _dock_title: Label
+## The free clamps and their count: the mouse on it shows how to use a clamp.
+var _clamp_row: HBoxContainer
 var _dock_flow: HFlowContainer
 var _contracts_box: VBoxContainer
 var _contract_cards: Array[ContractCard] = []
@@ -242,18 +244,19 @@ func _build() -> void:
 	Ui.label(right, CLAMPS_TEXT, TextSize.HEADING, Palette.ACCENT)
 	# The free clamps and their count are on one row. The mouse on them shows how to
 	# use a clamp in the tip (SPEC Sections 4.2 and 13).
-	var clamp_row := HBoxContainer.new()
-	clamp_row.add_theme_constant_override("separation", 12)
-	clamp_row.mouse_filter = Control.MOUSE_FILTER_PASS
-	clamp_row.mouse_entered.connect(
-		func() -> void: show_text_tip(tr(CLAMPS_TEXT), PackedStringArray([tr(CLAMP_HELP_TEXT)]))
+	_clamp_row = HBoxContainer.new()
+	_clamp_row.add_theme_constant_override("separation", 12)
+	_clamp_row.mouse_filter = Control.MOUSE_FILTER_PASS
+	tip_on(
+		_clamp_row,
+		func() -> void: show_text_tip(tr(CLAMPS_TEXT), PackedStringArray([tr(CLAMP_HELP_TEXT)])),
+		true
 	)
-	clamp_row.mouse_exited.connect(hide_tip)
-	right.add_child(clamp_row)
+	right.add_child(_clamp_row)
 	_clamp_box = HBoxContainer.new()
 	_clamp_box.add_theme_constant_override("separation", 8)
-	clamp_row.add_child(_clamp_box)
-	_clamp_label = Ui.label(clamp_row, "", TextSize.SMALL, Palette.TEXT_DIM)
+	_clamp_row.add_child(_clamp_box)
+	_clamp_label = Ui.label(_clamp_row, "", TextSize.SMALL, Palette.TEXT_DIM)
 	_clamp_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	# The sell area is a small bar. A drag colors it (SPEC Section 20.2).
 	sell_area = Ui.panel(right)
@@ -756,8 +759,19 @@ func show_tip(c: Dictionary) -> void:
 ## name and its rule, from the view at that time (SPEC Section 28.1).
 func _env_tip_on(control: Control) -> void:
 	control.mouse_filter = Control.MOUSE_FILTER_STOP
-	control.mouse_entered.connect(_show_env_tip)
+	tip_on(control, _show_env_tip, true)
+
+
+## Shows a tooltip while the mouse is on a control, and while the keyboard focus is on
+## it. A control that the player can only read gets a question mark cursor (SPEC
+## Section 20.10).
+func tip_on(control: Control, show: Callable, read_only := false) -> void:
+	control.mouse_entered.connect(show)
 	control.mouse_exited.connect(hide_tip)
+	control.focus_entered.connect(show)
+	control.focus_exited.connect(hide_tip)
+	if read_only:
+		control.mouse_default_cursor_shape = Control.CURSOR_HELP
 
 
 func _show_env_tip() -> void:

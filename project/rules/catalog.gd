@@ -123,7 +123,11 @@ static func from_data(data: Dictionary) -> Catalog:
 	for name: String in _sorted(files):
 		var m: Dictionary = files[name]
 		cat._check_id(str(m.get("id", "")), name, "environment")
-		cat.environments[name] = {"name": str(m.get("name", "")), "text": str(m.get("text", ""))}
+		cat.environments[name] = {
+			"name": str(m.get("name", "")),
+			"text": str(m.get("text", "")),
+			"short": str(m.get("short", {}).get("text", "")),
+		}
 	cat._read_tutorial(data.get("tutorial", {}))
 	cat._check()
 	return cat
@@ -329,6 +333,8 @@ func _check() -> void:
 		var e: Dictionary = environments.get(id, {})
 		if e.get("name", "") == "" or e.get("text", "") == "":
 			_fail("environments: the environment %s needs a name and a text" % id)
+		if e.get("short", "") == "":
+			_fail("environments: the environment %s needs a short rule" % id)
 	if not cargo.has(debris) or cargo[debris].shape.size() != 1:
 		_fail("rules: the debris %s is not a cargo of 1 cell" % debris)
 	if contracts.any(func(t: ContractTemplate) -> bool: return debris in t.freight):

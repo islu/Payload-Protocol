@@ -256,6 +256,8 @@ func _play_step(n: int, step: Dictionary, run: Dictionary) -> void:
 		)
 	)
 	Sound.play(self, "alarm")
+	# The front wall lights amber until the slide ends (SPEC Section 21.6).
+	_hold.light_wall(d, HoldView.LIGHT_STEP, 0.0)
 	await _wait(0.6)
 	_tilt(d)
 	# The slides: all cargo moves at the same time, at the same speed (SPEC Section 21.1).
@@ -275,6 +277,7 @@ func _play_step(n: int, step: Dictionary, run: Dictionary) -> void:
 		Sound.play(self, "rumble")
 		await tween.finished
 	_hold.offsets.clear()
+	_hold.lights_off(d)
 	_show_hold(run)
 	_play_hits(step, d)
 	await _wait(0.3)
@@ -307,6 +310,9 @@ func _play_route(run: Dictionary, warp_log: Dictionary) -> void:
 	_banner.modulate.a = 1.0
 	_banner.text = incident_shown
 	Sound.play(self, "alarm")
+	# A meteor and a hull breach turn all lights red (SPEC Section 21.6).
+	if inc.get("kind", "") in [Defs.INCIDENT_METEOR, Defs.INCIDENT_HULL_BREACH]:
+		_hold.light_all(HoldView.LIGHT_ALARM, 1.0 / speed)
 	await _wait(0.6)
 	if inc.has("debris_view"):
 		var d: Dictionary = inc["debris_view"].duplicate(true)
@@ -375,6 +381,9 @@ func _play_hits(step: Dictionary, d: String) -> void:
 		strongest = maxi(strongest, h["force"])
 	if step["hits"].is_empty():
 		return
+	# A hit on a wall flashes the lights of that wall white (SPEC Section 21.6).
+	if step["hits"].any(func(h: Dictionary) -> bool: return h.get("wall", false)):
+		_hold.light_wall(d, HoldView.LIGHT_HIT, 0.3 / speed)
 	if strongest == 0:
 		Sound.play(self, "soft_hit")
 	else:
@@ -400,9 +409,11 @@ func _play_reaction(r: Dictionary) -> void:
 		Defs.REACT_LEAK:
 			_fx.leak(at)
 			Sound.play(self, "splash")
+			_hold.light_near(at, HoldView.LIGHT_LEAK, 0.4 / speed)
 		Defs.REACT_SHORT:
 			_fx.bolts(at)
 			Sound.play(self, "buzz")
+			_hold.light_near(at, HoldView.LIGHT_SHORT, 0.4 / speed)
 		Defs.REACT_EXPLOSION:
 			var cells := []
 			for cell: Dictionary in r.get("area", []):
@@ -410,6 +421,7 @@ func _play_reaction(r: Dictionary) -> void:
 			_fx.explosion(at, cells)
 			Sound.play(self, "explosion")
 			_shake_screen(28.0)
+			_hold.light_all(HoldView.LIGHT_ALARM, 1.0 / speed)
 		Defs.REACT_CLEAR:
 			_fx.shards(at)
 		Defs.REACT_SHIELD:
@@ -504,6 +516,7 @@ func _start_replay() -> void:
 	_hold.fades.clear()
 	_hold.checks.clear()
 	_hold.offsets.clear()
+	_hold.lights_off()
 	speed = float(Settings.get_value("warp_speed")) * REPLAY_SPEED
 	_fx.speed = speed
 	_stars.speed = 30.0

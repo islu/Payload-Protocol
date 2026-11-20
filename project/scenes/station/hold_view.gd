@@ -2,6 +2,7 @@ class_name HoldView
 extends Control
 ## Draws the hold: the grid, the cargo, the links, the clamps, a zone, and the
 ## preview of a drop (SPEC Sections 8.3, 12.3, and 20.2). It reads the view only.
+## The hold has a bulkhead with lights, and a deck plate in each cell (SPEC Section 21.6).
 ## With bay true, it draws the shock bay: its own cells, a padded frame, and the
 ## coupling to the hold below it (SPEC Section 31.2).
 
@@ -20,8 +21,23 @@ const MARGIN := 0.8
 const BAY_COUPLING := 16.0
 ## The space around the cells of the shock bay, in pixels: its padded frame.
 const BAY_PAD := 12.0
-## The width of the frame around the grid, in pixels.
-const FRAME := 14.0
+## The width of the bulkhead around the grid, in pixels (SPEC Section 21.6).
+const FRAME := 18.0
+## The length of each arm of a corner bracket, in pixels.
+const BRACKET := 28.0
+## The colors of the lights of the bulkhead (SPEC Section 21.6).
+const LIGHT_IDLE := Color("29538f")
+const LIGHT_STEP := Color("ffba46")  # Palette.TITLE_AMBER
+const LIGHT_HIT := Color(1, 1, 1)
+const LIGHT_ALARM := Color("ff4d6a")  # Palette.BAD
+const LIGHT_LEAK := Color("3c8cff")  # The color of Fluid
+const LIGHT_SHORT := Color("5fd3ff")  # Palette.ACCENT
+## The targets of the light log: all lights, or the light nearest to a point. A wall
+## target is the direction of the wall.
+const LIGHT_ALL := "all"
+const LIGHT_NEAR := "near"
+## The shortest time between two flashes of a light: 3 flashes each second or less.
+const FLASH_GAP := 1.0 / 3.0
 ## The color of the area of each mod.
 const MOD_COLORS := {
 	Defs.MOD_SHOCK_FLOOR: Color(0.55, 0.75, 1.0, 0.16),
@@ -61,6 +77,12 @@ var mod_areas: Array = []
 var hover_mod := ""
 ## The cells of the place of the incident of the next jump (SPEC Section 29.3).
 var incident_cells: Array = []
+## The lights of the bulkhead: [{wall, at, steady, flash, flash_end, flash_start}]. at is
+## the place along the wall, from 0 to 1. The shock bay has none (SPEC Section 21.6).
+var lights: Array[Dictionary] = []
+## Each request to light a light: {target, color, shown}, for the checks. shown is false
+## when a light flashed less than FLASH_GAP before.
+var light_log: Array[Dictionary] = []
 
 var _hover := -1
 ## The links pulse: only this layer redraws each frame, not the whole hold.
@@ -100,6 +122,8 @@ func set_view(run: Dictionary) -> void:
 		front_walls = PackedStringArray([run.get("front_wall", "")])
 		show_jolts = true
 		custom_minimum_size = Vector2(columns + MARGIN, rows + MARGIN) * CELL
+		if lights.is_empty():
+			_make_lights()
 	queue_redraw()
 	_link_layer.queue_redraw()
 
@@ -255,9 +279,7 @@ func _draw() -> void:
 	_draw_frame(o)
 	for y in rows:
 		for x in columns:
-			var r := Rect2(o + Vector2(x, y) * cell, Vector2(cell, cell))
-			draw_rect(r, Palette.GRID)
-			draw_rect(r, Palette.GRID_LINE, false, 1.0)
+			_draw_plate(Rect2(o + Vector2(x, y) * cell, Vector2(cell, cell)))
 	for a: Dictionary in mod_areas:
 		for c: Dictionary in a["cells"]:
 			var r := Rect2(o + Vector2(c["x"], c["y"]) * cell, Vector2(cell, cell)).grow(-3)
@@ -292,8 +314,13 @@ func _draw() -> void:
 				draw_rect(r, Palette.ACCENT, false, 3.0)
 	# The cargo under the mouse: a bright frame on its cells (SPEC Section 4.2).
 	_draw_outline(o, frame_cells(), Palette.ACCENT)
+	# The stripes of a front wall cover its lights (SPEC Section 21.6).
+	if not bay:
+		_draw_lights()
 	for wall in front_walls:
 		_draw_front_wall(o, wall)
+	if not bay:
+		_draw_brackets(Rect2(o, Vector2(columns, rows) * cell).grow(FRAME))
 	if not preview.is_empty():
 		_draw_preview(o)
 
@@ -376,7 +403,8 @@ func _center(c: Dictionary) -> Vector2:
 	return sum / c["shape"].size() * cell
 
 
-## Draws the frame of the hold: metal plates with a rivet at each cell line (SPEC Section 4.2).
+## Draws the bulkhead of the hold: metal plates with a rivet at each grid line
+## (SPEC Sections 4.2 and 21.6).
 func _draw_frame(o: Vector2) -> void:
 	var grid := Rect2(o, Vector2(columns, rows) * cell)
 	var outer := grid.grow(FRAME)
@@ -396,6 +424,167 @@ func _draw_frame(o: Vector2) -> void:
 		var py := o.y + y * cell
 		draw_circle(Vector2(grid.position.x - mid, py), 2.5, rivet)
 		draw_circle(Vector2(grid.end.x + mid, py), 2.5, rivet)
+
+
+## Draws a deck plate: a cell with a soft bevel and a screw at each corner. The
+## contrast is low, so that the cargo is easy to see (SPEC Section 21.6).
+func _draw_plate(r: Rect2) -> void:
+	draw_rect(r, Palette.GRID)
+	var inner := r.grow(-4)
+	var light := Palette.GRID.lightened(0.07)
+	var dark := Palette.GRID.darkened(0.25)
+	draw_line(inner.position, Vector2(inner.end.x, inner.position.y), light, 2.0)
+	draw_line(inner.position, Vector2(inner.position.x, inner.end.y), light, 2.0)
+	draw_line(Vector2(inner.position.x, inner.end.y), inner.end, dark, 2.0)
+	draw_line(Vector2(inner.end.x, inner.position.y), inner.end, dark, 2.0)
+	var screw := Palette.GRID.lightened(0.14)
+	var k := 10.0
+	for p in [
+		inner.position + Vector2(k, k),
+		Vector2(inner.end.x - k, inner.position.y + k),
+		Vector2(inner.position.x + k, inner.end.y - k),
+		inner.end - Vector2(k, k),
+	]:
+		draw_circle(p, 2.5, screw)
+	draw_rect(r, Palette.GRID_LINE, false, 1.0)
+
+
+## Draws an L-shaped bracket at each corner of the bulkhead (SPEC Section 21.6).
+func _draw_brackets(outer: Rect2) -> void:
+	var metal := Palette.PANEL_LINE.lightened(0.12)
+	var edge := Palette.PANEL_LINE.lightened(0.35)
+	var arm := FRAME + BRACKET
+	for corner in [Vector2(0, 0), Vector2(1, 0), Vector2(0, 1), Vector2(1, 1)]:
+		var p: Vector2 = outer.position + outer.size * corner
+		var sx := 1.0 if corner.x == 0 else -1.0
+		var sy := 1.0 if corner.y == 0 else -1.0
+		var pts := PackedVector2Array(
+			[
+				p,
+				p + Vector2(sx * arm, 0),
+				p + Vector2(sx * arm, sy * FRAME),
+				p + Vector2(sx * FRAME, sy * FRAME),
+				p + Vector2(sx * FRAME, sy * arm),
+				p + Vector2(0, sy * arm),
+			]
+		)
+		draw_colored_polygon(pts, metal)
+		pts.append(p)
+		draw_polyline(pts, edge, 1.5)
+		draw_circle(p + Vector2(sx, sy) * FRAME / 2.0, 3.0, edge)
+
+
+# --- The lights of the bulkhead (SPEC Section 21.6) ---
+
+
+## Makes 2 lights on each wall, at the middle of each half of the wall.
+func _make_lights() -> void:
+	lights.clear()
+	for wall in [Defs.DIR_UP, Defs.DIR_RIGHT, Defs.DIR_DOWN, Defs.DIR_LEFT]:
+		for at in [0.25, 0.75]:
+			(
+				lights
+				. append(
+					{
+						"wall": wall,
+						"at": at,
+						"steady": LIGHT_IDLE,
+						"flash": LIGHT_IDLE,
+						"flash_end": 0.0,
+						"flash_start": -10.0,
+					}
+				)
+			)
+
+
+## Returns the color of a light now: its flash, or its steady color.
+func light_color(l: Dictionary) -> Color:
+	return l["flash"] if _now() < l["flash_end"] else l["steady"]
+
+
+## Returns the place of a light in local coordinates: on the middle of the bulkhead.
+func light_position(l: Dictionary) -> Vector2:
+	var grid := Rect2(grid_origin(), Vector2(columns, rows) * cell)
+	var mid := FRAME / 2.0
+	match l["wall"]:
+		Defs.DIR_UP:
+			return Vector2(grid.position.x + grid.size.x * l["at"], grid.position.y - mid)
+		Defs.DIR_DOWN:
+			return Vector2(grid.position.x + grid.size.x * l["at"], grid.end.y + mid)
+		Defs.DIR_LEFT:
+			return Vector2(grid.position.x - mid, grid.position.y + grid.size.y * l["at"])
+	return Vector2(grid.end.x + mid, grid.position.y + grid.size.y * l["at"])
+
+
+## Lights the lights of a wall. With seconds 0 or less, the color stays until
+## lights_off(); else the lights flash for seconds.
+func light_wall(wall: String, color: Color, seconds: float) -> void:
+	var chosen := lights.filter(func(l: Dictionary) -> bool: return l["wall"] == wall)
+	_light(chosen, wall, color, seconds)
+
+
+## Flashes all lights for seconds.
+func light_all(color: Color, seconds: float) -> void:
+	_light(lights, LIGHT_ALL, color, seconds)
+
+
+## Flashes the light nearest to a point in local coordinates for seconds.
+func light_near(point: Vector2, color: Color, seconds: float) -> void:
+	if lights.is_empty():
+		return
+	var best := lights[0]
+	for l in lights:
+		if light_position(l).distance_to(point) < light_position(best).distance_to(point):
+			best = l
+	_light([best], LIGHT_NEAR, color, seconds)
+
+
+## Sets the lights of a wall, or all lights, back to dark blue.
+func lights_off(wall := "") -> void:
+	for l in lights:
+		if wall == "" or l["wall"] == wall:
+			l["steady"] = LIGHT_IDLE
+			if wall == "":
+				l["flash_end"] = 0.0
+	queue_redraw()
+
+
+## Lights the chosen lights, and logs the request. A flash less than FLASH_GAP after
+## the last flash of a light does not show.
+func _light(chosen: Array, target: String, color: Color, seconds: float) -> void:
+	var now := _now()
+	var shown := true
+	for l: Dictionary in chosen:
+		if seconds <= 0.0:
+			l["steady"] = color
+		elif now - l["flash_start"] >= FLASH_GAP:
+			l["flash"] = color
+			l["flash_start"] = now
+			l["flash_end"] = now + seconds
+		else:
+			shown = false
+	light_log.append({"target": target, "color": color, "shown": shown})
+	queue_redraw()
+
+
+func _flashing() -> bool:
+	var now := _now()
+	return lights.any(func(l: Dictionary) -> bool: return now < l["flash_end"])
+
+
+static func _now() -> float:
+	return Time.get_ticks_msec() / 1000.0
+
+
+## Draws each light: a dark socket, the lamp, and a glow when it is not dark blue.
+func _draw_lights() -> void:
+	for l in lights:
+		var p := light_position(l)
+		var color := light_color(l)
+		draw_circle(p, 7.0, Palette.BACKGROUND)
+		if color != LIGHT_IDLE:
+			draw_circle(p, 13.0, Color(color, 0.25))
+		draw_circle(p, 5.0, color)
 
 
 ## Draws the frame of the shock bay: soft padding with seams, and the coupling to
@@ -506,7 +695,7 @@ func _draw_warning(top_left: Vector2) -> void:
 
 
 func _process(_delta: float) -> void:
-	if not offsets.is_empty():
+	if not offsets.is_empty() or _flashing():
 		queue_redraw()
 		_link_layer.queue_redraw()
 	elif not links.is_empty():

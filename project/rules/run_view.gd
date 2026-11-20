@@ -653,12 +653,18 @@ static func _one_effect(run: Run, f: Dictionary) -> Dictionary:
 	return text(EFFECT_TEXT.get(f["type"], ""), {})
 
 
-## Returns the environment of the leg: {id, name, text}, or {} (SPEC Section 28.1).
+## Returns the environment of the leg: {id, name, text, short}, or {}. short is the short
+## rule that the route bar shows (SPEC Section 28.1).
 static func environment(run: Run) -> Dictionary:
 	if run.environment == "":
 		return {}
 	var e: Dictionary = run.cat.environments.get(run.environment, {})
-	return {"id": run.environment, "name": e.get("name", ""), "text": e.get("text", "")}
+	return {
+		"id": run.environment,
+		"name": e.get("name", ""),
+		"text": e.get("text", ""),
+		"short": e.get("short", ""),
+	}
 
 
 ## Returns the incident of the next jump: {kind, x, y, cells}, or {}. cells has the

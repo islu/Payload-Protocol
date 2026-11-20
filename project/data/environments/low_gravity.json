@@ -1,5 +1,8 @@
 {
 	"id": "low_gravity",
 	"name": "Low Gravity",
-	"text": "Each cargo slides 2 cells at most in each shift step."
+	"text": "Each cargo slides 2 cells at most in each shift step.",
+	"short": {
+		"text": "Slides 2 cells at most"
+	}
 }

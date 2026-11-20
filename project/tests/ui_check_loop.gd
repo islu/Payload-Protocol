@@ -157,9 +157,12 @@ static func route_station(ui: Node, station: StationScreen) -> int:
 			station._top_bar.env_badge.visible,
 			"the top bar shows the environment of the leg (SPEC Section 28.1)"
 		)
+		var tag := station.route_bar.find_child("Environment", true, false)
+		ui._check(tag != null, "the route bar shows the environment (SPEC Section 28.1)")
+		var label: Label = tag.find_child("*", true, false) if tag != null else null
 		ui._check(
-			station.route_bar.find_child("Environment", true, false) != null,
-			"the route bar shows the environment (SPEC Section 28.1)"
+			label != null and ui.tr(run["environment"].get("short", "?")) in label.text,
+			"the route bar shows the short rule of the environment (SPEC Section 28.1)"
 		)
 	if not run["incident"].is_empty():
 		seen = 1

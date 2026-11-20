@@ -36,6 +36,8 @@ var first_line := ""
 ## The color of the mass: Palette.TEXT_DIM, WARN, or BAD.
 var mass_color := Palette.TEXT_DIM
 var screen: StationScreen
+## The Accept or Cancel button, or null.
+var button: Button
 ## The title and the lines of the tip of the card (SPEC Section 20.2).
 var _title := ""
 var _details := PackedStringArray()
@@ -88,7 +90,8 @@ func setup(station: StationScreen, k: Dictionary) -> void:
 	var index: int = k["index"]
 	_title = tr(k["client_name"])
 	_details = details
-	# The details show in the tip of the station (SPEC Section 20.2).
+	# The details show in the tip of the station (SPEC Sections 20.2 and 20.10).
+	mouse_default_cursor_shape = Control.CURSOR_HELP
 	mouse_entered.connect(
 		func() -> void:
 			screen.set_hover_contract(index)
@@ -149,13 +152,17 @@ func _first_line(box: Control, k: Dictionary, details: PackedStringArray) -> Str
 	var index: int = k["index"]
 	# A long contract on its way cannot be canceled (SPEC Section 30.2).
 	if k["accepted"] and not k.get("carried", false):
-		screen.add_button(
+		button = screen.add_button(
 			head, tr(CANCEL_TEXT), func() -> void: screen.act(GameState.cancel_contract(index))
 		)
 	elif not k["accepted"]:
-		screen.add_button(
+		button = screen.add_button(
 			head, tr(ACCEPT_TEXT), func() -> void: screen.act(GameState.accept_contract(index))
 		)
+	# The focus on the button shows the details of the card (SPEC Section 20.10).
+	if button != null:
+		button.focus_entered.connect(func() -> void: _show_details())
+		button.focus_exited.connect(screen.hide_tip)
 	first_line = " ".join(line)
 	return first_line
 

@@ -20,6 +20,8 @@ func set_mods(mods: Array, hover: Callable) -> void:
 	for m: Dictionary in mods:
 		var card := PanelContainer.new()
 		card.mouse_filter = Control.MOUSE_FILTER_STOP
+		# The player can only read a mod card (SPEC Section 20.10).
+		card.mouse_default_cursor_shape = Control.CURSOR_HELP
 		card.add_theme_stylebox_override("panel", Ui.panel_style(Palette.ACCENT, 1, 6, 4))
 		card.add_child(ModIcon.new(m["id"], 32.0))
 		card.mouse_entered.connect(hover.bind(m))

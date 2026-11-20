@@ -620,8 +620,8 @@ msgid "On its way · {jumps} jump(s) left"
 msgstr "運送中 · 還剩 {jumps} 次跳躍"
 
 #: project/scenes/station/hints.gd
-msgid "This leg has an environment. Point at it in the top bar to read its rule. It holds for each jump of the leg."
-msgstr "這一期有航線環境。把滑鼠移到上方列的環境上，就能看它的規則。整期的每次跳躍都適用。"
+msgid "This leg has an environment. Its rule is below the route. It holds for each jump of the leg."
+msgstr "這一期有環境，規則寫在航線下方，每次跳躍都有效。"
 
 #: project/scenes/station/hints.gd
 msgid "An incident hits before the first step. The hold marks its place."
@@ -1341,12 +1341,20 @@ msgid "Heat Zone"
 msgstr "熱區"
 
 #: project/data/environments/heat_zone.json
+msgid "Volatile breaks at 2 · Fluid at 1"
+msgstr "爆裂物 2 就爆・流體 1 就漏"
+
+#: project/data/environments/heat_zone.json
 msgid "Volatile cargo explodes at a force of 2. Fluid cargo leaks at a force of 1."
 msgstr "爆裂物在撞擊力 2 時爆炸，流體在撞擊力 1 時洩漏。"
 
 #: project/data/environments/low_gravity.json
 msgid "Low Gravity"
 msgstr "低重力"
+
+#: project/data/environments/low_gravity.json
+msgid "Slides 2 cells at most"
+msgstr "每次最多滑 2 格"
 
 #: project/data/environments/low_gravity.json
 msgid "Each cargo slides 2 cells at most in each shift step."
@@ -1357,12 +1365,20 @@ msgid "Magnetic Storm"
 msgstr "磁暴"
 
 #: project/data/environments/magnetic_storm.json
+msgid "Shields have no power"
+msgstr "護盾沒有電"
+
+#: project/data/environments/magnetic_storm.json
 msgid "No Shield has power. Array Power does not help."
 msgstr "所有護盾都沒有電，陣列供電也沒用。"
 
 #: project/data/environments/radiation_belt.json
 msgid "Radiation Belt"
 msgstr "輻射帶"
+
+#: project/data/environments/radiation_belt.json
+msgid "Electronic shorts at 2"
+msgstr "電子貨物 2 就短路"
 
 #: project/data/environments/radiation_belt.json
 msgid "An Electronic cargo shorts at a hit with a force of 2 or more."

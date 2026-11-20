@@ -599,7 +599,7 @@ msgid "On its way · {jumps} jump(s) left"
 msgstr ""
 
 #: project/scenes/station/hints.gd
-msgid "This leg has an environment. Point at it in the top bar to read its rule. It holds for each jump of the leg."
+msgid "This leg has an environment. Its rule is below the route. It holds for each jump of the leg."
 msgstr ""
 
 #: project/scenes/station/hints.gd
@@ -1316,11 +1316,19 @@ msgid "Heat Zone"
 msgstr ""
 
 #: project/data/environments/heat_zone.json
+msgid "Volatile breaks at 2 · Fluid at 1"
+msgstr ""
+
+#: project/data/environments/heat_zone.json
 msgid "Volatile cargo explodes at a force of 2. Fluid cargo leaks at a force of 1."
 msgstr ""
 
 #: project/data/environments/low_gravity.json
 msgid "Low Gravity"
+msgstr ""
+
+#: project/data/environments/low_gravity.json
+msgid "Slides 2 cells at most"
 msgstr ""
 
 #: project/data/environments/low_gravity.json
@@ -1332,11 +1340,19 @@ msgid "Magnetic Storm"
 msgstr ""
 
 #: project/data/environments/magnetic_storm.json
+msgid "Shields have no power"
+msgstr ""
+
+#: project/data/environments/magnetic_storm.json
 msgid "No Shield has power. Array Power does not help."
 msgstr ""
 
 #: project/data/environments/radiation_belt.json
 msgid "Radiation Belt"
+msgstr ""
+
+#: project/data/environments/radiation_belt.json
+msgid "Electronic shorts at 2"
 msgstr ""
 
 #: project/data/environments/radiation_belt.json

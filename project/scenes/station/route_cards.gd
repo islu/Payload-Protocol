@@ -26,7 +26,10 @@ static func env_tag(parent: Control, env: Dictionary) -> PanelContainer:
 	var tag := _tag(Palette.WARN)
 	tag.name = "Environment"
 	var l := Label.new()
+	# The name and the short rule of the environment (SPEC Section 28.1).
 	l.text = TranslationServer.translate(env["name"])
+	if env.get("short", "") != "":
+		l.text += ": " + TranslationServer.translate(env["short"])
 	l.add_theme_font_size_override("font_size", TextSize.SMALL)
 	l.add_theme_color_override("font_color", Palette.WARN)
 	tag.add_child(l)

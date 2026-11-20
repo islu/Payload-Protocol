@@ -23,7 +23,7 @@ const RUNS_WITH_HINTS := 3
 
 const HINT_TEXT := {
 	ENVIRONMENT:
-	"This leg has an environment. Point at it in the top bar to read its rule. It holds for each jump of the leg.",
+	"This leg has an environment. Its rule is below the route. It holds for each jump of the leg.",
 	INCIDENT: "An incident hits before the first step. The hold marks its place.",
 	FORK: "The last step is a fork: one of two directions. A Sensor in the hold shows which one.",
 	LONG: "A LONG contract stays in the hold for more than one jump. It pays at its last jump.",

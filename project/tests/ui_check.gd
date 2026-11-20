@@ -142,6 +142,8 @@ func _play_run(main: Control) -> void:
 			Defs.PHASE_STATION:
 				station = main.screen()
 				_route_seen += UiCheckLoop.route_station(self, station)
+				UiCheckTips.station(self, station)
+				UiCheckHold.station(self, station.hold_view)
 				await _play_station(state, station)
 			Defs.PHASE_ARRIVAL:
 				await _play_warp(main)
@@ -189,6 +191,7 @@ func _play_warp(main: Control) -> void:
 		hits == 0 or warp._fx.played.has("hit"), "a hit plays the spark sheet (SPEC Section 21.2)"
 	)
 	UiCheckLoop.route_warp(self, warp)
+	UiCheckHold.warp(self, warp._hold, GameState.view()["run"]["warp"])
 	if UiCheckLoop.losses(self, warp):
 		_losses_seen += 1
 	_check_report(warp)
@@ -761,10 +764,12 @@ func _check_shop(station: StationScreen) -> void:
 	for i in mini(station._shop.offer_cards.size(), shop["offers"].size()):
 		var o: Dictionary = shop["offers"][i]
 		var card: Dictionary = station._shop.offer_cards[i]
+		card["card"].mouse_entered.emit()
 		for t: String in o["traits"]:
+			var rule := GameText.format(terms[t]["rule"])
 			_check(
-				GameText.format(terms[t]["rule"]) in card["text"],
-				"a kit card shows the rule of its trait %s (SPEC Section 20.2)" % t
+				not rule in card["text"] and rule in station._tip.text(),
+				"a kit card shows the rule of %s in its tooltip only (SPEC Section 20.2)" % t
 			)
 		_check(
 			o["bought"] or str(o["price"]) in card["buy"].text,

@@ -161,3 +161,19 @@ func test_radiation_jolt_risk() -> void:
 			+ " (SPEC Sections 12.3 and 28.2)"
 		)
 	)
+
+
+func test_environment_has_a_short_rule() -> void:
+	run.environment = Defs.ENV_HEAT_ZONE
+	var env := RunView.environment(run)
+	eq(
+		env.get("short", ""),
+		"short " + Defs.ENV_HEAT_ZONE,
+		"the view has the short rule of the environment (SPEC Section 28.1)"
+	)
+	var d := Fixture.data()
+	d["environments"][Defs.ENV_HEAT_ZONE].erase("short")
+	check(
+		"short" in "\n".join(Catalog.from_data(d).errors),
+		"the data check rejects an environment with no short rule (SPEC Section 28.1)"
+	)

@@ -15,6 +15,7 @@ description: Conventions of the Payload Protocol scenes and UI (project/scenes) 
 - A warp plays `view.run.warp` (the event log) step by step: slides, then hits, then reactions in order (SPEC Section 21). Reactions with the same `cause` chain play 0.15 s apart.
 - An action that fails returns an error text. Show it with `tr()` and play the deny sound.
 - Make each control work with a mouse and the keyboard (SPEC Section 4.1).
+- Show each tooltip with `StationScreen.tip_on(control, show, read_only)`: the mouse and the keyboard focus both show it, and `read_only` gives a question mark cursor (SPEC Section 20.10). A card has one tooltip; a cargo image keeps the tooltip of its cargo.
 - Do not use `tooltip_text`: the native tooltip shows late and in a different style. Show the details in a `CargoTip` with `show_text()`. At the station, use `StationScreen._show_text_tip()` (or `_env_tip_on()` for the environment). `ModBar` sends the hovered mod to `_set_hover_mod()`, which shows the tip. An overlay that covers the station has its own `CargoTip` (`EventPanel.tip`, `GearButton.tip`).
 - Change the window mode (maximized, fullscreen) last in `_ready()`. On macOS, the change runs frames and `_process()` before it returns, so each node must exist first. The headless checks skip the window, so they do not find this.
 
@@ -45,6 +46,7 @@ description: Conventions of the Payload Protocol scenes and UI (project/scenes) 
 - The contract cards and the shop show a tooltip with `screen._show_tip(cargo_view)`. It shows nothing during a drag.
 - "Load all" calls `GameState.load_all()`. The scene does not search for places.
 - `HoldView` draws the front wall of the first step (`front_wall` of the view) and a jolt icon on each cargo with `jolt_risk`: its wall jolt or a press in the first step would make it react (SPEC Section 12.3). `show_front_walls()` marks the walls of the hazard card under the mouse, with no jolt icons after the first step (SPEC Section 20.2).
+- `HoldView` draws the bulkhead (`FRAME`), the corner brackets, a deck plate in each cell (`_draw_plate()`), and 2 lights on each wall (SPEC Section 21.6). The warp lights them: `light_wall(wall, color, seconds)` (seconds 0 keeps the color until `lights_off(wall)`), `light_all()`, and `light_near(point, ...)`, with the colors `LIGHT_*`. A light ignores a flash less than `FLASH_GAP` after its last flash. `light_log` keeps each request for `UiCheckHold`. The shock bay has the deck plates and no lights.
 - A rotation in place that does not fit moves the cargo 1 cell (`Run.ROTATE_KICKS`). The scene only calls `GameState.rotate_cargo()`.
 - Do not bend the screen in a shader. The mouse must point at the cell that the player sees (SPEC Section 4.2).
 - A drop goes to the first target under the mouse: the sell area, the dock, or the hold. A drop anywhere else does nothing.

@@ -1,5 +1,8 @@
 {
 	"id": "heat_zone",
 	"name": "Heat Zone",
-	"text": "Volatile cargo explodes at a force of 2. Fluid cargo leaks at a force of 1."
+	"text": "Volatile cargo explodes at a force of 2. Fluid cargo leaks at a force of 1.",
+	"short": {
+		"text": "Volatile breaks at 2 · Fluid at 1"
+	}
 }

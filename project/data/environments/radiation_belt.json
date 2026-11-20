@@ -1,5 +1,8 @@
 {
 	"id": "radiation_belt",
 	"name": "Radiation Belt",
-	"text": "An Electronic cargo shorts at a hit with a force of 2 or more."
+	"text": "An Electronic cargo shorts at a hit with a force of 2 or more.",
+	"short": {
+		"text": "Electronic shorts at 2"
+	}
 }

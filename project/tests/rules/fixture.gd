@@ -267,7 +267,7 @@ static func tutorial() -> Dictionary:
 static func environments() -> Dictionary:
 	var out := {}
 	for id in Defs.ENVIRONMENTS:
-		out[id] = {"id": id, "name": id, "text": "rule of " + id}
+		out[id] = {"id": id, "name": id, "text": "rule of " + id, "short": {"text": "short " + id}}
 	return out
 
 
