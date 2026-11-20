@@ -65,7 +65,7 @@ The warp:
   1. An alarm sounds. A banner shows the arrow and the direction for 0.6 seconds.
   2. The ship tilts a little in the direction.
   3. The slide plays (Section 21.1). Then the hits and the reactions play (Section 21.2).
-- When the warp starts, the stars stretch into lines in 0.4 seconds with a soft white flash, and an engine sound plays. At the arrival, a chime plays.
+- When the warp starts, the stars stretch into lines in 0.4 seconds with a soft white flash. At the arrival, a chime plays.
 - A click or the Space key during the warp makes the rest of the warp play at 4× speed.
 
 ### 20.4 Arrival Report
@@ -133,7 +133,7 @@ The warp:
 - A valid drop plays the clack sound and a small bounce.
 - In a slide, all cargo of the shift step moves at the same time, at the same speed (8 cells each second). Each cargo stops at its distance.
 - A slide plays a low rumble.
-- A pick up plays a soft sound. A button press plays a click.
+- A pick up plays a soft sound. A button press in the settings plays a click (Section 23.1). Other buttons play no click.
 - Each cargo that slides has a short trail behind it.
 - When the player accepts a contract, its freight flies from the card to the dock.
 - A clamp that the player places snaps with a small bounce and a metal click.

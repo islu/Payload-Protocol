@@ -463,6 +463,11 @@ func _check_language(station: StationScreen) -> void:
 	await get_tree().process_frame
 	var options: OptionButton = panel.find_children("*", "OptionButton", true, false)[0]
 	var toggle: CheckButton = panel.find_children("*", "CheckButton", true, false)[0]
+	Sound.requested.clear()
+	toggle.pressed.emit()
+	_check(
+		Sound.requested.has("click"), "a button of the settings plays a click (SPEC Section 21.1)"
+	)
 	_check(
 		toggle.get_theme_icon("unchecked").resource_path.ends_with("toggle_off.svg"),
 		"a switch that is off shows an outlined capsule (SPEC Section 23.1)"

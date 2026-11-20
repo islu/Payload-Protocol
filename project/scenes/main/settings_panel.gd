@@ -57,6 +57,9 @@ func _build() -> void:
 	)
 	row.add_child(options)
 	button(BACK_TEXT, close).grab_focus()
+	# Only the buttons of the settings play a click (SPEC Section 21.1).
+	for b: BaseButton in box.find_children("*", "BaseButton", true, false):
+		b.pressed.connect(func() -> void: Sound.play(self, "click"))
 
 
 func _toggle(text: String, key: String) -> void:

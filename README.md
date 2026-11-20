@@ -49,6 +49,7 @@ The first New Run starts a short tutorial. You can skip it, and start it again f
 - Game: islu
 - Cargo and speaker art: [FreePixel](https://freepixel.art)
 - Effects: [pixelfx](https://github.com/patch-gg/pixelfx) by Patch and Hugo Duprez (MIT)
+- Sounds: [Kenney](https://kenney.nl) (CC0)
 - Music: "Vintage Menu" by iamoneabe ([OpenGameArt](https://opengameart.org/content/vintage-menu), CC0)
 - Font: jf open huninn 2.1 by justfont (SIL OFL 1.1)
 - Made with [Godot 4.7](https://godotengine.org)

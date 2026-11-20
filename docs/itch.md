@@ -90,7 +90,7 @@ Crystals shatter. Fuel drums explode. Coolant leaks onto the electronics. The ro
 
 **Tip**: play in fullscreen for the best view. Click the fullscreen button at the bottom right of the game.
 
-**Credits**: cargo and speaker art by FreePixel. Effects by pixelfx (Patch and Hugo Duprez, MIT). Music "Vintage Menu" by iamoneabe (CC0). Font jf open huninn by justfont (SIL OFL 1.1). Made with Godot 4.7.
+**Credits**: cargo and speaker art by FreePixel. Effects by pixelfx (Patch and Hugo Duprez, MIT). Sounds by Kenney (CC0). Music "Vintage Menu" by iamoneabe (CC0). Font jf open huninn by justfont (SIL OFL 1.1). Made with Godot 4.7.
 
 ## Description (繁體中文)
 
@@ -121,4 +121,4 @@ Crystals shatter. Fuel drums explode. Coolant leaks onto the electronics. The ro
 
 **提示**：建議全螢幕遊玩，畫面最清楚。請按遊戲右下角的全螢幕按鈕。
 
-**感謝**：貨物與角色美術來自 FreePixel。特效來自 pixelfx（Patch 與 Hugo Duprez，MIT）。音樂〈Vintage Menu〉作者 iamoneabe（CC0）。字型為 justfont 的 jf open 粉圓（SIL OFL 1.1）。使用 Godot 4.7 製作。
+**感謝**：貨物與角色美術來自 FreePixel。特效來自 pixelfx（Patch 與 Hugo Duprez，MIT）。音效來自 Kenney（CC0）。音樂〈Vintage Menu〉作者 iamoneabe（CC0）。字型為 justfont 的 jf open 粉圓（SIL OFL 1.1）。使用 Godot 4.7 製作。

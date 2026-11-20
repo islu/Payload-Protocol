@@ -184,6 +184,8 @@ func _play() -> void:
 		route_bar.go_to("Step%d" % n)
 		await _play_step(n, step, run)
 	route_bar.go_to("Arrive")
+	# A chime at the arrival (SPEC Section 20.3).
+	Sound.play(self, "arrive")
 	_stars.speed = 1.0
 	_stage.rotation = 0.0
 	var loss: int = warp_log.get("loss", 0)
@@ -337,9 +339,11 @@ func _play_route(run: Dictionary, warp_log: Dictionary) -> void:
 			await _play_meteor(inc)
 		Defs.INCIDENT_HULL_BREACH:
 			_fx.crack(Vector2i(inc["x"], inc["y"]))
+			Sound.play(self, "breach")
 			await _wait(0.25)
 		Defs.INCIDENT_ION_PULSE:
 			_fx.wave(inc["y"])
+			Sound.play(self, "ion")
 	if inc.has("debris_view"):
 		var d: Dictionary = inc["debris_view"].duplicate(true)
 		_cargo[d["id"]] = d

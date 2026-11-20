@@ -31,6 +31,8 @@ func begin_cargo(id: int, grab: Vector2) -> void:
 	var c := _screen.cargo_view(id)
 	if c.is_empty():
 		return
+	# A pick up plays a soft sound (SPEC Section 21.1).
+	Sound.play(_screen, "pick_up")
 	_screen.hide_tip()
 	state = {
 		"kind": "cargo",
@@ -172,7 +174,8 @@ func drop_at(mouse: Vector2) -> void:
 		if target == hold:
 			var clamped := hold.cargo_at(hold.cell_at(mouse))
 			if clamped >= 0:
-				_screen.act(GameState.clamp_cargo(clamped), "clack")
+				# A metal click (SPEC Section 21.1).
+				_screen.act(GameState.clamp_cargo(clamped), "clamp")
 		return
 	var id: int = drag["id"]
 	var c := _screen.cargo_view(id)

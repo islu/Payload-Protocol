@@ -43,10 +43,8 @@ def delay(samples, sec):
 
 # --- Payload Protocol (SPEC Section 21). Each name is a Sound.play() name. ---
 # clack: a short metal click when a drop is valid (SPEC Section 21.1)
-write("clack", mix(sweep(1400, 900, 0.05, 60), [0.6 * noise() * env(i, 0, 0.001, 90) for i in range(int(RATE * 0.03))]))
 # deny: a low double buzz when an action fails
 buzz_low = [0.6 * (1 if math.sin(2 * math.pi * 110 * i / RATE) > 0 else -1) * env(i, 0, 0.002, 18) for i in range(int(RATE * 0.12))]
-write("deny", mix(buzz_low, delay(buzz_low, 0.14)))
 # alarm: two rising tones, the warning before a shift step
 write("alarm", mix(sweep(600, 900, 0.25, 3), delay(sweep(600, 900, 0.25, 3), 0.28)))
 # rumble: a low noise while the cargo slides
@@ -70,7 +68,6 @@ write("buzz", [0.5 * (1 if math.sin(2 * math.pi * 60 * i / RATE) > 0 else -1) * 
 # shield: a soft rising hum
 write("shield", mix(sweep(300, 600, 0.4, 5), [0.5 * s for s in sweep(450, 900, 0.4, 5)]))
 # squelch: a low wet pop for a spoil
-write("squelch", [1.2 * s for s in lowpass(sweep(220, 80, 0.3, 10, 0.6), 0.2)])
 # coin: two bright tones for credits
 write("coin", mix(sweep(1320, 1320, 0.12, 20), delay(sweep(1760, 1760, 0.3, 10), 0.08)))
 print("ok")

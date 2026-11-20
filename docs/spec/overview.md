@@ -73,7 +73,6 @@ These games are references for mechanics only. Do not copy their art, names, ite
 - Each event in Section 21 has a sound.
 - A setting sets the volume of the music and of the sounds (Section 23.1).
 - Two music loops play: a calm loop on the title, the station, and the other screens, and a tense loop in the warp. A change of loop fades the old loop out and the new loop in, in 1 second. The music plays during the pause too. A browser starts it after the first click, because it blocks sound before.
-- At the run end, a short jingle plays: one for a win and one for a loss. The music is quieter while the jingle plays.
 
 ### 4.4 Terms
 

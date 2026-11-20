@@ -20,12 +20,26 @@ static func station(ui: Node, station: StationScreen) -> void:
 			hold.queue_redraw()
 			ui._check(hold.trail_drawn, "a sliding cargo has a trail (SPEC Section 21.1)")
 			break
+	# Only a button of the settings plays a click.
+	Sound.requested.clear()
+	station._undo_button.pressed.emit()
+	ui._check(
+		not Sound.requested.has("click"),
+		"a button outside the settings plays no click (SPEC Section 21.1)"
+	)
 	var run: Dictionary = GameState.view()["run"]
 	for k: Dictionary in run["contracts"]:
 		if not k["accepted"] and GameState.accept_contract(k["index"]) == "":
 			ui._check(
 				station._fx.played.has("fly"),
 				"the freight of an accepted contract flies to the dock (SPEC Section 21.1)"
+			)
+			# A pick up plays a soft sound.
+			Sound.requested.clear()
+			station._drag.begin_cargo(GameState.view()["run"]["dock"][0], Vector2.ZERO)
+			station._drag.end()
+			ui._check(
+				Sound.requested.has("pick_up"), "a pick up plays a soft sound (SPEC Section 21.1)"
 			)
 			GameState.undo()
 			break
@@ -39,12 +53,24 @@ static func station(ui: Node, station: StationScreen) -> void:
 				"a placed clamp bounces (SPEC Section 21.1)"
 			)
 			GameState.undo()
+			# A clamp that the player drops on a cargo plays a metal click.
+			var first: Dictionary = c["shape"][0]
+			var at := Vector2(c["x"] + first["x"], c["y"] + first["y"]) + Vector2(0.5, 0.5)
+			station._drag.begin_clamp()
+			Sound.requested.clear()
+			station._drag.drop_at(station.hold_view.cell_global(at))
+			ui._check(
+				Sound.requested.has("clamp"),
+				"a placed clamp plays a metal click (SPEC Section 21.1)"
+			)
+			GameState.undo()
 			break
 
 
 ## After a warp: the jump effect, a coin for each delivered freight, and smoke for
 ## each new scrap.
 static func warp(ui: Node, warp: WarpScreen, warp_log: Dictionary) -> void:
+	ui._check(Sound.requested.has("arrive"), "a chime plays at the arrival (SPEC Section 20.3)")
 	ui._check(
 		warp._top_fx.played.has("jump"),
 		"the warp starts with stretched stars and a soft flash (SPEC Section 20.3)"

@@ -60,11 +60,11 @@ static func warp(ui: Node, warp: WarpScreen, warp_log: Dictionary) -> void:
 			)
 		Defs.INCIDENT_ION_PULSE:
 			ui._check(
-				warp._fx.played.has("wave"),
-				"a cyan wave moves along the row of an Ion Pulse (SPEC Section 29.3)"
+				warp._fx.played.has("wave") and Sound.requested.has("ion"),
+				"a cyan wave with an electric sweep moves along the row (SPEC Section 29.3)"
 			)
 		Defs.INCIDENT_HULL_BREACH:
 			ui._check(
-				warp._fx.played.has("crack"),
-				"the deck plate of a Hull Breach cracks (SPEC Section 29.3)"
+				warp._fx.played.has("crack") and Sound.requested.has("breach"),
+				"the deck plate of a Hull Breach cracks with a hiss (SPEC Section 29.3)"
 			)

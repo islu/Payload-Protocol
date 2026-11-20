@@ -193,7 +193,12 @@ func _pay() -> void:
 	tween.tween_method(
 		func(v: float) -> void: credits.text = str(roundi(v)), t["credits"], t["after"], COUNT_TIME
 	)
-	tween.tween_callback(func() -> void: stamp.visible = true)
+	tween.tween_callback(
+		func() -> void:
+			stamp.visible = true
+			# The stamp plays a stamp sound (SPEC Section 20.5).
+			Sound.play(self, "stamp")
+	)
 	tween.tween_property(stamp, "scale", Vector2.ONE, 0.15).from(Vector2(1.6, 1.6))
 	tween.tween_interval(STAMP_WAIT)
 	tween.tween_callback(_paid)

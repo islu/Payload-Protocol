@@ -82,6 +82,7 @@ static func payment(ui: Node, main: Control) -> void:
 		await ui.get_tree().process_frame
 		return
 	ui._check(not panel.stamp.visible, "the stamp shows after Pay (SPEC Section 20.5)")
+	Sound.requested.clear()
 	panel.pay_button.pressed.emit()
 	await ui.get_tree().process_frame
 	ui._check(
@@ -95,6 +96,9 @@ static func payment(ui: Node, main: Control) -> void:
 	ui._check(
 		GameState.view()["run"]["phase"] != Defs.PHASE_PAYMENT,
 		"after the stamp, the next screen opens (SPEC Section 20.5)"
+	)
+	ui._check(
+		Sound.requested.has("stamp"), "the Paid stamp plays a stamp sound (SPEC Section 20.5)"
 	)
 
 

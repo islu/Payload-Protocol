@@ -66,6 +66,9 @@ This file keeps each problem that is found and not fixed yet. Each item is in on
 
 ## To Do
 
+- **[UX · Scenes] Sounds and music that are not found yet** (found 2026-11-20, by the user). The user listened to the Kenney CC0 candidates and kept none of these: a sound for an accepted contract, an engine sound at the warp start, the whoosh of a meteor, and a win and a loss jingle. The tense music loop of the warp (SPEC Section 4.3) is not found either. Each sound must be 2 seconds or less.
+  To do                 Fix: find candidates in other CC0 sources (OpenGameArt, freesound CC0), and play them to the user before they go in the game.
+
 - **[Cleanup · Docs] Link the rating page of Game Off in the README** (found 2026-11-20, by islu). The README links the jam page of GitHub Game Off 2026, because the voting is not open yet.
   Waiting on a trigger  Waits for: the voting of <https://itch.io/jam/game-off-2026> opens.
                         Fix then: add "Rate it here" with the rating page of the entry (`itch.io/jam/game-off-2026/rate/<id>`). After the voting, change the line to "An entry of GitHub Game Off 2026", and add the result.
