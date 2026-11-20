@@ -40,6 +40,8 @@ const SIDE_WIDTH := 486.0
 const SELL_HEIGHT := 48.0
 ## The cell of the cargo on the dock (SPEC Section 20.2).
 const DOCK_CELL := 48.0
+## The highest the dock grows: 3 rows of cells. More cargo scrolls (SPEC Section 20.2).
+const DOCK_MAX_HEIGHT := 3 * (DOCK_CELL + 4.0) + 2 * 10.0
 
 ## The sell area with no drag (SPEC Section 20.2).
 const SELL_IDLE := "idle"
@@ -84,6 +86,9 @@ var _dock_title: Label
 ## The free clamps and their count: the mouse on it shows how to use a clamp.
 var _clamp_row: HBoxContainer
 var _dock_flow: HFlowContainer
+## The scroll of the dock, and of the contract board (SPEC Section 20.2).
+var _dock_scroll: ScrollContainer
+var _contracts_scroll: ScrollContainer
 var _contracts_box: VBoxContainer
 var _contract_cards: Array[ContractCard] = []
 ## The shop: the kit offers and Reroll, then the services (SPEC Section 20.2).
@@ -161,26 +166,35 @@ func _build() -> void:
 	left.custom_minimum_size.x = SIDE_WIDTH
 	left.add_theme_constant_override("separation", 10)
 	body.add_child(left)
+	# The contract board is at the top. It fills the column above the dock, and
+	# scrolls when its cards do not fit (SPEC Section 20.2).
+	Ui.label(left, CONTRACTS_TEXT, TextSize.HEADING, Palette.ACCENT)
+	_contracts_scroll = ScrollContainer.new()
+	_contracts_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_contracts_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	left.add_child(_contracts_scroll)
+	_contracts_box = VBoxContainer.new()
+	_contracts_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_contracts_box.add_theme_constant_override("separation", 10)
+	_contracts_scroll.add_child(_contracts_box)
+	# The dock is below the contracts and above the pilot box, near the middle of the
+	# hold. It fits its cargo up to 3 rows, then scrolls. An empty dock is one line
+	# (SPEC Section 20.2).
 	var dock_head := HBoxContainer.new()
 	left.add_child(dock_head)
 	_dock_title = Ui.label(dock_head, DOCK_TEXT, TextSize.HEADING, Palette.ACCENT)
 	_dock_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	add_button(dock_head, tr(LOAD_ALL_TEXT), func() -> void: act(GameState.load_all(), "clack"))
-	# The dock fits its cargo. An empty dock is one line (SPEC Section 20.2).
 	dock_panel = Ui.panel(left)
+	_dock_scroll = ScrollContainer.new()
+	_dock_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	dock_panel.add_child(_dock_scroll)
 	_dock_flow = HFlowContainer.new()
+	_dock_flow.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_dock_flow.add_theme_constant_override("h_separation", 10)
 	_dock_flow.add_theme_constant_override("v_separation", 10)
-	dock_panel.add_child(_dock_flow)
-	Ui.label(left, CONTRACTS_TEXT, TextSize.HEADING, Palette.ACCENT)
-	var scroll := ScrollContainer.new()
-	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	left.add_child(scroll)
-	_contracts_box = VBoxContainer.new()
-	_contracts_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_contracts_box.add_theme_constant_override("separation", 10)
-	scroll.add_child(_contracts_box)
+	_dock_flow.minimum_size_changed.connect(_fit_dock)
+	_dock_scroll.add_child(_dock_flow)
 	var pilot := HBoxContainer.new()
 	pilot.add_theme_constant_override("separation", 12)
 	_pilot_panel = Ui.panel(left)
@@ -508,6 +522,12 @@ static func direction_text(d: String, view: Dictionary) -> String:
 ## Returns the translated name of a direction.
 static func direction_name(d: String, view: Dictionary) -> String:
 	return TranslationServer.translate(view["names"]["directions"].get(d, d))
+
+
+## The dock fits its cargo, up to DOCK_MAX_HEIGHT (SPEC Section 20.2).
+func _fit_dock() -> void:
+	var want := _dock_flow.get_combined_minimum_size().y
+	_dock_scroll.custom_minimum_size.y = minf(want, DOCK_MAX_HEIGHT)
 
 
 func _refresh_dock() -> void:

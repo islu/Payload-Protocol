@@ -105,6 +105,47 @@ static func check(ui: Node, station: StationScreen) -> void:
 		station.dock_panel.size.y < 70.0,
 		"an empty dock is one line: %d (SPEC Section 20.2)" % station.dock_panel.size.y
 	)
+	# The dock is below the contract board and above the pilot box.
+	var board := station._contracts_scroll.get_global_rect()
+	var dock := station.dock_panel.get_global_rect()
+	ui._check(
+		(
+			dock.position.y >= board.end.y
+			and dock.end.y <= station._pilot_panel.get_global_rect().position.y
+		),
+		(
+			"the dock is below the contracts and above the pilot: %s %s (SPEC Section 20.2)"
+			% [board, dock]
+		)
+	)
+	# A full dock is 3 rows high at most, and scrolls.
+	var offers: Array = station.run_data["shop"]["offers"]
+	if not offers.is_empty():
+		var many := []
+		for i in 12:
+			var c: Dictionary = offers[0].duplicate(true)
+			c["id"] = 9000 + i
+			c["in_hold"] = false
+			c["in_bay"] = false
+			many.append(c)
+		station.run_data["cargo"] = many
+		station.run_data["dock"] = many.map(func(c: Dictionary) -> int: return c["id"])
+		station._refresh_dock()
+		await ui.get_tree().process_frame
+		ui._check(
+			station._dock_scroll.size.y <= StationScreen.DOCK_MAX_HEIGHT + 1.0,
+			(
+				"a full dock is 3 rows high at most: %d (SPEC Section 20.2)"
+				% station._dock_scroll.size.y
+			)
+		)
+		ui._check(
+			station._contracts_scroll.size.y > 200.0,
+			(
+				"the contracts show beside a full dock: %d (SPEC Section 20.2)"
+				% station._contracts_scroll.size.y
+			)
+		)
 	station.run_data["dock"] = saved
 	station.run_data["cargo"] = cargo
 	station._refresh_dock()

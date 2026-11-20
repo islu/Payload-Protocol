@@ -20,8 +20,8 @@ The station screen has these areas:
 | Top bar | Top | Four groups: (1) the leg, and a dot for each jump of the leg; (2) the credits, and a bar of the credits against the payment of this leg, with the jumps before the payment; (3) a bar of the hold mass, with a mark at the mass limit and a mark at the maximum (Section 25); (4) a badge with the icon and the name of the environment of the leg, with its rule when the mouse is on it (Section 28). A gear button at the right opens the pause menu (Section 20.7). |
 | Pilot box | Bottom left | The portrait and the line of the pilot, in a wide box (Section 22). |
 | Route bar | Center, above the hold | The route of the next jump, from left to right: the depart point (the ship), the incident (Section 29), each shift step in order (Section 18), and the arrive point (the station). A line joins the points. Each step is a card with a large arrow, its number, and its direction. A fork step shows its two directions and a question mark. The environment of the leg is a band below the line (Section 28). |
-| Dock | Left, top | The cargo on the dock (Section 8.1). |
-| Contract board | Left, below the dock | The 4 contracts, with Accept and Cancel buttons (Section 15). |
+| Contract board | Left, top | The 4 contracts, with Accept and Cancel buttons (Section 15). |
+| Dock | Left, below the contract board, above the pilot box | The cargo on the dock (Section 8.1). |
 | Hold | Center | The grid and its cargo, the links, and the clamps, inside a bulkhead (Section 21.6). Each cell is 100 pixels, the size of the cargo images (Section 4.2). |
 | Shock bay | Left of the hold | The cells of the shock bay, after its purchase (Section 31.2). |
 | Mod bar | Below the hold | A card with the icon of each mod of the ship (Section 27). The mouse on a card shows the name and the rule of the mod, and marks the area of the mod on the hold. |
@@ -36,7 +36,7 @@ Contracts and the dock:
 - The mass of a contract that is not accepted is yellow when the mass after it is above the mass limit (a fuel fee), and red when it is above the maximum.
 - An accepted contract has a bright border and shows "Loaded N/M" on its second line: N pieces of its M pieces are in the hold.
 - When the mouse is on a contract card, the hold marks the freight of that contract.
-- The dock title shows the number of cargo on the dock. The dock shows its cargo at 48 pixels for each cell. An empty dock is one line of text.
+- The dock title shows the number of cargo on the dock. The dock shows its cargo at 48 pixels for each cell. An empty dock is one line of text. The dock is 3 rows high at most. More cargo scrolls in the dock. The contract board fills the rest of the column, and scrolls when its cards do not fit.
 
 The hazard:
 
