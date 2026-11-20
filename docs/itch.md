@@ -14,8 +14,14 @@ This file has the text and the settings of the itch.io page. Copy each part into
 | Automatically start on page load | Off |
 | Fullscreen button | On |
 | SharedArrayBuffer support | Off. The web export has no thread support (`variant/thread_support=false`). |
+| Release status | Released. The version stays 1.0.0 until Game Off ends. |
+| Pricing | No payments, or Donate |
 | Genre | Puzzle |
-| Tags | puzzle, strategy, roguelite, space, pixel-art, godot |
+| Tags | puzzle, strategy, roguelite, space, pixel-art, godot, sci-fi, singleplayer, short, inventory-management |
+| Made with | Godot |
+| Accessibility | Interactive tutorial |
+| Community | Comments |
+| AI disclosure | The owner decides. The code and the text were written with the help of Claude. The art is from FreePixel. Scripts draw the icon and the images of `docs/itch/`. |
 | Languages | English, Chinese (Traditional) |
 | Inputs | Mouse, Keyboard |
 | Average session | About half an hour |
@@ -24,11 +30,32 @@ This file has the text and the settings of the itch.io page. Copy each part into
 
 | Image | Size | File |
 | --- | --- | --- |
-| Cover image | 630 × 500 | `docs/itch/cover.png` (`task art` draws it with `tools/art/make_cover.py`) |
+| Cover image | 630 × 500 | `docs/itch/cover.png` |
+| Header image | 960 × 200, transparent | `docs/itch/header.png`. Set the title of the page to hidden. |
+| Background image | 512 × 512 tile | `docs/itch/background.png`. Set it to repeat. |
+| Social media image | 1200 × 630 | `docs/itch/social.png` |
+| Favicon | 512 × 512 | `project/icon.png` |
+| Wide cover | 1260 × 540 (21:9) | `docs/itch/wide_cover.png` |
+| Logo | Transparent, horizontal | `docs/itch/logo.png`. It has a dark outline, so it is legible on white and on black. |
 | Screenshots | 1920 × 1080. Upload them in this order. | `docs/screenshots/2_station.png`, `3_warp.png`, `4_report.png`, `5_event.png`, `6_run_end.png`, `1_title.png` |
 | Icon of the page | 512 × 512 | `project/icon.png` |
 
-Take new screenshots with `task shots`. Copy the best ones into `docs/screenshots/`.
+`task art` draws each image of `docs/itch/` with `tools/art/make_cover.py`. The social media image and the wide cover use `2_station.png` and `3_warp.png`: after you replace a screenshot, run `task art` again. Take new screenshots with `task shots`. Copy the best ones into `docs/screenshots/`.
+
+## Theme
+
+The colors are the colors of the game (`project/scenes/common/palette.gd`).
+
+| Field | Color | Palette |
+| --- | --- | --- |
+| Background | `#0B1020` | `BACKGROUND` |
+| Background 2 | `#131A30` | `PANEL` |
+| Text | `#D8E4FF` | `TEXT` |
+| Link | `#5FD3FF` | `ACCENT` |
+| Button | `#FFBA46` | `TITLE_AMBER` |
+| Border | `#2A3A66` | `PANEL_LINE` |
+
+Do not use `GOOD` (green) or `BAD` (red) on the page. In the game, they show a success and a loss.
 
 ## Short Description
 

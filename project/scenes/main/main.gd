@@ -252,7 +252,7 @@ func _title() -> Control:
 		_title_button(box, QUIT_TEXT, func() -> void: get_tree().quit())
 	var version := Label.new()
 	version.name = "Version"
-	version.text = "v" + str(ProjectSettings.get_setting("application/config/version", "0.1.0"))
+	version.text = "v" + str(ProjectSettings.get_setting("application/config/version", "1.0.0"))
 	version.add_theme_font_size_override("font_size", TextSize.SMALL)
 	version.add_theme_color_override("font_color", Palette.TEXT_DIM)
 	version.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)

@@ -65,7 +65,7 @@ task shots        # Take screenshots of each screen into shots/ (a window opens)
 task i18n         # Collect the text for translation into project/locale/
 task sfx          # Make the placeholder sounds in project/audio/sfx
 task fx           # Make the effect sheets in project/art/fx with pixelfx (tools/fx/fx.json)
-task art          # Make the cargo images and the speaker portraits from FreePixel images, and draw project/icon.png and docs/itch/cover.png (tools/art/)
+task art          # Make the cargo images and the speaker portraits from FreePixel images, and draw project/icon.png and the itch.io images in docs/itch/ (tools/art/)
 task fmt          # Format the GDScript code and the JSON data (tab indentation)
 task lint         # Lint the GDScript code, check the format, and check that the font has each character
 task check        # Run lint, test, test:ui, and smoke

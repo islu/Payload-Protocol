@@ -94,7 +94,7 @@ To open the project in the Godot Project Manager, import `project/project.godot`
 | `task i18n` | Collect the text for translation into `project/locale/` |
 | `task sfx` | Make the placeholder sounds |
 | `task fx` | Make the effect sheets with pixelfx |
-| `task art` | Make the cargo images and the speaker portraits from FreePixel images, and draw the project icon and the itch.io cover |
+| `task art` | Make the cargo images and the speaker portraits from FreePixel images, and draw the project icon and the images of the itch.io page |
 | `task fmt` | Format the GDScript code |
 | `task lint` | Lint the GDScript code, and check the format |
 | `task check` | Run lint, the tests, the UI check, and smoke |
