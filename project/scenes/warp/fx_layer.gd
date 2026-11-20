@@ -14,6 +14,12 @@ const NAMES: PackedStringArray = [
 const NUMBER_SIZE := 56
 ## The font size of a lost pay (SPEC Section 21.5).
 const LOSS_SIZE := 40
+## The times of the effects of an incident, at 1× speed (SPEC Section 29.3).
+const METEOR_TIME := 0.4
+const WAVE_TIME := 0.6
+const CRACK_TIME := 0.5
+const METEOR_COLOR := Color("ffb347")
+const WAVE_COLOR := Color("5fd3ff")  # Palette.ACCENT
 
 var hold: HoldView
 var speed := 1.0
@@ -94,6 +100,34 @@ func cloud(at: Vector2) -> void:
 	_sheet("spoil", at)
 
 
+## A fireball that falls down a column from the top bulkhead. It stops at the top of
+## the cell in stop_row: the top cargo, or the floor when stop_row is the row count
+## (SPEC Section 29.3).
+func meteor(column: int, stop_row: int) -> void:
+	played["meteor"] = true
+	var x := hold.grid_origin().x + (column + 0.5) * hold.cell
+	var from := Vector2(x, hold.grid_origin().y - HoldView.FRAME)
+	var to := Vector2(x, hold.grid_origin().y + stop_row * hold.cell)
+	_add({"kind": "meteor", "at": to, "from": from, "time": METEOR_TIME})
+
+
+## A cyan wave that moves along a row from left to right (SPEC Section 29.3).
+func wave(row: int) -> void:
+	played["wave"] = true
+	var o := hold.grid_origin()
+	var band := Rect2(o + Vector2(0, row * hold.cell), Vector2(hold.columns, 1) * hold.cell)
+	_add({"kind": "wave", "at": band.position, "band": band, "time": WAVE_TIME})
+
+
+## The deck plate of a cell cracks, and dust sprays out (SPEC Section 29.3).
+func crack(cell: Vector2i) -> void:
+	played["crack"] = true
+	var at := hold.grid_origin() + (Vector2(cell) + Vector2(0.5, 0.5)) * hold.cell
+	# The crack draws over the shards.
+	_sheet("break", at)
+	_add({"kind": "crack", "at": at, "time": CRACK_TIME})
+
+
 ## A gold sparkle at a point of the screen (SPEC Section 21.4).
 func coin(global_at: Vector2) -> void:
 	_sheet("coin", get_global_transform().affine_inverse() * global_at)
@@ -149,6 +183,12 @@ func _draw() -> void:
 						hold.grid_origin() + Vector2(c) * hold.cell, Vector2.ONE * hold.cell
 					)
 					draw_rect(r, Color(color, 0.5 * (1.0 - k)))
+			"meteor":
+				_draw_meteor(fx["from"], at, k)
+			"wave":
+				_draw_wave(fx["band"], k)
+			"crack":
+				_draw_crack(at, k)
 	draw_set_transform_matrix(Transform2D.IDENTITY)
 	if _flash > 0.0:
 		draw_rect(Rect2(-global_position, get_viewport_rect().size), Color(1, 1, 1, _flash * 0.6))
@@ -162,3 +202,50 @@ func _draw_sheet(fx: Dictionary) -> void:
 	draw_set_transform(fx["at"], fx["angle"], Vector2.ONE * scale_by)
 	draw_texture_rect_region(s["texture"], Rect2(-s["pivot"], s["size"]), FxSheets.region(s, frame))
 	draw_set_transform_matrix(Transform2D.IDENTITY)
+
+
+## The fireball: a bright head and a trail behind it.
+func _draw_meteor(from: Vector2, to: Vector2, k: float) -> void:
+	var head := from.lerp(to, k * k)
+	var trail := maxf(0.0, k * k - 0.45)
+	# The fireball is about half a cell wide, so that it reads at a glance.
+	draw_line(from.lerp(to, trail), head, Color(METEOR_COLOR, 0.35), 34.0)
+	draw_line(from.lerp(to, trail), head, Color(METEOR_COLOR, 0.6), 20.0)
+	draw_line(from.lerp(to, (trail + k * k) / 2.0), head, Color(1, 0.9, 0.6, 0.85), 9.0)
+	draw_circle(head, 40.0, Color(METEOR_COLOR, 0.25))
+	draw_circle(head, 28.0, Color(METEOR_COLOR, 0.7))
+	draw_circle(head, 17.0, Color(1, 0.95, 0.8))
+
+
+## The wave: a glow on the row, and a bright front that moves from left to right.
+func _draw_wave(band: Rect2, k: float) -> void:
+	var x := band.position.x + band.size.x * k
+	draw_rect(
+		Rect2(band.position, Vector2(x - band.position.x, band.size.y)), Color(WAVE_COLOR, 0.12)
+	)
+	for i in 3:
+		var w := x - i * 14.0
+		if w >= band.position.x:
+			var a := 0.9 - i * 0.3
+			draw_line(
+				Vector2(w, band.position.y), Vector2(w, band.end.y), Color(WAVE_COLOR, a), 4.0
+			)
+
+
+## The crack: jagged lines from the middle of the cell, and dust that spreads.
+func _draw_crack(at: Vector2, k: float) -> void:
+	var fade := 1.0 - k
+	var dark := Color(Palette.BACKGROUND, fade)
+	var rim := Color(Palette.TEXT, 0.8 * fade)
+	draw_circle(at, 9.0, dark)
+	for i in 5:
+		var angle := i * TAU / 5.0 + 0.4
+		var mid := at + Vector2.from_angle(angle) * 18.0 + Vector2.from_angle(angle + 1.2) * 6.0
+		var tip := at + Vector2.from_angle(angle) * 40.0
+		var line := PackedVector2Array([at, mid, tip])
+		# A light rim, so that the crack reads on the dark plate.
+		draw_polyline(line, rim, 6.0)
+		draw_polyline(line, dark, 3.0)
+	for i in 8:
+		var p := at + Vector2.from_angle(i * TAU / 8.0) * (10.0 + 40.0 * k)
+		draw_circle(p, 6.0 * fade + 1.0, Color(Palette.PLAIN, 0.5 * fade))

@@ -46,6 +46,7 @@ func _run() -> void:
 	await _shot("09_station_zh")
 	TranslationServer.set_locale("en")
 	await _mod_choice()
+	await _incidents()
 	GameState.abandon_run()
 	DirAccess.remove_absolute(Settings.PATH)
 	if saved != "":
@@ -235,6 +236,58 @@ func _warp() -> void:
 		await _wait(0.3)
 	await _wait(1.0)
 	await _shot("08_report")
+
+
+## A warp with each kind of incident: the fireball, the wave, and the crack
+## (SPEC Section 29.3). A new run has a few cargo in the hold.
+func _incidents() -> void:
+	GameState.abandon_run()
+	GameState.new_run(11)
+	await _wait(0.6)
+	var kinds := [
+		{"kind": Defs.INCIDENT_METEOR, "x": 2},
+		{"kind": Defs.INCIDENT_ION_PULSE, "y": 4},
+		{"kind": Defs.INCIDENT_HULL_BREACH, "x": 5, "y": 5},
+	]
+	for i in kinds.size():
+		while GameState.view()["run"]["phase"] in [Defs.PHASE_EVENT, Defs.PHASE_MOD]:
+			var phase: String = GameState.view()["run"]["phase"]
+			if phase == Defs.PHASE_EVENT:
+				var e: Dictionary = GameState.view()["run"]["event"]
+				GameState.choose_event(e["choices"].size() - 1)
+				var panel: EventPanel = _main.choice
+				if panel != null:
+					panel.close()
+			else:
+				GameState.choose_mod(0)
+			await _wait(0.4)
+		var inc: Dictionary = kinds[i]
+		GameState.set_up(_set_incident.bind(inc))
+		await _wait(0.4)
+		GameState.warp()
+		for k in 3:
+			await _wait(0.35)
+			await _shot("18_incident_%s_%d" % [inc["kind"], k])
+		var warp: WarpScreen = _main.screen()
+		while not warp.finished:
+			await _wait(0.3)
+		GameState.continue_run()
+		await _wait(0.6)
+
+
+## Puts cargo in the hold for the incident shots, and sets the incident.
+func _set_incident(r: Run, inc: Dictionary) -> void:
+	var places := {
+		"energy_crystal": Vector2i(2, 3),
+		"circuit_boards": Vector2i(0, 4),
+		"flashlight": Vector2i(4, 4),
+		"liquor_bottle": Vector2i(2, 5),
+	}
+	for id: String in places:
+		var c := r.new_cargo(r.cat.cargo[id])
+		if r.place_cargo(c.id, places[id], 0, false) != "":
+			r.remove_cargo(c.id)
+	r.incident = inc
 
 
 ## A cargo of the hold over another one: the red cells, the red frame, and the ghost

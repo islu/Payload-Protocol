@@ -192,6 +192,7 @@ func _play_warp(main: Control) -> void:
 	)
 	UiCheckLoop.route_warp(self, warp)
 	UiCheckHold.warp(self, warp._hold, GameState.view()["run"]["warp"])
+	UiCheckIncident.warp(self, warp, GameState.view()["run"]["warp"])
 	if UiCheckLoop.losses(self, warp):
 		_losses_seen += 1
 	_check_report(warp)
@@ -640,6 +641,7 @@ func _play_station(state: Node, station: StationScreen) -> void:
 		"the hold view has the size of the hold (SPEC Section 5)"
 	)
 	await get_tree().process_frame
+	UiCheckIncident.force()
 	station._on_warp_pressed()
 	if station._confirm.visible:
 		station._confirm.hide()

@@ -32,6 +32,11 @@ var chain_shown := 0
 var loss_text := ""
 ## The text of the incident that the warp played (SPEC Section 29.3). The UI check reads it.
 var incident_shown := ""
+## For the checks of SPEC Section 29.3: the cells of the mark when the incident
+## started, the banner at the end of the incident, and the row where the fireball stopped.
+var incident_marks := 0
+var incident_banner_held := false
+var meteor_stop := -1
 
 ## The route bar above the hold: the ship goes to the point that plays (SPEC Section 20.3).
 var route_bar: RouteBar
@@ -52,6 +57,8 @@ var _report: ReportPanel
 ## True while the warp plays again: no coin sound (SPEC Section 20.4).
 var _replaying := false
 var _shake := 0.0
+## The cells of the mark of the incident, while it plays (SPEC Section 29.3).
+var _incident_cells: Array = []
 
 
 func _ready() -> void:
@@ -187,7 +194,8 @@ func _show_hold(run: Dictionary) -> void:
 	var cargo := []
 	for id: int in _sorted_ids():
 		cargo.append(_cargo[id])
-	_hold.set_view({"hold": run["hold"], "cargo": cargo, "links": []})
+	var incident := {"cells": _incident_cells}
+	_hold.set_view({"hold": run["hold"], "cargo": cargo, "links": [], "incident": incident})
 	_bay.set_view({"shock_bay": run["shock_bay"], "cargo": cargo, "links": []})
 	_place_parts.call_deferred()
 
@@ -313,22 +321,86 @@ func _play_route(run: Dictionary, warp_log: Dictionary) -> void:
 	# A meteor and a hull breach turn all lights red (SPEC Section 21.6).
 	if inc.get("kind", "") in [Defs.INCIDENT_METEOR, Defs.INCIDENT_HULL_BREACH]:
 		_hold.light_all(HoldView.LIGHT_ALARM, 1.0 / speed)
+	# The mark of the place stays until the incident ends (SPEC Section 29.3).
+	_incident_cells = _incident_place(inc)
+	_show_hold(run)
+	incident_marks = _hold.incident_cells.size()
 	await _wait(0.6)
+	match inc["kind"]:
+		Defs.INCIDENT_METEOR:
+			await _play_meteor(inc)
+		Defs.INCIDENT_HULL_BREACH:
+			_fx.crack(Vector2i(inc["x"], inc["y"]))
+			await _wait(0.25)
+		Defs.INCIDENT_ION_PULSE:
+			_fx.wave(inc["y"])
 	if inc.has("debris_view"):
 		var d: Dictionary = inc["debris_view"].duplicate(true)
 		_cargo[d["id"]] = d
 		_show_hold(run)
-		_fx.shards(_hold.cargo_center(d))
 		Sound.play(self, "metal_hit")
 	_play_hits(inc, Defs.DIR_DOWN)
 	await _wait(0.3)
+	# The wave of an Ion Pulse shorts each Electronic cargo when it passes it.
+	var waited := 0.3
 	for r: Dictionary in inc["reactions"]:
+		if inc["kind"] == Defs.INCIDENT_ION_PULSE and r.get("cause", -1) < 0:
+			var at := _wave_time(_cargo.get(r["cargo"], {}))
+			if at > waited:
+				await _wait(at - waited)
+				waited = at
 		_play_reaction(r)
 		_play_loss(r)
 		_show_hold(run)
 		await _wait(REACTION_GAP)
+		waited += REACTION_GAP
+	if inc["kind"] == Defs.INCIDENT_ION_PULSE and waited < FxLayer.WAVE_TIME:
+		await _wait(FxLayer.WAVE_TIME - waited)
+	# The banner shows until the incident ends (SPEC Section 29.3).
+	incident_banner_held = _banner.modulate.a == 1.0 and _banner.text == incident_shown
+	_incident_cells = []
 	_apply_after(inc, run)
-	await _wait(0.3)
+	var fade := create_tween()
+	fade.tween_property(_banner, "modulate:a", 0.0, 0.3 / speed)
+	await _wait(0.35)
+
+
+## Returns the cells of the place of an incident: a column, a row, or a cell.
+func _incident_place(inc: Dictionary) -> Array:
+	var cells := []
+	match inc["kind"]:
+		Defs.INCIDENT_METEOR:
+			for y in _hold.rows:
+				cells.append({"x": inc["x"], "y": y})
+		Defs.INCIDENT_ION_PULSE:
+			for x in _hold.columns:
+				cells.append({"x": x, "y": inc["y"]})
+		_:
+			cells.append({"x": inc["x"], "y": inc["y"]})
+	return cells
+
+
+## The fireball falls to the top cargo of the column. In an empty column, it falls to
+## the floor and makes a small spark (SPEC Section 29.3).
+func _play_meteor(inc: Dictionary) -> void:
+	meteor_stop = _hold.rows
+	for h: Dictionary in inc["hits"]:
+		meteor_stop = h["contact"][0]["y"]
+	_fx.meteor(inc["x"], meteor_stop)
+	await _wait(FxLayer.METEOR_TIME)
+	if inc["hits"].is_empty():
+		var floor_at := _hold.grid_origin() + Vector2(inc["x"] + 0.5, _hold.rows) * _hold.cell
+		_fx.spark(floor_at, Vector2.UP)
+		Sound.play(self, "soft_hit")
+
+
+## Returns the time after its start when the wave of an Ion Pulse reaches a cargo.
+func _wave_time(c: Dictionary) -> float:
+	if c.is_empty():
+		return 0.0
+	var left := _hold.grid_origin().x
+	var frac := (_hold.cargo_center(c).x - left) / (_hold.columns * _hold.cell)
+	return FxLayer.WAVE_TIME * clampf(frac, 0.0, 1.0)
 
 
 ## Keeps the hold the same as the log after a step or an incident.

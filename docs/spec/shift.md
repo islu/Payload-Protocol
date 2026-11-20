@@ -198,4 +198,8 @@ An **incident** is an event of the route that happens before the first shift ste
 
 - The route bar shows the incident as the first card, before the shift steps: its name and its place ("Meteor · Column 4").
 - The hold marks the place of the incident: the column, the row, or the cell.
-- The warp plays the incident before the first shift step, with a banner.
+- The warp plays the incident before the first shift step. A banner shows its name and its place until the incident ends.
+- The mark of the place stays in the warp until the incident ends.
+- **Meteor:** a fireball falls down the column from the top bulkhead. It stops at the top cargo of the column, and the hit plays (Section 21.2). In an empty column, it falls to the floor and makes a small spark, with no force number.
+- **Ion Pulse:** a cyan wave moves along the row from left to right. Each Electronic cargo shorts when the wave passes it.
+- **Hull Breach:** the deck plate of the cell cracks, and dust and shards spray out. Then the debris appears, or the cargo becomes scrap. The crack does not stay.
