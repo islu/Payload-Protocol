@@ -81,7 +81,7 @@ Crystals shatter. Fuel drums explode. Coolant leaks onto the electronics. The ro
 
 - A run of 20 to 30 minutes, with a short tutorial at the start.
 - Freight that reacts: Fragile, Volatile, Fluid, Electronic, and Perishable.
-- Clamps, Foam Pads, Coolers, Shields, and a shock bay to protect your cargo.
+- Clamps, Shock Sponges, Coolers, Shields, and a shock bay to protect your cargo.
 - VIP clients, long hauls, and the Black Market.
 - Low Gravity, Heat Zones, meteors, and hull breaches.
 - English and Traditional Chinese.
@@ -112,7 +112,7 @@ Crystals shatter. Fuel drums explode. Coolant leaks onto the electronics. The ro
 
 - 一局約 20 到 30 分鐘，開頭有簡短的教學。
 - 會起反應的貨物：易碎、爆裂物、流體、電子、生鮮。
-- 卡榫、緩衝泡棉、冷藏機、護盾和防震艙，用來保護貨物。
+- 卡榫、緩衝海綿、冷藏機、護盾和防震艙，用來保護貨物。
 - VIP 客戶、長程合約和黑市。
 - 低重力、熱區、隕石和船殼破裂。
 - 支援英文和繁體中文。

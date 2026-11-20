@@ -4,12 +4,15 @@ Run it from the repository root: task art.
 
 tools/art/cargo_art.json has an entry for each cargo ID:
   {"source": "<path at the FreePixel CDN>", "crop": [x, y, w, h], "scale": 0.5 or "fit", "offset": [x, y]}
-Only "source" is necessary.
+Only "source" is necessary. An isometric block can also have "longer" and "flatter"
+(pixels to add on its long axis, and to remove from its height) and "tint" ("#rrggbb",
+a new hue). tools/art/iso_block.py does these changes.
 
 For each cargo, the tool:
 1. Downloads the image to .local/art (not in git). The license does not let us
    redistribute the raw files (docs/assets.md).
-2. Crops it to "crop", or to the pixels that are not transparent.
+2. Crops it to "crop", or to the pixels that are not transparent. Then it makes a
+   block longer and flatter, and tints it.
 3. Scales it to fit the cells of the shape at 100 pixels for each cell. The scale is
    1 or 0.5 when the image fits, so that the pixels stay clean.
 4. Writes <id>.png (the image over the box of the shape), <id>_scrap.png (the same
@@ -30,6 +33,8 @@ import urllib.request
 from pathlib import Path
 
 from PIL import Image, ImageOps
+
+import iso_block
 
 CDN = "https://pub-8b7609252a6742d7b029292aaede7f7f.r2.dev/"
 CELL = 100
@@ -60,7 +65,15 @@ def load(entry: dict) -> Image.Image:
     img = Image.open(download(entry["source"])).convert("RGBA")
     if "crop" in entry:
         x, y, w, h = entry["crop"]
-        return img.crop((x, y, x + w, y + h))
+        img = img.crop((x, y, x + w, y + h))
+    else:
+        img = img.crop(img.getbbox())
+    if entry.get("longer"):
+        img = iso_block.longer(img, entry["longer"])
+    if entry.get("flatter"):
+        img = iso_block.flatter(img, entry["flatter"])
+    if "tint" in entry:
+        img = iso_block.tint(img, entry["tint"])
     return img.crop(img.getbbox())
 
 

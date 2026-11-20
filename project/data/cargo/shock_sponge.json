@@ -1,6 +1,6 @@
 {
-	"id": "foam_pad",
-	"name": "Foam Pad",
+	"id": "shock_sponge",
+	"name": "Shock Sponge",
 	"kind": "kit",
 	"weight": "light",
 	"traits": ["cushion"],

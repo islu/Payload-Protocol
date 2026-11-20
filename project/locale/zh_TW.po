@@ -1045,10 +1045,6 @@ msgstr "消防栓"
 msgid "Flashlight"
 msgstr "手電筒"
 
-#: project/data/cargo/foam_pad.json
-msgid "Foam Pad"
-msgstr "緩衝泡棉"
-
 #: project/data/cargo/frozen_octopus.json
 msgid "Frozen Octopus"
 msgstr "冷凍章魚"
@@ -1148,6 +1144,10 @@ msgstr "護盾產生器"
 #: project/data/cargo/ship_engine.json
 msgid "Ship Engine"
 msgstr "太空船引擎"
+
+#: project/data/cargo/shock_sponge.json
+msgid "Shock Sponge"
+msgstr "緩衝海綿"
 
 #: project/data/cargo/space_cheese.json
 msgid "Space Cheese"

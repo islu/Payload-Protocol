@@ -16,7 +16,7 @@ Payload Protocol is a short puzzle game about cargo in the hold of a spaceship. 
 4. **Get paid.** Intact freight pays at the arrival. Scrap stays in your hold and takes space.
 5. **Make the payment.** At the end of each leg, you pay the loan. Three legs make a run.
 
-Use what the shop sells: clamps hold cargo in place, Foam Pads soften hits, Coolers keep food fresh, and Shields stop one disaster in each jump. Events and ship mods change each run.
+Use what the shop sells: clamps hold cargo in place, Shock Sponges soften hits, Coolers keep food fresh, and Shields stop one disaster in each jump. Events and ship mods change each run.
 
 ## Controls
 

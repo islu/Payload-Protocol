@@ -1020,10 +1020,6 @@ msgstr ""
 msgid "Flashlight"
 msgstr ""
 
-#: project/data/cargo/foam_pad.json
-msgid "Foam Pad"
-msgstr ""
-
 #: project/data/cargo/frozen_octopus.json
 msgid "Frozen Octopus"
 msgstr ""
@@ -1122,6 +1118,10 @@ msgstr ""
 
 #: project/data/cargo/ship_engine.json
 msgid "Ship Engine"
+msgstr ""
+
+#: project/data/cargo/shock_sponge.json
+msgid "Shock Sponge"
 msgstr ""
 
 #: project/data/cargo/space_cheese.json

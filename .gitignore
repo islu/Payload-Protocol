@@ -26,3 +26,4 @@ playtest/*
 
 # Notes that are not part of the project docs
 docs/notes/
+__pycache__/

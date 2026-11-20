@@ -58,10 +58,6 @@
  "flashlight": {
   "source": "sorted/modern-city/modern-flashlight-torch-beam-yellow_20260217_075831.png"
  },
- "foam_pad": {
-  "source": "sorted/sports/yoga-mat-rolled-purple-foam-exercise-floor_20260217_225623.png",
-  "scale": "fit"
- },
  "frozen_octopus": {
   "source": "sorted/ocean-creatures/ocean-octopus-tentacles-eight-arms-003-2026-03-25T19-14-54.png"
  },
@@ -141,6 +137,13 @@
  },
  "ship_engine": {
   "source": "sorted/scifi-interior/scifi-engine-thruster-large-nozzle-exhaust_20260217_142041.png",
+  "scale": "fit"
+ },
+ "shock_sponge": {
+  "source": "sorted/blocks/cube-block-sponge-yellow-porous-absorbent-soft_20260225_231932.png",
+  "longer": 120,
+  "flatter": 50,
+  "tint": "#ff9ad5",
   "scale": "fit"
  },
  "space_cheese": {

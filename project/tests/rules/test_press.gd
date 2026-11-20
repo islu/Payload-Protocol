@@ -65,7 +65,7 @@ func test_clamp_and_press() -> void:
 
 
 func test_cushion_press() -> void:
-	# Column 0: heavy over the Foam Pad over the glass over a box.
+	# Column 0: heavy over the cushion over the glass over a box.
 	put("heavy", 0, 2)
 	var foam := put("foam", 0, 3)
 	var glass := put("glass", 0, 4)
@@ -79,7 +79,7 @@ func test_cushion_press() -> void:
 		[0, 0],
 		"a Cushion cargo takes and makes a press of force 0 (SPEC Section 10.5)"
 	)
-	eq(glass.kind, Defs.KIND_FREIGHT, "the glass under the Foam Pad stays intact")
+	eq(glass.kind, Defs.KIND_FREIGHT, "the glass under the cushion stays intact")
 
 
 func test_padded_walls_no_change() -> void:

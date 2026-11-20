@@ -43,7 +43,7 @@
 			"payment": 100,
 			"hazard_steps": [[1, 1], [2, 2], [2, 2]],
 			"kit_pool": [
-				"foam_pad",
+				"shock_sponge",
 				"cooler_unit",
 				"battery_pack",
 				"shield_generator",
@@ -55,7 +55,7 @@
 			"payment": 240,
 			"hazard_steps": [[2, 2], [2, 2], [2, 2]],
 			"kit_pool": [
-				"foam_pad",
+				"shock_sponge",
 				"cooler_unit",
 				"battery_pack",
 				"shield_generator",
@@ -70,7 +70,7 @@
 			"payment": 380,
 			"hazard_steps": [[2, 3], [2, 3], [2, 3]],
 			"kit_pool": [
-				"foam_pad",
+				"shock_sponge",
 				"cooler_unit",
 				"battery_pack",
 				"shield_generator",

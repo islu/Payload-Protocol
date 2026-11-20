@@ -87,7 +87,7 @@ The first content has 43 freight in contracts, 6 kit, and the Hull Debris (SPEC 
 
 | ID | Name | Weight | Traits | Shape idea |
 | --- | --- | --- | --- | --- |
-| `foam_pad` | Foam Pad | light | Cushion | 2 cells, a line |
+| `shock_sponge` | Shock Sponge | light | Cushion | 2 cells, a line |
 | `cooler_unit` | Cooler Unit | standard | Cooler | 2 cells, a line |
 | `battery_pack` | Battery Pack | standard | Battery, Electronic | 1 cell |
 | `shield_generator` | Shield Generator | standard | Shield | 1 cell |

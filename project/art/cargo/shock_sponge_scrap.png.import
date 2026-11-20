@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cuxfdbs0rkxs7"
-path="res://.godot/imported/foam_pad.png-cd2d77748eec69238e2789fe83d6bed2.ctex"
+uid="uid://376c5qp182gv"
+path="res://.godot/imported/shock_sponge_scrap.png-0b60c1af5fa15e87b2b316c725a7385e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/cargo/foam_pad.png"
-dest_files=["res://.godot/imported/foam_pad.png-cd2d77748eec69238e2789fe83d6bed2.ctex"]
+source_file="res://art/cargo/shock_sponge_scrap.png"
+dest_files=["res://.godot/imported/shock_sponge_scrap.png-0b60c1af5fa15e87b2b316c725a7385e.ctex"]
 
 [params]
 
