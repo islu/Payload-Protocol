@@ -7,7 +7,10 @@
 		{
 			"text": "Pay them.",
 			"cost": 15,
-			"effects": []
+			"effects": [],
+			"reply": {
+				"text": "Smart pilot. The route is open. For now."
+			}
 		},
 		{
 			"text": "Refuse. They shoot the cargo bay.",
@@ -20,7 +23,10 @@
 					"type": "scrap",
 					"cargo": "steel_ingot"
 				}
-			]
+			],
+			"reply": {
+				"text": "Wrong answer. Fire at the hold!"
+			}
 		}
 	]
 }

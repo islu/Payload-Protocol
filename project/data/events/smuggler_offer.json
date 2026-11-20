@@ -11,11 +11,17 @@
 					"type": "contract",
 					"contract": "smuggler_run"
 				}
-			]
+			],
+			"reply": {
+				"text": "Do not open the boxes. Do not ask questions."
+			}
 		},
 		{
 			"text": "Say no.",
-			"effects": []
+			"effects": [],
+			"reply": {
+				"text": "Your loss. Another ship will take the pay."
+			}
 		}
 	]
 }

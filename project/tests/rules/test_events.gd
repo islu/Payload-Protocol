@@ -50,13 +50,18 @@ func test_no_event_two_times() -> void:
 
 
 func _open_one() -> void:
+	_open_event("e_one")
+
+
+## Opens the station of the second jump until the event has the ID.
+func _open_event(id: String) -> void:
 	for attempt in 2:
 		_open(2)
-		if run.event.id == "e_one":
+		if run.event.id == id:
 			return
-		run.choose_event(0)
+		run.choose_event(run.event.choices.size() - 1)
 		run.leg += 1
-	failures.append("setup: e_one did not come")
+	failures.append("setup: %s did not come" % id)
 
 
 func test_cost_more_than_credits() -> void:
@@ -229,6 +234,32 @@ func test_event_view() -> void:
 		e["choices"][0]["effects"].size(),
 		6,
 		"the view has the text of each effect (SPEC Section 20.8)"
+	)
+	eq(
+		e["choices"][0]["reply"],
+		"Reply all",
+		"the view has the reply of each choice (SPEC Section 26.2)"
+	)
+
+
+func test_event_view_merges_effects() -> void:
+	_open_event("e_two")
+	var effects: Array = RunView.view(run)["event"]["choices"][0]["effects"]
+	eq(effects.size(), 1, "identical effects show as one text (SPEC Section 20.8)")
+	var args: Dictionary = effects[0].get("args", {}) if effects.size() > 0 else {}
+	eq(args.get("count", 0), 2, "the text of identical effects has their count (SPEC Section 20.8)")
+	# Scrap is light: each cell has a mass of 1. Each bar has 2 cells, and there are 2 bars.
+	eq(args.get("mass", 0), 4, "a scrap effect shows the mass of its scrap (SPEC Section 20.8)")
+	eq(run.choose_event(0), "", "select the choice")
+	eq(run.dock.size(), 2, "each identical effect still happens (SPEC Section 26.2)")
+
+
+func test_choice_needs_a_reply() -> void:
+	var d := Fixture.data()
+	d["events"]["e_two"]["choices"][1].erase("reply")
+	check(
+		"reply" in "\n".join(Catalog.from_data(d).errors),
+		"the data check rejects a choice with no reply (SPEC Section 26.2)"
 	)
 
 

@@ -484,7 +484,8 @@ func _check_contract(t: ContractTemplate) -> void:
 			_fail("contract %s: the bonus type %s is not valid" % [t.id, t.bonus["type"]])
 
 
-## Checks an event: 2 or 3 choices, one free choice, and valid effects (SPEC Section 26.2).
+## Checks an event: 2 or 3 choices, one free choice, a reply for each choice, and valid
+## effects (SPEC Section 26.2).
 func _check_event(e: EventDef) -> void:
 	if e.name == "" or e.text == "":
 		_fail("event %s: it needs a name and a text" % e.id)
@@ -496,6 +497,8 @@ func _check_event(e: EventDef) -> void:
 	for c: Dictionary in e.choices:
 		if c["text"] == "":
 			_fail("event %s: each choice needs a text" % e.id)
+		if c["reply"] == "":
+			_fail("event %s: each choice needs a reply" % e.id)
 		free = free or c["cost"] == 0
 		for f: Dictionary in c["effects"]:
 			_check_effect(e.id, f)

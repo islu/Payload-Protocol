@@ -206,7 +206,12 @@ func _act(rec: RunRecord, parts: Array) -> String:
 	var a := _action(rec.run, parts)
 	if a.is_empty():
 		return "unknown command %s" % parts[0]
+	var event := RunView.event(rec.run)
 	var err := rec.act(a["name"], a["args"])
+	# The speaker replies after a choice (SPEC Section 20.8).
+	if err == "" and a["name"] == Defs.ACT_CHOOSE_EVENT:
+		var c: Dictionary = event["choices"][a["args"][0]]
+		_say('%s: "%s"' % [event["speaker"]["name"], c["reply"]])
 	if err == "" and _tut != null:
 		_tut.update(rec.run)
 	return err

@@ -161,8 +161,16 @@ msgid "+1 clamp"
 msgstr "+1 卡榫"
 
 #: project/rules/run_view.gd
-msgid "Scrap on the dock: {name}"
-msgstr "廢鐵送到碼頭：{name}"
+msgid "Scrap on the dock: {name} (mass {mass})"
+msgstr "廢鐵送到碼頭：{name}（載重 {mass}）"
+
+#: project/rules/run_view.gd
+msgid "Scrap on the dock: {name} ×{count} (mass {mass})"
+msgstr "廢鐵送到碼頭：{name} ×{count}（載重 {mass}）"
+
+#: project/rules/run_view.gd
+msgid "{effect} ×{count}"
+msgstr "{effect} ×{count}"
 
 #: project/rules/run_view.gd
 msgid "New contract: {name}"
@@ -204,6 +212,12 @@ msgstr "麥哲倫"
 #: project/scenes/main/event_panel.gd
 msgid "Cost {cost}"
 msgstr "花費 {cost}"
+
+#: project/scenes/main/event_panel.gd
+#: project/scenes/main/phase_panel.gd
+#: project/scenes/warp/report_panel.gd
+msgid "Continue"
+msgstr "繼續"
 
 #: project/scenes/main/gear_button.gd
 msgid "Menu (Esc)"
@@ -335,11 +349,6 @@ msgstr "放棄航程"
 #: project/scenes/main/pause_menu.gd
 msgid "Abandon this run? Its progress is lost."
 msgstr "要放棄這趟航程嗎？目前的進度會消失。"
-
-#: project/scenes/main/phase_panel.gd
-#: project/scenes/warp/report_panel.gd
-msgid "Continue"
-msgstr "繼續"
 
 #: project/scenes/main/phase_panel.gd
 msgid "Payment"
@@ -1360,8 +1369,16 @@ msgid "An Electronic cargo shorts at a hit with a force of 2 or more."
 msgstr "電子貨物受到撞擊力 2 以上的撞擊時會短路。"
 
 #: project/data/events/company_audit.json
+msgid "The company thanks you for your early payment."
+msgstr "公司感謝你提早付款。"
+
+#: project/data/events/company_audit.json
 msgid "Pay early."
 msgstr "提前還款。"
+
+#: project/data/events/company_audit.json
+msgid "Noted. The company remembers everything."
+msgstr "記下了。公司什麼都記得。"
 
 #: project/data/events/company_audit.json
 msgid "Ignore it."
@@ -1376,12 +1393,24 @@ msgid "The company checks your books. An early payment makes it happy."
 msgstr "公司來查帳了。提前還一點款，它會很開心。"
 
 #: project/data/events/distress_call.json
+msgid "Thank you, pilot. Take this part. It still works."
+msgstr "謝謝你，駕駛員。這個零件拿去，還能用。"
+
+#: project/data/events/distress_call.json
 msgid "Give them fuel. They give you a ship part."
 msgstr "分他們燃料，換一個船艇零件。"
 
 #: project/data/events/distress_call.json
+msgid "Our supplies are in your hands now. Fly safe."
+msgstr "我們的物資就交給你了。一路小心。"
+
+#: project/data/events/distress_call.json
 msgid "Carry their supplies to the next station."
 msgstr "幫他們把物資送到下一站。"
+
+#: project/data/events/distress_call.json
+msgid "We understand. Somebody else will come. Maybe."
+msgstr "我們懂。會有別人來的。大概吧。"
 
 #: project/data/events/distress_call.json
 msgid "Fly on."
@@ -1396,8 +1425,16 @@ msgid "A stranded freighter calls for help. Its crew offers what it can."
 msgstr "一艘拋錨的貨船發出求救。船員願意拿出能給的東西。"
 
 #: project/data/events/drifting_container.json
+msgid "Some steel is bent, but the rest sells well."
+msgstr "有些鋼材彎了，其他的倒是很好賣。"
+
+#: project/data/events/drifting_container.json
 msgid "Haul it in."
 msgstr "拖進來。"
+
+#: project/data/events/drifting_container.json
+msgid "Good call. Nobody knows what is in a lost box."
+msgstr "明智。誰知道漂流箱裡裝了什麼。"
 
 #: project/data/events/drifting_container.json
 msgid "Leave it."
@@ -1412,8 +1449,16 @@ msgid "A lost container drifts past. Some of it is still good."
 msgstr "一個失落的貨櫃漂了過來，裡面有些東西還能用。"
 
 #: project/data/events/pirate_demand.json
+msgid "Smart pilot. The route is open. For now."
+msgstr "識相。航線放行了。暫時。"
+
+#: project/data/events/pirate_demand.json
 msgid "Pay them."
 msgstr "付錢。"
+
+#: project/data/events/pirate_demand.json
+msgid "Wrong answer. Fire at the hold!"
+msgstr "答錯了。朝貨艙開火！"
 
 #: project/data/events/pirate_demand.json
 msgid "Refuse. They shoot the cargo bay."
@@ -1428,12 +1473,24 @@ msgid "Pirates block the route. They want credits, or they shoot."
 msgstr "海盜擋住航線。不給信用點，他們就開火。"
 
 #: project/data/events/ship_mechanic.json
+msgid "Done. That clamp holds anything."
+msgstr "好了。這個卡榫什麼都固定得住。"
+
+#: project/data/events/ship_mechanic.json
 msgid "Fit a clamp."
 msgstr "裝一個卡榫。"
 
 #: project/data/events/ship_mechanic.json
+msgid "Fitted. Do not ask where I got it."
+msgstr "裝好了。別問我從哪弄來的。"
+
+#: project/data/events/ship_mechanic.json
 msgid "Fit a ship part."
 msgstr "裝一個船艇零件。"
+
+#: project/data/events/ship_mechanic.json
+msgid "Your ship, your problem."
+msgstr "你的船，你自己看著辦。"
 
 #: project/data/events/ship_mechanic.json
 msgid "Leave."
@@ -1448,8 +1505,16 @@ msgid "A mechanic at the dock offers a quick job."
 msgstr "碼頭的技師說可以幫你快速改裝。"
 
 #: project/data/events/smuggler_offer.json
+msgid "Do not open the boxes. Do not ask questions."
+msgstr "別打開箱子，也別問問題。"
+
+#: project/data/events/smuggler_offer.json
 msgid "Take the job."
 msgstr "接下這份工作。"
+
+#: project/data/events/smuggler_offer.json
+msgid "Your loss. Another ship will take the pay."
+msgstr "你的損失。這筆錢會有別的船來賺。"
 
 #: project/data/events/smuggler_offer.json
 msgid "Say no."

@@ -74,6 +74,8 @@ static func check(ui: Node, main_scene: PackedScene) -> void:
 			Hints.EVENT in Settings.get_value("hints_seen"),
 			"the hint of an event ends at the pick (SPEC Section 23.3)"
 		)
+		panel.continue_button.pressed.emit()
+		await ui.get_tree().process_frame
 	GameState.set_up(_set_new)
 	await ui.get_tree().process_frame
 	ui._check(

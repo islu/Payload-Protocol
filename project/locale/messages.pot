@@ -160,7 +160,15 @@ msgid "+1 clamp"
 msgstr ""
 
 #: project/rules/run_view.gd
-msgid "Scrap on the dock: {name}"
+msgid "Scrap on the dock: {name} (mass {mass})"
+msgstr ""
+
+#: project/rules/run_view.gd
+msgid "Scrap on the dock: {name} ×{count} (mass {mass})"
+msgstr ""
+
+#: project/rules/run_view.gd
+msgid "{effect} ×{count}"
 msgstr ""
 
 #: project/rules/run_view.gd
@@ -202,6 +210,12 @@ msgstr ""
 
 #: project/scenes/main/event_panel.gd
 msgid "Cost {cost}"
+msgstr ""
+
+#: project/scenes/main/event_panel.gd
+#: project/scenes/main/phase_panel.gd
+#: project/scenes/warp/report_panel.gd
+msgid "Continue"
 msgstr ""
 
 #: project/scenes/main/gear_button.gd
@@ -313,11 +327,6 @@ msgstr ""
 
 #: project/scenes/main/pause_menu.gd
 msgid "Abandon this run? Its progress is lost."
-msgstr ""
-
-#: project/scenes/main/phase_panel.gd
-#: project/scenes/warp/report_panel.gd
-msgid "Continue"
 msgstr ""
 
 #: project/scenes/main/phase_panel.gd
@@ -1335,7 +1344,15 @@ msgid "An Electronic cargo shorts at a hit with a force of 2 or more."
 msgstr ""
 
 #: project/data/events/company_audit.json
+msgid "The company thanks you for your early payment."
+msgstr ""
+
+#: project/data/events/company_audit.json
 msgid "Pay early."
+msgstr ""
+
+#: project/data/events/company_audit.json
+msgid "Noted. The company remembers everything."
 msgstr ""
 
 #: project/data/events/company_audit.json
@@ -1351,11 +1368,23 @@ msgid "The company checks your books. An early payment makes it happy."
 msgstr ""
 
 #: project/data/events/distress_call.json
+msgid "Thank you, pilot. Take this part. It still works."
+msgstr ""
+
+#: project/data/events/distress_call.json
 msgid "Give them fuel. They give you a ship part."
 msgstr ""
 
 #: project/data/events/distress_call.json
+msgid "Our supplies are in your hands now. Fly safe."
+msgstr ""
+
+#: project/data/events/distress_call.json
 msgid "Carry their supplies to the next station."
+msgstr ""
+
+#: project/data/events/distress_call.json
+msgid "We understand. Somebody else will come. Maybe."
 msgstr ""
 
 #: project/data/events/distress_call.json
@@ -1371,7 +1400,15 @@ msgid "A stranded freighter calls for help. Its crew offers what it can."
 msgstr ""
 
 #: project/data/events/drifting_container.json
+msgid "Some steel is bent, but the rest sells well."
+msgstr ""
+
+#: project/data/events/drifting_container.json
 msgid "Haul it in."
+msgstr ""
+
+#: project/data/events/drifting_container.json
+msgid "Good call. Nobody knows what is in a lost box."
 msgstr ""
 
 #: project/data/events/drifting_container.json
@@ -1387,7 +1424,15 @@ msgid "A lost container drifts past. Some of it is still good."
 msgstr ""
 
 #: project/data/events/pirate_demand.json
+msgid "Smart pilot. The route is open. For now."
+msgstr ""
+
+#: project/data/events/pirate_demand.json
 msgid "Pay them."
+msgstr ""
+
+#: project/data/events/pirate_demand.json
+msgid "Wrong answer. Fire at the hold!"
 msgstr ""
 
 #: project/data/events/pirate_demand.json
@@ -1403,11 +1448,23 @@ msgid "Pirates block the route. They want credits, or they shoot."
 msgstr ""
 
 #: project/data/events/ship_mechanic.json
+msgid "Done. That clamp holds anything."
+msgstr ""
+
+#: project/data/events/ship_mechanic.json
 msgid "Fit a clamp."
 msgstr ""
 
 #: project/data/events/ship_mechanic.json
+msgid "Fitted. Do not ask where I got it."
+msgstr ""
+
+#: project/data/events/ship_mechanic.json
 msgid "Fit a ship part."
+msgstr ""
+
+#: project/data/events/ship_mechanic.json
+msgid "Your ship, your problem."
 msgstr ""
 
 #: project/data/events/ship_mechanic.json
@@ -1423,7 +1480,15 @@ msgid "A mechanic at the dock offers a quick job."
 msgstr ""
 
 #: project/data/events/smuggler_offer.json
+msgid "Do not open the boxes. Do not ask questions."
+msgstr ""
+
+#: project/data/events/smuggler_offer.json
 msgid "Take the job."
+msgstr ""
+
+#: project/data/events/smuggler_offer.json
+msgid "Your loss. Another ship will take the pay."
 msgstr ""
 
 #: project/data/events/smuggler_offer.json

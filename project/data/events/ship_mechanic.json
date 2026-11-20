@@ -11,7 +11,10 @@
 				{
 					"type": "clamp"
 				}
-			]
+			],
+			"reply": {
+				"text": "Done. That clamp holds anything."
+			}
 		},
 		{
 			"text": "Fit a ship part.",
@@ -20,11 +23,17 @@
 				{
 					"type": "mod"
 				}
-			]
+			],
+			"reply": {
+				"text": "Fitted. Do not ask where I got it."
+			}
 		},
 		{
 			"text": "Leave.",
-			"effects": []
+			"effects": [],
+			"reply": {
+				"text": "Your ship, your problem."
+			}
 		}
 	]
 }

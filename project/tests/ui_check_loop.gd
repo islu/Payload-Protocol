@@ -96,16 +96,20 @@ static func choose(ui: Node, main: Control) -> void:
 		)
 	var was_event: bool = run["phase"] == Defs.PHASE_EVENT
 	var mods: int = run["mods"].size()
-	for b in buttons:
-		if not b.disabled:
-			b.pressed.emit()
+	var picked := -1
+	for i in buttons.size():
+		if not buttons[i].disabled:
+			picked = i
+			buttons[i].pressed.emit()
 			break
 	await ui.get_tree().process_frame
+	if was_event and picked >= 0:
+		await _check_reply(ui, main, run["event"]["choices"][picked])
 	run = GameState.view()["run"]
 	if was_event:
 		ui._check(
 			run["phase"] == Defs.PHASE_EVENT or not main.choice is EventPanel,
-			"after the choice of an event, the panel closes (SPEC Section 20.8)"
+			"after the reply of an event, the panel closes (SPEC Section 20.8)"
 		)
 	if run["phase"] == Defs.PHASE_STATION and main.screen() is StationScreen:
 		var station: StationScreen = main.screen()
@@ -184,6 +188,38 @@ static func route_warp(ui: Node, warp: WarpScreen) -> void:
 		ui._check(
 			warp.incident_shown == RouteCards.incident_text(inc),
 			"the warp shows the incident in a banner (SPEC Section 29.3)"
+		)
+
+
+## Checks the reply after a choice: it shows in place of the choices, the station waits,
+## and Continue closes it. Then the effects play, and a mod choice opens after the
+## reply (SPEC Section 20.8).
+static func _check_reply(ui: Node, main: Control, c: Dictionary) -> void:
+	var panel := main.choice as EventPanel
+	var shown := panel != null and panel.reply_label != null
+	ui._check(
+		shown and ui.tr(c["reply"]) in panel.reply_label.text and panel.choices.is_empty(),
+		"after a choice, the speaker replies in place of the choices (SPEC Section 20.8)"
+	)
+	if not shown:
+		return
+	var station: StationScreen = main.screen()
+	ui._check(station.held, "the station waits while the reply shows (SPEC Section 20.8)")
+	ui._check(
+		not main.choice is ChoicePanel, "the mod choice waits for the reply (SPEC Section 20.8)"
+	)
+	var dock: int = GameState.view()["run"]["dock"].size() - station._dock_ids.size()
+	panel.continue_button.pressed.emit()
+	await ui.get_tree().process_frame
+	ui._check(not station.held, "Continue closes the reply (SPEC Section 20.8)")
+	ui._check(
+		station.popped.size() >= dock,
+		"each new cargo on the dock pops in after the reply (SPEC Section 20.8)"
+	)
+	if GameState.view()["run"]["phase"] == Defs.PHASE_MOD:
+		ui._check(
+			main.choice is ChoicePanel,
+			"a mod effect opens the mod choice after the reply (SPEC Section 20.8)"
 		)
 
 

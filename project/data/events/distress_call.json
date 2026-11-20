@@ -11,7 +11,10 @@
 				{
 					"type": "mod"
 				}
-			]
+			],
+			"reply": {
+				"text": "Thank you, pilot. Take this part. It still works."
+			}
 		},
 		{
 			"text": "Carry their supplies to the next station.",
@@ -20,11 +23,17 @@
 					"type": "contract",
 					"contract": "rescue_supplies"
 				}
-			]
+			],
+			"reply": {
+				"text": "Our supplies are in your hands now. Fly safe."
+			}
 		},
 		{
 			"text": "Fly on.",
-			"effects": []
+			"effects": [],
+			"reply": {
+				"text": "We understand. Somebody else will come. Maybe."
+			}
 		}
 	]
 }

@@ -15,11 +15,17 @@
 					"type": "scrap",
 					"cargo": "steel_ingot"
 				}
-			]
+			],
+			"reply": {
+				"text": "Some steel is bent, but the rest sells well."
+			}
 		},
 		{
 			"text": "Leave it.",
-			"effects": []
+			"effects": [],
+			"reply": {
+				"text": "Good call. Nobody knows what is in a lost box."
+			}
 		}
 	]
 }

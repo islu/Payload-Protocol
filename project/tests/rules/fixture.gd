@@ -272,7 +272,9 @@ static func environments() -> Dictionary:
 
 
 ## Two events. e_one has each effect but mod in its first choice, and mod in its second.
+## e_two has two identical scrap effects in its first choice.
 static func events() -> Dictionary:
+	var scrap := {"type": "scrap", "cargo": "bar"}
 	var all := [
 		{"type": "credits", "amount": 10},
 		{"type": "kit", "cargo": "foam"},
@@ -290,9 +292,9 @@ static func events() -> Dictionary:
 			"speaker": "s_one",
 			"choices":
 			[
-				{"text": "All", "cost": 5, "effects": all},
-				{"text": "Mod", "effects": [{"type": "mod"}]},
-				{"text": "Ignore", "effects": []},
+				{"text": "All", "cost": 5, "effects": all, "reply": {"text": "Reply all"}},
+				{"text": "Mod", "effects": [{"type": "mod"}], "reply": {"text": "Reply mod"}},
+				{"text": "Ignore", "effects": [], "reply": {"text": "Reply ignore"}},
 			],
 		},
 		"e_two":
@@ -301,7 +303,11 @@ static func events() -> Dictionary:
 			"name": "Two",
 			"text": "Event two",
 			"speaker": "s_one",
-			"choices": [{"text": "Ignore", "effects": []}, {"text": "Ignore too", "effects": []}],
+			"choices":
+			[
+				{"text": "Refuse", "effects": [scrap, scrap], "reply": {"text": "Reply refuse"}},
+				{"text": "Ignore", "effects": [], "reply": {"text": "Reply ignore"}},
+			],
 		},
 	}
 

@@ -12,11 +12,17 @@
 					"type": "payment",
 					"amount": 15
 				}
-			]
+			],
+			"reply": {
+				"text": "The company thanks you for your early payment."
+			}
 		},
 		{
 			"text": "Ignore it.",
-			"effects": []
+			"effects": [],
+			"reply": {
+				"text": "Noted. The company remembers everything."
+			}
 		}
 	]
 }

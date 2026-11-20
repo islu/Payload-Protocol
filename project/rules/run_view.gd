@@ -13,7 +13,9 @@ const EFFECT_TEXT := {
 	"loss": "{amount} credits",
 	Defs.EFFECT_KIT: "Kit on the dock: {name}",
 	Defs.EFFECT_CLAMP: "+1 clamp",
-	Defs.EFFECT_SCRAP: "Scrap on the dock: {name}",
+	Defs.EFFECT_SCRAP: "Scrap on the dock: {name} (mass {mass})",
+	"scrap_many": "Scrap on the dock: {name} ×{count} (mass {mass})",
+	"many": "{effect} ×{count}",
 	Defs.EFFECT_CONTRACT: "New contract: {name}",
 	Defs.EFFECT_MOD: "Select a ship mod",
 	Defs.EFFECT_PAYMENT: "Payment of this leg -{amount}",
@@ -581,7 +583,7 @@ static func event(run: Run) -> Dictionary:
 	for i in run.event.choices.size():
 		var c: Dictionary = run.event.choices[i]
 		var effects := []
-		for f: Dictionary in c["effects"]:
+		for f: Dictionary in _merge_effects(c["effects"]):
 			effects.append(_effect(run, f))
 		var why := StationEvents.choice_error(run, i)
 		(
@@ -594,6 +596,7 @@ static func event(run: Run) -> Dictionary:
 					"can": why == "",
 					"why": why,
 					"effects": effects,
+					"reply": c["reply"],
 				}
 			)
 		)
@@ -607,12 +610,40 @@ static func event(run: Run) -> Dictionary:
 	}
 
 
-static func _effect(run: Run, f: Dictionary) -> Dictionary:
+## Returns the effects with identical effects as one, in the order of the first. Each
+## has count: the number of identical effects (SPEC Section 20.8).
+static func _merge_effects(effects: Array) -> Array:
+	var out := []
+	for f: Dictionary in effects:
+		var same := out.filter(func(g: Dictionary) -> bool: return g["effect"] == f)
+		if same.is_empty():
+			out.append({"effect": f, "count": 1})
+		else:
+			same[0]["count"] += 1
+	return out
+
+
+## The text of merged effects: {effect, count}. A scrap shows the mass of all its scrap.
+static func _effect(run: Run, merged: Dictionary) -> Dictionary:
+	var f: Dictionary = merged["effect"]
+	var count: int = merged["count"]
+	if f["type"] == Defs.EFFECT_SCRAP:
+		var def: CargoDef = run.cat.cargo[f["cargo"]]
+		var mass := run.cat.weight_value(Defs.WEIGHT_LIGHT) * def.shape.size() * count
+		var key: String = EFFECT_TEXT["scrap_many"] if count > 1 else EFFECT_TEXT[f["type"]]
+		return text(key, {"name": def.name, "count": count, "mass": mass})
+	var one := _one_effect(run, f)
+	if count == 1:
+		return one
+	return text(EFFECT_TEXT["many"], {"effect": one, "count": count})
+
+
+static func _one_effect(run: Run, f: Dictionary) -> Dictionary:
 	match f["type"]:
 		Defs.EFFECT_CREDITS:
 			var key: String = EFFECT_TEXT["gain"] if f["amount"] > 0 else EFFECT_TEXT["loss"]
 			return text(key, {"amount": f["amount"]})
-		Defs.EFFECT_KIT, Defs.EFFECT_SCRAP:
+		Defs.EFFECT_KIT:
 			return text(EFFECT_TEXT[f["type"]], {"name": run.cat.cargo[f["cargo"]].name})
 		Defs.EFFECT_CONTRACT:
 			var name := run.cat.contract(f["contract"]).client_name

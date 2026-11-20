@@ -79,7 +79,6 @@ This file keeps each problem that is found and not fixed yet. Each item is in on
   To do                 Fix: add the mass of the accepted contracts to the mass line as a projection, and show the jolt force of a cargo in its tooltip. Add both to the view and the spec. Show the cause of each JOLT RISK mark. Playtest seed 77 round 3 (2026-11-18, kit mass): the text player says "JOLT RISK at the front wall" for a press away from the wall. The mark covers step 1 only, so it missed the Low Gravity slide of a fork step. Each round asked for marks of each known step and both fork directions.
 
 - **[UX · Data] Small clarity problems** (found 2026-11-18, by /playtest seed 77).
-  - The Drifting Container event does not say that its scrap adds mass.
   - The warp log does not explain the Shock Floor -1, or that Insurance rounds down for each cargo (16, not 18).
   - The bonus "2 lines at the bottom" has no mark on the hold.
   - The win line "The cargo survived. Mostly." can show after a run with 0 scrap (`data/lines/win.json`).

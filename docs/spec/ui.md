@@ -106,6 +106,9 @@ The warp:
 - All speakers have the same proportions: their heads have the same size and are at the same height. Each speaker fades out at the bottom edge of the dialogue box.
 - The dialogue box shows the name of the speaker, the name of the event, its text, and a button for each choice. Each button shows the text of the choice, its cost, and its effects.
 - A choice that the player cannot select is disabled (Section 26.2).
+- Identical effects of a choice show as one text with a count, for example "Scrap on the dock: Steel Ingot ×2". A scrap effect also shows its mass.
+- When the player selects a choice, the speaker replies with one line (Section 26.2). The choice buttons go away, and the reply shows with a Continue button. Enter, Space, and a click do the same as Continue.
+- When the reply closes, each effect plays at its place on the station. The credits count to the new value. Each new cargo on the dock and each new contract pops in, and a sound plays. Then the mod choice shows, if the choice has a `mod` effect.
 - The player cannot use the station until the player selects a choice. Esc and the gear button do nothing.
 
 ### 20.9 Mod Choice

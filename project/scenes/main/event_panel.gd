@@ -3,9 +3,14 @@ extends Overlay
 ## The event on top of the station (SPEC Section 20.8): the speaker stands at the left
 ## of the dialogue box, and the box has the name of the speaker, the name of the event,
 ## its text, and a button for each choice. The player must select a choice: Esc does
-## not close it.
+## not close it. After the choice, the speaker replies, and Continue closes the panel.
+
+## Emits true before the action of a choice, so that the station waits for the reply,
+## and false when the action fails (SPEC Section 20.8).
+signal hold(on: bool)
 
 const COST_TEXT := "Cost {cost}"
+const CONTINUE_TEXT := "Continue"
 ## The portraits of the speakers (task art). Each head has the same size.
 const PORTRAIT_PATH := "res://art/speakers/%s.png"
 ## The height of the speaker that shows, from the top of the head. The shortest
@@ -39,14 +44,23 @@ var speaker_name: Label
 ## The tip of the panel: why a choice is disabled (SPEC Section 26.2). The station tip
 ## is below the panel, so the panel has its own.
 var tip: CargoTip
+## The reply of the speaker and its Continue button, after a choice (SPEC Section 20.8).
+var reply_label: Label
+var continue_button: Button
+## The event of the panel. The view has no event after the choice.
+var _event: Dictionary = {}
+## The reply after the choice, or "" before the choice.
+var _reply := ""
 
 
 func _build() -> void:
 	choices.clear()
-	var run: Dictionary = GameState.view()["run"]
-	if run.get("phase", "") != Defs.PHASE_EVENT:
-		return
-	var e: Dictionary = run["event"]
+	if _event.is_empty():
+		var run: Dictionary = GameState.view()["run"]
+		if run.get("phase", "") != Defs.PHASE_EVENT:
+			return
+		_event = run["event"]
+	var e := _event
 	# The speaker stands outside a frame: the overlay panel shows no frame here.
 	panel.add_theme_stylebox_override("panel", StyleBoxEmpty.new())
 	var row := HBoxContainer.new()
@@ -58,6 +72,8 @@ func _build() -> void:
 		tip = CargoTip.new()
 		add_child(tip)
 	tip.visible = false
+	if continue_button != null:
+		continue_button.grab_focus.call_deferred()
 	for b in choices:
 		if not b.disabled:
 			b.grab_focus.call_deferred()
@@ -115,6 +131,9 @@ func _dialogue(e: Dictionary) -> Control:
 	var gap := Control.new()
 	gap.custom_minimum_size.y = 4
 	col.add_child(gap)
+	if _reply != "":
+		_add_reply(col)
+		return frame
 	for c: Dictionary in e["choices"]:
 		var lines := PackedStringArray([tr(c["text"])])
 		var notes := PackedStringArray()
@@ -135,19 +154,59 @@ func _dialogue(e: Dictionary) -> Control:
 		if why != "":
 			b.mouse_entered.connect(func() -> void: tip.show_text(why, PackedStringArray()))
 			b.mouse_exited.connect(func() -> void: tip.visible = false)
-		b.pressed.connect(func() -> void: _pick(GameState.choose_event(index)))
+		var reply: String = c["reply"]
+		b.pressed.connect(func() -> void: _pick(index, reply))
 		col.add_child(b)
 		choices.append(b)
 	return frame
 
 
-func _pick(err: String) -> void:
-	if err != "":
+## The reply of the speaker in place of the choices, and the Continue button.
+func _add_reply(col: VBoxContainer) -> void:
+	reply_label = Ui.label(col, "“%s”" % tr(_reply), TextSize.HEADING, Palette.ACCENT)
+	reply_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	continue_button = Button.new()
+	continue_button.text = tr(CONTINUE_TEXT)
+	continue_button.custom_minimum_size = Vector2(BOX_WIDTH, 56)
+	continue_button.add_theme_font_size_override("font_size", TextSize.BUTTON)
+	continue_button.pressed.connect(close)
+	col.add_child(continue_button)
+
+
+## Reports whether the reply shows: main keeps the panel open until it closes.
+func replying() -> bool:
+	return _reply != ""
+
+
+func _pick(index: int, reply: String) -> void:
+	_reply = reply
+	hold.emit(true)
+	if GameState.choose_event(index) != "":
+		_reply = ""
+		hold.emit(false)
 		Sound.play(self, "deny")
-	else:
-		Hints.done(Hints.EVENT)
+		return
+	Hints.done(Hints.EVENT)
+	_rebuild()
 
 
 ## The player must select a choice: Esc does nothing.
 func _unhandled_input(_event: InputEvent) -> void:
 	pass
+
+
+## After the choice, a click, Enter, or Space closes the reply (SPEC Section 20.8). The
+## dark backdrop takes the clicks, so the panel reads them before the controls do.
+func _input(event: InputEvent) -> void:
+	if _reply == "" or is_queued_for_deletion():
+		return
+	var click: bool = event is InputEventMouseButton and event.pressed
+	var key: bool = (
+		event is InputEventKey
+		and event.pressed
+		and not event.echo
+		and event.keycode in [KEY_ENTER, KEY_KP_ENTER, KEY_SPACE]
+	)
+	if click or key:
+		get_viewport().set_input_as_handled()
+		close()

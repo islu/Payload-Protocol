@@ -144,7 +144,11 @@ func _mod_choice() -> void:
 	var run: Dictionary = GameState.view()["run"]
 	if run["phase"] == Defs.PHASE_EVENT:
 		await _shot("09_event")
-		GameState.choose_event(run["event"]["choices"].size() - 1)
+		var panel: EventPanel = _main.choice
+		panel.choices[-1].pressed.emit()
+		await _wait(0.3)
+		await _shot("09b_event_reply")
+		panel.close()
 	GameState.set_up(StationEvents.offer_mods)
 	await _wait(0.6)
 	await _shot("10_mod_choice")

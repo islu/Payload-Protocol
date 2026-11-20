@@ -1,6 +1,7 @@
 class_name GameText
 ## Translates text from the view. A text with arguments is {key, args}: this
 ## class translates the key and each string argument, then fills in the placeholders.
+## An argument can be a text too.
 
 ## The name of the pilot (SPEC Section 22). It is translated: use pilot_name().
 const PILOT_NAME_TEXT := "MAGELLAN"
@@ -20,7 +21,12 @@ static func format(text: Variant) -> String:
 	var raw: Dictionary = text.get("args", {})
 	for name: String in raw:
 		var v: Variant = raw[name]
-		args[name] = str(int(v)) if v is float or v is int else TranslationServer.translate(str(v))
+		if v is Dictionary:
+			args[name] = format(v)
+		elif v is float or v is int:
+			args[name] = str(int(v))
+		else:
+			args[name] = TranslationServer.translate(str(v))
 	return TranslationServer.translate(text["key"]).format(args)
 
 

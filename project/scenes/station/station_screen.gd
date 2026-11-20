@@ -7,6 +7,8 @@ extends Control
 const DOCK_TEXT := "Dock"
 ## The phases that show the station (SPEC Sections 20.2, 20.8, and 20.9).
 const STATION_PHASES: PackedStringArray = [Defs.PHASE_STATION, Defs.PHASE_EVENT, Defs.PHASE_MOD]
+## The time of the pop of a new cargo or contract (SPEC Section 20.8).
+const POP_SECONDS := 0.35
 const DOCK_COUNT_TEXT := "Dock ({count})"
 const CONTRACTS_TEXT := "Contracts"
 const SHOP_TEXT := "Shop"
@@ -54,6 +56,11 @@ var drag_layer: DragLayer
 
 ## The route bar above the hold (SPEC Section 20.2).
 var route_bar: RouteBar
+## True while the reply of an event shows: the station waits, so that the effects
+## play after the reply closes (SPEC Section 20.8).
+var held := false
+## The parts that popped in, for the checks.
+var popped: Array[Control] = []
 ## The view part of each list when it was built, by the name of the list (_changed).
 var _built := {}
 ## The station of the last refresh and whether its fork step was known: [leg, jump, known].
@@ -99,6 +106,11 @@ var _toast: Label
 var _confirm: ConfirmationDialog
 ## The gold sparkle of a coin sound (SPEC Section 21.4).
 var _fx: FxLayer
+## The new cargo on the dock and the new contracts pop in at the next refresh (SPEC Section 20.8).
+var _pop_new := false
+## The cargo IDs on the dock and the contract count when the lists were built.
+var _dock_ids: Array = []
+var _contract_count := 0
 
 
 func _ready() -> void:
@@ -302,7 +314,19 @@ func add_button(parent: Control, text: String, action: Callable, enabled := true
 # --- Refresh from the view ---
 
 
+## Shows the effects of an event choice after its reply: a refresh that pops in the new
+## cargo on the dock and the new contracts (SPEC Section 20.8).
+func play_event_effects() -> void:
+	held = false
+	popped.clear()
+	_pop_new = true
+	refresh()
+	_pop_new = false
+
+
 func refresh() -> void:
+	if held:
+		return
 	view_data = GameState.view()
 	run_data = view_data["run"]
 	# The station shows behind an event and a mod choice (SPEC Sections 20.8 and 20.9).
@@ -491,6 +515,9 @@ func _refresh_dock() -> void:
 		chip.mouse_entered.connect(func() -> void: show_tip(c))
 		chip.mouse_exited.connect(hide_tip)
 		_dock_flow.add_child(chip)
+		if _pop_new and not c["id"] in _dock_ids:
+			_pop(chip)
+	_dock_ids = run_data["dock"].duplicate()
 
 
 func _refresh_contracts() -> void:
@@ -501,6 +528,25 @@ func _refresh_contracts() -> void:
 		_contracts_box.add_child(card)
 		card.setup(self, k)
 		_contract_cards.append(card)
+		if _pop_new and k["index"] >= _contract_count:
+			_pop(card)
+	_contract_count = run_data["contracts"].size()
+
+
+## Pops in a new part of the station: it grows from small, with a flash and a sound
+## (SPEC Section 20.8). The part waits one frame for the container to place it.
+func _pop(part: Control) -> void:
+	popped.append(part)
+	Sound.play(self, "clack")
+	part.modulate = Color(2, 2, 2, 0)
+	await get_tree().process_frame
+	if not is_instance_valid(part):
+		return
+	part.pivot_offset = part.size / 2.0
+	part.scale = Vector2(0.4, 0.4)
+	var t := part.create_tween().set_parallel()
+	t.tween_property(part, "scale", Vector2.ONE, POP_SECONDS).set_trans(Tween.TRANS_BACK)
+	t.tween_property(part, "modulate", Color.WHITE, POP_SECONDS)
 
 
 ## Shows the sell area for a dragged cargo view, or idle for {} (SPEC Section 20.2).
