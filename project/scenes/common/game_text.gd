@@ -2,8 +2,13 @@ class_name GameText
 ## Translates text from the view. A text with arguments is {key, args}: this
 ## class translates the key and each string argument, then fills in the placeholders.
 
-## The name of the pilot (SPEC Section 22). It is not translated.
-const PILOT_NAME := "MAGELLAN"
+## The name of the pilot (SPEC Section 22). It is translated: use pilot_name().
+const PILOT_NAME_TEXT := "MAGELLAN"
+
+
+## Returns the name of the pilot in the language now (SPEC Section 22).
+static func pilot_name() -> String:
+	return TranslationServer.translate(PILOT_NAME_TEXT)
 
 
 static func format(text: Variant) -> String:

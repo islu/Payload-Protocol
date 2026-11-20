@@ -377,11 +377,11 @@ func show_pilot() -> void:
 	var hint := Hints.current(run_data) if view_data.get("tutorial", {}).is_empty() else ""
 	var text := ""
 	if hint == "":
-		text = GameText.PILOT_NAME + ": " + tr(run_data["line"])
+		text = GameText.pilot_name() + ": " + tr(run_data["line"])
 		_pilot_label.add_theme_color_override("font_color", Palette.ACCENT)
 	else:
 		# The font has "→" (tools/i18n/glyphs.py checks each character).
-		text = GameText.PILOT_NAME + " → " + tr(Hints.text(hint))
+		text = GameText.pilot_name() + " → " + tr(Hints.text(hint))
 		_pilot_label.add_theme_color_override("font_color", Palette.WARN)
 	if text != _pilot_label.text:
 		_pilot_label.text = text

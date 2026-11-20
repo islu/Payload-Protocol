@@ -197,6 +197,10 @@ msgstr "請先完成這一步的動作。"
 msgid "The try step did not fail."
 msgstr "這次試試看沒有失敗。"
 
+#: project/scenes/common/game_text.gd
+msgid "MAGELLAN"
+msgstr "麥哲倫"
+
 #: project/scenes/main/event_panel.gd
 msgid "Cost {cost}"
 msgstr "花費 {cost}"
@@ -1897,7 +1901,7 @@ msgstr "中"
 
 #: project/data/tutorial.json
 msgid "Welcome aboard. I am MAGELLAN, the ship AI. I will show you how to carry freight."
-msgstr "歡迎登艦。我是 MAGELLAN，這艘船的 AI。我來教你怎麼運貨。"
+msgstr "歡迎登艦。我是麥哲倫，這艘船的 AI。我來教你怎麼運貨。"
 
 #: project/data/tutorial.json
 msgid "This is a contract. Press Accept to take it. Its freight goes to the dock."

@@ -154,7 +154,7 @@ The warp:
 
 ## 22. The Pilot
 
-- The pilot is the AI of the ship. Its name is **MAGELLAN**. The name does not change with the language. The pilot box shows its pixel art portrait and one line.
+- The pilot is the AI of the ship. Its name is **MAGELLAN**. The name is translated: 麥哲倫 in zh-TW. The pilot box shows its pixel art portrait and one line.
 - The portrait blinks. A new line types out at 40 characters each second, and the mouth of the portrait moves while it types.
 - The pilot speaks at these events:
   - The station opens: a line about the hazard.

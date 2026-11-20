@@ -290,7 +290,7 @@ func _render_run(run: Run) -> void:
 			over = " · fuel fee %d at the warp" % m["fee"]
 	_say("Mass %d/%d (max %d)%s" % [m["hold"], m["limit"], m["max"], over])
 	if v["line"] != "":
-		_say(GameText.PILOT_NAME + ": " + v["line"])
+		_say(GameText.pilot_name() + ": " + v["line"])
 	if not v["mods"].is_empty():
 		var mods := PackedStringArray()
 		for mod: Dictionary in v["mods"]:

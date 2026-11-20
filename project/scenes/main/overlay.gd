@@ -77,7 +77,7 @@ func pilot_hint(id: String, parent: Control = null) -> Label:
 		return null
 	var l := Ui.label(
 		parent if parent != null else box,
-		GameText.PILOT_NAME + " → " + tr(Hints.text(id)),
+		GameText.pilot_name() + " → " + tr(Hints.text(id)),
 		TextSize.BODY,
 		Palette.WARN
 	)

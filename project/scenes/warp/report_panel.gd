@@ -160,7 +160,7 @@ func show_report(run: Dictionary) -> void:
 		var key := PROGRESS_NEXT_TEXT if p["jumps_left"] == 0 else PROGRESS_TEXT
 		progress_label.text = tr(key).format({"payment": p["payment"], "jumps": p["jumps_left"]})
 	_fit_cards.call_deferred()
-	_pilot.text = "%s: %s" % [GameText.PILOT_NAME, tr(run["line"])]
+	_pilot.text = "%s: %s" % [GameText.pilot_name(), tr(run["line"])]
 
 
 ## A card of a contract: the client, the pay, and a group for each freight and state.

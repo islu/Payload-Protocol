@@ -480,6 +480,11 @@ func _check_language(station: StationScreen) -> void:
 			(main.screen() as StationScreen)._warp_button.text == "出發",
 			"the Launch button says 出發 in zh-TW (SPEC Section 20.2)"
 		)
+		var pilot: String = (main.screen() as StationScreen)._pilot_label.text
+		_check(
+			pilot.begins_with("麥哲倫"),
+			"the pilot is 麥哲倫 in zh-TW: %s (SPEC Section 22)" % pilot.left(20)
+		)
 	Settings.set_value("locale", start)
 	pause.close()
 	await get_tree().process_frame

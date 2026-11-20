@@ -94,7 +94,7 @@ func refresh() -> void:
 		Defs.PHASE_END:
 			_build_end(run)
 	var line := Ui.label(_box, "", TextSize.BODY, Palette.WARN)
-	line.text = GameText.PILOT_NAME + ": " + tr(run["line"])
+	line.text = GameText.pilot_name() + ": " + tr(run["line"])
 	line.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 
 

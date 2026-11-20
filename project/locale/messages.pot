@@ -196,6 +196,10 @@ msgstr ""
 msgid "The try step did not fail."
 msgstr ""
 
+#: project/scenes/common/game_text.gd
+msgid "MAGELLAN"
+msgstr ""
+
 #: project/scenes/main/event_panel.gd
 msgid "Cost {cost}"
 msgstr ""
