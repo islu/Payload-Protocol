@@ -72,6 +72,19 @@ tasks:
       - mkdir -p build/web
       - "{{.GODOT}} --headless --path {{.PROJECT_PATH}} --export-release Web ../build/web/index.html"
 
+  zip:web:
+    desc: Export the web build, and zip its files for itch.io into build/payload-protocol-web-v<version>.zip
+    deps: [export:web]
+    vars:
+      VERSION:
+        sh: sed -n 's/^config\/version="\(.*\)"/\1/p' {{.PROJECT_PATH}}/project.godot
+      ZIP: build/payload-protocol-web-v{{.VERSION}}.zip
+    cmds:
+      - rm -f {{.ZIP}}
+      # index.html must be at the top of the zip. The glob leaves out .DS_Store.
+      - cd build/web && zip -q -X ../../{{.ZIP}} index.*
+      - echo "zip:web {{.ZIP}}"
+
   serve:web:
     desc: Serve build/web at http://localhost:8060 to check the web build in a browser
     cmds:

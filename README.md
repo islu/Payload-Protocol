@@ -89,6 +89,7 @@ To open the project in the Godot Project Manager, import `project/project.godot`
 | `task smoke` | Run the game headless for 5 frames |
 | `task shots` | Take screenshots of each screen into `shots/` |
 | `task export:web` | Export the web build to `build/web` |
+| `task zip:web` | Export the web build, and zip it for itch.io into `build/` |
 | `task serve:web` | Serve `build/web` at <http://localhost:8060> |
 | `task i18n` | Collect the text for translation into `project/locale/` |
 | `task sfx` | Make the placeholder sounds |

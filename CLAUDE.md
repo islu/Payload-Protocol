@@ -57,6 +57,7 @@ task editor       # Open the Godot editor
 task test         # Run the rule tests. Filter by file: task test -- slide
 task test:ui      # Play a full run through the screens, headless
 task export:web   # Export the web build to build/web
+task zip:web      # Export the web build, and zip it for itch.io into build/payload-protocol-web-v<version>.zip
 task serve:web    # Serve build/web at http://localhost:8060
 task play -- help # The text player: one command in each call (the playtest skill)
 task smoke        # Run the game headless for 5 frames, and start a run in the text player. Fails on an error.

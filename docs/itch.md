@@ -7,7 +7,7 @@ This file has the text and the settings of the itch.io page. Copy each part into
 | Field | Value |
 | --- | --- |
 | Kind of project | HTML |
-| Upload | A zip of the files in `build/web` (`task export:web`). `index.html` must be at the top of the zip. |
+| Upload | `build/payload-protocol-web-v<version>.zip` (`task zip:web`). `index.html` is at the top of the zip. |
 | This file will be played in the browser | On |
 | Viewport dimensions | 1280 × 720 |
 | Mobile friendly | Off. The game needs a mouse. |
