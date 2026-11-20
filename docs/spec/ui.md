@@ -9,6 +9,7 @@ This file is part of the [game specification](../spec.md). The section numbers a
 - The title screen has these buttons: New Run, Tutorial, How to Play, Settings, and Quit (Section 23.4).
 - The background shows a starfield that moves slowly.
 - The title, a tagline, and the buttons are in the center. The version is at the bottom right.
+- The title has the colors of the icon: PAYLOAD in amber, and PROTOCOL in blue.
 
 ### 20.2 Station
 

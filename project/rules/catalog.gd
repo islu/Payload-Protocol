@@ -461,6 +461,9 @@ func _check_contract(t: ContractTemplate) -> void:
 			_fail("contract %s: the leg %d is not valid" % [t.id, s])
 	if t.penalty < 0 or t.jumps < 1 or t.jumps > 3:
 		_fail("contract %s: the penalty or the jumps are not valid" % t.id)
+	for tag in t.tags:
+		if not tag in Defs.CONTRACT_TAGS:
+			_fail("contract %s: the tag %s is not known" % [t.id, tag])
 	for id in t.freight:
 		if not cargo.has(id) or cargo[id].kind != Defs.KIND_FREIGHT:
 			_fail("contract %s: %s is not a freight" % [t.id, id])

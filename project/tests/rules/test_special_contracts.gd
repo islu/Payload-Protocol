@@ -1,5 +1,5 @@
 extends RuleTest
-## Special contracts: VIP and long (SPEC Section 30).
+## Special contracts: VIP, long, and black market (SPEC Section 30).
 
 
 func test_vip_penalty() -> void:
@@ -164,4 +164,14 @@ func test_no_long_contract_at_the_last_jump() -> void:
 	check(
 		not _offers_at(3, 3).has("k_long"),
 		"the board does not offer a long contract at the last jump of the run (SPEC Section 30.2)"
+	)
+
+
+func test_black_market_tag() -> void:
+	accept(["k_black", "k_boxes"])
+	var ks: Array = RunView.view(run)["contracts"]
+	eq(
+		[ks[0]["tags"], ks[1]["tags"]],
+		[["black_market"], []],
+		"the view has the tags of a contract (SPEC Section 30.4)"
 	)

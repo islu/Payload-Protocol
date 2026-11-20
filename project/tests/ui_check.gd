@@ -103,6 +103,17 @@ func _play_run(main: Control) -> void:
 		main.screen().find_child("TitleHold", true, false) == null,
 		"the title has no moving hold (SPEC Section 20.1)"
 	)
+	var top: Label = main.screen().find_child("TitleTop", true, false)
+	var bottom: Label = main.screen().find_child("TitleBottom", true, false)
+	_check(
+		(
+			top != null
+			and bottom != null
+			and top.get_theme_color("font_color") == Palette.TITLE_AMBER
+			and bottom.get_theme_color("font_color") == Palette.ACCENT
+		),
+		"the title has the colors of the icon: amber and blue (SPEC Section 20.1)"
+	)
 	var tagline: Label = main.screen().find_child("Tagline", true, false)
 	_check(tagline != null and tagline.text != "", "the title has a tagline (SPEC Section 20.1)")
 	var version: Label = main.screen().find_child("Version", true, false)

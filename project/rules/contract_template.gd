@@ -14,6 +14,8 @@ var bonus: Dictionary = {}
 var penalty: int = 0
 ## The jumps of the freight: 2 for a long contract (SPEC Section 30.2).
 var jumps: int = 1
+## The tags of the look: Defs.CONTRACT_TAGS (SPEC Section 30.4).
+var tags: PackedStringArray = []
 
 
 static func from_dict(d: Dictionary) -> ContractTemplate:
@@ -36,6 +38,8 @@ static func from_dict(d: Dictionary) -> ContractTemplate:
 			"side": str(b.get("zone", {}).get("side", "")),
 			"size": int(b.get("zone", {}).get("size", 0)),
 		}
+	for tag in d.get("tags", []):
+		t.tags.append(str(tag))
 	return t
 
 

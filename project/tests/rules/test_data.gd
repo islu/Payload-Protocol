@@ -136,6 +136,29 @@ func test_bay_sizes() -> void:
 	)
 
 
+func test_black_market_tags() -> void:
+	var cat := DataFiles.catalog()
+	var black := cat.contracts.filter(
+		func(t: ContractTemplate) -> bool: return t.client_name == "Black Market"
+	)
+	check(not black.is_empty(), "the data has Black Market contracts")
+	for t: ContractTemplate in black:
+		check(
+			Defs.TAG_BLACK_MARKET in t.tags,
+			"the Black Market contract %s has the black_market tag (SPEC Section 30.4)" % t.id
+		)
+
+
+func test_contract_tag_check() -> void:
+	var data := Fixture.data()
+	data["contracts"]["k_black"]["tags"] = ["no_such_tag"]
+	var cat := Catalog.from_data(data)
+	check(
+		"no_such_tag" in "\n".join(cat.errors),
+		"the data check finds an unknown contract tag (SPEC Section 30.4)"
+	)
+
+
 func test_tutorial_check() -> void:
 	var data := Fixture.data()
 	data["tutorial"]["jumps"][0]["contracts"] = ["no_such_contract"]

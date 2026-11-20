@@ -290,12 +290,12 @@ msgstr ""
 "• 每一期結束時要還款給貨運公司，還不出來就結束。"
 
 #: project/scenes/main/main.gd
-msgid ""
-"PAYLOAD\n"
-"PROTOCOL"
-msgstr ""
-"酬載\n"
-"協議"
+msgid "PAYLOAD"
+msgstr "酬載"
+
+#: project/scenes/main/main.gd
+msgid "PROTOCOL"
+msgstr "協議"
 
 #: project/scenes/main/main.gd
 msgid "Pack the hold. Survive the warp."
@@ -591,6 +591,12 @@ msgstr "VIP · 任何一件沒送達就罰款 {penalty}"
 #: project/scenes/station/contract_card.gd
 msgid "VIP"
 msgstr "VIP"
+
+#: project/scenes/station/contract_card.gd
+#: project/data/contracts/arms_deal.json
+#: project/data/contracts/contraband_mix.json
+msgid "Black Market"
+msgstr "黑市"
 
 #: project/scenes/station/contract_card.gd
 msgid "Long · Delivered after {jumps} jumps"
@@ -1177,12 +1183,6 @@ msgstr "地球遺產博物館"
 #: project/data/contracts/rifle_order.json
 msgid "Militia Supply"
 msgstr "民兵補給處"
-
-#: project/data/contracts/arms_deal.json
-#: project/data/contracts/contraband_mix.json
-#: project/data/contracts/smokes.json
-msgid "Black Market"
-msgstr "黑市"
 
 #: project/data/contracts/blood_bank.json
 #: project/data/contracts/field_hospital.json

@@ -100,7 +100,7 @@ The first content has 43 freight in contracts, 6 kit, and the Hull Debris (SPEC 
 - A leg 2 contract has 1 to 5 pieces, and can mix two traits.
 - A leg 3 contract has 1 to 5 pieces. It can have Volatile and Fluid freight together.
 - Put Perishable freight only in the contracts of legs 2 and 3. The player can buy a Cooler Unit in leg 1 first.
-- A Black Market contract carries contraband or weapons. It pays about 1.5 times a contract with freight of the same size and risk.
+- A Black Market contract carries contraband or weapons. It pays about 1.5 times a contract with freight of the same size and risk. It has `"tags": ["black_market"]` (SPEC Section 30.4).
 - An Earth Heritage Museum or Old Town Collectors contract carries Earth relics: everyday things of old Earth.
 - Each freight is in one contract at least.
 - A VIP contract has a penalty of about half of its total pay. A long contract pays about 1.8 times a contract of the same freight (SPEC Section 30).

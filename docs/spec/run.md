@@ -219,3 +219,9 @@ A special contract is a contract template with more fields. The contract board o
 ### 30.3 Large Freight
 
 - Some freight has a shape of 5 cells. It has no other rule. Its contracts pay more (content.md).
+
+### 30.4 Black Market Contract
+
+- A black market contract has the tag `black_market`. Its client is the Black Market.
+- Its card shows a purple "Black Market" tag on its second line, and a purple border.
+- The tag changes only the look. The contract has the rules of other contracts.

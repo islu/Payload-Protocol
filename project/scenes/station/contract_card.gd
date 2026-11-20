@@ -19,6 +19,9 @@ const BONUS_TEXT := "Bonus +{pay}: {text}"
 const BONUS_TAG_TEXT := "Bonus +{pay}"
 const VIP_TEXT := "VIP · Penalty {penalty} if a piece is not delivered"
 const VIP_TAG_TEXT := "VIP"
+## The text of each tag of a contract, and its color (SPEC Section 30.4).
+const TAG_TEXT := {Defs.TAG_BLACK_MARKET: "Black Market"}
+const TAG_COLOR := {Defs.TAG_BLACK_MARKET: Palette.BLACK_MARKET}
 const LONG_TEXT := "Long · Delivered after {jumps} jumps"
 const LONG_TAG_TEXT := "Long · {jumps}"
 const ON_ITS_WAY_TEXT := "On its way · {jumps} jump(s) left"
@@ -72,6 +75,11 @@ func setup(station: StationScreen, k: Dictionary) -> void:
 		details.append(tr(LONG_TEXT).format({"jumps": k["jumps"]}))
 	if (k.get("penalty", 0) > 0 or k.get("jumps", 1) > 1) and not k["accepted"]:
 		style.border_color = RouteCards.INCIDENT_COLOR
+	# The tags of the look: a black market contract is purple (SPEC Section 30.4).
+	for tag: String in k.get("tags", []):
+		tags.append(_tag(second, tr(TAG_TEXT[tag]), TAG_COLOR[tag]))
+		if not k["accepted"]:
+			style.border_color = TAG_COLOR[tag]
 	details.append_array(_trait_rules(k["groups"]))
 	var counts := PackedStringArray()
 	for g: Dictionary in k["groups"]:

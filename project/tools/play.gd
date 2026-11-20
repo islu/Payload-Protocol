@@ -445,6 +445,8 @@ func _render_station(v: Dictionary) -> void:
 			bonus += " · ON ITS WAY, %d jump(s) left, cannot cancel" % k["jumps_left"]
 		elif k["jumps"] > 1:
 			bonus += " · LONG: delivered after %d jumps" % k["jumps"]
+		for tag: String in k["tags"]:
+			bonus += " · [%s]" % tag
 		_say(
 			(
 				"  [%d]%s %s: %s · mass %d · pay %d each%s"

@@ -97,6 +97,14 @@ static func data() -> Dictionary:
 		"pay": 8,
 		"penalty": 6
 	}
+	contracts["k_black"] = {
+		"id": "k_black",
+		"legs": [],
+		"client_name": "B",
+		"freight": ["box"],
+		"pay": 9,
+		"tags": ["black_market"]
+	}
 	contracts["k_long"] = {
 		"id": "k_long", "legs": [], "client_name": "L", "freight": ["box"], "pay": 9, "jumps": 2
 	}

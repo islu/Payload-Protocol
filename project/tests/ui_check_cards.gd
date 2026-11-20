@@ -61,6 +61,23 @@ static func check(ui: Node, station: StationScreen) -> void:
 			)
 		card.mouse_exited.emit()
 	ui._check(seen_open and seen_accepted, "the check sees an open card and an accepted card")
+	# A black market contract: a purple tag and a purple border (SPEC Section 30.4).
+	if not run["contracts"].is_empty():
+		var k: Dictionary = run["contracts"][0].duplicate(true)
+		k["tags"] = [Defs.TAG_BLACK_MARKET]
+		var card := ContractCard.new()
+		station._contracts_box.add_child(card)
+		card.setup(station, k)
+		var border: Color = card.get_theme_stylebox("panel").border_color
+		ui._check(
+			ui.tr(ContractCard.TAG_TEXT[Defs.TAG_BLACK_MARKET]) in card.text,
+			"a black market card shows its tag (SPEC Section 30.4)"
+		)
+		ui._check(
+			k["accepted"] or border == Palette.BLACK_MARKET,
+			"a black market card has a purple border (SPEC Section 30.4)"
+		)
+		card.queue_free()
 	ui._check(
 		str(run["dock"].size()) in station._dock_title.text,
 		"the dock title shows the number of cargo on the dock (SPEC Section 20.2)"

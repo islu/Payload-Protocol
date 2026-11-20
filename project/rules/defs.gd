@@ -236,6 +236,12 @@ const TARGETS: PackedStringArray = [
 	"none", "contract", "cargo", "cell", "button", "hazard", "shop", "clamps", "top_bar"
 ]
 
+# --- Contract tags (SPEC Section 30.4) ---
+
+const TAG_BLACK_MARKET := "black_market"
+## The tags that a contract template can have.
+const CONTRACT_TAGS: PackedStringArray = [TAG_BLACK_MARKET]
+
 
 ## Returns the cell step of a direction.
 static func delta(direction: String) -> Vector2i:

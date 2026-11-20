@@ -7,5 +7,6 @@
 	"bonus": {
 		"type": "all_intact",
 		"pay": 12
-	}
+	},
+	"tags": ["black_market"]
 }

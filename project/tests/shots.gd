@@ -188,6 +188,7 @@ func _set_route(r: Run) -> void:
 	r.contracts[0] = Contract.new(900, r.cat.contract("vip_embassy"))
 	r.contracts[1] = Contract.new(901, r.cat.contract("long_mine"))
 	r.contracts[2] = Contract.new(902, r.cat.contract("statue_loan"))
+	r.contracts[3] = Contract.new(903, r.cat.contract("smokes"))
 
 
 func _set_payment(r: Run) -> void:

@@ -4,7 +4,9 @@ extends Control
 ## the payment screen and the run end. Esc and the gear button open the pause menu
 ## (SPEC Section 20.7).
 
-const TITLE_TEXT := "PAYLOAD\nPROTOCOL"
+## The two words of the title. They have the colors of the icon (SPEC Section 20.1).
+const TITLE_TOP_TEXT := "PAYLOAD"
+const TITLE_BOTTOM_TEXT := "PROTOCOL"
 const TAGLINE_TEXT := "Pack the hold. Survive the warp."
 const NEW_RUN_TEXT := "New Run"
 const HOW_TO_PLAY_TEXT := "How to Play"
@@ -224,16 +226,12 @@ func _title() -> Control:
 	box.alignment = BoxContainer.ALIGNMENT_CENTER
 	box.add_theme_constant_override("separation", 20)
 	center.add_child(box)
-	var title := Label.new()
-	title.text = tr(TITLE_TEXT)
-	TextSize.display(title, 96)
-	title.add_theme_color_override("font_color", Palette.ACCENT)
-	title.add_theme_color_override("font_shadow_color", Color(Palette.ACCENT, 0.35))
-	title.add_theme_constant_override("shadow_offset_x", 0)
-	title.add_theme_constant_override("shadow_offset_y", 0)
-	title.add_theme_constant_override("shadow_outline_size", 18)
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	# The title has the colors of the icon: amber, then blue (SPEC Section 20.1).
+	var title := VBoxContainer.new()
+	title.add_theme_constant_override("separation", -16)
 	box.add_child(title)
+	_title_word(title, "TitleTop", TITLE_TOP_TEXT, Palette.TITLE_AMBER)
+	_title_word(title, "TitleBottom", TITLE_BOTTOM_TEXT, Palette.ACCENT)
 	var tagline := Label.new()
 	tagline.name = "Tagline"
 	tagline.text = tr(TAGLINE_TEXT)
@@ -264,6 +262,21 @@ func _title() -> Control:
 	root.add_child(version)
 	new_run.grab_focus.call_deferred()
 	return root
+
+
+## A word of the title: display text with a glow of its color.
+func _title_word(parent: Control, node_name: String, text: String, color: Color) -> void:
+	var word := Label.new()
+	word.name = node_name
+	word.text = tr(text)
+	TextSize.display(word, 96)
+	word.add_theme_color_override("font_color", color)
+	word.add_theme_color_override("font_shadow_color", Color(color, 0.35))
+	word.add_theme_constant_override("shadow_offset_x", 0)
+	word.add_theme_constant_override("shadow_offset_y", 0)
+	word.add_theme_constant_override("shadow_outline_size", 18)
+	word.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	parent.add_child(word)
 
 
 func _title_button(box: VBoxContainer, text: String, action: Callable) -> Button:

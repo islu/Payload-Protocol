@@ -9,5 +9,6 @@
 		"stim_pack",
 		"stim_pack"
 	],
-	"pay": 7
+	"pay": 7,
+	"tags": ["black_market"]
 }

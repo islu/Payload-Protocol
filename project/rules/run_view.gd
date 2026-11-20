@@ -520,6 +520,7 @@ static func _contract(run: Run, i: int, k: Contract, carried: int) -> Dictionary
 		"accepted": k.accepted,
 		"penalty": t.penalty,
 		"jumps": t.jumps,
+		"tags": Array(t.tags),
 		"jumps_left": k.jumps_left,
 		"carried": k.carried(),
 	}

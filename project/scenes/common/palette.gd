@@ -10,12 +10,16 @@ const GRID_LINE := Color("33467a")
 const TEXT := Color("d8e4ff")
 const TEXT_DIM := Color("7f8db3")
 const ACCENT := Color("5fd3ff")
+## The amber of the icon and of the first word of the title (SPEC Section 20.1).
+const TITLE_AMBER := Color("ffba46")
 const GOOD := Color("4dff9a")
 const BAD := Color("ff4d6a")
 const WARN := Color("ffc84d")
 const SCRAP := Color("5a6070")
 const PLAIN := Color("8a9bb5")
 const CLAMP := Color("ffb347")
+## The color of a black market contract (SPEC Section 30.4).
+const BLACK_MARKET := Color("b77dff")
 const ZONE := Color(0.37, 0.83, 1.0, 0.18)
 
 ## One color for each trait (SPEC Section 4.2).

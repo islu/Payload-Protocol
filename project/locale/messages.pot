@@ -269,9 +269,11 @@ msgid ""
 msgstr ""
 
 #: project/scenes/main/main.gd
-msgid ""
-"PAYLOAD\n"
-"PROTOCOL"
+msgid "PAYLOAD"
+msgstr ""
+
+#: project/scenes/main/main.gd
+msgid "PROTOCOL"
 msgstr ""
 
 #: project/scenes/main/main.gd
@@ -567,6 +569,12 @@ msgstr ""
 
 #: project/scenes/station/contract_card.gd
 msgid "VIP"
+msgstr ""
+
+#: project/scenes/station/contract_card.gd
+#: project/data/contracts/arms_deal.json
+#: project/data/contracts/contraband_mix.json
+msgid "Black Market"
 msgstr ""
 
 #: project/scenes/station/contract_card.gd
@@ -1149,12 +1157,6 @@ msgstr ""
 #: project/data/contracts/armory.json
 #: project/data/contracts/rifle_order.json
 msgid "Militia Supply"
-msgstr ""
-
-#: project/data/contracts/arms_deal.json
-#: project/data/contracts/contraband_mix.json
-#: project/data/contracts/smokes.json
-msgid "Black Market"
 msgstr ""
 
 #: project/data/contracts/blood_bank.json
