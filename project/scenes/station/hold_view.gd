@@ -38,6 +38,8 @@ const LIGHT_ALL := "all"
 const LIGHT_NEAR := "near"
 ## The shortest time between two flashes of a light: 3 flashes each second or less.
 const FLASH_GAP := 1.0 / 3.0
+## The time of the bounce of a new clamp, in seconds (SPEC Section 21.1).
+const CLAMP_BOUNCE := 0.3
 ## The color of the area of each mod.
 const MOD_COLORS := {
 	Defs.MOD_SHOCK_FLOOR: Color(0.55, 0.75, 1.0, 0.16),
@@ -83,8 +85,14 @@ var lights: Array[Dictionary] = []
 ## Each request to light a light: {target, color, shown}, for the checks. shown is false
 ## when a light flashed less than FLASH_GAP before.
 var light_log: Array[Dictionary] = []
+## The start time of the bounce of each new clamp, by cargo ID (SPEC Section 21.1).
+var clamp_bounces: Dictionary = {}
+## True after the hold drew the trail of a sliding cargo, for the checks (SPEC Section 21.1).
+var trail_drawn := false
 
 var _hover := -1
+## The clamped cargo of the last view, by ID, or null before the first view.
+var _clamped: Variant = null
 ## The links pulse: only this layer redraws each frame, not the whole hold.
 var _link_layer: LinkLayer
 
@@ -97,6 +105,7 @@ func _init() -> void:
 
 func set_view(run: Dictionary) -> void:
 	cargo = run["cargo"]
+	_find_new_clamps()
 	if bay:
 		# The shock bay has no front wall, no mod area, and no incident (SPEC Section 31.1).
 		var size: Dictionary = run.get("shock_bay", {})
@@ -299,7 +308,11 @@ func _draw() -> void:
 				continue
 			var off: Vector2 = offsets.get(c["id"], Vector2.ZERO)
 			var at := o + (Vector2(c["x"], c["y"]) + off) * cell
+			if off != Vector2.ZERO:
+				_draw_trail(c, at, off)
 			CargoDraw.draw(self, c, c["shape"], at, cell, alpha)
+			if clamp_bounces.has(c["id"]):
+				_draw_clamp_bounce(c, at + _first_cell_offset(c))
 			if c.get("no_cooler", false) or c.get("no_power", false):
 				_draw_warning(at + _first_cell_offset(c))
 			if show_jolts and c.get("jolt_risk", false):
@@ -424,6 +437,45 @@ func _draw_frame(o: Vector2) -> void:
 		var py := o.y + y * cell
 		draw_circle(Vector2(grid.position.x - mid, py), 2.5, rivet)
 		draw_circle(Vector2(grid.end.x + mid, py), 2.5, rivet)
+
+
+## Starts a bounce for each cargo that has a clamp now and had none in the last view
+## (SPEC Section 21.1). The first view starts none.
+func _find_new_clamps() -> void:
+	var clamped := {}
+	for c: Dictionary in cargo:
+		if _mine(c) and c.get("clamped", false):
+			clamped[c["id"]] = true
+	if _clamped != null:
+		for id: int in clamped:
+			if not _clamped.has(id):
+				clamp_bounces[id] = _now()
+	_clamped = clamped
+
+
+## A new clamp grows a little and comes back, with a bright frame.
+func _draw_clamp_bounce(c: Dictionary, top_left: Vector2) -> void:
+	var k := (_now() - float(clamp_bounces[c["id"]])) / CLAMP_BOUNCE
+	if k >= 1.0:
+		clamp_bounces.erase(c["id"])
+		return
+	var r := CargoDraw.clamp_rect(top_left, cell).grow(8.0 * sin(PI * k))
+	draw_rect(r, Palette.CLAMP)
+	draw_rect(r, Color(1, 1, 1, 1.0 - k), false, 2.0)
+
+
+## Draws a short trail behind a sliding cargo: two faded copies of its cells, toward
+## the place that it comes from (SPEC Section 21.1).
+func _draw_trail(c: Dictionary, at: Vector2, off: Vector2) -> void:
+	trail_drawn = true
+	var back := off.normalized() * cell
+	var color := Palette.cargo_color(c)
+	for i in [1, 2]:
+		for s: Dictionary in c["shape"]:
+			var r := Rect2(
+				at + Vector2(s["x"], s["y"]) * cell + back * 0.3 * i, Vector2(cell, cell)
+			)
+			draw_rect(r.grow(-10.0), Color(color, 0.18 / i))
 
 
 ## Draws a deck plate: a cell with a soft bevel and a screw at each corner. The
@@ -695,7 +747,7 @@ func _draw_warning(top_left: Vector2) -> void:
 
 
 func _process(_delta: float) -> void:
-	if not offsets.is_empty() or _flashing():
+	if not offsets.is_empty() or _flashing() or not clamp_bounces.is_empty():
 		queue_redraw()
 		_link_layer.queue_redraw()
 	elif not links.is_empty():

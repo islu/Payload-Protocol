@@ -113,6 +113,11 @@ var _pop_new := false
 ## The cargo IDs on the dock and the contract count when the lists were built.
 var _dock_ids: Array = []
 var _contract_count := 0
+## The indexes of the accepted contracts of the last refresh, or null before the first.
+var _accepted: Variant = null
+## The global center of the card of a contract that the player just accepted, or null:
+## its freight flies from there to the dock (SPEC Section 21.1).
+var _fly_from: Variant = null
 
 
 func _ready() -> void:
@@ -356,8 +361,10 @@ func refresh() -> void:
 	var incident: Dictionary = run_data.get("incident", {})
 	if _changed("hazard", [run_data.get("environment", {}), incident, run_data["hazard"]]):
 		_refresh_hazard()
+	_find_accepted()
 	if _changed("dock", run_data["cargo"].filter(_on_dock)):
 		_refresh_dock()
+	_fly_from = null
 	if _changed("contracts", [run_data["contracts"], run_data["mass"]]):
 		_refresh_contracts()
 	if _changed("shop", [run_data["shop"], view_data["terms"]]):
@@ -520,7 +527,34 @@ func _refresh_dock() -> void:
 		_dock_flow.add_child(chip)
 		if _pop_new and not c["id"] in _dock_ids:
 			_pop(chip)
+		elif _fly_from != null and not c["id"] in _dock_ids:
+			_fly_in(chip, c)
 	_dock_ids = run_data["dock"].duplicate()
+
+
+## Finds a contract that is accepted now and was not in the last refresh. Its card is
+## still the old one: the dock refresh comes before the contract refresh.
+func _find_accepted() -> void:
+	var accepted := {}
+	for k: Dictionary in run_data["contracts"]:
+		if k["accepted"]:
+			accepted[k["index"]] = true
+	if _accepted != null:
+		for i: int in accepted:
+			if not _accepted.has(i) and i < _contract_cards.size():
+				_fly_from = _contract_cards[i].get_global_rect().get_center()
+	_accepted = accepted
+
+
+## The new freight of an accepted contract flies from its card to its place on the
+## dock. The chip shows when it arrives (SPEC Section 21.1).
+func _fly_in(chip: CargoChip, c: Dictionary) -> void:
+	chip.modulate.a = 0.0
+	_fx.cargo_fly(_fly_from, chip, c)
+	# The tween belongs to the chip: a new dock frees it with the chip.
+	var t := chip.create_tween()
+	t.tween_interval(0.35)
+	t.tween_property(chip, "modulate:a", 1.0, 0.05)
 
 
 func _refresh_contracts() -> void:

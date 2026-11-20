@@ -18,13 +18,18 @@ const LOSS_SIZE := 40
 const METEOR_TIME := 0.4
 const WAVE_TIME := 0.6
 const CRACK_TIME := 0.5
+## The strength of the flash of the warp start: an explosion has 1 (SPEC Section 20.3).
+const JUMP_FLASH := 0.35
 const METEOR_COLOR := Color("ffb347")
 const WAVE_COLOR := Color("5fd3ff")  # Palette.ACCENT
 
 var hold: HoldView
 var speed := 1.0
-## The names of the sheets that this layer played. The UI check reads it.
+## The names of the sheets and the drawn effects that this layer played. The UI
+## check reads it.
 var played := {}
+## The number of coins that flew to the report (SPEC Section 20.4).
+var coin_flights := 0
 var _fx: Array = []
 var _flash := 0.0
 ## True while the layer shows an effect or the flash.
@@ -128,6 +133,57 @@ func crack(cell: Vector2i) -> void:
 	_add({"kind": "crack", "at": at, "time": CRACK_TIME})
 
 
+## The start of the warp: a soft white flash, about a third of the flash of an
+## explosion. The warp screen stretches the stars (SPEC Section 20.3).
+func jump() -> void:
+	played["jump"] = true
+	_flash = JUMP_FLASH
+	_drawn = true
+
+
+## A coin that flies from a point of the screen to a control, after a delay. on_arrive
+## runs when it arrives (SPEC Section 20.4).
+func coin_fly(global_from: Vector2, target: Control, delay: float, on_arrive: Callable) -> void:
+	coin_flights += 1
+	var fx := {"kind": "coin_fly", "at": _local(global_from), "target": target, "time": 0.6}
+	fx["arrive"] = on_arrive
+	_add(fx)
+	fx["t"] = -delay
+
+
+## A small image of a cargo that flies from a point of the screen to a control: the
+## freight of an accepted contract flies to the dock (SPEC Section 21.1).
+func cargo_fly(global_from: Vector2, target: Control, cargo: Dictionary) -> void:
+	played["fly"] = true
+	_add(
+		{
+			"kind": "cargo_fly",
+			"at": _local(global_from),
+			"target": target,
+			"cargo": cargo,
+			"time": 0.35
+		}
+	)
+
+
+## A puff of gray smoke that rises from a cargo that becomes scrap (SPEC Section 21.5).
+func smoke(at: Vector2) -> void:
+	played["smoke"] = true
+	_add({"kind": "smoke", "at": at, "time": 0.9})
+
+
+func _local(global_at: Vector2) -> Vector2:
+	return get_global_transform().affine_inverse() * global_at
+
+
+## The center of a target control in local coordinates.
+func _target_at(fx: Dictionary) -> Vector2:
+	var target: Variant = fx["target"]
+	if not is_instance_valid(target):
+		return fx["at"]
+	return _local((target as Control).get_global_rect().get_center())
+
+
 ## A gold sparkle at a point of the screen (SPEC Section 21.4).
 func coin(global_at: Vector2) -> void:
 	_sheet("coin", get_global_transform().affine_inverse() * global_at)
@@ -151,6 +207,10 @@ func _process(delta: float) -> void:
 		return
 	for fx: Dictionary in _fx:
 		fx["t"] += delta * speed
+		if fx["t"] >= fx["time"] and fx.has("arrive"):
+			var arrive: Callable = fx["arrive"]
+			fx.erase("arrive")
+			arrive.call()
 	_fx = _fx.filter(func(fx: Dictionary) -> bool: return fx["t"] < fx["time"])
 	_flash = maxf(0.0, _flash - delta * speed * 4.0)
 	# One more redraw after the last effect clears the layer.
@@ -160,6 +220,8 @@ func _process(delta: float) -> void:
 
 func _draw() -> void:
 	for fx: Dictionary in _fx:
+		if fx["t"] < 0.0:
+			continue
 		var k: float = fx["t"] / fx["time"]
 		var at: Vector2 = fx["at"]
 		match fx["kind"]:
@@ -189,6 +251,16 @@ func _draw() -> void:
 				_draw_wave(fx["band"], k)
 			"crack":
 				_draw_crack(at, k)
+			"coin_fly":
+				_draw_coin(at, _target_at(fx), k)
+			"cargo_fly":
+				var p := at.lerp(_target_at(fx), 1.0 - pow(1.0 - k, 2.0))
+				var c: Dictionary = fx["cargo"]
+				var cell := 24.0
+				var box := Vector2(CargoDraw.shape_size(c["shape"])) * cell
+				CargoDraw.draw(self, c, c["shape"], p - box / 2.0, cell, 1.0 - 0.3 * k)
+			"smoke":
+				_draw_smoke(at, k)
 	draw_set_transform_matrix(Transform2D.IDENTITY)
 	if _flash > 0.0:
 		draw_rect(Rect2(-global_position, get_viewport_rect().size), Color(1, 1, 1, _flash * 0.6))
@@ -249,3 +321,21 @@ func _draw_crack(at: Vector2, k: float) -> void:
 	for i in 8:
 		var p := at + Vector2.from_angle(i * TAU / 8.0) * (10.0 + 40.0 * k)
 		draw_circle(p, 6.0 * fade + 1.0, Color(Palette.PLAIN, 0.5 * fade))
+
+
+## A coin on an arc from a point to its target.
+func _draw_coin(from: Vector2, to: Vector2, k: float) -> void:
+	var e := k * k * (3.0 - 2.0 * k)
+	var p := from.lerp(to, e) + Vector2(0, -80.0 * sin(PI * k))
+	draw_circle(p, 11.0, Palette.TITLE_AMBER.darkened(0.3))
+	draw_circle(p, 8.0, Palette.TITLE_AMBER)
+	draw_circle(p + Vector2(-2, -2), 3.0, Color(1, 1, 0.85))
+
+
+## Gray puffs that rise, grow, and fade.
+func _draw_smoke(at: Vector2, k: float) -> void:
+	var fade := 1.0 - k
+	for i in 5:
+		var side := (i - 2) * 9.0
+		var p := at + Vector2(side + 6.0 * sin(k * 6.0 + i), -20.0 - 60.0 * k - i * 6.0)
+		draw_circle(p, 10.0 + 14.0 * k, Color(Palette.PLAIN, 0.45 * fade))

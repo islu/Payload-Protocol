@@ -143,6 +143,7 @@ func _play_run(main: Control) -> void:
 				station = main.screen()
 				_route_seen += UiCheckLoop.route_station(self, station)
 				UiCheckTips.station(self, station)
+				await UiCheckEffects.station(self, station)
 				UiCheckHold.station(self, station.hold_view)
 				await _play_station(state, station)
 			Defs.PHASE_ARRIVAL:
@@ -193,6 +194,7 @@ func _play_warp(main: Control) -> void:
 	UiCheckLoop.route_warp(self, warp)
 	UiCheckHold.warp(self, warp._hold, GameState.view()["run"]["warp"])
 	UiCheckIncident.warp(self, warp, GameState.view()["run"]["warp"])
+	UiCheckEffects.warp(self, warp, GameState.view()["run"]["warp"])
 	if UiCheckLoop.losses(self, warp):
 		_losses_seen += 1
 	_check_report(warp)
@@ -200,9 +202,15 @@ func _play_warp(main: Control) -> void:
 	if GameState.view()["run"]["arrival"]["total"] != 0:
 		var report := warp._report.get_global_rect()
 		var inside := false
-		for fx: Dictionary in warp._top_fx._fx:
-			if fx["kind"] == "sheet" and fx["sheet"] == FxSheets.sheet("coin"):
-				inside = report.has_point(warp._top_fx.get_global_transform() * fx["at"])
+		# The sparkle shows when the first coin arrives (SPEC Section 20.4).
+		var until := Time.get_ticks_msec() + 2000
+		while Time.get_ticks_msec() < until:
+			for fx: Dictionary in warp._top_fx._fx:
+				if fx["kind"] == "sheet" and fx["sheet"] == FxSheets.sheet("coin"):
+					inside = report.has_point(warp._top_fx.get_global_transform() * fx["at"])
+			if inside:
+				break
+			await get_tree().process_frame
 		_check(
 			inside and warp._top_fx.get_index() > warp._report.get_index(),
 			"the gold sparkle is on the arrival report, in front of it (SPEC Section 21.4)"
@@ -272,8 +280,8 @@ func _check_report(warp: WarpScreen) -> void:
 		)
 	_check(
 		(
-			str(a["credits_before"]) in report._credits.text
-			and str(a["credits_after"]) in report._credits.text
+			str(a["credits_before"]) in report.credits_label.text
+			and str(a["credits_after"]) in report.credits_label.text
 		),
 		"the report shows the credits before and after (SPEC Section 20.4)"
 	)

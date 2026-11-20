@@ -45,6 +45,8 @@ const WIDTH := 610.0
 const CARDS_MAX := 420.0
 
 var head: Label
+## The credits before and after: the coins fly to it (SPEC Section 20.4).
+var credits_label: Label
 ## The bar of the credits against the payment of the leg, and its text (SPEC Section 20.4).
 var progress_bar: TopBar.Gauge
 var progress_label: Label
@@ -58,7 +60,6 @@ var pilot_face: PilotFace
 var _cards: VBoxContainer
 var _scroll: ScrollContainer
 var _ledger: GridContainer
-var _credits: Label
 var _pilot: Label
 
 
@@ -87,7 +88,7 @@ func _init() -> void:
 	_ledger.columns = 2
 	_ledger.add_theme_constant_override("h_separation", 24)
 	ledger_box.add_child(_ledger)
-	_credits = Ui.label(ledger_box, "", TextSize.BODY, Palette.WARN)
+	credits_label = Ui.label(ledger_box, "", TextSize.BODY, Palette.WARN)
 	progress_bar = TopBar.Gauge.new()
 	progress_bar.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	ledger_box.add_child(progress_bar)
@@ -143,10 +144,10 @@ func show_report(run: Dictionary) -> void:
 		amount_label.text = amount(value)
 		amount_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 		lines.append("%s %s" % [name.text, amount_label.text])
-	_credits.text = tr(CREDITS_TEXT).format(
+	credits_label.text = tr(CREDITS_TEXT).format(
 		{"before": a.get("credits_before", 0), "after": a.get("credits_after", 0)}
 	)
-	lines.append(_credits.text)
+	lines.append(credits_label.text)
 	ledger_text = "\n".join(lines)
 	# The credits against the payment of the leg (SPEC Section 20.4).
 	var p: Dictionary = run.get("leg_progress", {})

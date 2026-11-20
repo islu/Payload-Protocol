@@ -65,6 +65,7 @@ The warp:
   1. An alarm sounds. A banner shows the arrow and the direction for 0.6 seconds.
   2. The ship tilts a little in the direction.
   3. The slide plays (Section 21.1). Then the hits and the reactions play (Section 21.2).
+- When the warp starts, the stars stretch into lines in 0.4 seconds with a soft white flash, and an engine sound plays. At the arrival, a chime plays.
 - A click or the Space key during the warp makes the rest of the warp play at 4× speed.
 
 ### 20.4 Arrival Report
@@ -78,12 +79,13 @@ The warp:
 - A Continue button goes to the next station, or to the payment screen.
 - The report fits its content. It has no empty area. The hold and the report are one group at the center of the screen.
 - When the mouse is on a line of pieces, the hold marks those pieces at their place at the end of the warp.
+- Coins fly from each delivered freight to the credits of the report. A coin sound plays when they arrive.
 - A Replay button plays the warp again from the start, at half speed. A click or the Space key during the replay makes it faster (Section 20.3). The replay plays no coin sound.
 
 ### 20.5 Payment
 
 - The payment screen shows a receipt in large numbers: the credits, the payment, and the credits after the payment.
-- When the player can pay, the button is Pay. After Pay, the credits count down to the credits after the payment, and a "Paid" stamp shows on the receipt. After 1 second, the next screen opens.
+- When the player can pay, the button is Pay. After Pay, the credits count down to the credits after the payment, and a "Paid" stamp shows on the receipt. The stamp plays a stamp sound. After 1 second, the next screen opens.
 - When the player cannot pay, a red "Missed" stamp shows on the receipt, and the button goes to the run end screen.
 - The screen shows one row for each jump of the leg: its net, the delivered freight, the scrap made, and the explosions.
 - The screen shows the next leg: its number, its jumps, and its payment. The last leg has no next leg.
@@ -131,6 +133,10 @@ The warp:
 - A valid drop plays the clack sound and a small bounce.
 - In a slide, all cargo of the shift step moves at the same time, at the same speed (8 cells each second). Each cargo stops at its distance.
 - A slide plays a low rumble.
+- A pick up plays a soft sound. A button press plays a click.
+- Each cargo that slides has a short trail behind it.
+- When the player accepts a contract, its freight flies from the card to the dock.
+- A clamp that the player places snaps with a small bounce and a metal click.
 
 ### 21.2 Hits
 
@@ -162,6 +168,7 @@ The warp:
 - When a freight becomes scrap in the warp, its lost pay shows above it ("−8"). The event log gives the lost pay. A kit shows no number.
 - From the second reaction of a chain, the warp shows "Chain ×N". N is the number of reactions of that chain so far.
 - At the end of the warp, the warp shows the total lost pay ("Lost −24") before the arrival report.
+- When a freight becomes scrap, a puff of gray smoke rises from it.
 
 ### 21.6 The Hold
 

@@ -22,6 +22,8 @@ const REACTION_GAP := 0.15
 const REPLAY_SPEED := 0.5
 ## The alpha of delivered freight that stays in the hold during the report (SPEC Section 20.4).
 const DELIVERED_ALPHA := 0.35
+## The speed of the stars in the warp: they draw as lines (SPEC Section 20.3).
+const WARP_STARS := 30.0
 
 ## The play speed: the warp speed setting, and 4 times faster after a click (SPEC Section 20.3).
 var speed := 1.0
@@ -65,7 +67,7 @@ func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	speed = float(Settings.get_value("warp_speed"))
 	_stars = Starfield.new()
-	_stars.speed = 30.0
+	_stars.speed = 1.0
 	add_child(_stars)
 	_stage = Control.new()
 	_stage.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -170,6 +172,10 @@ func _play() -> void:
 		_cargo[c["id"]] = c.duplicate(true)
 	_show_hold(run)
 	_show_route(run, warp_log)
+	# The jump: the stars stretch into lines, with a soft white flash (SPEC Section 20.3).
+	_stars.speed = 1.0
+	create_tween().tween_property(_stars, "speed", WARP_STARS, 0.4 / speed)
+	_top_fx.jump()
 	await _wait(0.4)
 	await _play_route(run, warp_log)
 	var n := 0
@@ -472,6 +478,8 @@ func _play_reaction(r: Dictionary) -> void:
 	match r.get("result", Defs.RESULT_KEPT):
 		Defs.RESULT_SCRAP:
 			_to_scrap(c)
+			# A puff of gray smoke (SPEC Section 21.5).
+			_fx.smoke(at)
 		Defs.RESULT_REMOVED:
 			_remove(r["cargo"])
 	match r["kind"]:
@@ -563,9 +571,24 @@ func _finish(run: Dictionary) -> void:
 			_hold.fades[id] = 1.0
 			_hold.checks[id] = true
 			fade.tween_method(func(a: float) -> void: _fade(id, a), 1.0, DELIVERED_ALPHA, 0.6)
-	if run["arrival"]["total"] != 0 and not _replaying:
-		Sound.play(self, "coin")
-		_coin_on_report.call_deferred()
+	# A coin flies from each delivered freight to the credits of the report. The first
+	# that arrives plays the coin sound. The replay plays no coin (SPEC Section 20.4).
+	if not _replaying:
+		var first := [true]
+		var on_arrive := func() -> void:
+			if first[0]:
+				first[0] = false
+				# Each coin sound shows a gold sparkle (SPEC Section 21.4).
+				Sound.play(self, "coin")
+				_top_fx.coin(_report.head.get_global_rect().get_center())
+		var n := 0
+		for id: int in _hold.checks:
+			var from := _hold.global_position + _hold.cargo_center(_cargo[id])
+			_top_fx.coin_fly(from, _report.credits_label, 0.3 + n * 0.08, on_arrive)
+			n += 1
+		if n == 0 and run["arrival"]["total"] != 0:
+			Sound.play(self, "coin")
+			_coin_on_report.call_deferred()
 	_report.show_report(run)
 	_report.visible = true
 	_skip_label.visible = false
@@ -591,7 +614,6 @@ func _start_replay() -> void:
 	_hold.lights_off()
 	speed = float(Settings.get_value("warp_speed")) * REPLAY_SPEED
 	_fx.speed = speed
-	_stars.speed = 30.0
 	_play()
 
 
