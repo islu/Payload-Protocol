@@ -9,7 +9,7 @@ This file has the text and the settings of the itch.io page. Copy each part into
 | Kind of project | HTML |
 | Upload | `build/payload-protocol-web-v<version>.zip` (`task zip:web`). `index.html` is at the top of the zip. |
 | This file will be played in the browser | On |
-| Viewport dimensions | 1280 × 720 |
+| Viewport dimensions | 1280 × 720. The game scales the screen of 1920 × 1080 down. The descriptions tell the player to use fullscreen. |
 | Mobile friendly | Off. The game needs a mouse. |
 | Automatically start on page load | Off |
 | Fullscreen button | On |
@@ -88,6 +88,8 @@ Crystals shatter. Fuel drums explode. Coolant leaks onto the electronics. The ro
 
 **Controls**: mouse to drag, right click or R to rotate, Ctrl+Z to undo, Space to speed up the warp, Esc to pause.
 
+**Tip**: play in fullscreen for the best view. Click the fullscreen button at the bottom right of the game.
+
 **Credits**: cargo and speaker art by FreePixel. Effects by pixelfx (Patch and Hugo Duprez, MIT). Music "Vintage Menu" by iamoneabe (CC0). Font jf open huninn by justfont (SIL OFL 1.1). Made with Godot 4.7.
 
 ## Description (繁體中文)
@@ -116,5 +118,7 @@ Crystals shatter. Fuel drums explode. Coolant leaks onto the electronics. The ro
 - 支援英文和繁體中文。
 
 **操作**：滑鼠拖曳貨物，右鍵或 R 旋轉，Ctrl+Z 復原，Space 加速跳躍，Esc 暫停。
+
+**提示**：建議全螢幕遊玩，畫面最清楚。請按遊戲右下角的全螢幕按鈕。
 
 **感謝**：貨物與角色美術來自 FreePixel。特效來自 pixelfx（Patch 與 Hugo Duprez，MIT）。音樂〈Vintage Menu〉作者 iamoneabe（CC0）。字型為 justfont 的 jf open 粉圓（SIL OFL 1.1）。使用 Godot 4.7 製作。
