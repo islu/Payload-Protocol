@@ -2,9 +2,11 @@
 
 **Pack the hold. Survive the warp.**
 
+**[Play in your browser on itch.io](https://1slu.itch.io/payload-protocol)** · Made for [GitHub Game Off 2026](https://itch.io/jam/game-off-2026)
+
 Payload Protocol is a short puzzle game about cargo in the hold of a spaceship. You pack freight into a grid. Then the ship warps, and every piece of cargo slides across the hold. Crystals shatter, fuel drums explode, and coolant leaks onto the electronics. Plan for the shift, or pay for the scrap.
 
-![The station: contracts at the left, the route of the next jump above the hold, and the shop at the right](docs/screenshots/2_station.png)
+[![The station: contracts at the left, the route of the next jump above the hold, and the shop at the right](docs/screenshots/2_station.png)](https://1slu.itch.io/payload-protocol)
 
 ## How to Play
 

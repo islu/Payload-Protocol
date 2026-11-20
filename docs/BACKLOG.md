@@ -66,6 +66,10 @@ This file keeps each problem that is found and not fixed yet. Each item is in on
 
 ## To Do
 
+- **[Cleanup · Docs] Link the rating page of Game Off in the README** (found 2026-11-20, by islu). The README links the jam page of GitHub Game Off 2026, because the voting is not open yet.
+  Waiting on a trigger  Waits for: the voting of <https://itch.io/jam/game-off-2026> opens.
+                        Fix then: add "Rate it here" with the rating page of the entry (`itch.io/jam/game-off-2026/rate/<id>`). After the voting, change the line to "An entry of GitHub Game Off 2026", and add the result.
+
 - **[Balance · Rules] Insurance pays for a spoil, and the Sensor sells at the last station** (found 2026-11-18, by Playtest seed 77 round 3 (2026-11-18, kit mass)). The Gambler took Perishable freight with no Cooler on purpose, and Insurance paid 16 for the spoil. The Optimizer sold the Sensor at the last station for 7: the fork is set when the station opens, so the reveal is already used.
   To decide             Options: (a) Insurance does not pay for a spoil. (b) Insurance pays less for a spoil. (c) Keep it. For the Sensor: (a) keep it, a small reward. (b) The sell price of kit is lower at the last station. Needs a change of SPEC Section 27.2.
 - **[UX · Scenes] Blind rerolls** (found 2026-11-18, by Playtest seed 77 round 3 (2026-11-18, kit mass)). The Optimizer spent 12 credits on rerolls and no Cooler came. The shop does not show which kit a station can offer.
