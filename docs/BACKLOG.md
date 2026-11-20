@@ -94,8 +94,6 @@ This file keeps each problem that is found and not fixed yet. Each item is in on
 
 - **[Art · Data] A new image for the Foam Pad** (found 2026-11-14, by the user). The Foam Pad uses a rolled yoga mat (`tools/art/cargo_art.json`). The image does not look like a cushion kit, and the "fit" scale makes it a little soft.
   To do                 Fix: find a FreePixel image of a foam pad or a cushion that fits a line of 2 cells. Change its `source` and run `task art`.
-- **[Docs · Docs] A README for players** (found 2026-11-12, by the first plan). The itch.io page needs a short text for players: how to start, the controls, and where to send feedback.
-  To do                 Fix: write the text. Keep README.md for developers.
 - **[Build · Build] Builds for macOS and Windows** (found 2026-11-12, by the first plan). Only the web build exists. These builds are optional.
   Waiting on a trigger  Waits for: a player who asks for a download, or a second playtest round.
                         Fix then: add the export presets, a task for each, and sign or note the macOS build.

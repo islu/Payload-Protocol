@@ -85,10 +85,11 @@ tasks:
       - node tools/fx/make_fx.mjs .local/pixelfx project/art/fx
 
   art:
-    desc: Make the cargo images in project/art/cargo and the speaker portraits in project/art/speakers from FreePixel images, and the project icon (tools/art/). Then run task import.
+    desc: Make the cargo images in project/art/cargo and the speaker portraits in project/art/speakers from FreePixel images, the project icon, and the itch.io cover (tools/art/). Then run task import.
     cmds:
       - uv run --no-project --with pillow==11.3.0 python tools/art/import_art.py
       - uv run --no-project --with pillow==11.3.0 python tools/art/make_icon.py
+      - uv run --no-project --with pillow==11.3.0 python tools/art/make_cover.py
 
   sfx:
     desc: Make the placeholder sounds in project/audio/sfx (synthesized, no license needed)

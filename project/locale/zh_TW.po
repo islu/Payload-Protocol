@@ -1917,7 +1917,7 @@ msgstr "在貨物上按右鍵，或按 R，就能旋轉它。把鋼錠轉個方�
 
 #: project/data/tutorial.json
 msgid "The route above the hold shows the next jump, from Depart to Arrive. This jump has one shift step: RIGHT."
-msgstr "船艙上方的航線會列出下一次跳躍，從出發點到抵達。這次只有一段位移：向右。"
+msgstr "貨艙上方的航線會列出下一次跳躍，從出發點到抵達。這次只有一段位移：向右。"
 
 #: project/data/tutorial.json
 msgid "In a step, each cargo slides until a wall or a stopped cargo stops it. The force of its hit is its weight × the cells it slid: light 1, standard 2, heavy 3."
