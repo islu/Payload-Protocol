@@ -36,6 +36,12 @@ func _run() -> void:
 	DisplayServer.window_set_size(SIZE)
 	await _wait(1.0)
 	await _shot("01_title")
+	# The title ship at the stop, where the cargo flies in, and as it flies out.
+	var ship: TitleShip = _main.screen().find_child("TitleShip", true, false)
+	ship.time = TitleShip.ENTER_TIME + 1.0
+	await _shot("01b_title_dock")
+	ship.time = TitleShip.ENTER_TIME + TitleShip.DOCK_TIME + 1.5
+	await _shot("01c_title_leave")
 	await _how_to_play()
 	await _station()
 	await _warp()
@@ -121,6 +127,9 @@ func _station() -> void:
 		var release := InputEventMouseButton.new()
 		release.button_index = MOUSE_BUTTON_LEFT
 		station._input(release)
+	# The loaded hold with no tip: docs/screenshots/2_station.png of the README.
+	await _wait(0.4)
+	await _shot("05a_station_hold")
 	for c: Dictionary in run["cargo"]:
 		if c["in_hold"]:
 			station.show_tip(c)

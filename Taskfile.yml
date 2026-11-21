@@ -98,7 +98,7 @@ tasks:
       - node tools/fx/make_fx.mjs .local/pixelfx project/art/fx
 
   art:
-    desc: Make the cargo images in project/art/cargo and the speaker portraits in project/art/speakers from FreePixel images, the project icon, and the images of the itch.io page (tools/art/). Then run task import.
+    desc: Make the cargo images in project/art/cargo, the speaker portraits in project/art/speakers, and the title ship project/art/ship.png from FreePixel images, the project icon, and the images of the itch.io page (tools/art/). Then run task import.
     cmds:
       - uv run --no-project --with pillow==11.3.0 python tools/art/import_art.py
       - uv run --no-project --with pillow==11.3.0 python tools/art/make_icon.py

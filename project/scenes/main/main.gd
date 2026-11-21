@@ -239,6 +239,8 @@ func _title() -> Control:
 	var root := Control.new()
 	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	root.add_child(Starfield.new())
+	# A cargo ship flies behind the menu (SPEC Section 20.1).
+	root.add_child(TitleShip.new())
 	# The title, the tagline, and the buttons are in the center (SPEC Section 20.1).
 	var center := CenterContainer.new()
 	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)

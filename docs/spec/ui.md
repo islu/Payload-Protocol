@@ -8,6 +8,8 @@ This file is part of the [game specification](../spec.md). The section numbers a
 
 - The title screen has these buttons: New Run, Tutorial, How to Play, Settings, and Quit (Section 23.4).
 - The background shows a starfield that moves slowly.
+- A cargo ship flies behind the menu. It comes in at the middle of the right edge and flies down to the left of the menu. It stops there, and cells of 1x1 cargo fly up into it. Then it flies out at the bottom left. After a short pause, it comes back. One cycle is about 15 seconds.
+- The ship grows as it comes in, and it grows more as it flies out, as if it comes near and then passes the camera.
 - The title, a tagline, and the buttons are in the center. The version is at the bottom right.
 - The title has the colors of the icon: PAYLOAD in amber, and PROTOCOL in blue.
 

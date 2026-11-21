@@ -40,7 +40,7 @@ This file has the text and the settings of the itch.io page. Copy each part into
 | Screenshots | 1920 × 1080. Upload them in this order. | `docs/screenshots/2_station.png`, `3_warp.png`, `4_report.png`, `5_event.png`, `6_run_end.png`, `1_title.png` |
 | Icon of the page | 512 × 512 | `project/icon.png` |
 
-`task art` draws each image of `docs/itch/` with `tools/art/make_cover.py`. The social media image and the wide cover use `2_station.png` and `3_warp.png`: after you replace a screenshot, run `task art` again. Take new screenshots with `task shots`. Copy the best ones into `docs/screenshots/`.
+`task art` draws each image of `docs/itch/` with `tools/art/make_cover.py`. The cover shows a FreePixel cargo ship whose hold explodes, with cells of 1x1 cargo that fly out. It shows no screenshot. The social media image and the wide cover use `2_station.png` and `3_warp.png`: after you replace a screenshot, run `task art` again. `2_station.png` is `shots/05a_station_hold.png`, and `3_warp.png` is the frame of the hits in the first shift (`shots/07_warp_04.png`). Take new screenshots with `task shots`. Copy the best ones into `docs/screenshots/`.
 
 ## Theme
 

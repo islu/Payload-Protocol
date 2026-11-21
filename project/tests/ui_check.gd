@@ -103,6 +103,7 @@ func _play_run(main: Control) -> void:
 		main.screen().find_child("TitleHold", true, false) == null,
 		"the title has no moving hold (SPEC Section 20.1)"
 	)
+	await UiCheckTitle.check(self, main)
 	var top: Label = main.screen().find_child("TitleTop", true, false)
 	var bottom: Label = main.screen().find_child("TitleBottom", true, false)
 	_check(

@@ -1,19 +1,23 @@
 """Draw the images of the itch.io page into docs/itch/.
 
-- cover.png (630x500): a starfield, the icon, the title, and the tagline.
-- header.png (960x200, transparent): the icon and the title on one line, and the tagline.
+- cover.png (630x500): a cargo ship in the warp. Its hold explodes, and cells of cargo
+  fly out. The title is small at the top.
+- header.png (960x200, transparent): the title on one line, and the tagline.
 - background.png (512x512): a starfield tile. It repeats with no seam.
 - social.png (1200x630): the title above a screenshot of the station, for links on social media.
 - wide_cover.png (1260x540, 21:9): the block of the cover at the left, the warp at the right.
-- logo.png (transparent): the icon and the title with a dark outline and no glow.
+- logo.png (transparent): the title with a dark outline and no glow.
 
 Run it from the repository root: task art. It reads project/icon.png, so run
-make_icon.py first. It also reads 2_station.png and 3_warp.png of docs/screenshots.
+make_icon.py first. It also reads 2_station.png and 3_warp.png of docs/screenshots,
+the cargo images, the ship of the title (project/art/ship.png), and the explosion sheet
+of project/art/fx. import_art.py makes the ship, so run it first.
 
 The title is in the colors of the icon (PAYLOAD in amber, PROTOCOL in blue, SPEC
 Section 20.1) with a glow. The font is the font of the game. The colors are the colors
 of project/scenes/common/palette.gd.
 """
+import json
 import random
 from pathlib import Path
 
@@ -26,12 +30,31 @@ OUT = ROOT / "docs/itch"
 SCREENSHOTS = ROOT / "docs/screenshots"
 WARP_SHOT = "3_warp.png"
 STATION_SHOT = "2_station.png"
-# Palette.BACKGROUND, TITLE_AMBER, ACCENT, TEXT_DIM, and PANEL_LINE.
+CARGO = ROOT / "project/art/cargo"
+FX = ROOT / "project/art/fx"
+# The cargo ship of the title (import_art.py makes it).
+SHIP = ROOT / "project/art/ship.png"
+SHIP_WIDTH = 380
+# The frame of the explosion sheet where the fire is biggest.
+EXPLOSION_FRAME = 7
+# The pieces of the hold that fly out of the ship: (cells, cell size, angle, center).
+COVER_PIECES = [
+    ({(0, 0): "burger", (1, 0): "instant_noodles", (0, 1): "cargo_crate", (1, 1): None}, 68, -18, (535, 175)),
+    ({(0, 0): "energy_crystal"}, 62, 14, (405, 95)),
+    ({(0, 0): "battery_pack"}, 74, 22, (575, 355)),
+    ({(0, 0): "medkit"}, 70, -30, (455, 420)),
+    ({(0, 0): "fuel_drum"}, 56, 40, (330, 425)),
+    ({(0, 0): "space_cheese"}, 46, -12, (430, 300)),
+]
+# Palette.BACKGROUND, TITLE_AMBER, ACCENT, TEXT_DIM, PANEL_LINE, GRID, and GRID_LINE.
 BACKGROUND = (11, 16, 32)
 AMBER = (255, 186, 70)
 BLUE = (95, 211, 255)
 DIM = (127, 141, 179)
 PANEL_LINE = (42, 58, 102)
+GRID = (28, 39, 71)
+GRID_LINE = (51, 70, 122)
+RIVET = (70, 92, 150)
 TAGLINE = "Pack the hold. Survive the warp."
 
 
@@ -66,39 +89,114 @@ def icon(size: int) -> Image.Image:
     return Image.open(ICON).convert("RGBA").resize((size, size), Image.Resampling.NEAREST)
 
 
+def warp_lines(img: Image.Image, count: int, seed: int) -> None:
+    """Horizontal lines of the warp at fixed places: the same seed gives the same image."""
+    rng = random.Random(seed)
+    draw = ImageDraw.Draw(img)
+    for _ in range(count):
+        x, y = rng.randrange(-100, img.width), rng.randrange(img.height)
+        a = rng.choice((40, 70, 110))
+        draw.line((x, y, x + rng.randrange(40, 180), y), fill=(120, 160, 230, a), width=rng.choice((1, 1, 2)))
+
+
+def hold_piece(img: Image.Image, cells: dict, cell: int, angle: float, center: tuple) -> None:
+    """A piece of the hold that flies out: cells is {(column, row): cargo ID or None}.
+
+    Each cell is a cell of the hold in the game colors, with a rivet at each corner.
+    """
+    cols = max(c for c, _ in cells) + 1
+    rows = max(r for _, r in cells) + 1
+    piece = Image.new("RGBA", (cols * cell, rows * cell), (0, 0, 0, 0))
+    draw = ImageDraw.Draw(piece)
+    rivet = max(2, cell // 30)
+    for c, r in cells:
+        x, y = c * cell, r * cell
+        draw.rectangle((x, y, x + cell - 1, y + cell - 1), fill=(*GRID, 235), outline=(*GRID_LINE, 255), width=max(2, cell // 26))
+        for qx, qy in ((x + 5, y + 5), (x + cell - 6, y + 5), (x + 5, y + cell - 6), (x + cell - 6, y + cell - 6)):
+            draw.ellipse((qx - rivet, qy - rivet, qx + rivet, qy + rivet), fill=(*RIVET, 255))
+    pad = round(cell * 0.1)
+    for (c, r), cargo in cells.items():
+        if cargo:
+            art = Image.open(CARGO / f"{cargo}.png").convert("RGBA")
+            art = art.resize((cell - 2 * pad, cell - 2 * pad), Image.Resampling.NEAREST)
+            piece.alpha_composite(art, (c * cell + pad, r * cell + pad))
+    piece = piece.rotate(angle, expand=True, resample=Image.Resampling.BICUBIC)
+    img.alpha_composite(piece, (center[0] - piece.width // 2, center[1] - piece.height // 2))
+
+
 def cover() -> None:
+    """A cargo ship in the warp. Its hold explodes, and cells of cargo fly out.
+
+    The cells of the hold show that the game is a grid puzzle. Each cargo is 1x1 in the game.
+    """
     img = Image.new("RGBA", (630, 500), (*BACKGROUND, 255))
-    stars(img, 140, 7)
-    # A soft blue light behind the icon.
+    stars(img, 160, 7)
+    warp_lines(img, 55, 3)
+    ship = Image.open(SHIP).convert("RGBA")
+    ship = ship.resize((SHIP_WIDTH, round(ship.height * SHIP_WIDTH / ship.width)), Image.Resampling.NEAREST)
+    ship_pos = (40, 270 - ship.height // 2)
+    # The explosion is at the rear of the ship, with a warm light behind it.
+    cx, cy = ship_pos[0] + ship.width - 90, ship_pos[1] + ship.height // 2
     glow = Image.new("RGBA", img.size, (0, 0, 0, 0))
-    ImageDraw.Draw(glow).ellipse((img.width // 2 - 170, 10, img.width // 2 + 170, 300), fill=(*BLUE, 40))
+    ImageDraw.Draw(glow).ellipse((cx - 170, cy - 150, cx + 170, cy + 150), fill=(255, 140, 40, 110))
     img.alpha_composite(glow.filter(ImageFilter.GaussianBlur(60)))
-    img.alpha_composite(icon(192), ((img.width - 192) // 2, 34))
-    title = ImageFont.truetype(str(FONT), 74)
-    small = ImageFont.truetype(str(FONT), 26)
-    glow_text(img, centered_x(img, "PAYLOAD", title), 240, "PAYLOAD", title, AMBER)
-    glow_text(img, centered_x(img, "PROTOCOL", title), 318, "PROTOCOL", title, BLUE)
-    glow_text(img, centered_x(img, TAGLINE, small), 420, TAGLINE, small, DIM)
+    img.alpha_composite(ship, ship_pos)
+    img.alpha_composite(explosion_frame(2.5), (cx - 375, cy - 490))
+    for cells, cell, angle, center in COVER_PIECES:
+        hold_piece(img, cells, cell, angle, center)
+    # The top is dark behind the title.
+    shade = Image.new("RGBA", (img.width, 90), (*BACKGROUND, 255))
+    shade.putalpha(Image.linear_gradient("L").resize(shade.size).point(lambda v: int((255 - v) * 0.85)))
+    img.alpha_composite(shade)
+    title = ImageFont.truetype(str(FONT), 40)
+    first, second = "PAYLOAD ", "PROTOCOL"
+    x = (img.width - round(title.getlength(first + second))) // 2
+    glow_text(img, x, 16, first, title, AMBER)
+    glow_text(img, x + round(title.getlength(first)), 16, second, title, BLUE)
     img.convert("RGB").save(OUT / "cover.png")
 
 
-def title_row(img: Image.Image, center_x: int, top: int, scale: float, glow: bool = True, tagline: bool = True) -> None:
+def explosion_frame(scale: float) -> Image.Image:
+    """The biggest frame of the explosion effect of the game (task fx), scaled up."""
+    sheet = Image.open(FX / "explosion.png").convert("RGBA")
+    meta = json.loads((FX / "explosion.json").read_text())
+    w, h = meta["size"]
+    col, row = EXPLOSION_FRAME % meta["columns"], EXPLOSION_FRAME // meta["columns"]
+    frame = sheet.crop((col * w, row * h, col * w + w, row * h + h))
+    return frame.resize((round(w * scale), round(h * scale)), Image.Resampling.NEAREST)
+
+
+def title_row(
+    img: Image.Image,
+    center_x: int,
+    top: int,
+    scale: float,
+    glow: bool = True,
+    tagline: bool = True,
+    with_icon: bool = True,
+) -> None:
     """The icon and the title on one line, and the tagline under the title.
 
     At scale 1 the icon is 128 pixels and the title is 64 pixels. Without the glow, the
     text has a dark outline: it stays legible on a white and on a black background.
+    Without the icon, the top of the text is at top.
     """
-    icon_size = 64 * max(1, round(2 * scale))
     title = ImageFont.truetype(str(FONT), round(64 * scale))
     small = ImageFont.truetype(str(FONT), round(24 * scale))
-    gap = round(24 * scale)
     first, second = "PAYLOAD ", "PROTOCOL"
     first_w = title.getlength(first)
-    x = int(center_x - (icon_size + gap + first_w + title.getlength(second)) // 2)
-    img.alpha_composite(icon(icon_size), (x, top))
-    text_x = x + icon_size + gap
-    # The text block is about 112 pixels high with the tagline, and 80 without it.
-    text_y = top + (icon_size - round((112 if tagline else 80) * scale)) // 2
+    text_w = first_w + title.getlength(second)
+    if with_icon:
+        icon_size = 64 * max(1, round(2 * scale))
+        gap = round(24 * scale)
+        x = int(center_x - (icon_size + gap + text_w) // 2)
+        img.alpha_composite(icon(icon_size), (x, top))
+        text_x = x + icon_size + gap
+        # The text block is about 112 pixels high with the tagline, and 80 without it.
+        text_y = top + (icon_size - round((112 if tagline else 80) * scale)) // 2
+    else:
+        text_x = int(center_x - text_w // 2)
+        text_y = top
     parts = [(text_x, text_y, first, title, AMBER), (int(text_x + first_w), text_y, second, title, BLUE)]
     if tagline:
         parts.append((text_x, text_y + round(84 * scale), TAGLINE, small, DIM))
@@ -124,7 +222,8 @@ def screenshot(name: str, size: tuple, darken: int) -> Image.Image:
 def header() -> None:
     """Transparent, so the theme colors of the page show behind it."""
     img = Image.new("RGBA", (960, 200), (0, 0, 0, 0))
-    title_row(img, img.width // 2, 36, 1.0)
+    # The text block is about 146 pixels high at scale 1.3: it is at the middle.
+    title_row(img, img.width // 2, 22, 1.3, with_icon=False)
     img.save(OUT / "header.png")
 
 
@@ -163,7 +262,7 @@ def wide_cover() -> None:
 def logo() -> None:
     """Transparent, with no glow and no tagline. It is legible on white and on black."""
     img = Image.new("RGBA", (1600, 240), (0, 0, 0, 0))
-    title_row(img, img.width // 2, 24, 1.5, glow=False, tagline=False)
+    title_row(img, img.width // 2, 24, 1.5, glow=False, tagline=False, with_icon=False)
     left, top, right, bottom = img.getbbox()
     img = img.crop((left - 8, top - 8, right + 8, bottom + 8))
     img.save(OUT / "logo.png")

@@ -1,5 +1,7 @@
 # Payload Protocol
 
+<p align="center"><a href="https://1slu.itch.io/payload-protocol"><img src="docs/itch/cover.png" width="480" alt="A cargo ship explodes in the warp, and cells of cargo fly out"></a></p>
+
 **Pack the hold. Survive the warp.**
 
 **[Play in your browser on itch.io](https://1slu.itch.io/payload-protocol)** · Made for [GitHub Game Off 2026](https://itch.io/jam/game-off-2026)

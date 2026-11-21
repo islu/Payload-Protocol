@@ -1,5 +1,8 @@
 """Make the cargo images in project/art/cargo from FreePixel images (SPEC Section 4.2).
 
+It also makes the speaker portraits in project/art/speakers, and the cargo ship of the
+title in project/art/ship.png (SHIP_SOURCE).
+
 Run it from the repository root: task art.
 
 tools/art/cargo_art.json has an entry for each cargo ID:
@@ -46,6 +49,9 @@ OUT = ROOT / "project/art/cargo"
 SPEAKER_TABLE = ROOT / "tools/art/speaker_art.json"
 SPEAKERS = ROOT / "project/data/speakers"
 SPEAKER_OUT = ROOT / "project/art/speakers"
+# The cargo ship of the title and of the itch.io cover: its path at the FreePixel CDN.
+SHIP_SOURCE = "sorted/space/spaceship-capital-cruiser-white-massive_20260217_043248.png"
+SHIP_OUT = ROOT / "project/art/ship.png"
 # The height of the head of each speaker portrait. The event screen uses the same value.
 HEAD_SIZE = 120
 
@@ -135,6 +141,17 @@ def make_portrait(speaker_id: str, entry: dict) -> None:
     print(f"art: speaker {speaker_id} {img.width}x{img.height}, scale {scale:.2f}")
 
 
+def make_ship() -> None:
+    """The cargo ship of the title (SPEC Section 20.1) and of the itch.io cover.
+
+    It stays at the scale of the source. The title scales it up with nearest filtering.
+    """
+    img = Image.open(download(SHIP_SOURCE)).convert("RGBA")
+    img = img.crop(img.getbbox())
+    img.save(SHIP_OUT)
+    print(f"art: ship {img.width}x{img.height}")
+
+
 def make_portraits() -> None:
     table = json.loads(SPEAKER_TABLE.read_text())
     SPEAKER_OUT.mkdir(parents=True, exist_ok=True)
@@ -154,6 +171,7 @@ def main() -> int:
     prune(OUT, known, (".png", ".json"))
     report_missing(CARGO, table, "image")
     make_portraits()
+    make_ship()
     return 0
 
 
