@@ -86,8 +86,9 @@ The warp:
 ### 20.5 Payment
 
 - The payment screen shows a receipt in large numbers: the credits, the payment, and the credits after the payment.
-- When the player can pay, the button is Pay. After Pay, the credits count down to the credits after the payment, and a "Paid" stamp shows on the receipt. The stamp plays a stamp sound. After 1 second, the next screen opens.
-- When the player cannot pay, a red "Missed" stamp shows on the receipt, and the button goes to the run end screen.
+- When the player can pay, the button is Pay. After Pay, the credits count down to the credits after the payment, and a rubber stamp comes down on the receipt. After 1 second, the next screen opens.
+- At the hit of the stamp, the stamp sound plays, the receipt shakes a little, and drops of ink fly out. Then the stamp lifts away, and the stamp mark stays on the receipt. The mark has a double frame and a worn ink edge.
+- When the player cannot pay, the same rubber stamp comes down 0.3 seconds after the screen opens, and leaves a red "Missed" mark. The receipt shakes more than for a "Paid" stamp. The button goes to the run end screen.
 - The screen shows one row for each jump of the leg: its net, the delivered freight, the scrap made, and the explosions.
 - The screen shows the next leg: its number, its jumps, and its payment. The last leg has no next leg.
 

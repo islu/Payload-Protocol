@@ -74,9 +74,19 @@ static func payment(ui: Node, main: Control) -> void:
 		"the payment screen shows the next leg (SPEC Section 20.5)"
 	)
 	if not t["can_pay"]:
+		Sound.requested.clear()
+		await _wait_hit(ui, panel)
 		ui._check(
-			panel.stamp.visible and panel.stamp.text == ui.tr(PhasePanel.MISSED_TEXT),
-			"a missed payment shows the red Missed stamp (SPEC Section 20.5)"
+			(
+				panel.stamp.visible
+				and panel.stamp.text == ui.tr(PhasePanel.MISSED_TEXT)
+				and Sound.requested.has("stamp")
+				and panel.shake > PhasePanel.PAID_SHAKE
+			),
+			(
+				"a missed payment stamps a red Missed mark, with a stronger shake"
+				+ " (SPEC Section 20.5)"
+			)
 		)
 		panel.pay_button.pressed.emit()
 		await ui.get_tree().process_frame
@@ -84,22 +94,54 @@ static func payment(ui: Node, main: Control) -> void:
 	ui._check(not panel.stamp.visible, "the stamp shows after Pay (SPEC Section 20.5)")
 	Sound.requested.clear()
 	panel.pay_button.pressed.emit()
-	await ui.get_tree().process_frame
+	await _wait_hit(ui, panel)
+	var tool: Control = panel.stamp.handle
 	ui._check(
-		GameState.view()["run"]["phase"] == Defs.PHASE_PAYMENT and panel.stamp.visible,
-		"after Pay, the Paid stamp shows before the next screen (SPEC Section 20.5)"
+		(
+			GameState.view()["run"]["phase"] == Defs.PHASE_PAYMENT
+			and panel.stamp.visible
+			and panel.stamp.text == ui.tr(PhasePanel.PAID_TEXT)
+			and tool.visible
+		),
+		"after Pay, a rubber stamp comes down before the next screen (SPEC Section 20.5)"
+	)
+	ui._check(
+		(
+			Sound.requested.has("stamp")
+			and panel.shake == PhasePanel.PAID_SHAKE
+			and panel.stamp.played.has("ink")
+		),
+		(
+			"at the hit, the stamp sound plays, the receipt shakes, and ink flies out"
+			+ " (SPEC Section 20.5)"
+		)
 	)
 	var frames := 0
+	var lifted := false
 	while GameState.view()["run"]["phase"] == Defs.PHASE_PAYMENT and frames < 2000:
 		frames += 1
+		if panel.stamp.played.has("lift") and not lifted:
+			lifted = true
+			ui._check(
+				not tool.visible and panel.stamp.mark.visible and panel.stamp.mark.material != null,
+				(
+					"the stamp lifts away, and the worn ink mark stays on the receipt"
+					+ " (SPEC Section 20.5)"
+				)
+			)
 		await ui.get_tree().process_frame
+	ui._check(lifted, "the stamp lifts away before the next screen opens (SPEC Section 20.5)")
 	ui._check(
 		GameState.view()["run"]["phase"] != Defs.PHASE_PAYMENT,
 		"after the stamp, the next screen opens (SPEC Section 20.5)"
 	)
-	ui._check(
-		Sound.requested.has("stamp"), "the Paid stamp plays a stamp sound (SPEC Section 20.5)"
-	)
+
+
+## Waits until the rubber stamp hits the receipt, or for 3 seconds.
+static func _wait_hit(ui: Node, panel: PhasePanel) -> void:
+	var end := Time.get_ticks_msec() + 3000
+	while not panel.stamp.played.has("hit") and Time.get_ticks_msec() < end:
+		await ui.get_tree().process_frame
 
 
 ## The run end shows the score, the tiles, a row for each leg, and the ship

@@ -37,16 +37,22 @@ const NEW_RUN_TEXT := "New Run"
 const TITLE_BUTTON_TEXT := "Title"
 ## The sizes of the large numbers: display text (SPEC Section 4.2).
 const RECEIPT_SIZE := 56
-const STAMP_SIZE := 64
 const SCORE_SIZE := 96
 ## The time of the count of the credits, and the wait after the stamp (SPEC Section 20.5).
 const COUNT_TIME := 0.6
 const STAMP_WAIT := 1.0
+## The Missed stamp comes down after this time (SPEC Section 20.5).
+const MISSED_DELAY := 0.3
+## The shake of the receipt at the hit, in degrees. The Missed shake is stronger.
+const PAID_SHAKE := 0.8
+const MISSED_SHAKE := 1.8
 const WIDTH := 900.0
 
 ## The parts, for the checks and the tutorial.
 var receipt: Array[Label] = []
-var stamp: Label
+var stamp: RubberStamp
+## The shake of the receipt at the last hit of the stamp, in degrees, or 0.
+var shake := 0.0
 var pay_button: Button
 var jump_rows: Array[Control] = []
 var next_label: Label
@@ -58,6 +64,7 @@ var copy_button: Button
 
 var _box: VBoxContainer
 var _paying := false
+var _paper: Control
 
 
 func _ready() -> void:
@@ -108,6 +115,7 @@ func _build_payment(run: Dictionary) -> void:
 	var stack := MarginContainer.new()
 	_box.add_child(stack)
 	var paper := Ui.panel(stack, Palette.PANEL_LINE, 2)
+	_paper = paper
 	var grid := GridContainer.new()
 	grid.columns = 2
 	grid.add_theme_constant_override("h_separation", 40)
@@ -118,12 +126,13 @@ func _build_payment(run: Dictionary) -> void:
 	var mid := CenterContainer.new()
 	mid.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	stack.add_child(mid)
-	stamp = Label.new()
-	TextSize.display(stamp, STAMP_SIZE)
-	stamp.rotation_degrees = -12.0
+	stamp = RubberStamp.new()
+	stamp.hit.connect(_stamp_hit)
 	mid.add_child(stamp)
 	_set_stamp(not t["can_pay"])
-	stamp.visible = not t["can_pay"]
+	shake = 0.0
+	if not t["can_pay"]:
+		get_tree().create_timer(MISSED_DELAY).timeout.connect(_slam_missed.bind(stamp))
 	# A row for each jump of the leg.
 	var rows := VBoxContainer.new()
 	rows.add_theme_constant_override("separation", 4)
@@ -149,11 +158,28 @@ func _receipt_row(grid: GridContainer, caption: String, value: String, color: Co
 
 
 func _set_stamp(missed: bool) -> void:
-	stamp.text = tr(MISSED_TEXT if missed else PAID_TEXT)
-	stamp.add_theme_color_override("font_color", Palette.BAD if missed else Palette.GOOD)
-	stamp.add_theme_color_override("font_outline_color", Palette.BACKGROUND)
-	stamp.add_theme_constant_override("outline_size", 10)
-	stamp.pivot_offset = stamp.get_combined_minimum_size() / 2.0
+	stamp.set_mark(
+		tr(MISSED_TEXT if missed else PAID_TEXT), Palette.BAD if missed else Palette.GOOD
+	)
+
+
+## The Missed stamp comes down, if its screen still shows.
+func _slam_missed(s: RubberStamp) -> void:
+	if is_instance_valid(s) and s == stamp:
+		stamp.slam()
+
+
+## At the hit of the stamp: the stamp sound, and a shake of the receipt. A Missed stamp
+## shakes it more (SPEC Section 20.5).
+func _stamp_hit() -> void:
+	Sound.play(self, "stamp")
+	var missed := stamp.text == tr(MISSED_TEXT)
+	shake = MISSED_SHAKE if missed else PAID_SHAKE
+	# A container sets the place of the paper, not its rotation.
+	_paper.pivot_offset = _paper.size / 2.0
+	var tw := _paper.create_tween()
+	for a: float in [shake, -shake, shake * 0.5, -shake * 0.5, 0.0]:
+		tw.tween_property(_paper, "rotation_degrees", a, 0.04)
 
 
 func _jump_row(parent: Control, j: Dictionary) -> Control:
@@ -176,8 +202,9 @@ func _jump_row(parent: Control, j: Dictionary) -> Control:
 	return row
 
 
-## Pay: the credits count down, the Paid stamp shows, and the next screen opens after
-## STAMP_WAIT. A missed payment goes to the run end at once (SPEC Section 20.5).
+## Pay: the credits count down, the rubber stamp comes down, and the next screen opens
+## STAMP_WAIT after the stamp lifts. A missed payment goes to the run end at once
+## (SPEC Section 20.5).
 func _pay() -> void:
 	var t: Dictionary = GameState.view()["run"]["payment_screen"]
 	if not t["can_pay"]:
@@ -195,16 +222,9 @@ func _pay() -> void:
 	)
 	tween.tween_callback(
 		func() -> void:
-			stamp.visible = true
-			# The stamp plays a stamp sound (SPEC Section 20.5).
-			Sound.play(self, "stamp")
+			stamp.slam(func() -> void: get_tree().create_timer(STAMP_WAIT).timeout.connect(_paid))
 	)
-	tween.tween_property(stamp, "scale", Vector2.ONE, 0.15).from(Vector2(1.6, 1.6))
-	tween.tween_interval(STAMP_WAIT)
-	tween.tween_callback(_paid)
-	# The stamp shows at once for the checks; the tween makes its pop.
 	_set_stamp(false)
-	stamp.visible = true
 
 
 func _paid() -> void:
