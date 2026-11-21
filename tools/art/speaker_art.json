@@ -1,0 +1,74 @@
+{
+	"alien": {
+		"source": "sorted/space-aliens/space-grey-alien-large-eyes-001-2026-03-25T19-14-54.png",
+		"head": 95
+	},
+	"auditor": {
+		"source": "sorted/cyberpunk/cyberpunk-corpo-executive-suit-implants-sleek_20260218_055312.png",
+		"head": 36
+	},
+	"blade_pirate": {
+		"source": "sorted/cyberpunk-assets/characters/cyber-street-samurai-katana-warrior-021-v2-2026-03-07T18-21-35.png",
+		"head": 35
+	},
+	"customs": {
+		"source": "sorted/cyberpunk-assets/characters/cyber-bodyguard-personal-security-protection-015-2026-03-07T18-21-35.png",
+		"head": 42
+	},
+	"dock_worker": {
+		"source": "sorted/cyberpunk/cyberpunk-mechanic-grease-jumpsuit-wrench-cyber_20260218_060946.png",
+		"head": 27
+	},
+	"mechanic": {
+		"source": "sorted/steampunk/steampunk-lady-inventor-goggles-corset-wrench_20260217_122651.png",
+		"head": 56
+	},
+	"merchant": {
+		"source": "sorted/cyberpunk-assets/characters/cyber-bartender-club-server-neon-096-v5-2026-03-07T18-21-35.png",
+		"head": 40
+	},
+	"navigator": {
+		"source": "sorted/cyberpunk-assets/characters/cyber-tech-specialist-gadget-expert-013-2026-03-07T18-21-35.png",
+		"head": 40
+	},
+	"netrunner": {
+		"source": "sorted/cyberpunk-assets/clothing_gear/cyber-hoodie-urban-clothing-street-011-2026-03-07T18-21-35.png",
+		"head": 48
+	},
+	"noodle_vendor": {
+		"source": "sorted/cyberpunk/cyberpunk-street-vendor-noodle-cart-apron_20260218_060406.png",
+		"head": 32
+	},
+	"patrol_officer": {
+		"source": "sorted/cyberpunk-assets/characters/cyber-cop-police-officer-badge-009-2026-03-07T18-21-35.png",
+		"head": 72
+	},
+	"pirate": {
+		"source": "sorted/cyberpunk/cyberpunk-mercenary-heavy-weapons-armor-scarred_20260218_061103.png",
+		"head": 30
+	},
+	"robot": {
+		"source": "sorted/cyberpunk-assets/characters/cyber-android-humanoid-robot-synthetic-011-2026-03-07T18-21-35.png",
+		"head": 22
+	},
+	"salvage_crew": {
+		"source": "sorted/cyberpunk-assets/clothing_gear/cyber-scarf-neck-wrap-face-035-v2-2026-03-07T18-21-35.png",
+		"head": 95
+	},
+	"salvager": {
+		"source": "sorted/cyberpunk-assets/clothing_gear/cyber-scarf-neck-wrap-face-015-2026-03-07T18-21-35.png",
+		"head": 85
+	},
+	"scientist": {
+		"source": "sorted/cyberpunk-assets/characters/cyber-medic-street-doctor-chrome-005-2026-03-07T18-21-35.png",
+		"head": 22
+	},
+	"smuggler": {
+		"source": "sorted/cyberpunk/cyberpunk-smuggler-dark-hoodie-hidden-weapons_20260218_061007.png",
+		"head": 42
+	},
+	"stranded_crew": {
+		"source": "sorted/cyberpunk-assets/characters/cyber-nomad-wasteland-wanderer-road-027-v2-2026-03-07T18-21-35.png",
+		"head": 42
+	}
+}

@@ -1,0 +1,11 @@
+{
+	"id": "black_box_run",
+	"legs": [],
+	"client_name": "Salvage Guild",
+	"freight": ["circuit_boards", "circuit_boards", "flashlight"],
+	"pay": 6,
+	"bonus": {
+		"type": "all_intact",
+		"pay": 6
+	}
+}

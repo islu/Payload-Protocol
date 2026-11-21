@@ -1,0 +1,12 @@
+{
+	"id": "helper_bots",
+	"legs": [1, 2],
+	"client_name": "Cogwork Robotics",
+	"freight": ["helper_bot", "helper_bot", "helper_bot", "helper_bot"],
+	"pay": 5,
+	"bonus": {
+		"type": "not_next_to",
+		"pay": 5,
+		"trait": "fluid"
+	}
+}

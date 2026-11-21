@@ -1,0 +1,8 @@
+{
+	"id": "cryo_line",
+	"name": "Cryo Line",
+	"text": "A Cooler keeps each Perishable cargo within {range} cells fresh.",
+	"values": {
+		"range": 2
+	}
+}

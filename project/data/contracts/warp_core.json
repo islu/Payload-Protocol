@@ -1,0 +1,11 @@
+{
+	"id": "warp_core",
+	"legs": [3],
+	"client_name": "Fold Drive Works",
+	"freight": ["warp_core"],
+	"pay": 24,
+	"bonus": {
+		"type": "all_intact",
+		"pay": 10
+	}
+}

@@ -1,0 +1,8 @@
+{
+	"id": "courier_drone",
+	"name": "Courier Drone",
+	"kind": "freight",
+	"weight": "light",
+	"traits": ["thruster", "electronic"],
+	"shape": [[0, 0]]
+}

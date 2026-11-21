@@ -1,0 +1,31 @@
+{
+	"id": "black_box",
+	"name": "Black Box Bounty",
+	"text": "A salvage crew found a black box. They need a ship to carry the parts.",
+	"speaker": "salvage_crew",
+	"choices": [
+		{
+			"text": "Carry the parts.",
+			"effects": [
+				{
+					"type": "contract",
+					"contract": "black_box_run"
+				},
+				{
+					"type": "add_incident",
+					"incident": "meteor"
+				}
+			],
+			"reply": {
+				"text": "Careful. Others want it too."
+			}
+		},
+		{
+			"text": "Leave it.",
+			"effects": [],
+			"reply": {
+				"text": "More for us."
+			}
+		}
+	]
+}

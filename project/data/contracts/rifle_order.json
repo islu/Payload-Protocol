@@ -1,0 +1,7 @@
+{
+	"id": "rifle_order",
+	"legs": [1],
+	"client_name": "Militia Supply",
+	"freight": ["laser_rifle", "laser_rifle"],
+	"pay": 7
+}

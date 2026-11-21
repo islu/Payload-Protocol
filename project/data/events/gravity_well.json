@@ -1,0 +1,31 @@
+{
+	"id": "gravity_well",
+	"name": "Gravity Well",
+	"text": "A scientist wants readings from a gravity well on your route.",
+	"speaker": "scientist",
+	"choices": [
+		{
+			"text": "Fly through it.",
+			"effects": [
+				{
+					"type": "credits",
+					"amount": 20
+				},
+				{
+					"type": "add_step",
+					"direction": "down"
+				}
+			],
+			"reply": {
+				"text": "Fascinating. Hold steady."
+			}
+		},
+		{
+			"text": "Steer around it.",
+			"effects": [],
+			"reply": {
+				"text": "A lost chance for science."
+			}
+		}
+	]
+}

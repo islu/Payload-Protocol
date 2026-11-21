@@ -1,0 +1,14 @@
+{
+	"id": "night_market",
+	"legs": [1],
+	"client_name": "Night Market",
+	"freight": [
+		"flashlight",
+		"flashlight",
+		"flashlight",
+		"flashlight",
+		"instant_noodles",
+		"instant_noodles"
+	],
+	"pay": 4
+}

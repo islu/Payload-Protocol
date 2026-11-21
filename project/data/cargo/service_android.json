@@ -1,0 +1,8 @@
+{
+	"id": "service_android",
+	"name": "Service Android",
+	"kind": "freight",
+	"weight": "heavy",
+	"traits": ["electronic"],
+	"shape": [[0, 0], [0, 1]]
+}

@@ -1,0 +1,17 @@
+{
+	"id": "lab",
+	"legs": [3],
+	"client_name": "Frostline Labs",
+	"freight": [
+		"coolant_pipe",
+		"coolant_pipe",
+		"circuit_boards",
+		"circuit_boards",
+		"energy_crystal"
+	],
+	"pay": 10,
+	"bonus": {
+		"type": "all_intact",
+		"pay": 20
+	}
+}

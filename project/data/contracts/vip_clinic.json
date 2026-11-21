@@ -1,0 +1,8 @@
+{
+	"id": "vip_clinic",
+	"legs": [3],
+	"client_name": "Orbital Clinic",
+	"freight": ["artificial_heart", "blood_sample", "blood_sample"],
+	"pay": 20,
+	"penalty": 25
+}

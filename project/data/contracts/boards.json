@@ -1,0 +1,12 @@
+{
+	"id": "boards",
+	"legs": [1, 2],
+	"client_name": "Kessler Electronics",
+	"freight": ["circuit_boards", "circuit_boards", "circuit_boards", "circuit_boards"],
+	"pay": 4,
+	"bonus": {
+		"type": "not_next_to",
+		"pay": 4,
+		"trait": "fluid"
+	}
+}

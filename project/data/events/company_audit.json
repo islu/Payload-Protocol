@@ -1,0 +1,28 @@
+{
+	"id": "company_audit",
+	"name": "Company Audit",
+	"text": "The company checks your books. An early payment makes it happy.",
+	"speaker": "auditor",
+	"choices": [
+		{
+			"text": "Pay early.",
+			"cost": 15,
+			"effects": [
+				{
+					"type": "payment",
+					"amount": 18
+				}
+			],
+			"reply": {
+				"text": "The company thanks you for your early payment."
+			}
+		},
+		{
+			"text": "Ignore it.",
+			"effects": [],
+			"reply": {
+				"text": "Noted. The company remembers everything."
+			}
+		}
+	]
+}

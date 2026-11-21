@@ -1,0 +1,7 @@
+{
+	"id": "sculpture",
+	"legs": [1],
+	"client_name": "Museum of Nowhere",
+	"freight": ["specimen_tube", "specimen_tube"],
+	"pay": 14
+}

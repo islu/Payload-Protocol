@@ -1,0 +1,207 @@
+{
+	"credits": 20,
+	"payment": 40,
+	"jumps": [
+		{
+			"contracts": ["tutorial_first"],
+			"kit": [],
+			"hazard": ["right"],
+			"steps": [
+				{
+					"text": "Welcome aboard. I am MAGELLAN, the ship AI. I will show you how to carry freight.",
+					"until": "next"
+				},
+				{
+					"text": "This is a contract. Press Accept to take it. Its freight goes to the dock.",
+					"target": {
+						"kind": "contract",
+						"index": 0
+					},
+					"until": "accept"
+				},
+				{
+					"text": "Drag each cargo from the dock into the hold, the grid in the middle.",
+					"target": {
+						"kind": "cargo",
+						"cargo": "cargo_crate"
+					},
+					"until": "all_in_hold"
+				},
+				{
+					"text": "Right click a cargo, or press R, to rotate it. Rotate the Steel Ingot.",
+					"target": {
+						"kind": "cargo",
+						"cargo": "steel_ingot"
+					},
+					"until": "rotate",
+					"cargo": "steel_ingot"
+				},
+				{
+					"text": "The route above the hold shows the next jump, from Depart to Arrive. This jump has one shift step: RIGHT.",
+					"target": {
+						"kind": "hazard",
+						"index": 0
+					},
+					"until": "next"
+				},
+				{
+					"text": "In a step, each cargo slides until a wall or a stopped cargo stops it. The force of its hit is its weight × the cells it slid: light 1, standard 2, heavy 3.",
+					"until": "next"
+				},
+				{
+					"text": "The Energy Crystal is Fragile: a hit with a force of 2 or more breaks it. The striped band marks the front wall.",
+					"target": {
+						"kind": "cargo",
+						"cargo": "energy_crystal"
+					},
+					"until": "next"
+				},
+				{
+					"text": "Try it: place the cargo so that the crystal does not break. Then press Launch.",
+					"target": {
+						"kind": "button",
+						"button": "warp"
+					},
+					"until": "warp",
+					"try": true,
+					"fail": {
+						"text": "The crystal broke. A slide into the wall, or a cargo behind it, hit it with a force of 2 or more. Let us try again."
+					}
+				},
+				{
+					"text": "Delivered! Each intact freight pays. A broken cargo becomes scrap and stays in the hold. Press Continue.",
+					"target": {
+						"kind": "button",
+						"button": "continue"
+					},
+					"until": "continue"
+				}
+			]
+		},
+		{
+			"contracts": ["tutorial_traits"],
+			"kit": [],
+			"hazard": ["down"],
+			"steps": [
+				{
+					"text": "This contract has traits. Accept it.",
+					"target": {
+						"kind": "contract",
+						"index": 0
+					},
+					"until": "accept"
+				},
+				{
+					"text": "Fragile breaks at a force of 2. Fluid leaks at 2. Volatile explodes at 3. Point at a cargo to see its traits.",
+					"until": "next"
+				},
+				{
+					"text": "A cargo that does not slide still takes a hit. At the front wall, it takes a wall jolt of its weight. It also presses on the cargo in front of it with its weight.",
+					"until": "next"
+				},
+				{
+					"text": "Drag the freight into the hold.",
+					"target": {
+						"kind": "cargo",
+						"cargo": "steel_ingot"
+					},
+					"until": "all_in_hold"
+				},
+				{
+					"text": "A clamp stops a cargo from sliding. Drag the clamp onto a cargo in the hold.",
+					"target": {
+						"kind": "clamps"
+					},
+					"until": "clamp"
+				},
+				{
+					"text": "Try it: deliver each piece. The step is DOWN. Keep the Specimen Tube and the Coolant Pipe away from the floor and from heavy cargo.",
+					"target": {
+						"kind": "button",
+						"button": "warp"
+					},
+					"until": "warp",
+					"try": true,
+					"fail": {
+						"text": "A piece broke or leaked. Look at the wall jolt and the press, and try again."
+					}
+				},
+				{
+					"text": "Good flying. Press Continue.",
+					"target": {
+						"kind": "button",
+						"button": "continue"
+					},
+					"until": "continue"
+				}
+			]
+		},
+		{
+			"contracts": ["tutorial_cold"],
+			"kit": ["cooler_unit"],
+			"hazard": ["left", "up"],
+			"steps": [
+				{
+					"text": "Space Cheese is Perishable. At the arrival, it must be next to a Cooler, or it spoils. Accept the contract.",
+					"target": {
+						"kind": "contract",
+						"index": 0
+					},
+					"until": "accept"
+				},
+				{
+					"text": "Buy the Cooler Unit in the shop. Kit stays in the ship until you sell it.",
+					"target": {
+						"kind": "shop",
+						"index": 0
+					},
+					"until": "buy",
+					"cargo": "cooler_unit"
+				},
+				{
+					"text": "Each cargo has mass. Over the mass limit, the warp takes a fuel fee. The top bar shows the mass.",
+					"target": {
+						"kind": "top_bar"
+					},
+					"until": "next"
+				},
+				{
+					"text": "Put the freight and the Cooler in the hold. Each cheese must be next to the Cooler.",
+					"target": {
+						"kind": "cargo",
+						"cargo": "cooler_unit"
+					},
+					"until": "fresh"
+				},
+				{
+					"text": "Try it: the steps are LEFT, then UP. Only the places at the arrival count. Keep the cheese next to the Cooler.",
+					"target": {
+						"kind": "button",
+						"button": "warp"
+					},
+					"until": "warp",
+					"try": true,
+					"fail": {
+						"text": "A piece did not arrive intact or fresh. Place the cheese and the Cooler where the slides keep them together, and try again."
+					}
+				},
+				{
+					"text": "The leg ends. Press Continue.",
+					"target": {
+						"kind": "button",
+						"button": "continue"
+					},
+					"until": "continue"
+				},
+				{
+					"text": "At the end of each leg, the freight company takes a payment. Pay it. A run has 3 legs.",
+					"target": {
+						"kind": "button",
+						"button": "pay"
+					},
+					"until": "pay"
+				}
+			]
+		}
+	]
+}

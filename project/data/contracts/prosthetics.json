@@ -1,0 +1,12 @@
+{
+	"id": "prosthetics",
+	"legs": [1, 2],
+	"client_name": "Second Hand Clinic",
+	"freight": ["prosthetic_arm", "prosthetic_arm", "prosthetic_arm", "prosthetic_arm"],
+	"pay": 4,
+	"bonus": {
+		"type": "not_next_to",
+		"pay": 4,
+		"trait": "fluid"
+	}
+}

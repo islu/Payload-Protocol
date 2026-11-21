@@ -1,0 +1,11 @@
+{
+	"id": "greenhouse",
+	"legs": [2, 3],
+	"client_name": "Verdant Colony Farms",
+	"freight": ["hydroponic_garden", "hydroponic_garden"],
+	"pay": 13,
+	"bonus": {
+		"type": "all_intact",
+		"pay": 6
+	}
+}

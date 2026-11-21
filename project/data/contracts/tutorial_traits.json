@@ -1,0 +1,7 @@
+{
+	"id": "tutorial_traits",
+	"legs": [],
+	"client_name": "Flight School",
+	"freight": ["steel_ingot", "specimen_tube", "coolant_pipe", "plasma_cell"],
+	"pay": 7
+}

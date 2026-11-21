@@ -1,0 +1,11 @@
+{
+	"id": "noodle_run",
+	"legs": [],
+	"client_name": "Night Market",
+	"freight": ["instant_noodles", "instant_noodles", "instant_noodles", "instant_noodles"],
+	"pay": 4,
+	"bonus": {
+		"type": "all_intact",
+		"pay": 4
+	}
+}

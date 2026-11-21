@@ -1,0 +1,8 @@
+{
+	"id": "artificial_heart",
+	"name": "Artificial Heart",
+	"kind": "freight",
+	"weight": "standard",
+	"traits": ["perishable", "electronic"],
+	"shape": [[0, 0]]
+}

@@ -1,0 +1,8 @@
+{
+	"id": "vaccine_vial",
+	"name": "Vaccine Vial",
+	"kind": "freight",
+	"weight": "light",
+	"traits": ["perishable"],
+	"shape": [[0, 0]]
+}

@@ -1,0 +1,8 @@
+{
+	"id": "ration_crate",
+	"name": "Ration Crate",
+	"kind": "freight",
+	"weight": "light",
+	"traits": [],
+	"shape": [[0, 0]]
+}

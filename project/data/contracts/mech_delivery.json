@@ -1,0 +1,7 @@
+{
+	"id": "mech_delivery",
+	"legs": [3],
+	"client_name": "Titan Works",
+	"freight": ["mech_suit"],
+	"pay": 35
+}

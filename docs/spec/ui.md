@@ -1,0 +1,240 @@
+# Payload Protocol Spec: Screens and Feedback
+
+This file is part of the [game specification](../spec.md). The section numbers are the same in all spec files.
+
+## 20. Screens
+
+### 20.1 Title
+
+- The title screen has these buttons: New Run, Tutorial, How to Play, Settings, and Quit (Section 23.4).
+- The background shows a starfield that moves slowly.
+- The title, a tagline, and the buttons are in the center. The version is at the bottom right.
+- The title has the colors of the icon: PAYLOAD in amber, and PROTOCOL in blue.
+
+### 20.2 Station
+
+The station screen has these areas:
+
+| Area | Position | Content |
+| --- | --- | --- |
+| Top bar | Top | Four groups: (1) the leg, and a dot for each jump of the leg; (2) the credits, and a bar of the credits against the payment of this leg, with the jumps before the payment; (3) a bar of the hold mass, with a mark at the mass limit and a mark at the maximum (Section 25). The environment of the leg is on the route bar (Section 28.1). A gear button at the right opens the pause menu (Section 20.7). |
+| Pilot box | Bottom left | The portrait and the line of the pilot, in a wide box (Section 22). |
+| Route bar | Center, above the hold | The route of the next jump, from left to right: the depart point (the ship), the incident (Section 29), each shift step in order (Section 18), and the arrive point (the station). A line joins the points. Each step is a card with a large arrow, its number, and its direction. A fork step shows its two directions and a question mark. The environment of the leg is a band below the line (Section 28). |
+| Contract board | Left, top | The 4 contracts, with Accept and Cancel buttons (Section 15). |
+| Dock | Left, below the contract board, above the pilot box | The cargo on the dock (Section 8.1). |
+| Hold | Center | The grid and its cargo, the links, and the clamps, inside a bulkhead (Section 21.6). Each cell is 100 pixels, the size of the cargo images (Section 4.2). |
+| Stasis bay | Left of the hold | The cells of the stasis bay, after its purchase (Section 31.2). |
+| Mod bar | Right below the bottom bulkhead of the hold | A card with the icon of each mod of the ship (Section 27). The mouse on a card shows the name and the rule of the mod, and marks the area of the mod on the hold. |
+| Shop | Right | The kit offers, Reroll, the services, and the sell area (Section 17). |
+| Clamp panel | Right, below the services | The free clamps and their count (Section 13). The mouse on them shows how to use a clamp. |
+| Launch button | Bottom right | Starts the warp (Section 9). Its text is "Launch". The warp checklist is above it. |
+| Controls hint | Bottom center | One line of the mouse and keyboard controls. It is not on the row of the mod bar. |
+
+Contracts and the dock:
+
+- Each contract card shows on its first line the client, the total pay, and the mass of the contract. The second line shows the freight and the bonus. The same freight shows one time, with its image, "×N", and its trait icons.
+- The mouse on a contract card shows the details: the number of pieces, the pay for each piece, the rules of the traits, and the mass after it is accepted (the mass of the hold and the dock, plus the mass of the contract).
+- The mass of a contract that is not accepted is yellow when the mass after it is above the mass limit (a fuel fee), and red when it is above the maximum.
+- An accepted contract has a bright border and shows "Loaded N/M" on its second line: N pieces of its M pieces are in the hold.
+- When the mouse is on a contract card, the hold marks the freight of that contract.
+- The dock title shows the number of cargo on the dock. The dock shows its cargo at 48 pixels for each cell. An empty dock is one line of text. The dock is 3 rows high at most. More cargo scrolls in the dock. The contract board fills the rest of the column, and scrolls when its cards do not fit.
+
+The hazard:
+
+- When the mouse is on a hazard card, the hold marks the front wall of that step with the stripes of Section 12.3. A fork step that the player does not know marks both walls. The wall jolt warnings are for the first step only.
+- A fork step that a Sensor shows has a Sensor icon and its one direction (Section 18).
+
+The shop and the services:
+
+- Each kit offer shows its image, the icon of each trait, its weight, and its price on the Buy button. Its tooltip shows the rule of each trait (Section 20.10). A price that is more than the credits shows in red.
+- Each kit offer shows how it helps the accepted freight on the dock and in the hold: "Helps N of your freight". A Cooler counts Perishable freight. A Cushion counts Fragile freight. A Shield counts freight that is Fragile, Volatile, Fluid, or Electronic. A Battery counts the Shield kit on the dock and in the hold. In a Magnetic Storm, a Shield and a Battery help nothing (Section 28.2). A Sensor shows "The next jump has a fork step" when it does. Other kit and a count of 0 show nothing.
+- Each service shows the value now and the value after the purchase: the clamps (1/4 → 2/4), the stasis bay (none → 2×2, or 2×2 → 2×3), and the mass limit (24 → 30).
+- The sell area is a small bar. During a drag of a kit, it is green and shows the sell price. During a drag of a scrap, it is red and shows the clear price.
+
+The warp:
+
+- The **warp checklist** above the Launch button shows: the fuel fee, the number of cargo on the dock, the number of cargo with a wall jolt warning (Section 12.3), and the incident of the jump (Section 29.3).
+- An Undo button and Ctrl+Z take back the last action at this station: a placement, a contract, a purchase, a sale, a reroll, or a service. Undo does not go back past the arrival at the station. After an undo, the same action gives the same result again.
+
+### 20.3 Warp
+
+- The hold stays at the center, and the route bar stays above it. The other panels go out of the screen.
+- The ship on the route bar moves to the point that plays now: the incident, then each shift step. At the end, it is at the arrive point.
+- The background shows the warp: stars become lines.
+- Before the first shift step, a banner shows the environment of the leg. Then the incident plays, with a banner (Section 29.3).
+- For each shift step:
+  1. An alarm sounds. A banner shows the arrow and the direction for 0.6 seconds.
+  2. The ship tilts a little in the direction.
+  3. The slide plays (Section 21.1). Then the hits and the reactions play (Section 21.2).
+- When the warp starts, the stars stretch into lines in 0.4 seconds with a soft white flash. At the arrival, a chime plays.
+- A click or the Space key during the warp makes the rest of the warp play at 4× speed.
+
+### 20.4 Arrival Report
+
+- The report shows each contract: its pieces (delivered, scrap, spoiled, lost, or breached), its pay, and its bonus. A lost piece is a piece that an explosion removed.
+- The report shows a card for each contract: the client, its pay, and its pieces. Pieces with the same freight and the same state share one image, with "×N" and an icon of the state.
+- Below the cards, a ledger shows the deliveries, the bonuses, the insurance (Section 27.2), the breach fees, the penalties (Section 30.1), the kit sold from the dock, the scrap cleared from the dock (Section 26.3), the fuel fee, and the net. Then it shows the credits before the warp and after the arrival.
+- Below the ledger, a bar shows the credits against the payment of the leg, with the payment and the jumps before it: "Payment 100 · 2 more jumps", or "Payment at the next stop".
+- The pilot speaks a line about the result, with the portrait of the pilot.
+- Delivered freight stays in the hold at half alpha, with a check mark, until Continue.
+- A Continue button goes to the next station, or to the payment screen.
+- The report fits its content. It has no empty area. The hold and the report are one group at the center of the screen.
+- When the mouse is on a line of pieces, the hold marks those pieces at their place at the end of the warp.
+- Coins fly from each delivered freight to the credits of the report. A coin sound plays when they arrive.
+- A Replay button plays the warp again from the start, at half speed. A click or the Space key during the replay makes it faster (Section 20.3). The replay plays no coin sound.
+
+### 20.5 Payment
+
+- The payment screen shows a receipt in large numbers: the credits, the payment, and the credits after the payment.
+- When the player can pay, the button is Pay. After Pay, the credits count down to the credits after the payment, and a rubber stamp comes down on the receipt. After 1 second, the next screen opens.
+- At the hit of the stamp, the stamp sound plays, the receipt shakes a little, and drops of ink fly out. Then the stamp lifts away, and the stamp mark stays on the receipt. The mark has a double frame and a worn ink edge.
+- When the player cannot pay, the same rubber stamp comes down 0.3 seconds after the screen opens, and leaves a red "Missed" mark. The receipt shakes more than for a "Paid" stamp. The button goes to the run end screen.
+- The screen shows one row for each jump of the leg: its net, the delivered freight, the scrap made, and the explosions.
+- The screen shows the next leg: its number, its jumps, and its payment. The last leg has no next leg.
+
+### 20.6 Run End
+
+- Section 19.2 has the content.
+- The score shows in large numbers. Each other value of the run is a tile.
+
+### 20.7 Pause
+
+- Esc opens the pause menu at the station and during the warp. A gear button at the top right of the station and the warp opens it too.
+- At the station, Esc puts back a held cargo first (Section 8.3). With no held cargo, it opens the pause menu. It has these buttons: Resume, How to Play, Settings, and Abandon Run.
+- Abandon Run asks the player to confirm. Then it goes to the title screen.
+
+### 20.8 Event
+
+- When a station with an event opens, the event shows at the center, above the dark station (Section 26).
+- The speaker stands at the left of the dialogue box, outside a frame. Each event names its speaker. The speakers are a small set of characters, for example a pirate and a mechanic (content.md).
+- All speakers have the same proportions: their heads have the same size and are at the same height. Each speaker fades out at the bottom edge of the dialogue box.
+- A bust portrait (the head and the shoulders only) is shorter. It has the same head size, and it stands at the bottom edge of the dialogue box: its head is lower.
+- The dialogue box shows the name of the speaker, the name of the event, its text, and a button for each choice. Each button shows the text of the choice, its cost, and its effects.
+- A choice that the player cannot select is disabled (Section 26.2).
+- Identical effects of a choice show as one text with a count, for example "Scrap on the dock: Steel Ingot ×2". A scrap effect also shows its mass.
+- When the player selects a choice, the speaker replies with one line (Section 26.2). The dialogue box fades out, and the reply shows in a speech bubble. The dialogue box has the event and the choices; the bubble has only the words of the speaker.
+- The bubble is at the right of the head of the speaker, and its tail points to the speaker. A bust portrait has a lower head, so its bubble is lower too. The bubble shows the name of the speaker, the reply, and a Continue button. It pops out from its tail in 0.15 s. The full reply shows at once.
+- Enter, Space, and a click do the same as Continue.
+- When the reply closes, each effect plays at its place on the station. The credits count to the new value. Each new cargo on the dock and each new contract pops in, and a sound plays. Then the mod choice shows, if the choice has a `mod` effect.
+- The player cannot use the station until the player selects a choice. Esc and the gear button do nothing.
+
+### 20.9 Mod Choice
+
+- The mod choice shows a card for each mod: its icon, its name, and its rule. The icon is the same as on the mod bar (Section 20.2). A click on a card selects the mod (Section 27.1).
+- The player must select a mod.
+
+### 20.10 Tooltips
+
+- A screen shows the values that the player compares to decide: prices, pay, mass, "Helps N", and the short rule of the environment. A **tooltip** shows the explanations: the rules of the traits, the details of a contract, and the rule of a mod.
+- A tooltip shows at once when the mouse is on its control, and when the keyboard focus is on it. All tooltips have the same style.
+- A card has one tooltip for the whole card. Its icons have no tooltip of their own. A cargo image shows the tooltip of its cargo (Section 8.4).
+- On a control that the player can only read, the mouse cursor is a question mark. A control that the player can drag or press keeps its cursor.
+
+## 21. Feedback
+
+### 21.1 Placement and Slide
+
+- A drag lifts the cargo: a shadow and a scale of 1.05.
+- A valid drop plays the clack sound and a small bounce.
+- In a slide, all cargo of the shift step moves at the same time, at the same speed (8 cells each second). Each cargo stops at its distance.
+- A slide plays a low rumble.
+- A pick up plays a soft sound. A button press in the settings plays a click (Section 23.1). Other buttons play no click.
+- Each cargo that slides has a short trail behind it.
+- When the player accepts a contract, its freight flies from the card to the dock.
+- A clamp that the player places snaps with a small bounce and a metal click.
+
+### 21.2 Hits
+
+- Each hit shows a spark flare at the contact edge that sprays back against the slide, and the force number above the cargo in large bold digits with a dark outline.
+- The screen shakes. A larger force makes a larger shake. A setting turns the shake off (Section 23.1).
+- A hit with a force of 0 plays a soft sound. A hit with a force of 1 or more plays a metal hit sound. A larger force plays a louder sound.
+
+### 21.3 Reactions
+
+| Reaction | Visual | Sound |
+| --- | --- | --- |
+| Break | Glass shards fly out from the cargo. The cargo turns gray with cracks. | Glass break |
+| Explosion | A white flash, a fire blast with smoke, a glow on the blast area, a large shake, and a hit stop of 0.1 seconds. | Explosion |
+| Leak | A splash of liquid on the cargo. | Splash |
+| Short | A bolt of electricity hits the cargo. | Electric buzz |
+| Spoil | A green cloud with bubbles at the arrival. | Squelch |
+| Shield | A dome of force on the protected cargo takes the hit. | Shield hum |
+
+- Reactions of one chain play one after the other, 0.15 seconds apart, so that the player can see the chain.
+
+### 21.4 Station
+
+- A purchase plays a coin sound. A sale and a delivery play a coin sound too. Each coin sound shows a gold sparkle: at the credits on the station, and at the credits of the arrival report, where the coins land.
+- The credits count up or down in the top bar.
+- The link lines glow and move slowly.
+
+### 21.5 Losses
+
+- When a freight becomes scrap in the warp, its lost pay shows above it ("−8"). The event log gives the lost pay. A kit shows no number.
+- From the second reaction of a chain, the warp shows "Chain ×N". N is the number of reactions of that chain so far.
+- At the end of the warp, the warp shows the total lost pay ("Lost −24") before the arrival report.
+- When a freight becomes scrap, a puff of gray smoke rises from it.
+
+### 21.6 The Hold
+
+- The hold has a metal **bulkhead** on each side: a frame with a rivet at each grid line and a bracket at each corner. All sides look the same. Only the marks of Sections 12.3 and 20.2 put stripes on a bulkhead.
+- Each cell of the floor is a deck plate with a screw at each corner. The grid lines stay. The plates have a low contrast, so that the cargo is easy to see.
+- The stasis bay has the deck plates, its padded frame of Section 31.2, and no lights.
+- Each bulkhead has 2 lights. At the station, the lights are dark blue. In the warp:
+  - When a shift step starts, the lights of its front wall are amber until the slide ends.
+  - A hit on a wall (a slide into the wall or a wall jolt) flashes the lights of that wall white.
+  - An explosion, a meteor, and a hull breach turn all lights red for 1 second.
+  - A leak flashes the nearest light blue. A short flashes the nearest light cyan.
+  - A light flashes 3 times each second or less.
+
+## 22. The Pilot
+
+- The pilot is the AI of the ship. Its name is **MAGELLAN**. The name is translated: 麥哲倫 in zh-TW. The pilot box shows its pixel art portrait and one line.
+- The portrait blinks. A new line types out at 40 characters each second, and the mouth of the portrait moves while it types.
+- The pilot speaks at these events:
+  - The station opens: a line about the hazard.
+  - The arrival: a line about the result (all intact, a break, an explosion, a chain of explosions, a leak, a spoil, or no freight).
+  - The payment screen: a line about the payment.
+  - The run end: a line about the win or the loss.
+- `project/data/lines/` has the lines for each event. The game selects one line with the seed. It does not select the same line two times in a row.
+- The lines are funny and short. A line has 90 characters at most in English.
+
+## 23. Settings and Onboarding
+
+### 23.1 Settings
+
+- The settings are: music volume, sound volume, the CRT filter (on or off), the screen shake (on or off), the warp speed (1× or 2×), fullscreen (on or off), the language (English or 繁體中文), hints (on or off), and the pick up of the next cargo (on or off, Section 8.2).
+- The game keeps the settings in `user://settings.cfg`.
+- Each switch shows its state clearly: off is an outlined capsule, on is a filled capsule.
+- A change of a setting applies at once. When the player changes the language, all text on the screen changes at once, also in the open menus.
+
+### 23.2 How to Play
+
+- How to Play has 4 pages. Each page has a large picture and 3 short points:
+  1. Contracts and the hold: accept, drag, and rotate.
+  2. The warp: the slide, distance, weight, and force.
+  3. Traits and reactions.
+  4. Links, clamps, the shop, and payments.
+- Each picture shows the cargo images of Section 4.2.
+
+### 23.3 Hints
+
+- When hints are on, the pilot gives hints in the first runs. Each hint is for a new thing that the tutorial does not teach (Section 23.4). It shows the first time that the player sees that thing.
+- The hints are: a mod choice, an event, an environment, an incident, a fork step, the Sensor, the stasis bay, a long contract, and a VIP contract.
+- The hint of an event or a mod choice shows in its panel, above the text. It wraps to the width of the panel. It does not cover the station.
+- After the first win or the first 3 runs, the game turns hints off. The player can turn them on in the settings.
+
+### 23.4 Tutorial
+
+- The **tutorial** is a short run with fixed content. It teaches the core rules step by step.
+- The tutorial has 3 jumps. Its contracts, cargo, hazards, and shop are in `data/tutorial.json`. It has no events, mods, environments, or incidents. The rules do not change in it.
+- The first New Run of the player starts the tutorial. After the player completes or skips it once, New Run starts a normal run. The game keeps this in `user://settings.cfg`.
+- The Tutorial button of the title starts the tutorial again.
+- The tutorial is a list of steps. Each step has a pilot line and a target: a contract, a cargo, a cell, a button, or none.
+- During a step, the screen is dark except for the target. Only the target works.
+- A step ends when the player does its action, for example when the player accepts the contract. A step with no action has a Next button.
+- A **try step** gives a goal, for example "Keep the vase intact". During a try step, the player can move cargo in the hold and on the dock freely.
+- When the goal of a try step fails at the arrival, the pilot tells why. Then the tutorial goes back to the station before the warp.
+- A Skip Tutorial button is always on the screen. After a confirm, a normal run starts.
+- At the end, the screen shows "Tutorial complete", and a normal run starts.
+- The tutorial teaches: contracts, drag and rotate, the hazard and the front wall, the slide and the force, the arrival and scrap, the traits, the wall jolt and the press, clamps, the Cooler link, the shop, the mass and the fuel fee, and the payment.

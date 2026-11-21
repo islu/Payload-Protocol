@@ -1,0 +1,39 @@
+{
+	"id": "ship_mechanic",
+	"name": "Ship Mechanic",
+	"text": "A mechanic at the dock offers a quick job.",
+	"speaker": "mechanic",
+	"choices": [
+		{
+			"text": "Fit a clamp.",
+			"cost": 6,
+			"effects": [
+				{
+					"type": "clamp"
+				}
+			],
+			"reply": {
+				"text": "Done. That clamp holds anything."
+			}
+		},
+		{
+			"text": "Fit a ship part.",
+			"cost": 20,
+			"effects": [
+				{
+					"type": "mod"
+				}
+			],
+			"reply": {
+				"text": "Fitted. Do not ask where I got it."
+			}
+		},
+		{
+			"text": "Leave.",
+			"effects": [],
+			"reply": {
+				"text": "Your ship, your problem."
+			}
+		}
+	]
+}

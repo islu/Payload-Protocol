@@ -1,0 +1,31 @@
+{
+	"id": "drifting_container",
+	"name": "Drifting Container",
+	"text": "A lost container drifts past. Some of it is still good.",
+	"speaker": "dock_worker",
+	"choices": [
+		{
+			"text": "Haul it in.",
+			"effects": [
+				{
+					"type": "credits",
+					"amount": 12
+				},
+				{
+					"type": "scrap",
+					"cargo": "steel_ingot"
+				}
+			],
+			"reply": {
+				"text": "Some steel is bent, but the rest sells well."
+			}
+		},
+		{
+			"text": "Leave it.",
+			"effects": [],
+			"reply": {
+				"text": "Good call. Nobody knows what is in a lost box."
+			}
+		}
+	]
+}

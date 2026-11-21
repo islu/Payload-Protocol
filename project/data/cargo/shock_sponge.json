@@ -1,0 +1,9 @@
+{
+	"id": "shock_sponge",
+	"name": "Shock Sponge",
+	"kind": "kit",
+	"weight": "light",
+	"traits": ["cushion"],
+	"shape": [[0, 0], [1, 0]],
+	"price": 6
+}

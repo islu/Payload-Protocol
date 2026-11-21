@@ -1,0 +1,11 @@
+{
+	"id": "earth_curios",
+	"legs": [1, 2],
+	"client_name": "Earth Heritage Museum",
+	"freight": ["mailbox", "fire_hydrant", "instant_noodles", "instant_noodles"],
+	"pay": 7,
+	"bonus": {
+		"type": "all_intact",
+		"pay": 6
+	}
+}

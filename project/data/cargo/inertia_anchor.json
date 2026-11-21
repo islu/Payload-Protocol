@@ -1,0 +1,9 @@
+{
+	"id": "inertia_anchor",
+	"name": "Inertia Anchor",
+	"kind": "kit",
+	"weight": "heavy",
+	"traits": ["thruster"],
+	"shape": [[0, 0]],
+	"price": 9
+}

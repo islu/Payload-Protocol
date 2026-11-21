@@ -1,0 +1,112 @@
+{
+	"start": {
+		"credits": 40,
+		"clamps": 1,
+		"hold": {
+			"columns": 6,
+			"rows": 6
+		}
+	},
+	"weights": {
+		"light": 1,
+		"standard": 2,
+		"heavy": 3
+	},
+	"break_limits": {
+		"fragile": 2,
+		"volatile": 3,
+		"fluid": 2
+	},
+	"events": {
+		"station": 2,
+		"chance_station": 3,
+		"chance_percent": 50
+	},
+	"mod_offers": 3,
+	"offers": {
+		"contracts": 4,
+		"kit": 3
+	},
+	"prices": {
+		"reroll_first": 2,
+		"reroll_step": 2,
+		"clamp": 8,
+		"clamp_max": 4,
+		"scrap_cell": 2,
+		"breach_fee": 5,
+		"sell_divisor": 2,
+		"reinforce_first": 12,
+		"reinforce_step": 8
+	},
+	"legs": [
+		{
+			"payment": 100,
+			"hazard_steps": [[1, 1], [2, 2], [2, 2]],
+			"kit_pool": [
+				"shock_sponge",
+				"cooler_unit",
+				"battery_pack",
+				"shield_generator",
+				"inertia_anchor",
+				"sensor_array"
+			]
+		},
+		{
+			"payment": 240,
+			"hazard_steps": [[2, 2], [2, 2], [2, 2]],
+			"kit_pool": [
+				"shock_sponge",
+				"cooler_unit",
+				"battery_pack",
+				"shield_generator",
+				"inertia_anchor",
+				"sensor_array"
+			],
+			"fork": true,
+			"environment": true,
+			"incident_percent": 50
+		},
+		{
+			"payment": 380,
+			"hazard_steps": [[2, 3], [2, 3], [2, 3]],
+			"kit_pool": [
+				"shock_sponge",
+				"cooler_unit",
+				"battery_pack",
+				"shield_generator",
+				"inertia_anchor",
+				"sensor_array"
+			],
+			"fork": true,
+			"environment": true,
+			"incident_percent": 100
+		}
+	],
+	"shock_bay": {
+		"sizes": [[2, 2], [2, 3]],
+		"prices": [20, 30]
+	},
+	"mass": {
+		"limit": 24,
+		"over_percent": 25,
+		"fuel_fee": 3,
+		"reinforce": 6,
+		"offer_percent": 130
+	},
+	"environments": {
+		"low_gravity": {
+			"max_slide": 2
+		},
+		"radiation_belt": {
+			"electronic": 2
+		},
+		"heat_zone": {
+			"volatile": 2,
+			"fluid": 1
+		}
+	},
+	"incidents": {
+		"meteor_force": 3,
+		"debris": "hull_debris"
+	}
+}

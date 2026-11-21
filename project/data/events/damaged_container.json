@@ -1,0 +1,31 @@
+{
+	"id": "damaged_container",
+	"name": "Damaged Container",
+	"text": "A crew drifts in a broken container. They offer a Cooler for a tow.",
+	"speaker": "stranded_crew",
+	"choices": [
+		{
+			"text": "Tow them in.",
+			"effects": [
+				{
+					"type": "kit",
+					"cargo": "cooler_unit"
+				},
+				{
+					"type": "add_incident",
+					"incident": "hull_breach"
+				}
+			],
+			"reply": {
+				"text": "We owe you one."
+			}
+		},
+		{
+			"text": "Fly on.",
+			"effects": [],
+			"reply": {
+				"text": "We understand."
+			}
+		}
+	]
+}

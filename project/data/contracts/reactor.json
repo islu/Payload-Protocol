@@ -1,0 +1,7 @@
+{
+	"id": "reactor",
+	"legs": [3],
+	"client_name": "Helix Power",
+	"freight": ["reactor_core"],
+	"pay": 45
+}

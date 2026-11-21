@@ -1,0 +1,12 @@
+{
+	"id": "smuggled_liquor",
+	"legs": [2, 3],
+	"client_name": "Black Market",
+	"freight": ["liquor_bottle", "liquor_bottle", "liquor_bottle", "liquor_bottle"],
+	"pay": 10,
+	"bonus": {
+		"type": "all_intact",
+		"pay": 10
+	},
+	"tags": ["black_market"]
+}

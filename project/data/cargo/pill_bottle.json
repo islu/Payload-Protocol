@@ -1,0 +1,8 @@
+{
+	"id": "pill_bottle",
+	"name": "Pill Bottle",
+	"kind": "freight",
+	"weight": "light",
+	"traits": [],
+	"shape": [[0, 0]]
+}

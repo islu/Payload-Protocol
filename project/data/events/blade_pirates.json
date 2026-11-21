@@ -1,0 +1,32 @@
+{
+	"id": "blade_pirates",
+	"name": "Blade Pirates",
+	"text": "A gang with blades boards your ship. They want a toll.",
+	"speaker": "blade_pirate",
+	"choices": [
+		{
+			"text": "Pay the toll.",
+			"cost": 10,
+			"effects": [],
+			"reply": {
+				"text": "Wise. We will remember you."
+			}
+		},
+		{
+			"text": "Fight them off.",
+			"effects": [
+				{
+					"type": "scrap",
+					"cargo": "steel_ingot"
+				},
+				{
+					"type": "add_step",
+					"direction": "up"
+				}
+			],
+			"reply": {
+				"text": "Run, then. We will chase you."
+			}
+		}
+	]
+}

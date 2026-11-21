@@ -1,0 +1,32 @@
+{
+	"id": "pirate_demand",
+	"name": "Pirate Demand",
+	"text": "Pirates block the route. They want credits, or they shoot.",
+	"speaker": "pirate",
+	"choices": [
+		{
+			"text": "Pay them.",
+			"cost": 8,
+			"effects": [],
+			"reply": {
+				"text": "Smart pilot. The route is open. For now."
+			}
+		},
+		{
+			"text": "Refuse. They shoot the cargo bay.",
+			"effects": [
+				{
+					"type": "scrap",
+					"cargo": "steel_ingot"
+				},
+				{
+					"type": "add_incident",
+					"incident": "meteor"
+				}
+			],
+			"reply": {
+				"text": "Wrong answer. Fire at the hold!"
+			}
+		}
+	]
+}

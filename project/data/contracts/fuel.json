@@ -1,0 +1,7 @@
+{
+	"id": "fuel",
+	"legs": [2],
+	"client_name": "Redline Fuel",
+	"freight": ["fuel_drum", "fuel_drum", "fuel_drum", "fuel_drum"],
+	"pay": 11
+}

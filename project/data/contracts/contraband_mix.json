@@ -1,0 +1,12 @@
+{
+	"id": "contraband_mix",
+	"legs": [3],
+	"client_name": "Black Market",
+	"freight": ["liquor_bottle", "liquor_bottle", "stim_pack", "stim_pack", "ammo_crate"],
+	"pay": 14,
+	"bonus": {
+		"type": "all_intact",
+		"pay": 12
+	},
+	"tags": ["black_market"]
+}

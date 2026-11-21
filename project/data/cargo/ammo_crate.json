@@ -1,0 +1,8 @@
+{
+	"id": "ammo_crate",
+	"name": "Ammo Crate",
+	"kind": "freight",
+	"weight": "standard",
+	"traits": ["volatile"],
+	"shape": [[0, 0]]
+}

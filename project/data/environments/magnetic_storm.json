@@ -1,0 +1,8 @@
+{
+	"id": "magnetic_storm",
+	"name": "Magnetic Storm",
+	"text": "No Shield has power. Array Power does not help.",
+	"short": {
+		"text": "Shields have no power"
+	}
+}

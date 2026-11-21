@@ -1,0 +1,8 @@
+{
+	"id": "instant_noodles",
+	"name": "Instant Noodles",
+	"kind": "freight",
+	"weight": "light",
+	"traits": [],
+	"shape": [[0, 0]]
+}

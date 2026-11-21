@@ -1,0 +1,14 @@
+{
+  "files.exclude": {
+    ".devbox": true,
+    ".local": true,
+    ".task": true,
+    "project/.godot": true
+  },
+  "search.exclude": {
+    ".devbox": true,
+    ".local": true,
+    "project/.godot": true,
+    "build": true
+  }
+}

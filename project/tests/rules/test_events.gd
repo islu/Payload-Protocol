@@ -1,0 +1,493 @@
+extends RuleTest
+## Events and the mod choice (SPEC Sections 26 and 27.1).
+
+
+## Opens the station of a jump of the leg now.
+func _open(jump: int) -> void:
+	run.jump = jump
+	run._open_station()
+
+
+func test_first_station_has_no_event() -> void:
+	eq(run.phase, Defs.PHASE_STATION, "the first station of a leg has no event (SPEC Section 26.1)")
+
+
+func test_second_station_has_an_event() -> void:
+	_open(2)
+	eq(run.phase, Defs.PHASE_EVENT, "the second station of a leg has an event (SPEC Section 26.1)")
+	check(run.event != null, "the run has the event of the station (SPEC Section 26.1)")
+
+
+func test_third_station_has_a_chance() -> void:
+	var with := 0
+	for s in 40:
+		var r := Run.new(Fixture.catalog(), s)
+		r.jump = 3
+		r._open_station()
+		if r.phase == Defs.PHASE_EVENT:
+			with += 1
+	check(
+		with > 5 and with < 35,
+		"the third station has an event about one time in two, %d of 40 (SPEC Section 26.1)" % with
+	)
+
+
+func test_no_event_two_times() -> void:
+	_open(2)
+	var first: String = run.event.id
+	eq(run.choose_event(2 if first == "e_one" else 0), "", "select a choice")
+	run.leg = 2
+	_open(2)
+	check(run.event.id != first, "a run does not show the same event two times (SPEC Section 26.1)")
+	run.choose_event(0)
+	run.leg = 3
+	_open(2)
+	eq(
+		run.phase,
+		Defs.PHASE_STATION,
+		"with no event left, the station has no event (SPEC Section 26.1)"
+	)
+
+
+func _open_one() -> void:
+	_open_event("e_one")
+
+
+## Opens the station of the second jump until the event has the ID.
+func _open_event(id: String) -> void:
+	for attempt in 2:
+		_open(2)
+		if run.event.id == id:
+			return
+		run.choose_event(run.event.choices.size() - 1)
+		run.leg += 1
+	failures.append("setup: %s did not come" % id)
+
+
+func test_cost_more_than_credits() -> void:
+	_open_one()
+	run.credits = 4
+	eq(
+		run.choose_event(0),
+		Run.NOT_ENOUGH_TEXT,
+		"a choice that costs more than the credits cannot be selected (SPEC Section 26.2)"
+	)
+	eq(run.phase, Defs.PHASE_EVENT, "the event stays open (SPEC Section 26.2)")
+	check(
+		run._station_cargo_error(0) == Run.NOT_AT_STATION_TEXT,
+		"the player cannot use the station before a choice (SPEC Section 20.8)"
+	)
+
+
+func test_effects() -> void:
+	_open_one()
+	run.credits = 40
+	var clamps := run.clamps
+	var payment := run.payment()
+	var board := run.contracts.size()
+	eq(run.choose_event(0), "", "select the first choice")
+	eq(
+		run.credits,
+		40 - 5 + 10,
+		"the choice costs 5, and the credits effect adds 10 (SPEC Section 26.2)"
+	)
+	eq(run.clamps, clamps + 1, "the clamp effect adds 1 clamp (SPEC Section 26.2)")
+	eq(
+		run.payment(),
+		payment - 15,
+		"the payment effect makes the payment smaller (SPEC Section 26.2)"
+	)
+	var kinds := []
+	for id in run.dock:
+		kinds.append([run.cargo[id].def.id, run.cargo[id].kind])
+	eq(
+		kinds,
+		[["foam", Defs.KIND_KIT], ["bar", Defs.KIND_SCRAP]],
+		"the kit and the scrap go to the dock (SPEC Sections 26.2 and 26.3)"
+	)
+	eq(
+		run.contracts.size(),
+		board + 1,
+		"the contract effect adds a contract to the board (SPEC Section 26.2)"
+	)
+	var k: Contract = run.contracts[-1]
+	check(
+		k.template.id == "k_event" and not k.accepted,
+		"the new contract is not accepted (SPEC Section 26.2)"
+	)
+	eq(run.phase, Defs.PHASE_STATION, "after the choice, the station opens (SPEC Section 20.8)")
+
+
+func test_payment_cut_ends_with_the_leg() -> void:
+	_open_one()
+	run.credits = 200
+	run.choose_event(0)
+	run.phase = Defs.PHASE_PAYMENT
+	eq(run.make_payment(), "", "make the payment")
+	run.leg = 2
+	eq(
+		run.payment(),
+		run.cat.legs[1]["payment"],
+		"the cut is for the leg of the event only (SPEC Section 26.2)"
+	)
+
+
+func test_scrap_on_the_dock_at_the_warp() -> void:
+	_open_one()
+	run.credits = 40
+	run.choose_event(0)
+	for id in run.dock.duplicate():
+		if run.cargo[id].kind == Defs.KIND_KIT:
+			run.place_cargo(id, Vector2i(5, 5), 0)
+	run.contracts.clear()
+	var before := run.credits
+	warp_with([Defs.DIR_LEFT])
+	var fee := run.cat.price("scrap_cell") * 2
+	eq(
+		run.last_arrival["ledger"]["scrap_cleared"],
+		fee,
+		"the scrap on the dock is cleared at the warp (SPEC Section 26.3)"
+	)
+	eq(run.credits, before - fee, "the player pays its clear price (SPEC Section 26.3)")
+
+
+func test_scrap_from_the_dock_into_the_hold() -> void:
+	_open_one()
+	run.choose_event(0)
+	var scrap: int = run.dock[1]
+	eq(
+		run.place_cargo(scrap, Vector2i(0, 5), 0),
+		"",
+		"the player can move the scrap into the hold (SPEC Section 26.3)"
+	)
+
+
+func test_mod_effect() -> void:
+	_open_one()
+	eq(run.choose_event(1), "", "select the mod choice")
+	eq(run.phase, Defs.PHASE_MOD, "the mod effect starts a mod choice (SPEC Section 26.2)")
+	eq(run.mod_offer.size(), 3, "a mod choice shows 3 mods (SPEC Section 27.1)")
+	var picked: String = run.mod_offer[0]
+	eq(run.choose_mod(0), "", "select a mod")
+	check(run.has_mod(picked), "the player has the mod (SPEC Section 27.1)")
+	eq(run.phase, Defs.PHASE_STATION, "after the mod choice, the station opens (SPEC Section 27.1)")
+
+
+func test_mod_after_payment() -> void:
+	run.phase = Defs.PHASE_PAYMENT
+	run.credits = 500
+	eq(run.make_payment(), "", "make the payment of leg 1")
+	eq(
+		run.phase,
+		Defs.PHASE_MOD,
+		"a mod choice comes after the payment of leg 1 (SPEC Section 27.1)"
+	)
+	run.choose_mod(0)
+	eq(run.phase, Defs.PHASE_STATION, "then the station of leg 2 opens")
+	run.phase = Defs.PHASE_PAYMENT
+	run.make_payment()
+	eq(
+		run.phase,
+		Defs.PHASE_MOD,
+		"a mod choice comes after the payment of leg 2 (SPEC Section 27.1)"
+	)
+	run.choose_mod(0)
+	run.phase = Defs.PHASE_PAYMENT
+	run.make_payment()
+	eq(
+		run.phase,
+		Defs.PHASE_END,
+		"the payment of leg 3 ends the run, with no mod choice (SPEC Section 27.1)"
+	)
+
+
+func test_offers_only_new_mods() -> void:
+	for id in ["shock_floor", "cryo_line", "padded_walls", "gravity_damper"]:
+		run.mods.append(id)
+	StationEvents.offer_mods(run)
+	var offer := Array(run.mod_offer)
+	offer.sort()
+	eq(
+		offer,
+		["array_power", "insurance"],
+		"a mod choice shows only the mods that are left (SPEC Section 27.1)"
+	)
+	run.mods.append("array_power")
+	run.mods.append("insurance")
+	run.phase = Defs.PHASE_STATION
+	StationEvents.offer_mods(run)
+	eq(run.phase, Defs.PHASE_STATION, "with no mod left, no mod choice happens (SPEC Section 27.1)")
+
+
+func test_event_view() -> void:
+	_open_one()
+	run.credits = 4
+	var e: Dictionary = RunView.view(run)["event"]
+	eq(e["choices"].size(), 3, "the view has each choice (SPEC Section 20.8)")
+	eq(
+		e["choices"][0]["can"],
+		false,
+		"a choice that costs more than the credits is disabled (SPEC Section 20.8)"
+	)
+	eq(e["choices"][2]["can"], true, "a choice with no cost can be selected (SPEC Section 20.8)")
+	eq(
+		e["choices"][0]["effects"].size(),
+		6,
+		"the view has the text of each effect (SPEC Section 20.8)"
+	)
+	eq(
+		e["choices"][0]["reply"],
+		"Reply all",
+		"the view has the reply of each choice (SPEC Section 26.2)"
+	)
+
+
+func test_event_view_merges_effects() -> void:
+	_open_event("e_two")
+	var effects: Array = RunView.view(run)["event"]["choices"][0]["effects"]
+	eq(effects.size(), 1, "identical effects show as one text (SPEC Section 20.8)")
+	var args: Dictionary = effects[0].get("args", {}) if effects.size() > 0 else {}
+	eq(args.get("count", 0), 2, "the text of identical effects has their count (SPEC Section 20.8)")
+	# Scrap is light: each cell has a mass of 1. Each bar has 2 cells, and there are 2 bars.
+	eq(args.get("mass", 0), 4, "a scrap effect shows the mass of its scrap (SPEC Section 20.8)")
+	eq(run.choose_event(0), "", "select the choice")
+	eq(run.dock.size(), 2, "each identical effect still happens (SPEC Section 26.2)")
+
+
+func test_choice_needs_a_reply() -> void:
+	var d := Fixture.data()
+	d["events"]["e_two"]["choices"][1].erase("reply")
+	check(
+		"reply" in "\n".join(Catalog.from_data(d).errors),
+		"the data check rejects a choice with no reply (SPEC Section 26.2)"
+	)
+
+
+func test_mod_areas_view() -> void:
+	run.mods.append(Defs.MOD_SHOCK_FLOOR)
+	run.mods.append(Defs.MOD_CRYO_LINE)
+	var v := RunView.view(run)
+	eq(v["mods"].size(), 2, "the view has each mod of the ship (SPEC Section 20.2)")
+	var areas := {}
+	for a: Dictionary in v["mod_areas"]:
+		areas[a["mod"]] = a["cells"]
+	eq(
+		areas[Defs.MOD_SHOCK_FLOOR][0],
+		{"x": 0, "y": run.rows - 1},
+		"Shock Floor shows the bottom row (SPEC Section 27.2)"
+	)
+	check(not areas.has(Defs.MOD_CRYO_LINE), "Cryo Line has no area (SPEC Section 27.2)")
+
+
+func test_choice_with_no_effect() -> void:
+	_open_one()
+	run.credits = 40
+	run.clamps = 4
+	eq(
+		run.choose_event(0),
+		Run.CLAMPS_MAXED_TEXT,
+		"a choice with a cost cannot add a clamp at the maximum (SPEC Section 26.2)"
+	)
+	eq(
+		[run.credits, run.phase],
+		[40, Defs.PHASE_EVENT],
+		"the choice takes no credits, and the event stays open (SPEC Section 26.2)"
+	)
+	eq(
+		RunView.view(run)["event"]["choices"][0]["can"],
+		false,
+		"the view disables that choice (SPEC Section 20.8)"
+	)
+	run.event.choices[1]["cost"] = 8
+	for id in Defs.MODS:
+		run.mods.append(id)
+	eq(
+		run.choose_event(1),
+		Run.NO_MOD_LEFT_TEXT,
+		"a choice with a cost cannot start a mod choice with no mod left (SPEC Section 26.2)"
+	)
+	eq(run.credits, 40, "the mod choice takes no credits (SPEC Section 26.2)")
+
+
+func test_event_view_names_its_speaker() -> void:
+	_open(2)
+	var e := RunView.event(run)
+	eq(
+		e.get("speaker", {}),
+		{"id": "s_one", "name": "Speaker One"},
+		"the event view has the ID and the name of its speaker (SPEC Section 20.8)"
+	)
+
+
+func test_event_needs_a_speaker() -> void:
+	var d := Fixture.data()
+	d["events"]["e_one"].erase("speaker")
+	check(
+		not Catalog.from_data(d).errors.is_empty(),
+		"an event with no speaker is an error of the data (SPEC Section 20.8)"
+	)
+
+
+func test_event_speaker_must_exist() -> void:
+	var d := Fixture.data()
+	d["events"]["e_one"]["speaker"] = "nobody"
+	check(
+		not Catalog.from_data(d).errors.is_empty(),
+		"an event with a speaker that does not exist is an error of the data (content.md)"
+	)
+
+
+func test_speaker_needs_a_name() -> void:
+	var d := Fixture.data()
+	d["speakers"]["s_one"]["name"] = ""
+	check(
+		not Catalog.from_data(d).errors.is_empty(),
+		"a speaker with no name is an error of the data (SPEC Section 20.8)"
+	)
+
+
+## Opens an event with one choice for each effect, and a free choice. Each paid
+## choice costs 1 (SPEC Section 26.2).
+func _route_event(effects: Array) -> void:
+	var choices := []
+	for f: Dictionary in effects:
+		choices.append({"text": "Pay", "cost": 1, "effects": [f], "reply": {"text": "ok"}})
+	choices.append({"text": "Leave", "effects": [], "reply": {"text": "ok"}})
+	run.event = EventDef.from_dict(
+		{"id": "e_test", "name": "T", "text": "T", "speaker": "s_one", "choices": choices}
+	)
+	run.phase = Defs.PHASE_EVENT
+	run.credits = 50
+
+
+func test_add_step() -> void:
+	run.hazard = PackedStringArray([Defs.DIR_UP, Defs.DIR_RIGHT])
+	run.fork_options = PackedStringArray()
+	_route_event([{"type": Defs.EFFECT_ADD_STEP, "direction": Defs.DIR_DOWN}])
+	eq(run.choose_event(0), "", "select the choice")
+	eq(
+		Array(run.hazard),
+		[Defs.DIR_UP, Defs.DIR_RIGHT, Defs.DIR_DOWN],
+		"add_step adds a step of its direction at the end of the next jump (SPEC Section 26.2)"
+	)
+
+
+func test_add_step_before_the_fork() -> void:
+	# The last step is a fork step: up or down, and the seed selected down.
+	run.hazard = PackedStringArray([Defs.DIR_RIGHT, Defs.DIR_DOWN])
+	run.fork_options = PackedStringArray([Defs.DIR_UP, Defs.DIR_DOWN])
+	_route_event([{"type": Defs.EFFECT_ADD_STEP, "direction": Defs.DIR_LEFT}])
+	eq(run.choose_event(0), "", "select the choice")
+	eq(
+		Array(run.hazard),
+		[Defs.DIR_RIGHT, Defs.DIR_LEFT, Defs.DIR_DOWN],
+		"the new step goes before the fork step: the fork step stays last (SPEC Section 26.2)"
+	)
+	eq(run.fork_options.size(), 2, "the next jump keeps its fork step (SPEC Section 26.2)")
+
+
+func test_remove_step() -> void:
+	run.hazard = PackedStringArray([Defs.DIR_UP, Defs.DIR_RIGHT])
+	run.fork_options = PackedStringArray([Defs.DIR_RIGHT, Defs.DIR_DOWN])
+	_route_event([{"type": Defs.EFFECT_REMOVE_STEP}])
+	eq(run.choose_event(0), "", "select the choice")
+	eq(Array(run.hazard), [Defs.DIR_UP], "remove_step removes the last step (SPEC Section 26.2)")
+	eq(
+		run.fork_options.size(),
+		0,
+		"when the last step is a fork step, the next jump has no fork step (SPEC Section 26.2)"
+	)
+	_route_event([{"type": Defs.EFFECT_REMOVE_STEP}])
+	eq(
+		run.choose_event(0),
+		Run.LAST_STEP_TEXT,
+		"a paid remove_step cannot be selected when the next jump has 1 step (SPEC Section 26.2)"
+	)
+	eq(run.choose_event(1), "", "the free choice can be selected")
+	eq(run.hazard.size(), 1, "the next jump keeps 1 step at least (SPEC Section 26.2)")
+
+
+func test_add_incident() -> void:
+	put("box", 2, 3)
+	run.incident = {"kind": Defs.INCIDENT_METEOR, "x": 0}
+	_route_event([{"type": Defs.EFFECT_ADD_INCIDENT, "incident": Defs.INCIDENT_HULL_BREACH}])
+	eq(run.choose_event(0), "", "select the choice")
+	eq(
+		run.incident.get("kind", ""),
+		Defs.INCIDENT_HULL_BREACH,
+		"add_incident sets the kind of the incident, and replaces the old one (SPEC Section 26.2)"
+	)
+	check(
+		run.incident.get("x", -1) >= 0 and run.incident.get("y", -1) >= 0,
+		"the seed selects the place of the new incident (SPEC Section 26.2)"
+	)
+
+
+func test_cancel_incident() -> void:
+	run.incident = {"kind": Defs.INCIDENT_METEOR, "x": 2}
+	_route_event([{"type": Defs.EFFECT_CANCEL_INCIDENT}])
+	eq(run.choose_event(0), "", "select the choice")
+	eq(
+		run.incident,
+		{},
+		"cancel_incident removes the incident of the next jump (SPEC Section 26.2)"
+	)
+	_route_event([{"type": Defs.EFFECT_CANCEL_INCIDENT}])
+	eq(
+		run.choose_event(0),
+		Run.NO_INCIDENT_TEXT,
+		"a paid cancel_incident cannot be selected with no incident (SPEC Section 26.2)"
+	)
+
+
+func test_clear_scrap() -> void:
+	var a := put("box", 0, 5)
+	a.kind = Defs.KIND_SCRAP
+	var b := on_dock("bar")
+	b.kind = Defs.KIND_SCRAP
+	var keep := put("vase", 3, 5)
+	_route_event([{"type": Defs.EFFECT_CLEAR_SCRAP}])
+	eq(run.choose_event(0), "", "select the choice")
+	check(
+		not run.cargo.has(a.id) and not run.cargo.has(b.id) and run.cargo.has(keep.id),
+		"clear_scrap removes each scrap in the hold and on the dock, and only scrap (SPEC Section 26.2)"
+	)
+	eq(run.credits, 49, "clear_scrap costs nothing more than the choice (SPEC Section 26.2)")
+	_route_event([{"type": Defs.EFFECT_CLEAR_SCRAP}])
+	eq(
+		run.choose_event(0),
+		Run.NO_SCRAP_TEXT,
+		"a paid clear_scrap cannot be selected with no scrap (SPEC Section 26.2)"
+	)
+
+
+func test_route_effects_view() -> void:
+	run.hazard = PackedStringArray([Defs.DIR_UP, Defs.DIR_RIGHT])
+	run.incident = {"kind": Defs.INCIDENT_METEOR, "x": 2}
+	var all := [
+		{"type": Defs.EFFECT_ADD_STEP, "direction": Defs.DIR_DOWN},
+		{"type": Defs.EFFECT_REMOVE_STEP},
+		{"type": Defs.EFFECT_ADD_INCIDENT, "incident": Defs.INCIDENT_ION_PULSE},
+		{"type": Defs.EFFECT_CANCEL_INCIDENT},
+		{"type": Defs.EFFECT_CLEAR_SCRAP},
+	]
+	_route_event(all)
+	var e: Dictionary = RunView.view(run)["event"]
+	for i in all.size():
+		var t: Dictionary = e["choices"][i]["effects"][0]
+		check(
+			t.get("key", "") != "", "the effect %s has a text (SPEC Section 20.8)" % all[i]["type"]
+		)
+
+
+func test_route_effect_checks() -> void:
+	var d := Fixture.data()
+	d["events"]["e_two"]["choices"][0]["effects"] = [
+		{"type": "add_step", "direction": "sideways"},
+		{"type": "add_incident", "incident": "comet"},
+	]
+	var errors := "\n".join(Catalog.from_data(d).errors)
+	check(
+		"sideways" in errors and "comet" in errors,
+		"the data check rejects an unknown direction and an unknown incident (SPEC Section 26.2)"
+	)

@@ -1,0 +1,11 @@
+{
+	"id": "fine_glass",
+	"legs": [1, 2],
+	"client_name": "Luma Gallery",
+	"freight": ["energy_crystal", "energy_crystal", "energy_crystal", "specimen_tube"],
+	"pay": 8,
+	"bonus": {
+		"type": "all_intact",
+		"pay": 6
+	}
+}

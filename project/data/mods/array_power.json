@@ -1,0 +1,8 @@
+{
+	"id": "array_power",
+	"name": "Array Power",
+	"text": "A Battery powers each Shield within {range} cells.",
+	"values": {
+		"range": 2
+	}
+}

@@ -1,0 +1,7 @@
+{
+	"id": "crate_haul",
+	"legs": [1, 2],
+	"client_name": "Dockside Supply",
+	"freight": ["cargo_crate", "cargo_crate", "cargo_crate"],
+	"pay": 5
+}

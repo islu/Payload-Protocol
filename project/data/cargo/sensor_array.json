@@ -1,0 +1,9 @@
+{
+	"id": "sensor_array",
+	"name": "Sensor Array",
+	"kind": "kit",
+	"weight": "standard",
+	"traits": ["sensor"],
+	"shape": [[0, 0]],
+	"price": 14
+}

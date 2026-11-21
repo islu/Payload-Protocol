@@ -1,0 +1,112 @@
+{
+	"traits": {
+		"fragile": {
+			"name": "Fragile",
+			"text": "Breaks at a hit with a force of {limit} or more."
+		},
+		"volatile": {
+			"name": "Volatile",
+			"text": "Explodes at a hit with a force of {limit} or more. The explosion breaks the cargo around it."
+		},
+		"fluid": {
+			"name": "Fluid",
+			"text": "Leaks at a hit with a force of {limit} or more. The leak shorts each Electronic cargo next to it."
+		},
+		"electronic": {
+			"name": "Electronic",
+			"text": "Shorts when a Fluid cargo next to it leaks."
+		},
+		"perishable": {
+			"name": "Perishable",
+			"text": "Spoils at the arrival if it is not next to a Cooler."
+		},
+		"thruster": {
+			"name": "Thruster",
+			"text": "Slides 1 cell at most in each shift step."
+		},
+		"cushion": {
+			"name": "Cushion",
+			"text": "Each hit on it or by it has a force of 0."
+		},
+		"cooler": {
+			"name": "Cooler",
+			"text": "Keeps each Perishable cargo next to it fresh."
+		},
+		"battery": {
+			"name": "Battery",
+			"text": "Powers each Shield next to it."
+		},
+		"shield": {
+			"name": "Shield",
+			"text": "With power, it protects each cargo next to it from one reaction in each jump."
+		},
+		"sensor": {
+			"name": "Sensor",
+			"text": "At the station, it shows the direction of the fork step."
+		}
+	},
+	"kinds": {
+		"freight": {
+			"name": "Freight"
+		},
+		"kit": {
+			"name": "Kit"
+		},
+		"scrap": {
+			"name": "Scrap"
+		}
+	},
+	"weights": {
+		"light": {
+			"name": "Light"
+		},
+		"standard": {
+			"name": "Standard"
+		},
+		"heavy": {
+			"name": "Heavy"
+		}
+	},
+	"directions": {
+		"left": {
+			"name": "Left"
+		},
+		"right": {
+			"name": "Right"
+		},
+		"up": {
+			"name": "Up"
+		},
+		"down": {
+			"name": "Down"
+		}
+	},
+	"bonuses": {
+		"all_intact": {
+			"name": "All Intact",
+			"text": "Deliver each piece."
+		},
+		"zone": {
+			"name": "Zone",
+			"text": "Each piece arrives in the {size} lines at the {side}."
+		},
+		"not_next_to": {
+			"name": "Keep Apart",
+			"text": "No piece arrives next to {trait} cargo."
+		}
+	},
+	"sides": {
+		"left": {
+			"name": "left"
+		},
+		"right": {
+			"name": "right"
+		},
+		"top": {
+			"name": "top"
+		},
+		"bottom": {
+			"name": "bottom"
+		}
+	}
+}

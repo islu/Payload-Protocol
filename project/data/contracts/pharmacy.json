@@ -1,0 +1,18 @@
+{
+	"id": "pharmacy",
+	"legs": [1],
+	"client_name": "Orbital Pharmacy",
+	"freight": [
+		"pill_bottle",
+		"pill_bottle",
+		"pill_bottle",
+		"pill_bottle",
+		"medkit",
+		"medkit"
+	],
+	"pay": 4,
+	"bonus": {
+		"type": "all_intact",
+		"pay": 4
+	}
+}

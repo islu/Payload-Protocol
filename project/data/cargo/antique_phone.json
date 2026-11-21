@@ -1,0 +1,8 @@
+{
+	"id": "antique_phone",
+	"name": "Antique Phone",
+	"kind": "freight",
+	"weight": "light",
+	"traits": ["fragile", "electronic"],
+	"shape": [[0, 0]]
+}

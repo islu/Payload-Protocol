@@ -1,0 +1,8 @@
+{
+	"id": "mech_suit",
+	"name": "Mech Suit",
+	"kind": "freight",
+	"weight": "heavy",
+	"traits": ["thruster"],
+	"shape": [[0, 0], [1, 0], [0, 1], [1, 1]]
+}

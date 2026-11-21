@@ -1,0 +1,12 @@
+{
+	"id": "mixed_tech",
+	"legs": [2, 3],
+	"client_name": "Kessler Electronics",
+	"freight": ["circuit_boards", "circuit_boards", "circuit_boards", "coolant_pipe"],
+	"pay": 6,
+	"bonus": {
+		"type": "not_next_to",
+		"pay": 8,
+		"trait": "fluid"
+	}
+}

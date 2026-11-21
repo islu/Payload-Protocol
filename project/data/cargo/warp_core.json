@@ -1,0 +1,8 @@
+{
+	"id": "warp_core",
+	"name": "Warp Core",
+	"kind": "freight",
+	"weight": "heavy",
+	"traits": ["volatile", "electronic"],
+	"shape": [[0, 0], [1, 0]]
+}

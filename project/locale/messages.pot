@@ -1,0 +1,2589 @@
+# Payload Protocol translation template. Do not edit. Run: task i18n
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+
+#: project/rules/run.gd
+msgid "You can do that only at a station."
+msgstr ""
+
+#: project/rules/run.gd
+msgid "There is no such cargo."
+msgstr ""
+
+#: project/rules/run.gd
+msgid "The cargo does not fit there."
+msgstr ""
+
+#: project/rules/run.gd
+msgid "Scrap cannot go on the dock."
+msgstr ""
+
+#: project/rules/run.gd
+msgid "That cargo is not in the hold."
+msgstr ""
+
+#: project/rules/run.gd
+msgid "You have no free clamp."
+msgstr ""
+
+#: project/rules/run.gd
+msgid "That cargo has a clamp already."
+msgstr ""
+
+#: project/rules/run.gd
+msgid "That cargo has no clamp."
+msgstr ""
+
+#: project/rules/run.gd
+msgid "The rotation is not valid."
+msgstr ""
+
+#: project/rules/run.gd
+msgid "There is no such contract."
+msgstr ""
+
+#: project/rules/run.gd
+msgid "That contract is accepted already."
+msgstr ""
+
+#: project/rules/run.gd
+msgid "That contract is not accepted."
+msgstr ""
+
+#: project/rules/run.gd
+msgid "There is no such offer."
+msgstr ""
+
+#: project/rules/run.gd
+msgid "That offer is sold already."
+msgstr ""
+
+#: project/rules/run.gd
+msgid "You do not have enough credits."
+msgstr ""
+
+#: project/rules/run.gd
+msgid "You cannot buy while your credits are below 0."
+msgstr ""
+
+#: project/rules/run.gd
+msgid "You have the most clamps already."
+msgstr ""
+
+#: project/rules/run.gd
+msgid "The stasis bay cannot grow more."
+msgstr ""
+
+#: project/rules/run.gd
+msgid "A cargo in the stasis bay cannot have a clamp."
+msgstr ""
+
+#: project/rules/run.gd
+msgid "Freight cannot go in the stasis bay."
+msgstr ""
+
+#: project/rules/run.gd
+msgid "The ship has each mod already."
+msgstr ""
+
+#: project/rules/run.gd
+msgid "The next jump has 1 shift step only."
+msgstr ""
+
+#: project/rules/run.gd
+msgid "The next jump has no incident."
+msgstr ""
+
+#: project/rules/run.gd
+msgid "You have no scrap."
+msgstr ""
+
+#: project/rules/run.gd
+msgid "You can sell only kit."
+msgstr ""
+
+#: project/rules/run.gd
+msgid "That cargo is not scrap."
+msgstr ""
+
+#: project/rules/run.gd
+msgid "The ship has not arrived yet."
+msgstr ""
+
+#: project/rules/run.gd
+msgid "No payment is due now."
+msgstr ""
+
+#: project/rules/run.gd
+msgid "This contract is on its way. You cannot cancel it."
+msgstr ""
+
+#: project/rules/run.gd
+msgid "No event is open."
+msgstr ""
+
+#: project/rules/run.gd
+msgid "There is no such choice."
+msgstr ""
+
+#: project/rules/run.gd
+msgid "No mod choice is open."
+msgstr ""
+
+#: project/rules/run.gd
+msgid "The hold is too heavy to warp. Take cargo out, or reinforce the hull."
+msgstr ""
+
+#: project/rules/run_record.gd
+msgid "There is nothing to undo at this station."
+msgstr ""
+
+#: project/rules/run_record.gd
+msgid "There is no such action."
+msgstr ""
+
+#: project/rules/run_record.gd
+msgid "There is no warp to go back to."
+msgstr ""
+
+#: project/rules/run_view.gd
+msgid "Helps {count} of your freight"
+msgstr ""
+
+#: project/rules/run_view.gd
+msgid "The next jump has a fork step"
+msgstr ""
+
+#: project/rules/run_view.gd
+msgid "No power: no Battery is next to it."
+msgstr ""
+
+#: project/rules/run_view.gd
+msgid "No power: the Magnetic Storm."
+msgstr ""
+
+#: project/rules/run_view.gd
+msgid "+{amount} credits"
+msgstr ""
+
+#: project/rules/run_view.gd
+msgid "{amount} credits"
+msgstr ""
+
+#: project/rules/run_view.gd
+msgid "Kit on the dock: {name}"
+msgstr ""
+
+#: project/rules/run_view.gd
+msgid "+1 clamp"
+msgstr ""
+
+#: project/rules/run_view.gd
+msgid "Scrap on the dock: {name} (mass {mass})"
+msgstr ""
+
+#: project/rules/run_view.gd
+msgid "Scrap on the dock: {name} ×{count} (mass {mass})"
+msgstr ""
+
+#: project/rules/run_view.gd
+msgid "{effect} ×{count}"
+msgstr ""
+
+#: project/rules/run_view.gd
+msgid "New contract: {name}"
+msgstr ""
+
+#: project/rules/run_view.gd
+#: project/scenes/main/choice_panel.gd
+msgid "Select a ship mod"
+msgstr ""
+
+#: project/rules/run_view.gd
+msgid "Payment of this leg -{amount}"
+msgstr ""
+
+#: project/rules/run_view.gd
+msgid "Payment of this leg +{amount}"
+msgstr ""
+
+#: project/rules/run_view.gd
+msgid "Next jump: +1 step {arrow} {direction}"
+msgstr ""
+
+#: project/rules/run_view.gd
+msgid "Next jump: -1 step"
+msgstr ""
+
+#: project/rules/run_view.gd
+msgid "Next jump: no incident"
+msgstr ""
+
+#: project/rules/run_view.gd
+msgid "Clear all scrap"
+msgstr ""
+
+#: project/rules/run_view.gd
+msgid "Next jump: a meteor"
+msgstr ""
+
+#: project/rules/run_view.gd
+msgid "Next jump: an Ion Pulse"
+msgstr ""
+
+#: project/rules/run_view.gd
+msgid "Next jump: a Hull Breach"
+msgstr ""
+
+#: project/scenes/common/game_state.gd
+msgid "The game data did not load."
+msgstr ""
+
+#: project/scenes/common/game_state.gd
+msgid "No run is in progress."
+msgstr ""
+
+#: project/scenes/common/game_state.gd
+msgid "No tutorial is in progress."
+msgstr ""
+
+#: project/scenes/common/game_state.gd
+msgid "Do the action of this step first."
+msgstr ""
+
+#: project/scenes/common/game_state.gd
+msgid "The try step did not fail."
+msgstr ""
+
+#: project/scenes/common/game_text.gd
+msgid "MAGELLAN"
+msgstr ""
+
+#: project/scenes/main/event_panel.gd
+msgid "Cost {cost}"
+msgstr ""
+
+#: project/scenes/main/event_panel.gd
+#: project/scenes/main/phase_panel.gd
+#: project/scenes/warp/report_panel.gd
+msgid "Continue"
+msgstr ""
+
+#: project/scenes/main/gear_button.gd
+msgid "Menu (Esc)"
+msgstr ""
+
+#: project/scenes/main/how_to_play.gd
+#: project/scenes/main/main.gd
+#: project/scenes/main/pause_menu.gd
+msgid "How to Play"
+msgstr ""
+
+#: project/scenes/main/how_to_play.gd
+msgid "{n} / {total}"
+msgstr ""
+
+#: project/scenes/main/how_to_play.gd
+#: project/scenes/main/tutorial_guide.gd
+msgid "Next"
+msgstr ""
+
+#: project/scenes/main/how_to_play.gd
+#: project/scenes/main/settings_panel.gd
+msgid "Back"
+msgstr ""
+
+#: project/scenes/main/how_to_play.gd
+msgid "Close"
+msgstr ""
+
+#: project/scenes/main/how_to_play.gd
+msgid ""
+"[b]Contracts and the hold[/b]\n"
+"\n"
+"• Accept contracts. Their freight goes to the dock.\n"
+"• Drag a cargo into the hold, or click it and then click a cell.\n"
+"• Right click or R rotates it. Green fits, red does not."
+msgstr ""
+
+#: project/scenes/main/how_to_play.gd
+msgid ""
+"[b]The warp[/b]\n"
+"\n"
+"• Each shift step slides all cargo to a wall or a stopped cargo.\n"
+"• Force = weight × cells slid. Light {light}, standard {standard}, heavy {heavy}.\n"
+"• Cargo at the front wall takes a jolt. Cargo that does not slide presses on the cargo in front of it. From leg 2, the last step is a fork."
+msgstr ""
+
+#: project/scenes/main/how_to_play.gd
+msgid ""
+"[b]Traits and reactions[/b]\n"
+"\n"
+"• Fragile breaks at force {fragile}. Broken cargo becomes scrap and stays.\n"
+"• Volatile explodes at force {volatile} and breaks the cargo around it.\n"
+"• Fluid leaks at force {fluid} and shorts the Electronic cargo next to it."
+msgstr ""
+
+#: project/scenes/main/how_to_play.gd
+msgid ""
+"[b]Links, the shop, and payments[/b]\n"
+"\n"
+"• Perishable needs a Cooler next to it. A Shield next to a Battery stops one reaction.\n"
+"• Clamps stop a slide. Over the mass limit, the warp costs a fuel fee.\n"
+"• Make the payment at the end of each leg, or the run ends."
+msgstr ""
+
+#: project/scenes/main/main.gd
+msgid "PAYLOAD"
+msgstr ""
+
+#: project/scenes/main/main.gd
+msgid "PROTOCOL"
+msgstr ""
+
+#: project/scenes/main/main.gd
+msgid "Pack the hold. Survive the warp."
+msgstr ""
+
+#: project/scenes/main/main.gd
+#: project/scenes/main/phase_panel.gd
+msgid "New Run"
+msgstr ""
+
+#: project/scenes/main/main.gd
+msgid "Tutorial"
+msgstr ""
+
+#: project/scenes/main/main.gd
+#: project/scenes/main/pause_menu.gd
+#: project/scenes/main/settings_panel.gd
+msgid "Settings"
+msgstr ""
+
+#: project/scenes/main/main.gd
+msgid "Quit"
+msgstr ""
+
+#: project/scenes/main/pause_menu.gd
+msgid "Paused"
+msgstr ""
+
+#: project/scenes/main/pause_menu.gd
+msgid "Resume"
+msgstr ""
+
+#: project/scenes/main/pause_menu.gd
+msgid "Abandon Run"
+msgstr ""
+
+#: project/scenes/main/pause_menu.gd
+msgid "Abandon this run? Its progress is lost."
+msgstr ""
+
+#: project/scenes/main/phase_panel.gd
+msgid "Payment"
+msgstr ""
+
+#: project/scenes/main/phase_panel.gd
+msgid "Pay"
+msgstr ""
+
+#: project/scenes/main/phase_panel.gd
+msgid "Credits"
+msgstr ""
+
+#: project/scenes/main/phase_panel.gd
+msgid "After"
+msgstr ""
+
+#: project/scenes/main/phase_panel.gd
+msgid "PAID"
+msgstr ""
+
+#: project/scenes/main/phase_panel.gd
+msgid "MISSED"
+msgstr ""
+
+#: project/scenes/main/phase_panel.gd
+msgid "Jump {jump}"
+msgstr ""
+
+#: project/scenes/main/phase_panel.gd
+msgid "{count} delivered"
+msgstr ""
+
+#: project/scenes/main/phase_panel.gd
+msgid "{count} scrap"
+msgstr ""
+
+#: project/scenes/main/phase_panel.gd
+msgid "{count} explosions"
+msgstr ""
+
+#: project/scenes/main/phase_panel.gd
+msgid "Next: Leg {leg} · {jumps} jumps · payment {payment}"
+msgstr ""
+
+#: project/scenes/main/phase_panel.gd
+msgid "Route complete!"
+msgstr ""
+
+#: project/scenes/main/phase_panel.gd
+msgid "Run over."
+msgstr ""
+
+#: project/scenes/main/phase_panel.gd
+msgid "Score"
+msgstr ""
+
+#: project/scenes/main/phase_panel.gd
+msgid "Best jump"
+msgstr ""
+
+#: project/scenes/main/phase_panel.gd
+msgid "Leg {leg} · Jump {jump}"
+msgstr ""
+
+#: project/scenes/main/phase_panel.gd
+msgid "Leg {leg}"
+msgstr ""
+
+#: project/scenes/main/phase_panel.gd
+msgid "Payment {payment}"
+msgstr ""
+
+#: project/scenes/main/phase_panel.gd
+msgid "Net {net}"
+msgstr ""
+
+#: project/scenes/main/phase_panel.gd
+msgid "Mods: {mods}"
+msgstr ""
+
+#: project/scenes/main/phase_panel.gd
+msgid "No mods"
+msgstr ""
+
+#: project/scenes/main/phase_panel.gd
+msgid "Clamps {clamps} · Stasis bay {bay} · Mass limit {mass}"
+msgstr ""
+
+#: project/scenes/main/phase_panel.gd
+#: project/scenes/station/shop_panel.gd
+msgid "none"
+msgstr ""
+
+#: project/scenes/main/phase_panel.gd
+msgid "Seed {seed}"
+msgstr ""
+
+#: project/scenes/main/phase_panel.gd
+msgid "Copy"
+msgstr ""
+
+#: project/scenes/main/phase_panel.gd
+msgid "Copied"
+msgstr ""
+
+#: project/scenes/main/phase_panel.gd
+msgid "Title"
+msgstr ""
+
+#: project/scenes/main/settings_panel.gd
+msgid "Music volume"
+msgstr ""
+
+#: project/scenes/main/settings_panel.gd
+msgid "Sound volume"
+msgstr ""
+
+#: project/scenes/main/settings_panel.gd
+msgid "CRT filter"
+msgstr ""
+
+#: project/scenes/main/settings_panel.gd
+msgid "Screen shake"
+msgstr ""
+
+#: project/scenes/main/settings_panel.gd
+msgid "Warp speed 2×"
+msgstr ""
+
+#: project/scenes/main/settings_panel.gd
+msgid "Fullscreen"
+msgstr ""
+
+#: project/scenes/main/settings_panel.gd
+msgid "Hints"
+msgstr ""
+
+#: project/scenes/main/settings_panel.gd
+msgid "Pick up the next cargo"
+msgstr ""
+
+#: project/scenes/main/settings_panel.gd
+msgid "Language"
+msgstr ""
+
+#: project/scenes/main/tutorial_guide.gd
+msgid "Try Again"
+msgstr ""
+
+#: project/scenes/main/tutorial_guide.gd
+msgid "Skip Tutorial"
+msgstr ""
+
+#: project/scenes/main/tutorial_guide.gd
+msgid "Skip the tutorial and start a run?"
+msgstr ""
+
+#: project/scenes/main/tutorial_guide.gd
+msgid "Tutorial complete. I will tell you about the rest when you see it."
+msgstr ""
+
+#: project/scenes/main/tutorial_guide.gd
+msgid "Start a Run"
+msgstr ""
+
+#: project/scenes/main/tutorial_picture.gd
+msgid "{weight} × {cells} = {force}"
+msgstr ""
+
+#: project/scenes/station/cargo_tip.gd
+msgid "{kind} · {weight} (weight {value})"
+msgstr ""
+
+#: project/scenes/station/cargo_tip.gd
+msgid "Pays {pay} at the arrival"
+msgstr ""
+
+#: project/scenes/station/cargo_tip.gd
+msgid "Sells for {price}"
+msgstr ""
+
+#: project/scenes/station/cargo_tip.gd
+msgid "Clear for {price}"
+msgstr ""
+
+#: project/scenes/station/cargo_tip.gd
+msgid "No Cooler next to it: it spoils at the arrival."
+msgstr ""
+
+#: project/scenes/station/cargo_tip.gd
+#: project/scenes/station/contract_card.gd
+msgid "Mass {mass}"
+msgstr ""
+
+#: project/scenes/station/contract_card.gd
+msgid "Accept"
+msgstr ""
+
+#: project/scenes/station/contract_card.gd
+msgid "Cancel"
+msgstr ""
+
+#: project/scenes/station/contract_card.gd
+#: project/scenes/warp/report_panel.gd
+msgid "×{count}"
+msgstr ""
+
+#: project/scenes/station/contract_card.gd
+msgid "{total} cr"
+msgstr ""
+
+#: project/scenes/station/contract_card.gd
+msgid "{pieces} pieces · Pay {pay} each · Total {total}"
+msgstr ""
+
+#: project/scenes/station/contract_card.gd
+msgid "Mass {mass} · After {after}/{limit}"
+msgstr ""
+
+#: project/scenes/station/contract_card.gd
+msgid "Mass {mass} · After {after}/{limit} (fuel fee)"
+msgstr ""
+
+#: project/scenes/station/contract_card.gd
+msgid "Mass {mass} · After {after}/{limit} (too heavy)"
+msgstr ""
+
+#: project/scenes/station/contract_card.gd
+msgid "Loaded {loaded}/{pieces}"
+msgstr ""
+
+#: project/scenes/station/contract_card.gd
+msgid "Bonus +{pay}: {text}"
+msgstr ""
+
+#: project/scenes/station/contract_card.gd
+msgid "Bonus +{pay}"
+msgstr ""
+
+#: project/scenes/station/contract_card.gd
+msgid "VIP · Penalty {penalty} if a piece is not delivered"
+msgstr ""
+
+#: project/scenes/station/contract_card.gd
+msgid "VIP"
+msgstr ""
+
+#: project/scenes/station/contract_card.gd
+#: project/data/contracts/arms_deal.json
+#: project/data/contracts/contraband_mix.json
+msgid "Black Market"
+msgstr ""
+
+#: project/scenes/station/contract_card.gd
+msgid "Long · Delivered after {jumps} jumps"
+msgstr ""
+
+#: project/scenes/station/contract_card.gd
+msgid "Long · {jumps}"
+msgstr ""
+
+#: project/scenes/station/contract_card.gd
+msgid "On its way · {jumps} jump(s) left"
+msgstr ""
+
+#: project/scenes/station/hints.gd
+msgid "This leg has an environment. Its rule is below the route. It holds for each jump of the leg."
+msgstr ""
+
+#: project/scenes/station/hints.gd
+msgid "An incident hits before the first step. The hold marks its place."
+msgstr ""
+
+#: project/scenes/station/hints.gd
+msgid "The last step is a fork: one of two directions. A Sensor in the hold shows which one."
+msgstr ""
+
+#: project/scenes/station/hints.gd
+msgid "A LONG contract stays in the hold for more than one jump. It pays at its last jump."
+msgstr ""
+
+#: project/scenes/station/hints.gd
+msgid "A VIP contract pays a penalty for each piece that does not arrive intact."
+msgstr ""
+
+#: project/scenes/station/hints.gd
+msgid "The Sensor shows the fork step only while it is in the hold or the stasis bay."
+msgstr ""
+
+#: project/scenes/station/hints.gd
+msgid "An event: each choice has a cost and an effect. Read both before you pick."
+msgstr ""
+
+#: project/scenes/station/hints.gd
+msgid "A mod changes a rule of the ship for the rest of the run. Pick one."
+msgstr ""
+
+#: project/scenes/station/route_bar.gd
+msgid "Depart"
+msgstr ""
+
+#: project/scenes/station/route_bar.gd
+msgid "Arrive"
+msgstr ""
+
+#: project/scenes/station/route_bar.gd
+#: project/data/terms.json
+msgid "Sensor"
+msgstr ""
+
+#: project/scenes/station/route_cards.gd
+msgid "Meteor · Column {x}"
+msgstr ""
+
+#: project/scenes/station/route_cards.gd
+msgid "Ion Pulse · Row {y}"
+msgstr ""
+
+#: project/scenes/station/route_cards.gd
+msgid "Hull Breach · Column {x}, Row {y}"
+msgstr ""
+
+#: project/scenes/station/shop_panel.gd
+msgid "Buy · {price} cr"
+msgstr ""
+
+#: project/scenes/station/shop_panel.gd
+msgid "Sold"
+msgstr ""
+
+#: project/scenes/station/shop_panel.gd
+msgid "Reroll ({price} cr)"
+msgstr ""
+
+#: project/scenes/station/shop_panel.gd
+msgid "Services"
+msgstr ""
+
+#: project/scenes/station/shop_panel.gd
+msgid "{price} cr"
+msgstr ""
+
+#: project/scenes/station/shop_panel.gd
+msgid "Clamps {now}/{max} → {after}/{max}"
+msgstr ""
+
+#: project/scenes/station/shop_panel.gd
+msgid "Stasis bay {now} → {after}"
+msgstr ""
+
+#: project/scenes/station/shop_panel.gd
+msgid "{columns}×{rows}"
+msgstr ""
+
+#: project/scenes/station/shop_panel.gd
+msgid "Stasis bay {now} (maximum)"
+msgstr ""
+
+#: project/scenes/station/shop_panel.gd
+msgid "Mass limit {now} → {after}"
+msgstr ""
+
+#: project/scenes/station/station_screen.gd
+msgid "Dock"
+msgstr ""
+
+#: project/scenes/station/station_screen.gd
+msgid "Dock ({count})"
+msgstr ""
+
+#: project/scenes/station/station_screen.gd
+msgid "Contracts"
+msgstr ""
+
+#: project/scenes/station/station_screen.gd
+msgid "Shop"
+msgstr ""
+
+#: project/scenes/station/station_screen.gd
+msgid "Clamps"
+msgstr ""
+
+#: project/scenes/station/station_screen.gd
+msgid "Sell kit or clear scrap: drop it here"
+msgstr ""
+
+#: project/scenes/station/station_screen.gd
+msgid "Sell {name}: +{price} cr"
+msgstr ""
+
+#: project/scenes/station/station_screen.gd
+msgid "Clear the scrap: -{price} cr"
+msgstr ""
+
+#: project/scenes/station/station_screen.gd
+msgid "Freight cannot be sold"
+msgstr ""
+
+#: project/scenes/station/station_screen.gd
+msgid "LAUNCH"
+msgstr ""
+
+#: project/scenes/station/station_screen.gd
+msgid "{free} of {total} free"
+msgstr ""
+
+#: project/scenes/station/station_screen.gd
+msgid "Drag a clamp onto a cargo. Click a clamp to take it off."
+msgstr ""
+
+#: project/scenes/station/station_screen.gd
+msgid "Empty. Accept a contract or buy kit."
+msgstr ""
+
+#: project/scenes/station/station_screen.gd
+msgid "Cargo on the dock"
+msgstr ""
+
+#: project/scenes/station/station_screen.gd
+msgid ""
+"Cargo on the dock stays at the station.\n"
+"Each freight on the dock pays a breach fee of {fee} credits.\n"
+"Each kit on the dock is sold at half price.\n"
+"Warp now?"
+msgstr ""
+
+#: project/scenes/station/station_screen.gd
+msgid "Drag cargo, or click to pick it up and click to drop it. Right click or R rotates it."
+msgstr ""
+
+#: project/scenes/station/station_screen.gd
+msgid "or"
+msgstr ""
+
+#: project/scenes/station/station_screen.gd
+msgid "Undo (Ctrl+Z)"
+msgstr ""
+
+#: project/scenes/station/station_screen.gd
+msgid "No Sensor: the fork step is hidden again."
+msgstr ""
+
+#: project/scenes/station/station_screen.gd
+msgid "Load all"
+msgstr ""
+
+#: project/scenes/station/station_screen.gd
+msgid "Stasis Bay: kit and scrap"
+msgstr ""
+
+#: project/scenes/station/station_screen.gd
+msgid "Stasis Bay"
+msgstr ""
+
+#: project/scenes/station/top_bar.gd
+msgid "Leg {leg}/{legs}"
+msgstr ""
+
+#: project/scenes/station/top_bar.gd
+msgid "Credits: {credits}"
+msgstr ""
+
+#: project/scenes/station/top_bar.gd
+msgid "Payment {payment} after {jumps} jump(s)"
+msgstr ""
+
+#: project/scenes/station/top_bar.gd
+msgid "Mass {hold}/{limit}"
+msgstr ""
+
+#: project/scenes/station/top_bar.gd
+msgid "Fuel fee {fee}"
+msgstr ""
+
+#: project/scenes/station/top_bar.gd
+msgid "Too heavy: {max} at most"
+msgstr ""
+
+#: project/scenes/station/warp_checklist.gd
+msgid "Fuel fee: {fee} cr"
+msgstr ""
+
+#: project/scenes/station/warp_checklist.gd
+msgid "No fuel fee"
+msgstr ""
+
+#: project/scenes/station/warp_checklist.gd
+msgid "Dock: {count} cargo left"
+msgstr ""
+
+#: project/scenes/station/warp_checklist.gd
+msgid "Dock empty"
+msgstr ""
+
+#: project/scenes/station/warp_checklist.gd
+msgid "Jolt risk: {count} cargo"
+msgstr ""
+
+#: project/scenes/station/warp_checklist.gd
+msgid "No jolt risk"
+msgstr ""
+
+#: project/scenes/station/warp_checklist.gd
+msgid "Incident: {text}"
+msgstr ""
+
+#: project/scenes/station/warp_checklist.gd
+msgid "No incident"
+msgstr ""
+
+#: project/scenes/warp/report_panel.gd
+msgid "Arrival"
+msgstr ""
+
+#: project/scenes/warp/report_panel.gd
+msgid "Replay (slow)"
+msgstr ""
+
+#: project/scenes/warp/report_panel.gd
+msgid "Bonus +{bonus}"
+msgstr ""
+
+#: project/scenes/warp/report_panel.gd
+msgid "Bonus missed"
+msgstr ""
+
+#: project/scenes/warp/report_panel.gd
+msgid "Breach -{breach}"
+msgstr ""
+
+#: project/scenes/warp/report_panel.gd
+msgid "Penalty -{penalty}"
+msgstr ""
+
+#: project/scenes/warp/report_panel.gd
+msgid "delivered"
+msgstr ""
+
+#: project/scenes/warp/report_panel.gd
+msgid "scrap"
+msgstr ""
+
+#: project/scenes/warp/report_panel.gd
+msgid "spoiled"
+msgstr ""
+
+#: project/scenes/warp/report_panel.gd
+msgid "lost"
+msgstr ""
+
+#: project/scenes/warp/report_panel.gd
+msgid "breached"
+msgstr ""
+
+#: project/scenes/warp/report_panel.gd
+msgid "Deliveries"
+msgstr ""
+
+#: project/scenes/warp/report_panel.gd
+msgid "Bonuses"
+msgstr ""
+
+#: project/scenes/warp/report_panel.gd
+#: project/data/mods/insurance.json
+msgid "Insurance"
+msgstr ""
+
+#: project/scenes/warp/report_panel.gd
+msgid "Breach fees"
+msgstr ""
+
+#: project/scenes/warp/report_panel.gd
+msgid "Penalties"
+msgstr ""
+
+#: project/scenes/warp/report_panel.gd
+msgid "Kit sold from the dock"
+msgstr ""
+
+#: project/scenes/warp/report_panel.gd
+msgid "Scrap cleared from the dock"
+msgstr ""
+
+#: project/scenes/warp/report_panel.gd
+msgid "Fuel fee"
+msgstr ""
+
+#: project/scenes/warp/report_panel.gd
+msgid "Net"
+msgstr ""
+
+#: project/scenes/warp/report_panel.gd
+msgid "Credits {before} → {after}"
+msgstr ""
+
+#: project/scenes/warp/report_panel.gd
+msgid "Payment {payment} · {jumps} more jump(s)"
+msgstr ""
+
+#: project/scenes/warp/report_panel.gd
+msgid "Payment {payment} at the next stop"
+msgstr ""
+
+#: project/scenes/warp/warp_screen.gd
+msgid "Shift {n}: {arrow} {direction}"
+msgstr ""
+
+#: project/scenes/warp/warp_screen.gd
+msgid "Shift {n}: {options} ...?"
+msgstr ""
+
+#: project/scenes/warp/warp_screen.gd
+msgid "Click or press Space to speed up."
+msgstr ""
+
+#: project/scenes/warp/warp_screen.gd
+msgid "Chain ×{count}"
+msgstr ""
+
+#: project/scenes/warp/warp_screen.gd
+msgid "Lost -{loss}"
+msgstr ""
+
+#: project/data/cargo/ammo_crate.json
+msgid "Ammo Crate"
+msgstr ""
+
+#: project/data/cargo/ancient_statue.json
+msgid "Ancient Statue"
+msgstr ""
+
+#: project/data/cargo/antique_phone.json
+msgid "Antique Phone"
+msgstr ""
+
+#: project/data/cargo/antique_soda.json
+msgid "Antique Soda"
+msgstr ""
+
+#: project/data/cargo/artificial_heart.json
+msgid "Artificial Heart"
+msgstr ""
+
+#: project/data/cargo/battery_pack.json
+msgid "Battery Pack"
+msgstr ""
+
+#: project/data/cargo/blood_sample.json
+msgid "Blood Sample"
+msgstr ""
+
+#: project/data/cargo/burger.json
+msgid "Burger"
+msgstr ""
+
+#: project/data/cargo/cargo_crate.json
+msgid "Cargo Crate"
+msgstr ""
+
+#: project/data/cargo/cigarette_pack.json
+msgid "Cigarette Pack"
+msgstr ""
+
+#: project/data/cargo/circuit_boards.json
+msgid "Circuit Boards"
+msgstr ""
+
+#: project/data/cargo/coolant_pipe.json
+msgid "Coolant Pipe"
+msgstr ""
+
+#: project/data/cargo/cooler_unit.json
+msgid "Cooler Unit"
+msgstr ""
+
+#: project/data/cargo/courier_drone.json
+msgid "Courier Drone"
+msgstr ""
+
+#: project/data/cargo/energy_crystal.json
+msgid "Energy Crystal"
+msgstr ""
+
+#: project/data/cargo/fire_hydrant.json
+msgid "Fire Hydrant"
+msgstr ""
+
+#: project/data/cargo/flashlight.json
+msgid "Flashlight"
+msgstr ""
+
+#: project/data/cargo/frozen_octopus.json
+msgid "Frozen Octopus"
+msgstr ""
+
+#: project/data/cargo/fuel_drum.json
+msgid "Fuel Drum"
+msgstr ""
+
+#: project/data/cargo/helper_bot.json
+msgid "Helper Bot"
+msgstr ""
+
+#: project/data/cargo/hull_debris.json
+msgid "Hull Debris"
+msgstr ""
+
+#: project/data/cargo/hydroponic_garden.json
+msgid "Hydroponic Garden"
+msgstr ""
+
+#: project/data/cargo/inertia_anchor.json
+msgid "Inertia Anchor"
+msgstr ""
+
+#: project/data/cargo/instant_noodles.json
+msgid "Instant Noodles"
+msgstr ""
+
+#: project/data/cargo/laser_rifle.json
+msgid "Laser Rifle"
+msgstr ""
+
+#: project/data/cargo/liquor_bottle.json
+msgid "Liquor Bottle"
+msgstr ""
+
+#: project/data/cargo/mailbox.json
+msgid "Mailbox"
+msgstr ""
+
+#: project/data/cargo/mech_suit.json
+msgid "Mech Suit"
+msgstr ""
+
+#: project/data/cargo/medkit.json
+msgid "Medkit"
+msgstr ""
+
+#: project/data/cargo/mining_bot.json
+msgid "Mining Bot"
+msgstr ""
+
+#: project/data/cargo/parking_meter.json
+msgid "Parking Meter"
+msgstr ""
+
+#: project/data/cargo/pill_bottle.json
+msgid "Pill Bottle"
+msgstr ""
+
+#: project/data/cargo/plasma_cell.json
+msgid "Plasma Cell"
+msgstr ""
+
+#: project/data/cargo/prosthetic_arm.json
+msgid "Prosthetic Arm"
+msgstr ""
+
+#: project/data/cargo/radar_dish.json
+msgid "Radar Dish"
+msgstr ""
+
+#: project/data/cargo/ration_crate.json
+msgid "Ration Crate"
+msgstr ""
+
+#: project/data/cargo/reactor_core.json
+msgid "Reactor Core"
+msgstr ""
+
+#: project/data/cargo/rocket_launcher.json
+msgid "Rocket Launcher"
+msgstr ""
+
+#: project/data/cargo/sensor_array.json
+msgid "Sensor Array"
+msgstr ""
+
+#: project/data/cargo/service_android.json
+msgid "Service Android"
+msgstr ""
+
+#: project/data/cargo/shield_generator.json
+msgid "Shield Generator"
+msgstr ""
+
+#: project/data/cargo/ship_engine.json
+msgid "Ship Engine"
+msgstr ""
+
+#: project/data/cargo/shock_sponge.json
+msgid "Shock Sponge"
+msgstr ""
+
+#: project/data/cargo/space_cheese.json
+msgid "Space Cheese"
+msgstr ""
+
+#: project/data/cargo/specimen_tube.json
+msgid "Specimen Tube"
+msgstr ""
+
+#: project/data/cargo/steel_ingot.json
+msgid "Steel Ingot"
+msgstr ""
+
+#: project/data/cargo/stim_pack.json
+msgid "Stim Pack"
+msgstr ""
+
+#: project/data/cargo/vaccine_vial.json
+msgid "Vaccine Vial"
+msgstr ""
+
+#: project/data/cargo/warp_core.json
+msgid "Warp Core"
+msgstr ""
+
+#: project/data/cargo/weapon_rack.json
+msgid "Weapon Rack"
+msgstr ""
+
+#: project/data/contracts/androids.json
+#: project/data/contracts/helper_bots.json
+msgid "Cogwork Robotics"
+msgstr ""
+
+#: project/data/contracts/antique_tech.json
+#: project/data/contracts/earth_curios.json
+#: project/data/contracts/statue_loan.json
+msgid "Earth Heritage Museum"
+msgstr ""
+
+#: project/data/contracts/armory.json
+#: project/data/contracts/rifle_order.json
+msgid "Militia Supply"
+msgstr ""
+
+#: project/data/contracts/black_box_run.json
+msgid "Salvage Guild"
+msgstr ""
+
+#: project/data/contracts/blood_bank.json
+#: project/data/contracts/field_hospital.json
+#: project/data/contracts/vaccine_run.json
+msgid "Red Ring Relief"
+msgstr ""
+
+#: project/data/contracts/boards.json
+#: project/data/contracts/mixed_tech.json
+msgid "Kessler Electronics"
+msgstr ""
+
+#: project/data/contracts/bulk.json
+#: project/data/contracts/crate_haul.json
+msgid "Dockside Supply"
+msgstr ""
+
+#: project/data/contracts/cheese.json
+#: project/data/contracts/feast.json
+msgid "Moon Dairy Co-op"
+msgstr ""
+
+#: project/data/contracts/coolant.json
+#: project/data/contracts/lab.json
+msgid "Frostline Labs"
+msgstr ""
+
+#: project/data/contracts/diner.json
+msgid "Neon Diner"
+msgstr ""
+
+#: project/data/contracts/drone_return.json
+msgid "Drone Owner"
+msgstr ""
+
+#: project/data/contracts/drone_swarm.json
+#: project/data/contracts/drones.json
+msgid "Swift Courier"
+msgstr ""
+
+#: project/data/contracts/engine_order.json
+msgid "Shipyard Seven"
+msgstr ""
+
+#: project/data/contracts/fine_glass.json
+#: project/data/contracts/gallery.json
+msgid "Luma Gallery"
+msgstr ""
+
+#: project/data/contracts/fuel.json
+#: project/data/contracts/fuel_depot.json
+msgid "Redline Fuel"
+msgstr ""
+
+#: project/data/contracts/greenhouse.json
+msgid "Verdant Colony Farms"
+msgstr ""
+
+#: project/data/contracts/heart_transplant.json
+msgid "Helix Medical"
+msgstr ""
+
+#: project/data/contracts/heavy_glass.json
+#: project/data/contracts/heavy_metal.json
+msgid "Ironworks Guild"
+msgstr ""
+
+#: project/data/contracts/hydrants.json
+#: project/data/contracts/parking_meters.json
+msgid "Old Town Collectors"
+msgstr ""
+
+#: project/data/contracts/long_colony.json
+msgid "Far Colony"
+msgstr ""
+
+#: project/data/contracts/long_mine.json
+msgid "Deep Core Mine"
+msgstr ""
+
+#: project/data/contracts/mail_run.json
+msgid "Orbital Post"
+msgstr ""
+
+#: project/data/contracts/mech_delivery.json
+msgid "Titan Works"
+msgstr ""
+
+#: project/data/contracts/mining_bots.json
+msgid "Deep Core Mining"
+msgstr ""
+
+#: project/data/contracts/night_market.json
+#: project/data/contracts/noodle_run.json
+msgid "Night Market"
+msgstr ""
+
+#: project/data/contracts/octopus.json
+msgid "Neptune Seafood"
+msgstr ""
+
+#: project/data/contracts/pharmacy.json
+msgid "Orbital Pharmacy"
+msgstr ""
+
+#: project/data/contracts/plasma_crate.json
+#: project/data/contracts/plasma_small.json
+msgid "Bright Spark Mining"
+msgstr ""
+
+#: project/data/contracts/prosthetics.json
+msgid "Second Hand Clinic"
+msgstr ""
+
+#: project/data/contracts/radar.json
+#: project/data/contracts/radar_pair.json
+msgid "Deep Watch Array"
+msgstr ""
+
+#: project/data/contracts/reactor.json
+msgid "Helix Power"
+msgstr ""
+
+#: project/data/contracts/rescue_supplies.json
+msgid "Stranded Freighter"
+msgstr ""
+
+#: project/data/contracts/sculpture.json
+msgid "Museum of Nowhere"
+msgstr ""
+
+#: project/data/contracts/tutorial_cold.json
+#: project/data/contracts/tutorial_first.json
+#: project/data/contracts/tutorial_traits.json
+msgid "Flight School"
+msgstr ""
+
+#: project/data/contracts/vip_clinic.json
+msgid "Orbital Clinic"
+msgstr ""
+
+#: project/data/contracts/vip_embassy.json
+msgid "Embassy Courier"
+msgstr ""
+
+#: project/data/contracts/warp_core.json
+msgid "Fold Drive Works"
+msgstr ""
+
+#: project/data/environments/heat_zone.json
+msgid "Heat Zone"
+msgstr ""
+
+#: project/data/environments/heat_zone.json
+msgid "Volatile breaks at 2 · Fluid at 1"
+msgstr ""
+
+#: project/data/environments/heat_zone.json
+msgid "Volatile cargo explodes at a force of 2. Fluid cargo leaks at a force of 1."
+msgstr ""
+
+#: project/data/environments/low_gravity.json
+msgid "Low Gravity"
+msgstr ""
+
+#: project/data/environments/low_gravity.json
+msgid "Slides 2 cells at most"
+msgstr ""
+
+#: project/data/environments/low_gravity.json
+msgid "Each cargo slides 2 cells at most in each shift step."
+msgstr ""
+
+#: project/data/environments/magnetic_storm.json
+msgid "Magnetic Storm"
+msgstr ""
+
+#: project/data/environments/magnetic_storm.json
+msgid "Shields have no power"
+msgstr ""
+
+#: project/data/environments/magnetic_storm.json
+msgid "No Shield has power. Array Power does not help."
+msgstr ""
+
+#: project/data/environments/radiation_belt.json
+msgid "Radiation Belt"
+msgstr ""
+
+#: project/data/environments/radiation_belt.json
+msgid "Electronic shorts at 2"
+msgstr ""
+
+#: project/data/environments/radiation_belt.json
+msgid "An Electronic cargo shorts at a hit with a force of 2 or more."
+msgstr ""
+
+#: project/data/events/black_box.json
+msgid "Careful. Others want it too."
+msgstr ""
+
+#: project/data/events/black_box.json
+msgid "Carry the parts."
+msgstr ""
+
+#: project/data/events/black_box.json
+msgid "More for us."
+msgstr ""
+
+#: project/data/events/black_box.json
+#: project/data/events/drifting_container.json
+msgid "Leave it."
+msgstr ""
+
+#: project/data/events/black_box.json
+msgid "Black Box Bounty"
+msgstr ""
+
+#: project/data/events/black_box.json
+msgid "A salvage crew found a black box. They need a ship to carry the parts."
+msgstr ""
+
+#: project/data/events/blade_pirates.json
+msgid "Wise. We will remember you."
+msgstr ""
+
+#: project/data/events/blade_pirates.json
+msgid "Pay the toll."
+msgstr ""
+
+#: project/data/events/blade_pirates.json
+msgid "Run, then. We will chase you."
+msgstr ""
+
+#: project/data/events/blade_pirates.json
+msgid "Fight them off."
+msgstr ""
+
+#: project/data/events/blade_pirates.json
+msgid "Blade Pirates"
+msgstr ""
+
+#: project/data/events/blade_pirates.json
+msgid "A gang with blades boards your ship. They want a toll."
+msgstr ""
+
+#: project/data/events/calm_corridor.json
+msgid "Smooth flying. You are welcome."
+msgstr ""
+
+#: project/data/events/calm_corridor.json
+msgid "Buy the chart."
+msgstr ""
+
+#: project/data/events/calm_corridor.json
+msgid "Bumpy ride, then."
+msgstr ""
+
+#: project/data/events/calm_corridor.json
+msgid "Fly as planned."
+msgstr ""
+
+#: project/data/events/calm_corridor.json
+msgid "Calm Corridor"
+msgstr ""
+
+#: project/data/events/calm_corridor.json
+msgid "A navigator sells the chart of a calm corridor."
+msgstr ""
+
+#: project/data/events/company_audit.json
+msgid "The company thanks you for your early payment."
+msgstr ""
+
+#: project/data/events/company_audit.json
+msgid "Pay early."
+msgstr ""
+
+#: project/data/events/company_audit.json
+msgid "Noted. The company remembers everything."
+msgstr ""
+
+#: project/data/events/company_audit.json
+msgid "Ignore it."
+msgstr ""
+
+#: project/data/events/company_audit.json
+msgid "Company Audit"
+msgstr ""
+
+#: project/data/events/company_audit.json
+msgid "The company checks your books. An early payment makes it happy."
+msgstr ""
+
+#: project/data/events/customs_check.json
+msgid "Cleared. Move along."
+msgstr ""
+
+#: project/data/events/customs_check.json
+msgid "Pay the fast-track fee."
+msgstr ""
+
+#: project/data/events/customs_check.json
+msgid "This will take a while."
+msgstr ""
+
+#: project/data/events/customs_check.json
+msgid "Accept the search."
+msgstr ""
+
+#: project/data/events/customs_check.json
+msgid "Customs Check"
+msgstr ""
+
+#: project/data/events/customs_check.json
+msgid "Customs wants to search your hold."
+msgstr ""
+
+#: project/data/events/damaged_container.json
+msgid "We owe you one."
+msgstr ""
+
+#: project/data/events/damaged_container.json
+msgid "Tow them in."
+msgstr ""
+
+#: project/data/events/damaged_container.json
+msgid "We understand."
+msgstr ""
+
+#: project/data/events/damaged_container.json
+#: project/data/events/distress_call.json
+msgid "Fly on."
+msgstr ""
+
+#: project/data/events/damaged_container.json
+msgid "Damaged Container"
+msgstr ""
+
+#: project/data/events/damaged_container.json
+msgid "A crew drifts in a broken container. They offer a Cooler for a tow."
+msgstr ""
+
+#: project/data/events/distress_call.json
+msgid "Thank you, pilot. Take this part. It still works."
+msgstr ""
+
+#: project/data/events/distress_call.json
+msgid "Give them fuel. They give you a ship part."
+msgstr ""
+
+#: project/data/events/distress_call.json
+msgid "Our supplies are in your hands now. Fly safe."
+msgstr ""
+
+#: project/data/events/distress_call.json
+msgid "Carry their supplies to the next station."
+msgstr ""
+
+#: project/data/events/distress_call.json
+msgid "We understand. Somebody else will come. Maybe."
+msgstr ""
+
+#: project/data/events/distress_call.json
+msgid "Distress Call"
+msgstr ""
+
+#: project/data/events/distress_call.json
+msgid "A stranded freighter calls for help. Its crew offers what it can."
+msgstr ""
+
+#: project/data/events/drifting_container.json
+msgid "Some steel is bent, but the rest sells well."
+msgstr ""
+
+#: project/data/events/drifting_container.json
+msgid "Haul it in."
+msgstr ""
+
+#: project/data/events/drifting_container.json
+msgid "Good call. Nobody knows what is in a lost box."
+msgstr ""
+
+#: project/data/events/drifting_container.json
+msgid "Drifting Container"
+msgstr ""
+
+#: project/data/events/drifting_container.json
+msgid "A lost container drifts past. Some of it is still good."
+msgstr ""
+
+#: project/data/events/engine_tuning.json
+msgid "Purring like new."
+msgstr ""
+
+#: project/data/events/engine_tuning.json
+msgid "Tune the engines."
+msgstr ""
+
+#: project/data/events/engine_tuning.json
+msgid "Come back anytime."
+msgstr ""
+
+#: project/data/events/engine_tuning.json
+msgid "Not now."
+msgstr ""
+
+#: project/data/events/engine_tuning.json
+msgid "Engine Tuning"
+msgstr ""
+
+#: project/data/events/engine_tuning.json
+msgid "The mechanic can tune your engines for a shorter jump."
+msgstr ""
+
+#: project/data/events/escort_offer.json
+msgid "Stay close behind me."
+msgstr ""
+
+#: project/data/events/escort_offer.json
+msgid "Hire the escort."
+msgstr ""
+
+#: project/data/events/escort_offer.json
+msgid "Good luck out there."
+msgstr ""
+
+#: project/data/events/escort_offer.json
+msgid "Fly alone."
+msgstr ""
+
+#: project/data/events/escort_offer.json
+msgid "Escort Offer"
+msgstr ""
+
+#: project/data/events/escort_offer.json
+msgid "A patrol ship offers an escort through the next jump."
+msgstr ""
+
+#: project/data/events/first_contact.json
+msgid "Zzzt. Thank you, small ship."
+msgstr ""
+
+#: project/data/events/first_contact.json
+msgid "Trade your scrap."
+msgstr ""
+
+#: project/data/events/first_contact.json
+msgid "Zzzt. Another time."
+msgstr ""
+
+#: project/data/events/first_contact.json
+msgid "Keep the hatch closed."
+msgstr ""
+
+#: project/data/events/first_contact.json
+msgid "First Contact"
+msgstr ""
+
+#: project/data/events/first_contact.json
+msgid "A strange being glows at your airlock. It seems to want your junk, but its glow disturbs your systems."
+msgstr ""
+
+#: project/data/events/gravity_well.json
+msgid "Fascinating. Hold steady."
+msgstr ""
+
+#: project/data/events/gravity_well.json
+msgid "Fly through it."
+msgstr ""
+
+#: project/data/events/gravity_well.json
+msgid "A lost chance for science."
+msgstr ""
+
+#: project/data/events/gravity_well.json
+msgid "Steer around it."
+msgstr ""
+
+#: project/data/events/gravity_well.json
+msgid "Gravity Well"
+msgstr ""
+
+#: project/data/events/gravity_well.json
+msgid "A scientist wants readings from a gravity well on your route."
+msgstr ""
+
+#: project/data/events/helping_hand.json
+msgid "Like old times."
+msgstr ""
+
+#: project/data/events/helping_hand.json
+msgid "Let them help."
+msgstr ""
+
+#: project/data/events/helping_hand.json
+msgid "Next time, then."
+msgstr ""
+
+#: project/data/events/helping_hand.json
+#: project/data/events/shield_trial.json
+msgid "No, thanks."
+msgstr ""
+
+#: project/data/events/helping_hand.json
+msgid "Helping Hand"
+msgstr ""
+
+#: project/data/events/helping_hand.json
+msgid "An old friend at the dock offers to clean out your hold. The favor goes on your loan."
+msgstr ""
+
+#: project/data/events/ion_storm.json
+msgid "Wise. The long way is the safe way."
+msgstr ""
+
+#: project/data/events/ion_storm.json
+msgid "Take a detour."
+msgstr ""
+
+#: project/data/events/ion_storm.json
+msgid "Record everything for me."
+msgstr ""
+
+#: project/data/events/ion_storm.json
+msgid "Push through."
+msgstr ""
+
+#: project/data/events/ion_storm.json
+msgid "Ion Storm"
+msgstr ""
+
+#: project/data/events/ion_storm.json
+msgid "A scientist warns of an ion storm on your route."
+msgstr ""
+
+#: project/data/events/lost_drone.json
+msgid "Thank you. They will be happy."
+msgstr ""
+
+#: project/data/events/lost_drone.json
+msgid "Carry them."
+msgstr ""
+
+#: project/data/events/lost_drone.json
+msgid "Understood. Logging refusal."
+msgstr ""
+
+#: project/data/events/lost_drone.json
+msgid "No room."
+msgstr ""
+
+#: project/data/events/lost_drone.json
+msgid "Lost Drone"
+msgstr ""
+
+#: project/data/events/lost_drone.json
+msgid "A service robot asks you to carry two lost courier drones home."
+msgstr ""
+
+#: project/data/events/meteor_warning.json
+msgid "Safe lane. Stay in it."
+msgstr ""
+
+#: project/data/events/meteor_warning.json
+msgid "Take the safe lane."
+msgstr ""
+
+#: project/data/events/meteor_warning.json
+msgid "Your hull, your risk."
+msgstr ""
+
+#: project/data/events/meteor_warning.json
+msgid "Take the fast lane."
+msgstr ""
+
+#: project/data/events/meteor_warning.json
+msgid "Meteor Warning"
+msgstr ""
+
+#: project/data/events/meteor_warning.json
+msgid "Traffic control reports meteors on the fast lane."
+msgstr ""
+
+#: project/data/events/navigator_shortcut.json
+msgid "Hold on to something."
+msgstr ""
+
+#: project/data/events/navigator_shortcut.json
+msgid "Take the shortcut."
+msgstr ""
+
+#: project/data/events/navigator_shortcut.json
+msgid "Your call, captain."
+msgstr ""
+
+#: project/data/events/navigator_shortcut.json
+msgid "Keep the long route."
+msgstr ""
+
+#: project/data/events/navigator_shortcut.json
+msgid "Shortcut"
+msgstr ""
+
+#: project/data/events/navigator_shortcut.json
+msgid "A navigator knows a shortcut through a debris field."
+msgstr ""
+
+#: project/data/events/netrunner_hack.json
+msgid "Done. You were never here."
+msgstr ""
+
+#: project/data/events/netrunner_hack.json
+msgid "Pay her."
+msgstr ""
+
+#: project/data/events/netrunner_hack.json
+msgid "You will regret that."
+msgstr ""
+
+#: project/data/events/netrunner_hack.json
+msgid "Ignore her."
+msgstr ""
+
+#: project/data/events/netrunner_hack.json
+#: project/data/speakers/netrunner.json
+msgid "Netrunner"
+msgstr ""
+
+#: project/data/events/netrunner_hack.json
+msgid "A netrunner offers to hack traffic control for you."
+msgstr ""
+
+#: project/data/events/noodle_cart.json
+msgid "Hot when they get there!"
+msgstr ""
+
+#: project/data/events/noodle_cart.json
+msgid "Deliver for her."
+msgstr ""
+
+#: project/data/events/noodle_cart.json
+msgid "Your stomach will miss me."
+msgstr ""
+
+#: project/data/events/noodle_cart.json
+msgid "Not today."
+msgstr ""
+
+#: project/data/events/noodle_cart.json
+msgid "Noodle Cart"
+msgstr ""
+
+#: project/data/events/noodle_cart.json
+msgid "A noodle vendor needs a fast delivery to the next station."
+msgstr ""
+
+#: project/data/events/pirate_demand.json
+msgid "Smart pilot. The route is open. For now."
+msgstr ""
+
+#: project/data/events/pirate_demand.json
+msgid "Pay them."
+msgstr ""
+
+#: project/data/events/pirate_demand.json
+msgid "Wrong answer. Fire at the hold!"
+msgstr ""
+
+#: project/data/events/pirate_demand.json
+msgid "Refuse. They shoot the cargo bay."
+msgstr ""
+
+#: project/data/events/pirate_demand.json
+msgid "Pirate Demand"
+msgstr ""
+
+#: project/data/events/pirate_demand.json
+msgid "Pirates block the route. They want credits, or they shoot."
+msgstr ""
+
+#: project/data/events/salvage_ship.json
+msgid "Your junk is our treasure."
+msgstr ""
+
+#: project/data/events/salvage_ship.json
+msgid "Pay them to take it."
+msgstr ""
+
+#: project/data/events/salvage_ship.json
+msgid "Suit yourself."
+msgstr ""
+
+#: project/data/events/salvage_ship.json
+msgid "Keep it."
+msgstr ""
+
+#: project/data/events/salvage_ship.json
+msgid "Salvage Ship"
+msgstr ""
+
+#: project/data/events/salvage_ship.json
+msgid "A salvage ship offers to take your scrap away."
+msgstr ""
+
+#: project/data/events/shield_trial.json
+msgid "Pay me back with your loan."
+msgstr ""
+
+#: project/data/events/shield_trial.json
+msgid "Take the Shield."
+msgstr ""
+
+#: project/data/events/shield_trial.json
+msgid "Your loss, friend."
+msgstr ""
+
+#: project/data/events/shield_trial.json
+msgid "Shield Trial"
+msgstr ""
+
+#: project/data/events/shield_trial.json
+msgid "A trader offers a Shield on credit."
+msgstr ""
+
+#: project/data/events/ship_mechanic.json
+msgid "Done. That clamp holds anything."
+msgstr ""
+
+#: project/data/events/ship_mechanic.json
+msgid "Fit a clamp."
+msgstr ""
+
+#: project/data/events/ship_mechanic.json
+msgid "Fitted. Do not ask where I got it."
+msgstr ""
+
+#: project/data/events/ship_mechanic.json
+msgid "Fit a ship part."
+msgstr ""
+
+#: project/data/events/ship_mechanic.json
+msgid "Your ship, your problem."
+msgstr ""
+
+#: project/data/events/ship_mechanic.json
+msgid "Leave."
+msgstr ""
+
+#: project/data/events/ship_mechanic.json
+msgid "Ship Mechanic"
+msgstr ""
+
+#: project/data/events/ship_mechanic.json
+msgid "A mechanic at the dock offers a quick job."
+msgstr ""
+
+#: project/data/events/smuggler_offer.json
+msgid "Do not open the boxes. Do not ask questions."
+msgstr ""
+
+#: project/data/events/smuggler_offer.json
+msgid "Take the job."
+msgstr ""
+
+#: project/data/events/smuggler_offer.json
+msgid "Your loss. Another ship will take the pay."
+msgstr ""
+
+#: project/data/events/smuggler_offer.json
+msgid "Say no."
+msgstr ""
+
+#: project/data/events/smuggler_offer.json
+msgid "Smuggler's Offer"
+msgstr ""
+
+#: project/data/events/smuggler_offer.json
+msgid "A smuggler needs a quiet ship. The pay is good. The cargo is not."
+msgstr ""
+
+#: project/data/lines/all_intact.json
+msgid "Everything arrived in one piece. I am as surprised as you are."
+msgstr ""
+
+#: project/data/lines/all_intact.json
+msgid "Zero damage. Write it down. It will not happen again."
+msgstr ""
+
+#: project/data/lines/all_intact.json
+msgid "A perfect delivery. The clients will think we cheated."
+msgstr ""
+
+#: project/data/lines/all_intact.json
+msgid "Not a scratch. I will take most of the credit."
+msgstr ""
+
+#: project/data/lines/break.json
+msgid "Something broke. I heard it. I chose not to look."
+msgstr ""
+
+#: project/data/lines/break.json
+msgid "We are now in the gravel business, apparently."
+msgstr ""
+
+#: project/data/lines/break.json
+msgid "That was fragile. It is now very fragile. In many pieces."
+msgstr ""
+
+#: project/data/lines/break.json
+msgid "Good news: the box is lighter. Bad news: it is the shards."
+msgstr ""
+
+#: project/data/lines/chain.json
+msgid "That was a chain reaction. Very pretty. Very expensive."
+msgstr ""
+
+#: project/data/lines/chain.json
+msgid "Explosion, then explosion, then me, screaming quietly."
+msgstr ""
+
+#: project/data/lines/chain.json
+msgid "I counted the blasts. Then I stopped counting. Then I cried in binary."
+msgstr ""
+
+#: project/data/lines/chain.json
+msgid "Fireworks! Nobody ordered fireworks. We delivered them anyway."
+msgstr ""
+
+#: project/data/lines/chain.json
+msgid "I was named after an explorer, not after a fireworks show."
+msgstr ""
+
+#: project/data/lines/empty.json
+msgid "We flew with nothing. Very safe. Very poor."
+msgstr ""
+
+#: project/data/lines/empty.json
+msgid "An empty hold. Zero risk, zero pay. Bold strategy."
+msgstr ""
+
+#: project/data/lines/empty.json
+msgid "I enjoyed that quiet jump. The bank did not."
+msgstr ""
+
+#: project/data/lines/empty.json
+msgid "No cargo, no damage, no credits. Perfect balance."
+msgstr ""
+
+#: project/data/lines/empty.json
+msgid "Magellan crossed the world for spices. You cross it with an empty hold."
+msgstr ""
+
+#: project/data/lines/explosion.json
+msgid "One explosion. Small. Mostly. Please stop the fire."
+msgstr ""
+
+#: project/data/lines/explosion.json
+msgid "We had a Volatile event. The Volatile won."
+msgstr ""
+
+#: project/data/lines/explosion.json
+msgid "The hold is a little roomier now. You are welcome, I guess."
+msgstr ""
+
+#: project/data/lines/explosion.json
+msgid "Boom. I logged it as 'unscheduled cargo release'."
+msgstr ""
+
+#: project/data/lines/hazard.json
+msgid "Turbulence ahead. I suggest you pack like you mean it."
+msgstr ""
+
+#: project/data/lines/hazard.json
+msgid "Gravity storm on the route. Your cargo will dance. Badly."
+msgstr ""
+
+#: project/data/lines/hazard.json
+msgid "Asteroid field. I will dodge. Your boxes will not."
+msgstr ""
+
+#: project/data/lines/hazard.json
+msgid "The jump is rough today. As every day. Pack tight."
+msgstr ""
+
+#: project/data/lines/hazard.json
+msgid "Navigation says: hold on. Cargo says nothing. Cargo never listens."
+msgstr ""
+
+#: project/data/lines/hazard.json
+msgid "My namesake called an ocean 'peaceful'. This jump is not that ocean."
+msgstr ""
+
+#: project/data/lines/leak.json
+msgid "Something leaked. Something else sparked. Do not lick the floor."
+msgstr ""
+
+#: project/data/lines/leak.json
+msgid "The coolant is out. The electronics are also out. Permanently."
+msgstr ""
+
+#: project/data/lines/leak.json
+msgid "Fluid plus circuits. A classic recipe for scrap."
+msgstr ""
+
+#: project/data/lines/leak.json
+msgid "We have a leak. I recommend boots. And new circuits."
+msgstr ""
+
+#: project/data/lines/lose.json
+msgid "No credits for the payment. We live here now."
+msgstr ""
+
+#: project/data/lines/lose.json
+msgid "The company took the ship back. And our business with it."
+msgstr ""
+
+#: project/data/lines/lose.json
+msgid "Out of credits. I will start selling your chair."
+msgstr ""
+
+#: project/data/lines/lose.json
+msgid "Run over. Next time, maybe fewer explosions."
+msgstr ""
+
+#: project/data/lines/lose.json
+msgid "The first Magellan did not finish his trip either. You are in good company."
+msgstr ""
+
+#: project/data/lines/payment.json
+msgid "Payment day. The company wants its credits. All of them, if it can."
+msgstr ""
+
+#: project/data/lines/payment.json
+msgid "Pay up, or we sleep out here with the space dust."
+msgstr ""
+
+#: project/data/lines/payment.json
+msgid "Payment time. Please tell me we have the credits."
+msgstr ""
+
+#: project/data/lines/payment.json
+msgid "The company called. It says that it misses our credits."
+msgstr ""
+
+#: project/data/lines/payment.json
+msgid "My namesake paid for his voyage with his life. You only pay credits."
+msgstr ""
+
+#: project/data/lines/spoil.json
+msgid "The food went bad. The smell is now a crew member."
+msgstr ""
+
+#: project/data/lines/spoil.json
+msgid "Cold chain broken. So is my will to breathe."
+msgstr ""
+
+#: project/data/lines/spoil.json
+msgid "Something in the hold is growing. It is not the profit."
+msgstr ""
+
+#: project/data/lines/spoil.json
+msgid "A Cooler would have helped. A nose plug would help now."
+msgstr ""
+
+#: project/data/lines/win.json
+msgid "We made it. All three legs. I am framing this log."
+msgstr ""
+
+#: project/data/lines/win.json
+msgid "Final payment made. The ship is ours now. Almost."
+msgstr ""
+
+#: project/data/lines/win.json
+msgid "Route complete. The cargo survived. Mostly. Good work."
+msgstr ""
+
+#: project/data/lines/win.json
+msgid "We won. I will tell the other ships. They will not believe me."
+msgstr ""
+
+#: project/data/lines/win.json
+msgid "Full circle, and the captain is alive. That is more than my namesake managed."
+msgstr ""
+
+#: project/data/mods/array_power.json
+msgid "Array Power"
+msgstr ""
+
+#: project/data/mods/array_power.json
+msgid "A Battery powers each Shield within {range} cells."
+msgstr ""
+
+#: project/data/mods/cryo_line.json
+msgid "Cryo Line"
+msgstr ""
+
+#: project/data/mods/cryo_line.json
+msgid "A Cooler keeps each Perishable cargo within {range} cells fresh."
+msgstr ""
+
+#: project/data/mods/gravity_damper.json
+msgid "Gravity Damper"
+msgstr ""
+
+#: project/data/mods/gravity_damper.json
+msgid "Heavy cargo hits with the force of standard cargo. Its mass does not change."
+msgstr ""
+
+#: project/data/mods/insurance.json
+msgid "Each scrap, spoiled, or lost piece of a contract pays {percent}% of its pay."
+msgstr ""
+
+#: project/data/mods/padded_walls.json
+msgid "Padded Walls"
+msgstr ""
+
+#: project/data/mods/padded_walls.json
+msgid "Each wall jolt has a force {less} less."
+msgstr ""
+
+#: project/data/mods/shock_floor.json
+msgid "Shock Floor"
+msgstr ""
+
+#: project/data/mods/shock_floor.json
+msgid "Cargo with a cell in the bottom row takes each hit with a force {less} less."
+msgstr ""
+
+#: project/data/speakers/alien.json
+msgid "Visitor"
+msgstr ""
+
+#: project/data/speakers/auditor.json
+msgid "Company Auditor"
+msgstr ""
+
+#: project/data/speakers/blade_pirate.json
+msgid "Blade Pirate"
+msgstr ""
+
+#: project/data/speakers/customs.json
+msgid "Customs Officer"
+msgstr ""
+
+#: project/data/speakers/dock_worker.json
+msgid "Dock Worker"
+msgstr ""
+
+#: project/data/speakers/mechanic.json
+msgid "Mechanic"
+msgstr ""
+
+#: project/data/speakers/merchant.json
+msgid "Merchant"
+msgstr ""
+
+#: project/data/speakers/navigator.json
+msgid "Navigator"
+msgstr ""
+
+#: project/data/speakers/noodle_vendor.json
+msgid "Noodle Vendor"
+msgstr ""
+
+#: project/data/speakers/patrol_officer.json
+msgid "Patrol Officer"
+msgstr ""
+
+#: project/data/speakers/pirate.json
+msgid "Pirate"
+msgstr ""
+
+#: project/data/speakers/robot.json
+msgid "Service Robot"
+msgstr ""
+
+#: project/data/speakers/salvage_crew.json
+msgid "Salvage Crew"
+msgstr ""
+
+#: project/data/speakers/salvager.json
+msgid "Salvager"
+msgstr ""
+
+#: project/data/speakers/scientist.json
+msgid "Scientist"
+msgstr ""
+
+#: project/data/speakers/smuggler.json
+msgid "Smuggler"
+msgstr ""
+
+#: project/data/speakers/stranded_crew.json
+msgid "Stranded Crew"
+msgstr ""
+
+#: project/data/terms.json
+msgid "All Intact"
+msgstr ""
+
+#: project/data/terms.json
+msgid "Deliver each piece."
+msgstr ""
+
+#: project/data/terms.json
+msgid "Keep Apart"
+msgstr ""
+
+#: project/data/terms.json
+msgid "No piece arrives next to {trait} cargo."
+msgstr ""
+
+#: project/data/terms.json
+msgid "Zone"
+msgstr ""
+
+#: project/data/terms.json
+msgid "Each piece arrives in the {size} lines at the {side}."
+msgstr ""
+
+#: project/data/terms.json
+msgid "Down"
+msgstr ""
+
+#: project/data/terms.json
+msgid "Left"
+msgstr ""
+
+#: project/data/terms.json
+msgid "Right"
+msgstr ""
+
+#: project/data/terms.json
+msgid "Up"
+msgstr ""
+
+#: project/data/terms.json
+msgid "Freight"
+msgstr ""
+
+#: project/data/terms.json
+msgid "Kit"
+msgstr ""
+
+#: project/data/terms.json
+msgid "Scrap"
+msgstr ""
+
+#: project/data/terms.json
+msgid "bottom"
+msgstr ""
+
+#: project/data/terms.json
+msgid "left"
+msgstr ""
+
+#: project/data/terms.json
+msgid "right"
+msgstr ""
+
+#: project/data/terms.json
+msgid "top"
+msgstr ""
+
+#: project/data/terms.json
+msgid "Battery"
+msgstr ""
+
+#: project/data/terms.json
+msgid "Powers each Shield next to it."
+msgstr ""
+
+#: project/data/terms.json
+msgid "Cooler"
+msgstr ""
+
+#: project/data/terms.json
+msgid "Keeps each Perishable cargo next to it fresh."
+msgstr ""
+
+#: project/data/terms.json
+msgid "Cushion"
+msgstr ""
+
+#: project/data/terms.json
+msgid "Each hit on it or by it has a force of 0."
+msgstr ""
+
+#: project/data/terms.json
+msgid "Electronic"
+msgstr ""
+
+#: project/data/terms.json
+msgid "Shorts when a Fluid cargo next to it leaks."
+msgstr ""
+
+#: project/data/terms.json
+msgid "Fluid"
+msgstr ""
+
+#: project/data/terms.json
+msgid "Leaks at a hit with a force of {limit} or more. The leak shorts each Electronic cargo next to it."
+msgstr ""
+
+#: project/data/terms.json
+msgid "Fragile"
+msgstr ""
+
+#: project/data/terms.json
+msgid "Breaks at a hit with a force of {limit} or more."
+msgstr ""
+
+#: project/data/terms.json
+msgid "Perishable"
+msgstr ""
+
+#: project/data/terms.json
+msgid "Spoils at the arrival if it is not next to a Cooler."
+msgstr ""
+
+#: project/data/terms.json
+msgid "At the station, it shows the direction of the fork step."
+msgstr ""
+
+#: project/data/terms.json
+msgid "Shield"
+msgstr ""
+
+#: project/data/terms.json
+msgid "With power, it protects each cargo next to it from one reaction in each jump."
+msgstr ""
+
+#: project/data/terms.json
+msgid "Thruster"
+msgstr ""
+
+#: project/data/terms.json
+msgid "Slides 1 cell at most in each shift step."
+msgstr ""
+
+#: project/data/terms.json
+msgid "Volatile"
+msgstr ""
+
+#: project/data/terms.json
+msgid "Explodes at a hit with a force of {limit} or more. The explosion breaks the cargo around it."
+msgstr ""
+
+#: project/data/terms.json
+msgid "Heavy"
+msgstr ""
+
+#: project/data/terms.json
+msgid "Light"
+msgstr ""
+
+#: project/data/terms.json
+msgid "Standard"
+msgstr ""
+
+#: project/data/tutorial.json
+msgid "Welcome aboard. I am MAGELLAN, the ship AI. I will show you how to carry freight."
+msgstr ""
+
+#: project/data/tutorial.json
+msgid "This is a contract. Press Accept to take it. Its freight goes to the dock."
+msgstr ""
+
+#: project/data/tutorial.json
+msgid "Drag each cargo from the dock into the hold, the grid in the middle."
+msgstr ""
+
+#: project/data/tutorial.json
+msgid "Right click a cargo, or press R, to rotate it. Rotate the Steel Ingot."
+msgstr ""
+
+#: project/data/tutorial.json
+msgid "The route above the hold shows the next jump, from Depart to Arrive. This jump has one shift step: RIGHT."
+msgstr ""
+
+#: project/data/tutorial.json
+msgid "In a step, each cargo slides until a wall or a stopped cargo stops it. The force of its hit is its weight × the cells it slid: light 1, standard 2, heavy 3."
+msgstr ""
+
+#: project/data/tutorial.json
+msgid "The Energy Crystal is Fragile: a hit with a force of 2 or more breaks it. The striped band marks the front wall."
+msgstr ""
+
+#: project/data/tutorial.json
+msgid "The crystal broke. A slide into the wall, or a cargo behind it, hit it with a force of 2 or more. Let us try again."
+msgstr ""
+
+#: project/data/tutorial.json
+msgid "Try it: place the cargo so that the crystal does not break. Then press Launch."
+msgstr ""
+
+#: project/data/tutorial.json
+msgid "Delivered! Each intact freight pays. A broken cargo becomes scrap and stays in the hold. Press Continue."
+msgstr ""
+
+#: project/data/tutorial.json
+msgid "This contract has traits. Accept it."
+msgstr ""
+
+#: project/data/tutorial.json
+msgid "Fragile breaks at a force of 2. Fluid leaks at 2. Volatile explodes at 3. Point at a cargo to see its traits."
+msgstr ""
+
+#: project/data/tutorial.json
+msgid "A cargo that does not slide still takes a hit. At the front wall, it takes a wall jolt of its weight. It also presses on the cargo in front of it with its weight."
+msgstr ""
+
+#: project/data/tutorial.json
+msgid "Drag the freight into the hold."
+msgstr ""
+
+#: project/data/tutorial.json
+msgid "A clamp stops a cargo from sliding. Drag the clamp onto a cargo in the hold."
+msgstr ""
+
+#: project/data/tutorial.json
+msgid "A piece broke or leaked. Look at the wall jolt and the press, and try again."
+msgstr ""
+
+#: project/data/tutorial.json
+msgid "Try it: deliver each piece. The step is DOWN. Keep the Specimen Tube and the Coolant Pipe away from the floor and from heavy cargo."
+msgstr ""
+
+#: project/data/tutorial.json
+msgid "Good flying. Press Continue."
+msgstr ""
+
+#: project/data/tutorial.json
+msgid "Space Cheese is Perishable. At the arrival, it must be next to a Cooler, or it spoils. Accept the contract."
+msgstr ""
+
+#: project/data/tutorial.json
+msgid "Buy the Cooler Unit in the shop. Kit stays in the ship until you sell it."
+msgstr ""
+
+#: project/data/tutorial.json
+msgid "Each cargo has mass. Over the mass limit, the warp takes a fuel fee. The top bar shows the mass."
+msgstr ""
+
+#: project/data/tutorial.json
+msgid "Put the freight and the Cooler in the hold. Each cheese must be next to the Cooler."
+msgstr ""
+
+#: project/data/tutorial.json
+msgid "A piece did not arrive intact or fresh. Place the cheese and the Cooler where the slides keep them together, and try again."
+msgstr ""
+
+#: project/data/tutorial.json
+msgid "Try it: the steps are LEFT, then UP. Only the places at the arrival count. Keep the cheese next to the Cooler."
+msgstr ""
+
+#: project/data/tutorial.json
+msgid "The leg ends. Press Continue."
+msgstr ""
+
+#: project/data/tutorial.json
+msgid "At the end of each leg, the freight company takes a payment. Pay it. A run has 3 legs."
+msgstr ""

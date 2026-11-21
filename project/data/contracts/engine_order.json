@@ -1,0 +1,7 @@
+{
+	"id": "engine_order",
+	"legs": [2, 3],
+	"client_name": "Shipyard Seven",
+	"freight": ["ship_engine"],
+	"pay": 30
+}

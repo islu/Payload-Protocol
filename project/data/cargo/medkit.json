@@ -1,0 +1,8 @@
+{
+	"id": "medkit",
+	"name": "Medkit",
+	"kind": "freight",
+	"weight": "standard",
+	"traits": [],
+	"shape": [[0, 0]]
+}

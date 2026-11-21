@@ -1,0 +1,14 @@
+{
+	"id": "mail_run",
+	"legs": [1],
+	"client_name": "Orbital Post",
+	"freight": [
+		"ration_crate",
+		"ration_crate",
+		"ration_crate",
+		"ration_crate",
+		"ration_crate",
+		"ration_crate"
+	],
+	"pay": 3
+}

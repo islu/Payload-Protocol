@@ -1,0 +1,8 @@
+{
+	"id": "energy_crystal",
+	"name": "Energy Crystal",
+	"kind": "freight",
+	"weight": "light",
+	"traits": ["fragile"],
+	"shape": [[0, 0]]
+}

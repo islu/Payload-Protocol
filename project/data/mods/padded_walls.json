@@ -1,0 +1,8 @@
+{
+	"id": "padded_walls",
+	"name": "Padded Walls",
+	"text": "Each wall jolt has a force {less} less.",
+	"values": {
+		"less": 1
+	}
+}

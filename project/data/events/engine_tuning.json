@@ -1,0 +1,27 @@
+{
+	"id": "engine_tuning",
+	"name": "Engine Tuning",
+	"text": "The mechanic can tune your engines for a shorter jump.",
+	"speaker": "mechanic",
+	"choices": [
+		{
+			"text": "Tune the engines.",
+			"cost": 12,
+			"effects": [
+				{
+					"type": "remove_step"
+				}
+			],
+			"reply": {
+				"text": "Purring like new."
+			}
+		},
+		{
+			"text": "Not now.",
+			"effects": [],
+			"reply": {
+				"text": "Come back anytime."
+			}
+		}
+	]
+}

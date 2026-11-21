@@ -1,0 +1,8 @@
+{
+	"id": "reactor_core",
+	"name": "Reactor Core",
+	"kind": "freight",
+	"weight": "heavy",
+	"traits": ["volatile"],
+	"shape": [[0, 0], [1, 0], [0, 1], [1, 1]]
+}

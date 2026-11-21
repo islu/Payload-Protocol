@@ -1,0 +1,15 @@
+{
+	"id": "hydrants",
+	"legs": [1, 2],
+	"client_name": "Old Town Collectors",
+	"freight": ["fire_hydrant", "fire_hydrant"],
+	"pay": 7,
+	"bonus": {
+		"type": "zone",
+		"pay": 6,
+		"zone": {
+			"side": "bottom",
+			"size": 2
+		}
+	}
+}

@@ -1,0 +1,9 @@
+{
+	"id": "cooler_unit",
+	"name": "Cooler Unit",
+	"kind": "kit",
+	"weight": "standard",
+	"traits": ["cooler"],
+	"shape": [[0, 0], [0, 1]],
+	"price": 8
+}

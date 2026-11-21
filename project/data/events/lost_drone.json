@@ -1,0 +1,27 @@
+{
+	"id": "lost_drone",
+	"name": "Lost Drone",
+	"text": "A service robot asks you to carry two lost courier drones home.",
+	"speaker": "robot",
+	"choices": [
+		{
+			"text": "Carry them.",
+			"effects": [
+				{
+					"type": "contract",
+					"contract": "drone_return"
+				}
+			],
+			"reply": {
+				"text": "Thank you. They will be happy."
+			}
+		},
+		{
+			"text": "No room.",
+			"effects": [],
+			"reply": {
+				"text": "Understood. Logging refusal."
+			}
+		}
+	]
+}

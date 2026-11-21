@@ -1,0 +1,39 @@
+{
+	"id": "distress_call",
+	"name": "Distress Call",
+	"text": "A stranded freighter calls for help. Its crew offers what it can.",
+	"speaker": "stranded_crew",
+	"choices": [
+		{
+			"text": "Give them fuel. They give you a ship part.",
+			"cost": 8,
+			"effects": [
+				{
+					"type": "mod"
+				}
+			],
+			"reply": {
+				"text": "Thank you, pilot. Take this part. It still works."
+			}
+		},
+		{
+			"text": "Carry their supplies to the next station.",
+			"effects": [
+				{
+					"type": "contract",
+					"contract": "rescue_supplies"
+				}
+			],
+			"reply": {
+				"text": "Our supplies are in your hands now. Fly safe."
+			}
+		},
+		{
+			"text": "Fly on.",
+			"effects": [],
+			"reply": {
+				"text": "We understand. Somebody else will come. Maybe."
+			}
+		}
+	]
+}

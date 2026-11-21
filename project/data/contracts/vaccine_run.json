@@ -1,0 +1,17 @@
+{
+	"id": "vaccine_run",
+	"legs": [2, 3],
+	"client_name": "Red Ring Relief",
+	"freight": [
+		"vaccine_vial",
+		"vaccine_vial",
+		"vaccine_vial",
+		"vaccine_vial",
+		"blood_sample"
+	],
+	"pay": 9,
+	"bonus": {
+		"type": "all_intact",
+		"pay": 8
+	}
+}

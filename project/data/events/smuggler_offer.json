@@ -1,0 +1,27 @@
+{
+	"id": "smuggler_offer",
+	"name": "Smuggler's Offer",
+	"text": "A smuggler needs a quiet ship. The pay is good. The cargo is not.",
+	"speaker": "smuggler",
+	"choices": [
+		{
+			"text": "Take the job.",
+			"effects": [
+				{
+					"type": "contract",
+					"contract": "smuggler_run"
+				}
+			],
+			"reply": {
+				"text": "Do not open the boxes. Do not ask questions."
+			}
+		},
+		{
+			"text": "Say no.",
+			"effects": [],
+			"reply": {
+				"text": "Your loss. Another ship will take the pay."
+			}
+		}
+	]
+}

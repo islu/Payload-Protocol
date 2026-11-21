@@ -1,0 +1,8 @@
+{
+	"id": "stim_pack",
+	"name": "Stim Pack",
+	"kind": "freight",
+	"weight": "light",
+	"traits": ["fragile"],
+	"shape": [[0, 0]]
+}

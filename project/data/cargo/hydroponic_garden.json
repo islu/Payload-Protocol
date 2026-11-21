@@ -1,0 +1,8 @@
+{
+	"id": "hydroponic_garden",
+	"name": "Hydroponic Garden",
+	"kind": "freight",
+	"weight": "standard",
+	"traits": ["perishable"],
+	"shape": [[0, 0], [1, 0]]
+}

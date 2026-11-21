@@ -1,0 +1,9 @@
+{
+	"id": "shield_generator",
+	"name": "Shield Generator",
+	"kind": "kit",
+	"weight": "standard",
+	"traits": ["shield"],
+	"shape": [[0, 0]],
+	"price": 12
+}

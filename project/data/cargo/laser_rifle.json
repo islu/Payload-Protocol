@@ -1,0 +1,8 @@
+{
+	"id": "laser_rifle",
+	"name": "Laser Rifle",
+	"kind": "freight",
+	"weight": "standard",
+	"traits": ["electronic"],
+	"shape": [[0, 0], [1, 0]]
+}

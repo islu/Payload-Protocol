@@ -1,0 +1,15 @@
+{
+	"id": "heavy_metal",
+	"legs": [1, 2],
+	"client_name": "Ironworks Guild",
+	"freight": ["steel_ingot", "steel_ingot"],
+	"pay": 6,
+	"bonus": {
+		"type": "zone",
+		"pay": 6,
+		"zone": {
+			"side": "bottom",
+			"size": 2
+		}
+	}
+}

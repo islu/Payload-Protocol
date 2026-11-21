@@ -1,0 +1,154 @@
+version: "3"
+
+vars:
+  GODOT: '{{.GODOT | default "godot"}}'
+  PROJECT_PATH: project
+  # gdtoolkit in nixpkgs is 3.x (Godot 3 only), so run the 4.x release from PyPI with uvx
+  GDTOOLKIT: uvx --from gdtoolkit==4.5.0
+  # pixelfx (MIT) makes the effect sheets. Change the commit on purpose only, then run task fx.
+  PIXELFX_URL: https://github.com/patch-gg/pixelfx
+  PIXELFX_COMMIT: 5294518ce7c72e48b6100a744596e0acf57f2826
+  # Runs Godot headless and fails on a script error (tools/godot_check.sh).
+  GODOT_CHECK: GODOT={{.GODOT}} sh tools/godot_check.sh
+
+tasks:
+  default:
+    cmds:
+      - task: run
+
+  import:
+    desc: Let Godot import the project (headless). Run once after a clone, and after you add a class_name.
+    # task check runs test, test:ui, and smoke: they need one import only.
+    run: once
+    cmds:
+      - "{{.GODOT}} --headless --path {{.PROJECT_PATH}} --import"
+
+  run:
+    desc: Run the game
+    deps: [import]
+    cmds:
+      - "{{.GODOT}} --path {{.PROJECT_PATH}}"
+
+  editor:
+    desc: Open the Godot editor
+    cmds:
+      - "{{.GODOT}} --path {{.PROJECT_PATH}} --editor"
+
+  test:
+    desc: "Run the rule tests (tests/rules). Filter by file: task test -- slide"
+    deps: [import]
+    cmds:
+      - "{{.GODOT_CHECK}} 300 '' --path {{.PROJECT_PATH}} -s res://tests/run_tests.gd -- {{.CLI_ARGS}}"
+
+  test:ui:
+    desc: Play a full run through the screens, headless. Fails on a SCRIPT ERROR.
+    deps: [import]
+    cmds:
+      # A run that did not reach its end has no result line.
+      - "{{.GODOT_CHECK}} 120 'ui_check: passed' --path {{.PROJECT_PATH}} res://tests/ui_check.tscn"
+
+  play:
+    desc: "The text player of the playtest skill. Run it with no command for the commands: task play -- help"
+    cmds:
+      - "{{.GODOT}} --headless --path {{.PROJECT_PATH}} -s res://tools/play.gd -- {{.CLI_ARGS}} 2>&1 | grep -v -e '^Godot Engine' -e '^$'"
+
+  smoke:
+    desc: Run the game headless for a few frames, and start a run in the text player. Fails on a SCRIPT ERROR.
+    deps: [import]
+    cmds:
+      - "{{.GODOT_CHECK}} 60 '' --path {{.PROJECT_PATH}} --quit-after 5"
+      - "{{.GODOT_CHECK}} 60 'Traits:' --path {{.PROJECT_PATH}} -s res://tools/play.gd -- -s {{.ROOT_DIR}}/.task/smoke_session.json new 1"
+
+  shots:
+    desc: Take screenshots of each screen into shots/ (not in git). It opens a window. Delete them after the review.
+    cmds:
+      - rm -rf shots
+      - timeout 120 {{.GODOT}} --path {{.PROJECT_PATH}} res://tests/shots.tscn
+
+  export:web:
+    desc: Export the web build to build/web (needs the export templates of Godot 4.7.2)
+    deps: [import]
+    cmds:
+      - mkdir -p build/web
+      - "{{.GODOT}} --headless --path {{.PROJECT_PATH}} --export-release Web ../build/web/index.html"
+
+  zip:web:
+    desc: Export the web build, and zip its files for itch.io into build/payload-protocol-web-v<version>.zip
+    deps: [export:web]
+    vars:
+      VERSION:
+        sh: sed -n 's/^config\/version="\(.*\)"/\1/p' {{.PROJECT_PATH}}/project.godot
+      ZIP: build/payload-protocol-web-v{{.VERSION}}.zip
+    cmds:
+      - rm -f {{.ZIP}}
+      # index.html must be at the top of the zip. The glob leaves out .DS_Store.
+      - cd build/web && zip -q -X ../../{{.ZIP}} index.*
+      - echo "zip:web {{.ZIP}}"
+
+  serve:web:
+    desc: Serve build/web at http://localhost:8060 to check the web build in a browser
+    cmds:
+      - uv run --no-project python -m http.server 8060 --directory build/web
+
+  fx:
+    desc: Make the effect sheets in project/art/fx from tools/fx/fx.json with pixelfx (Node). Then run task import.
+    cmds:
+      - test -d .local/pixelfx/.git || git clone -q {{.PIXELFX_URL}} .local/pixelfx
+      - git -C .local/pixelfx checkout -q {{.PIXELFX_COMMIT}} || (git -C .local/pixelfx fetch -q && git -C .local/pixelfx checkout -q {{.PIXELFX_COMMIT}})
+      - node tools/fx/make_fx.mjs .local/pixelfx project/art/fx
+
+  art:
+    desc: Make the cargo images in project/art/cargo and the speaker portraits in project/art/speakers from FreePixel images, the project icon, and the images of the itch.io page (tools/art/). Then run task import.
+    cmds:
+      - uv run --no-project --with pillow==11.3.0 python tools/art/import_art.py
+      - uv run --no-project --with pillow==11.3.0 python tools/art/make_icon.py
+      - uv run --no-project --with pillow==11.3.0 python tools/art/make_cover.py
+
+  sfx:
+    desc: Make the placeholder sounds in project/audio/sfx (synthesized, no license needed)
+    cmds:
+      - uv run --no-project python tools/sfx/make_sfx.py project/audio/sfx
+
+  i18n:
+    desc: Collect the text for translation into project/locale (messages.pot and each .po file)
+    cmds:
+      - uv run --no-project python tools/i18n/i18n.py
+
+  fmt:
+    desc: Format the GDScript code and the JSON data
+    cmds:
+      - "{{.GDTOOLKIT}} gdformat {{.PROJECT_PATH}}"
+      - uv run --no-project python tools/fmt_json/fmt_json.py
+
+  lint:
+    desc: Lint the GDScript code, and check the format
+    cmds:
+      - "{{.GDTOOLKIT}} gdformat --check {{.PROJECT_PATH}}"
+      - uv run --no-project python tools/fmt_json/fmt_json.py --check
+      - "{{.GDTOOLKIT}} gdlint {{.PROJECT_PATH}}"
+      - uv run --no-project python tools/i18n/i18n.py --check
+      - uv run --no-project --with fonttools==4.55.0 python tools/i18n/glyphs.py
+
+  check:
+    desc: Run lint, the rule tests, the UI check, and smoke
+    cmds:
+      - task: lint
+      - task: test
+      - task: test:ui
+      - task: smoke
+
+  check:quiet:
+    desc: Run all checks, and print only the failures. The full output goes to .task/check.log.
+    silent: true
+    cmds:
+      - |
+        mkdir -p .task
+        log=.task/check.log
+        if task check > "$log" 2>&1; then
+          echo "check: all passed (full output: $log)"
+        else
+          status=$?
+          grep -E -- 'FAIL|SCRIPT ERROR|Parse Error|ERROR:|\.gd:[0-9]+:|would reformat|Error:|failure' "$log" | head -80
+          echo "check: failed with status $status (full output: $log)"
+          exit $status
+        fi
