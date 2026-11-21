@@ -8,10 +8,10 @@ const REROLL_TEXT := "Reroll ({price} cr)"
 const SERVICES_TEXT := "Services"
 const PRICE_TEXT := "{price} cr"
 const CLAMP_SERVICE_TEXT := "Clamps {now}/{max} → {after}/{max}"
-const BAY_SERVICE_TEXT := "Shock bay {now} → {after}"
+const BAY_SERVICE_TEXT := "Stasis bay {now} → {after}"
 const BAY_SIZE_TEXT := "{columns}×{rows}"
 const BAY_NONE_TEXT := "none"
-const BAY_MAX_TEXT := "Shock bay {now} (maximum)"
+const BAY_MAX_TEXT := "Stasis bay {now} (maximum)"
 const HULL_SERVICE_TEXT := "Mass limit {now} → {after}"
 ## The cell of a kit image in the shop (SPEC Section 20.2).
 const OFFER_CELL := 56.0
@@ -70,7 +70,7 @@ func _build_services(s: Dictionary) -> void:
 		func() -> void: screen.act(GameState.buy_clamp(), "coin"),
 		s["can_buy_clamp"]
 	)
-	# The shock bay: none → 2×2 → 2×3 (SPEC Sections 17.2 and 31).
+	# The stasis bay: none → 2×2 → 2×3 (SPEC Sections 17.2 and 31).
 	var bay: Dictionary = s["bay"]
 	if bay["after"].is_empty():
 		_service_row(list, "bay", tr(BAY_MAX_TEXT).format({"now": _bay_size(bay["now"])}))

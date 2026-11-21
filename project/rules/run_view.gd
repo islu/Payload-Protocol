@@ -7,6 +7,9 @@ class_name RunView
 ## The help of a kit offer for the freight on the dock and in the hold (SPEC Section 20.2).
 const HELPS_TEXT := "Helps {count} of your freight"
 const FORK_HELP_TEXT := "The next jump has a fork step"
+## Why a Shield has no power, in its tooltip (SPEC Section 12.3).
+const NO_BATTERY_TEXT := "No power: no Battery is next to it."
+const STORM_TEXT := "No power: the Magnetic Storm."
 ## The texts of the effects of an event choice (SPEC Sections 20.8 and 26.2).
 ## The arrow of each direction, for the text of an add_step effect.
 const ARROWS := {Defs.DIR_LEFT: "←", Defs.DIR_RIGHT: "→", Defs.DIR_UP: "↑", Defs.DIR_DOWN: "↓"}
@@ -129,6 +132,9 @@ static func kit_helps(run: Run, d: CargoDef) -> Dictionary:
 		wants = [Defs.TRAIT_PERISHABLE]
 	elif d.traits.has(Defs.TRAIT_CUSHION):
 		wants = [Defs.TRAIT_FRAGILE]
+	elif (d.traits.has(Defs.TRAIT_SHIELD) or d.traits.has(Defs.TRAIT_BATTERY)) and _storm(run):
+		# In a Magnetic Storm, a Shield and a Battery help nothing (SPEC Section 20.2).
+		return {}
 	elif d.traits.has(Defs.TRAIT_SHIELD):
 		wants = [Defs.TRAIT_FRAGILE, Defs.TRAIT_VOLATILE, Defs.TRAIT_FLUID, Defs.TRAIT_ELECTRONIC]
 	elif d.traits.has(Defs.TRAIT_BATTERY):
@@ -348,7 +354,7 @@ static func hold_views(run: Run) -> Array:
 	return out
 
 
-## Returns the views of the cargo in the shock bay (SPEC Section 31.2).
+## Returns the views of the cargo in the stasis bay (SPEC Section 31.2).
 static func bay_views(run: Run) -> Array:
 	var out := []
 	var bay := run.bay_cargo()
@@ -391,6 +397,8 @@ static func _cargo(run: Run, c: Cargo, hold: Array[Cargo], powered: Dictionary) 
 		),
 		"no_power": c.in_hold and c.has(Defs.TRAIT_SHIELD) and not powered.has(c.id),
 	}
+	if cv["no_power"]:
+		cv["no_power_why"] = STORM_TEXT if _storm(run) else NO_BATTERY_TEXT
 	for i in run.contracts.size():
 		if c.contract != 0 and run.contracts[i].id == c.contract:
 			cv["contract"] = i
@@ -406,12 +414,18 @@ static func links(run: Run) -> Array:
 		for b in hold:
 			if Arrival.cools(run, a, b):
 				out.append({"kind": Defs.LINK_COLD, "from": a.id, "to": b.id})
-			elif Shift.powers(run, a, b):
+			elif not _storm(run) and Shift.powers(run, a, b):
 				out.append({"kind": Defs.LINK_POWER, "from": a.id, "to": b.id})
 	return out
 
 
-## Returns the preview of a drop of a cargo at a place in the hold, or in the shock bay
+## Reports whether the leg has a Magnetic Storm: no Shield has power, and a Battery
+## and a Shield have no link (SPEC Sections 12.3 and 28.2).
+static func _storm(run: Run) -> bool:
+	return run.environment == Defs.ENV_MAGNETIC_STORM
+
+
+## Returns the preview of a drop of a cargo at a place in the hold, or in the stasis bay
 ## with to_bay (SPEC Section 8.3): {ok, cells: [{cell, free}], blocking: [cargo IDs],
 ## nearest}. A cell is not free when it is outside the area or has a different cargo.
 ## nearest is the first valid place 1 cell away, in the order of Section 8.2, when the
@@ -423,7 +437,7 @@ static func drop_preview(run: Run, id: int, pos: Vector2i, rot: int, to_bay := f
 	var c: Cargo = run.cargo[id]
 	var occ := run.occupancy(to_bay)
 	var area := run.bay_size if to_bay else Vector2i(run.columns, run.rows)
-	# Freight cannot go in the shock bay (SPEC Section 31.1).
+	# Freight cannot go in the stasis bay (SPEC Section 31.1).
 	var refused := to_bay and c.kind == Defs.KIND_FREIGHT
 	for cell in Shapes.cells_at(c.def.shape, rot, pos):
 		var inside := cell.x >= 0 and cell.y >= 0 and cell.x < area.x and cell.y < area.y

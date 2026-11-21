@@ -73,16 +73,16 @@ msgid "You have the most clamps already."
 msgstr "卡榫已經達到上限。"
 
 #: project/rules/run.gd
-msgid "The shock bay cannot grow more."
-msgstr "防震艙已經是最大了。"
+msgid "The stasis bay cannot grow more."
+msgstr "靜滯艙已經是最大了。"
 
 #: project/rules/run.gd
-msgid "A cargo in the shock bay cannot have a clamp."
-msgstr "防震艙裡的貨物不能上卡榫。"
+msgid "A cargo in the stasis bay cannot have a clamp."
+msgstr "靜滯艙裡的貨物不能上卡榫。"
 
 #: project/rules/run.gd
-msgid "Freight cannot go in the shock bay."
-msgstr "合約貨物不能放進防震艙。"
+msgid "Freight cannot go in the stasis bay."
+msgstr "合約貨物不能放進靜滯艙。"
 
 #: project/rules/run.gd
 msgid "The ship has each mod already."
@@ -155,6 +155,14 @@ msgstr "可幫助你 {count} 件貨物"
 #: project/rules/run_view.gd
 msgid "The next jump has a fork step"
 msgstr "下一次跳躍有二選一位移"
+
+#: project/rules/run_view.gd
+msgid "No power: no Battery is next to it."
+msgstr "沒電：旁邊沒有電池。"
+
+#: project/rules/run_view.gd
+msgid "No power: the Magnetic Storm."
+msgstr "沒電：磁暴。"
 
 #: project/rules/run_view.gd
 msgid "+{amount} credits"
@@ -479,8 +487,8 @@ msgid "No mods"
 msgstr "沒有改裝"
 
 #: project/scenes/main/phase_panel.gd
-msgid "Clamps {clamps} · Shock bay {bay} · Mass limit {mass}"
-msgstr "卡榫 {clamps} · 防震艙 {bay} · 載重上限 {mass}"
+msgid "Clamps {clamps} · Stasis bay {bay} · Mass limit {mass}"
+msgstr "卡榫 {clamps} · 靜滯艙 {bay} · 載重上限 {mass}"
 
 #: project/scenes/main/phase_panel.gd
 #: project/scenes/station/shop_panel.gd
@@ -684,12 +692,12 @@ msgid "A VIP contract pays a penalty for each piece that does not arrive intact.
 msgstr "VIP 合約的貨物，每件沒有完好送達都要付罰款。"
 
 #: project/scenes/station/hints.gd
-msgid "The Sensor shows the fork step only while it is in the hold or the shock bay."
-msgstr "感測器只有放在貨艙或防震艙裡時，才會顯示二選一位移的方向。"
+msgid "The Sensor shows the fork step only while it is in the hold or the stasis bay."
+msgstr "感測器只有放在貨艙或靜滯艙裡時，才會顯示二選一位移的方向。"
 
 #: project/scenes/station/hints.gd
-msgid "Cargo in the shock bay does not slide, takes no hits, and has no mass. Only kit and scrap go in it."
-msgstr "防震艙裡的貨物不會滑動、不受撞擊，也不算載重。只有裝備和廢鐵能放進去。"
+msgid "Cargo in the stasis bay does not slide, takes no hits, and has no mass. Only kit and scrap go in it."
+msgstr "靜滯艙裡的貨物不會滑動、不受撞擊，也不算載重。只有裝備和廢鐵能放進去。"
 
 #: project/scenes/station/hints.gd
 msgid "An event: each choice has a cost and an effect. Read both before you pick."
@@ -749,16 +757,16 @@ msgid "Clamps {now}/{max} → {after}/{max}"
 msgstr "卡榫 {now}/{max} → {after}/{max}"
 
 #: project/scenes/station/shop_panel.gd
-msgid "Shock bay {now} → {after}"
-msgstr "防震艙 {now} → {after}"
+msgid "Stasis bay {now} → {after}"
+msgstr "靜滯艙 {now} → {after}"
 
 #: project/scenes/station/shop_panel.gd
 msgid "{columns}×{rows}"
 msgstr "{columns}×{rows}"
 
 #: project/scenes/station/shop_panel.gd
-msgid "Shock bay {now} (maximum)"
-msgstr "防震艙 {now}（最大）"
+msgid "Stasis bay {now} (maximum)"
+msgstr "靜滯艙 {now}（最大）"
 
 #: project/scenes/station/shop_panel.gd
 msgid "Mass limit {now} → {after}"
@@ -851,6 +859,14 @@ msgstr "沒有感測器：二選一位移又看不到了。"
 #: project/scenes/station/station_screen.gd
 msgid "Load all"
 msgstr "全部裝入"
+
+#: project/scenes/station/station_screen.gd
+msgid "Stasis Bay: kit and scrap"
+msgstr "靜滯艙：裝備、廢鐵"
+
+#: project/scenes/station/station_screen.gd
+msgid "Stasis Bay"
+msgstr "靜滯艙"
 
 #: project/scenes/station/top_bar.gd
 msgid "Leg {leg}/{legs}"

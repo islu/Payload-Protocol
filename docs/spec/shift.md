@@ -135,7 +135,8 @@ A **link** is a rule between two cargo that are next to each other.
 
 - At the station, a line connects each two cargo that have a link now: a Cooler and a Perishable cargo, and a Battery and a Shield.
 - A Perishable cargo with no Cooler next to it shows a warning icon.
-- A Shield with no power shows a "no power" icon.
+- A Shield with no power shows a "no power" icon. Its tooltip tells why: no Battery is next to it, or the Magnetic Storm.
+- In a Magnetic Storm, no line connects a Battery and a Shield: they have no link.
 - The hold marks the front wall of the first shift step of the next jump (Section 10.4) with yellow and black stripes on the bulkhead of that wall (Section 21.6).
 - Each cargo shows a warning icon when its wall jolt or a press in the first step would make it react (Sections 10.5 and 11). The station shows this for the first step only: the places in the next steps depend on the slides.
 
@@ -158,7 +159,7 @@ An **environment** is a rule of the route for all jumps of a leg.
 ### 28.1 When Environments Happen
 
 - Leg 1 has no environment. The seed selects one environment for leg 2 and one for leg 3. The two are not the same.
-- The station shows the environment of the leg in the top bar and on the route bar. The route bar shows its short rule, for example "Heat Zone: Volatile breaks at 2 · Fluid at 1". Its tooltip shows the full rule. The warp shows it in the banner before the first step.
+- The station shows the environment of the leg on the route bar, with its icon. The route bar shows its short rule, for example "Heat Zone: Volatile breaks at 2 · Fluid at 1". Its tooltip shows the full rule. The warp shows it in the banner before the first step.
 
 ### 28.2 The Environments
 

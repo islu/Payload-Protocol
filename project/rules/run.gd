@@ -23,9 +23,9 @@ const OFFER_BOUGHT_TEXT := "That offer is sold already."
 const NOT_ENOUGH_TEXT := "You do not have enough credits."
 const IN_DEBT_TEXT := "You cannot buy while your credits are below 0."
 const CLAMPS_MAXED_TEXT := "You have the most clamps already."
-const BAY_MAXED_TEXT := "The shock bay cannot grow more."
-const BAY_CLAMP_TEXT := "A cargo in the shock bay cannot have a clamp."
-const BAY_FREIGHT_TEXT := "Freight cannot go in the shock bay."
+const BAY_MAXED_TEXT := "The stasis bay cannot grow more."
+const BAY_CLAMP_TEXT := "A cargo in the stasis bay cannot have a clamp."
+const BAY_FREIGHT_TEXT := "Freight cannot go in the stasis bay."
 const NO_MOD_LEFT_TEXT := "The ship has each mod already."
 const LAST_STEP_TEXT := "The next jump has 1 shift step only."
 const NO_INCIDENT_TEXT := "The next jump has no incident."
@@ -65,7 +65,7 @@ var jump: int = 1
 var credits: int
 var clamps: int
 var columns: int
-## The size of the shock bay: (0, 0) with no shock bay (SPEC Section 31).
+## The size of the stasis bay: (0, 0) with no stasis bay (SPEC Section 31).
 var bay_size := Vector2i.ZERO
 var rows: int
 ## Cargo by ID: in the hold and on the dock.
@@ -197,7 +197,7 @@ func warp() -> String:
 	credits -= warp_log["fuel_fee"]
 	# The hold before the first shift step, so that the UI can play the log (SPEC Section 20.3).
 	warp_log["before"] = RunView.hold_views(self)
-	# The shock bay does not change in the warp: the UI shows it still (SPEC Section 31.2).
+	# The stasis bay does not change in the warp: the UI shows it still (SPEC Section 31.2).
 	warp_log["bay"] = RunView.bay_views(self)
 	Shift.charge_shields(self)
 	# The incident comes before the first shift step (SPEC Section 29).
@@ -361,12 +361,12 @@ func hold_cargo() -> Array[Cargo]:
 	return _cargo_in(false)
 
 
-## Returns the cargo in the shock bay, in the order of the IDs (SPEC Section 31).
+## Returns the cargo in the stasis bay, in the order of the IDs (SPEC Section 31).
 func bay_cargo() -> Array[Cargo]:
 	return _cargo_in(true)
 
 
-## Returns the cargo in the shock bay with bay, else in the hold, in the order of the IDs.
+## Returns the cargo in the stasis bay with bay, else in the hold, in the order of the IDs.
 func _cargo_in(bay: bool) -> Array[Cargo]:
 	var out: Array[Cargo] = []
 	var ids := cargo.keys()
@@ -378,14 +378,14 @@ func _cargo_in(bay: bool) -> Array[Cargo]:
 	return out
 
 
-## Returns the cargo of the ship: the hold, then the shock bay (SPEC Section 31.1).
+## Returns the cargo of the ship: the hold, then the stasis bay (SPEC Section 31.1).
 func ship_cargo() -> Array[Cargo]:
 	var out := hold_cargo()
 	out.append_array(bay_cargo())
 	return out
 
 
-## Returns the ID of the cargo in each cell of the hold, or of the shock bay, that has one.
+## Returns the ID of the cargo in each cell of the hold, or of the stasis bay, that has one.
 func occupancy(to_bay := false) -> Dictionary:
 	var occ := {}
 	for c in bay_cargo() if to_bay else hold_cargo():
@@ -398,12 +398,12 @@ func inside(c: Vector2i) -> bool:
 	return c.x >= 0 and c.y >= 0 and c.x < columns and c.y < rows
 
 
-## Reports whether a cell is inside the shock bay (SPEC Section 31.1).
+## Reports whether a cell is inside the stasis bay (SPEC Section 31.1).
 func _inside_bay(c: Vector2i) -> bool:
 	return c.x >= 0 and c.y >= 0 and c.x < bay_size.x and c.y < bay_size.y
 
 
-## Reports whether a cargo fits at a place of the hold or of the shock bay. It
+## Reports whether a cargo fits at a place of the hold or of the stasis bay. It
 ## ignores the cargo itself (SPEC Section 8.3).
 func fits(c: Cargo, pos: Vector2i, rot: int, to_bay := false) -> bool:
 	var occ := occupancy(to_bay)
@@ -435,9 +435,9 @@ func _station_cargo_error(id: int) -> String:
 	return ""
 
 
-## Moves a cargo from the dock, the hold, or the shock bay to a place in the hold or
-## in the shock bay (SPEC Sections 8.2 and 31.1). The clamp of the cargo moves with it
-## in the hold. A cargo in the shock bay has no clamp.
+## Moves a cargo from the dock, the hold, or the stasis bay to a place in the hold or
+## in the stasis bay (SPEC Sections 8.2 and 31.1). The clamp of the cargo moves with it
+## in the hold. A cargo in the stasis bay has no clamp.
 func place_cargo(id: int, pos: Vector2i, rot: int, to_bay := false) -> String:
 	var err := _station_cargo_error(id)
 	if err != "":
@@ -445,7 +445,7 @@ func place_cargo(id: int, pos: Vector2i, rot: int, to_bay := false) -> String:
 	if rot < 0 or rot > 3:
 		return BAD_ROTATION_TEXT
 	var c: Cargo = cargo[id]
-	# Only kit and scrap go in the shock bay (SPEC Section 31.1).
+	# Only kit and scrap go in the stasis bay (SPEC Section 31.1).
 	if to_bay and c.kind == Defs.KIND_FREIGHT:
 		return BAY_FREIGHT_TEXT
 	if not fits(c, pos, rot, to_bay):
@@ -667,14 +667,14 @@ func def_mass(def: CargoDef) -> int:
 
 
 ## Returns the mass of a cargo now. Scrap is light, also the scrap of a kit. Cargo in
-## the shock bay has no mass (SPEC Sections 25 and 31.1).
+## the stasis bay has no mass (SPEC Sections 25 and 31.1).
 func cargo_mass(c: Cargo) -> int:
 	if c.in_bay:
 		return 0
 	return cat.weight_value(c.weight()) * c.def.shape.size()
 
 
-## Returns the mass of the cargo in the hold. The shock bay and the dock do not count
+## Returns the mass of the cargo in the hold. The stasis bay and the dock do not count
 ## (SPEC Sections 25 and 31.1).
 func hold_mass() -> int:
 	var total := 0
@@ -776,7 +776,7 @@ func buy_clamp() -> String:
 	return ""
 
 
-## Returns the next purchase of the shock bay: {size: Vector2i, price}, or {} at its
+## Returns the next purchase of the stasis bay: {size: Vector2i, price}, or {} at its
 ## maximum (SPEC Section 17.2).
 func shock_bay_offer() -> Dictionary:
 	var level := cat.bay_sizes.find(bay_size) + 1
@@ -785,7 +785,7 @@ func shock_bay_offer() -> Dictionary:
 	return {"size": cat.bay_sizes[level], "price": cat.bay_prices[level]}
 
 
-## Installs the shock bay, or makes it larger (SPEC Sections 17.2 and 31.1).
+## Installs the stasis bay, or makes it larger (SPEC Sections 17.2 and 31.1).
 func buy_shock_bay() -> String:
 	if phase != Defs.PHASE_STATION:
 		return NOT_AT_STATION_TEXT

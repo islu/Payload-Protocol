@@ -140,7 +140,7 @@ func preview_links(id: int, x: int, y: int, rot: int, to_bay := false) -> Array:
 	return RunView.preview_links(run, id, Vector2i(x, y), rot, to_bay)
 
 
-## Places a cargo in the hold, or in the shock bay with to_bay (SPEC Sections 8.2 and 31.1).
+## Places a cargo in the hold, or in the stasis bay with to_bay (SPEC Sections 8.2 and 31.1).
 func place_cargo(id: int, x: int, y: int, rot: int, to_bay := false) -> String:
 	return _act(Defs.ACT_PLACE, [id, x, y, rot, to_bay])
 
@@ -189,7 +189,7 @@ func reinforce_hull() -> String:
 	return _act(Defs.ACT_REINFORCE)
 
 
-## Installs the shock bay, or makes it larger (SPEC Section 17.2).
+## Installs the stasis bay, or makes it larger (SPEC Section 17.2).
 func buy_shock_bay() -> String:
 	return _act(Defs.ACT_BUY_BAY)
 

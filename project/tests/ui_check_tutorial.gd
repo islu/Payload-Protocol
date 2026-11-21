@@ -52,6 +52,7 @@ static func check(ui: Node, main: Control) -> void:
 		(
 			not station._pilot_panel.is_visible_in_tree()
 			and not station._bottom_row.is_visible_in_tree()
+			and not station.controls_hint.is_visible_in_tree()
 			and station._shop.get_child_count() == 0
 		),
 		"the tutorial hides the pilot panel, the row under the hold, and Reroll (SPEC Section 23.4)"

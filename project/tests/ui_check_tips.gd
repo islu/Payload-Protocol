@@ -23,7 +23,21 @@ static func station(ui: Node, station: StationScreen) -> void:
 			"the focus on a contract button shows the details of the card (SPEC Section 20.10)"
 		)
 		station.hide_tip()
-	var read_only: Array[Control] = [station._top_bar.env_badge, station._clamp_row]
+	# The tooltip of a Shield with no power tells why (SPEC Section 12.3).
+	var shield := {"no_power": true, "no_power_why": RunView.STORM_TEXT}
+	for c: Dictionary in station.run_data["cargo"]:
+		shield.merge(c)
+		break
+	shield["no_power"] = true
+	shield["no_power_why"] = RunView.STORM_TEXT
+	if shield.has("shape"):
+		station._tip.show_cargo(shield, station.view_data)
+		ui._check(
+			ui.tr(RunView.STORM_TEXT) in station._tip.text(),
+			"the tooltip of a Shield with no power tells why (SPEC Section 12.3)"
+		)
+		station.hide_tip()
+	var read_only: Array[Control] = [station._clamp_row]
 	read_only.append_array(station._mod_bar.cards)
 	var band := station.route_bar.env_band
 	if band != null:

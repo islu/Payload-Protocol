@@ -71,7 +71,9 @@ func show_cargo(c: Dictionary, view: Dictionary) -> void:
 	if c.get("no_cooler", false):
 		lines.append("[color=#%s]%s[/color]" % [Palette.WARN.to_html(false), tr(NO_COOLER_TEXT)])
 	if c.get("no_power", false):
-		lines.append("[color=#%s]%s[/color]" % [Palette.WARN.to_html(false), tr(NO_POWER_TEXT)])
+		# Why it has no power: no Battery, or the Magnetic Storm (SPEC Section 12.3).
+		var why: String = c.get("no_power_why", NO_POWER_TEXT)
+		lines.append("[color=#%s]%s[/color]" % [Palette.WARN.to_html(false), tr(why)])
 	_label.text = "\n".join(lines)
 	visible = true
 	reset_size()

@@ -1,17 +1,17 @@
 class_name UiCheckBay
-## The shock bay part of the UI check (ui_check.gd). It is in its own file, so that
+## The stasis bay part of the UI check (ui_check.gd). It is in its own file, so that
 ## ui_check.gd stays under the line limit of gdlint.
 
 
-## Buys the shock bay. A drop of freight on it is not valid, and a kit goes in it
-## (SPEC Sections 17.2 and 31). The kit stays there, so that the warp shows the shock bay too.
+## Buys the stasis bay. A drop of freight on it is not valid, and a kit goes in it
+## (SPEC Sections 17.2 and 31). The kit stays there, so that the warp shows the stasis bay too.
 static func check(ui: Node, state: Node, station: StationScreen) -> void:
-	ui._check(not station.bay_view.visible, "before the purchase, the station shows no shock bay")
-	ui._check(state.buy_shock_bay() == "", "buy the shock bay (SPEC Section 17.2)")
+	ui._check(not station.bay_view.visible, "before the purchase, the station shows no stasis bay")
+	ui._check(state.buy_shock_bay() == "", "buy the stasis bay (SPEC Section 17.2)")
 	await ui.get_tree().process_frame
 	ui._check(
 		station.bay_view.visible,
-		"after the purchase, the station shows the shock bay (SPEC Section 31.2)"
+		"after the purchase, the station shows the stasis bay (SPEC Section 31.2)"
 	)
 	var bay := station.bay_view.get_global_rect()
 	var hold := station.hold_view
@@ -24,27 +24,81 @@ static func check(ui: Node, state: Node, station: StationScreen) -> void:
 			and bay.get_center().y > grid.position.y
 			and bay.get_center().y < grid.end.y
 		),
-		"the shock bay is at the left of the hold: %s, grid %s (SPEC Section 31.2)" % [bay, grid]
+		"the stasis bay is at the left of the hold: %s, grid %s (SPEC Section 31.2)" % [bay, grid]
 	)
+	var bay_grid := Rect2(
+		station.bay_view.global_position + station.bay_view.grid_origin(),
+		Vector2(station.bay_view.columns, station.bay_view.rows) * station.bay_view.cell
+	)
+	ui._check(
+		absf(bay_grid.get_center().y - grid.get_center().y) < 2.0,
+		(
+			"the stasis bay is at the vertical center of the hold: %d, %d (SPEC Section 31.2)"
+			% [bay_grid.get_center().y, grid.get_center().y]
+		)
+	)
+	var title := station.bay_title
+	ui._check(
+		(
+			title != null
+			and title.is_visible_in_tree()
+			and ui.tr(StationScreen.BAY_TITLE_TEXT) in title.text
+		),
+		"a title above the stasis bay names what it takes (SPEC Section 31.2)"
+	)
+	if title != null:
+		title.mouse_entered.emit()
+		ui._check(
+			station._tip.visible and ui.tr(StationScreen.BAY_RULE_TEXT) in station._tip.text(),
+			"the tooltip of the stasis bay shows its rules (SPEC Section 31.2)"
+		)
+		title.mouse_exited.emit()
 	var freight := _on_dock(state, true)
 	if not freight.is_empty():
 		ui._check(
 			not await _drop_in_bay(ui, state, station, freight),
-			"a drop of freight on the shock bay is not valid (SPEC Section 31.1)"
+			"a drop of freight on the stasis bay is not valid (SPEC Section 31.1)"
 		)
 	var kit := _on_dock(state, false)
 	if kit.is_empty():
 		for o: Dictionary in state.view()["run"]["shop"]["offers"]:
 			if o["afford"] and not o["bought"] and o["shape"].size() <= 2:
-				ui._check(state.buy_kit(o["index"]) == "", "buy a kit for the shock bay")
+				ui._check(state.buy_kit(o["index"]) == "", "buy a kit for the stasis bay")
 				break
 		await ui.get_tree().process_frame
 		kit = _on_dock(state, false)
-	ui._check(not kit.is_empty(), "the dock has a kit for the shock bay")
+	ui._check(not kit.is_empty(), "the dock has a kit for the stasis bay")
 	if not kit.is_empty():
 		ui._check(
 			await _drop_in_bay(ui, state, station, kit),
-			"a drop of a kit on the shock bay puts it in (SPEC Section 31.1)"
+			"a drop of a kit on the stasis bay puts it in (SPEC Section 31.1)"
+		)
+		await _check_bay_hover(ui, state, station, kit)
+
+
+## The mouse on each cell of a cargo in the stasis bay shows its frame, also at the right
+## of the bay, near the hold (SPEC Section 4.2).
+static func _check_bay_hover(
+	ui: Node, state: Node, station: StationScreen, kit: Dictionary
+) -> void:
+	var c: Dictionary = {}
+	for d: Dictionary in state.view()["run"]["cargo"]:
+		if d["id"] == kit["id"]:
+			c = d
+	if c.is_empty() or not c["in_bay"]:
+		return
+	for s: Dictionary in c["shape"]:
+		var at := station.bay_view.cell_global(
+			Vector2(c["x"] + s["x"], c["y"] + s["y"]) + Vector2(0.75, 0.5)
+		)
+		var motion := InputEventMouseMotion.new()
+		motion.position = at
+		motion.global_position = at
+		ui.get_viewport().push_input(motion, true)
+		await ui.get_tree().process_frame
+		ui._check(
+			station.bay_view.frame_cells().size() == c["shape"].size(),
+			"the mouse on a cargo in the stasis bay shows its frame at %s (SPEC Section 4.2)" % at
 		)
 
 
@@ -58,7 +112,7 @@ static func _on_dock(state: Node, freight: bool) -> Dictionary:
 	return {}
 
 
-## Drags a cargo of the dock onto the shock bay. Reports whether it is in the shock bay.
+## Drags a cargo of the dock onto the stasis bay. Reports whether it is in the stasis bay.
 static func _drop_in_bay(ui: Node, state: Node, station: StationScreen, c: Dictionary) -> bool:
 	var first: Dictionary = c["rotations"][c["rot"]][0]
 	var grab := Vector2(first["x"], first["y"])

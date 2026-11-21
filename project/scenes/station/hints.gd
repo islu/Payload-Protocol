@@ -28,9 +28,9 @@ const HINT_TEXT := {
 	FORK: "The last step is a fork: one of two directions. A Sensor in the hold shows which one.",
 	LONG: "A LONG contract stays in the hold for more than one jump. It pays at its last jump.",
 	VIP: "A VIP contract pays a penalty for each piece that does not arrive intact.",
-	SENSOR: "The Sensor shows the fork step only while it is in the hold or the shock bay.",
+	SENSOR: "The Sensor shows the fork step only while it is in the hold or the stasis bay.",
 	BAY:
-	"Cargo in the shock bay does not slide, takes no hits, and has no mass. Only kit and scrap go in it.",
+	"Cargo in the stasis bay does not slide, takes no hits, and has no mass. Only kit and scrap go in it.",
 	EVENT: "An event: each choice has a cost and an effect. Read both before you pick.",
 	MOD: "A mod changes a rule of the ship for the rest of the run. Pick one.",
 }

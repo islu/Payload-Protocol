@@ -29,8 +29,8 @@ const ACTIONS := {
 	"buy": "buy <offer>",
 	"reroll": "reroll",
 	"buyclamp": "buyclamp",
-	"placebay": "placebay <cargo> <x> <y> [rot 0-3] (puts it in the shock bay)",
-	"bay": "bay (buys the shock bay, or makes it larger)",
+	"placebay": "placebay <cargo> <x> <y> [rot 0-3] (puts it in the stasis bay)",
+	"bay": "bay (buys the stasis bay, or makes it larger)",
 	"reinforce": "reinforce (adds to the mass limit)",
 	"loadall": "loadall (puts each dock cargo in the first place that fits)",
 	"sell": "sell <kit>",
@@ -373,7 +373,7 @@ func _render_run(run: Run) -> void:
 			var mod_names: Array = sh["mods"].map(func(m: Dictionary) -> String: return m["name"])
 			_say(
 				(
-					"Ship: mods %s, clamps %d, shock bay %s, mass limit %d"
+					"Ship: mods %s, clamps %d, stasis bay %s, mass limit %d"
 					% [mod_names, sh["clamps"], sh["shock_bay"], sh["mass_limit"]]
 				)
 			)
@@ -486,7 +486,7 @@ func _render_station(v: Dictionary) -> void:
 	_say(
 		(
 			(
-				"  reroll %d · clamp %d (max %d) · shock bay %s · reinforce +%d mass for %d"
+				"  reroll %d · clamp %d (max %d) · stasis bay %s · reinforce +%d mass for %d"
 				+ " · clear scrap %d/cell · sell kit at half"
 			)
 			% [
@@ -533,14 +533,14 @@ func _render_hold(v: Dictionary) -> void:
 		_say("  link %s: %s-%s" % [l["kind"], str(l["from"]), str(l["to"])])
 
 
-## The shock bay: its own cells from (0, 0). The warp does not move or hit it (SPEC Section 31).
+## The stasis bay: its own cells from (0, 0). The warp does not move or hit it (SPEC Section 31).
 func _render_bay(v: Dictionary) -> void:
 	var size: Dictionary = v["shock_bay"]
 	if size.is_empty():
 		return
 	var grid := _grid(size["columns"], size["rows"], v["cargo"], true)
 	_say(
-		"Shock bay %dx%d (no slide, no hits; command: placebay):" % [size["columns"], size["rows"]]
+		"Stasis bay %dx%d (no slide, no hits; command: placebay):" % [size["columns"], size["rows"]]
 	)
 	for y: int in size["rows"]:
 		_say(("  %d %s" % [y, " ".join(grid[y])]).strip_edges(false, true))
@@ -549,7 +549,7 @@ func _render_bay(v: Dictionary) -> void:
 			_say("  " + _cargo_line(c))
 
 
-## Returns the rows of an area (the hold, or the shock bay with in_bay): "." for an
+## Returns the rows of an area (the hold, or the stasis bay with in_bay): "." for an
 ## empty cell, and the ID of the cargo in a cell. Each cell has the same width.
 func _grid(cols: int, rows: int, cargo: Array, in_bay: bool) -> Array:
 	var w := _cell_width(cargo)

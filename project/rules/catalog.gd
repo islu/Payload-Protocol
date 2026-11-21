@@ -21,7 +21,7 @@ var start_credits: int
 var start_clamps: int
 var start_columns: int
 var start_rows: int
-## The sizes of the shock bay after each purchase, and their prices (SPEC Section 31.1).
+## The sizes of the stasis bay after each purchase, and their prices (SPEC Section 31.1).
 var bay_sizes: Array[Vector2i] = []
 var bay_prices: Array[int] = []
 var weights: Dictionary = {}
@@ -379,10 +379,10 @@ func _check_rules() -> void:
 	if start_columns < 1 or start_rows < 1:
 		_fail("rules: the hold sizes are not valid")
 	if bay_sizes.is_empty() or bay_sizes.size() != bay_prices.size():
-		_fail("rules: the shock bay needs a price for each size")
+		_fail("rules: the stasis bay needs a price for each size")
 	for size in bay_sizes:
 		if size.x < 1 or size.y < 1:
-			_fail("rules: a shock bay size must be 1×1 or more")
+			_fail("rules: a stasis bay size must be 1×1 or more")
 	for w in Defs.WEIGHTS:
 		if weight_value(w) < 1:
 			_fail("rules: the weight %s needs a value" % w)

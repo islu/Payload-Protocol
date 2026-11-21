@@ -8,7 +8,7 @@ var def: CargoDef
 var kind: String
 var rot: int = 0
 var pos := Vector2i.ZERO
-## Where the cargo is: in the hold, in the shock bay, or on the dock (both false).
+## Where the cargo is: in the hold, in the stasis bay, or on the dock (both false).
 var in_hold := false
 var in_bay := false
 var clamped := false
@@ -29,7 +29,7 @@ func shape() -> Array[Vector2i]:
 	return Shapes.rotate(def.shape, rot)
 
 
-## Returns the cells in its area: the hold or the shock bay. Each area has its own
+## Returns the cells in its area: the hold or the stasis bay. Each area has its own
 ## cells from (0, 0) (SPEC Section 31.1).
 func cells() -> Array[Vector2i]:
 	return Shapes.cells_at(def.shape, rot, pos)

@@ -207,13 +207,14 @@ func _play_warp(main: Control) -> void:
 		while Time.get_ticks_msec() < until:
 			for fx: Dictionary in warp._top_fx._fx:
 				if fx["kind"] == "sheet" and fx["sheet"] == FxSheets.sheet("coin"):
-					inside = report.has_point(warp._top_fx.get_global_transform() * fx["at"])
+					var credits := warp._report.credits_label.get_global_rect().grow(24.0)
+					inside = credits.has_point(warp._top_fx.get_global_transform() * fx["at"])
 			if inside:
 				break
 			await get_tree().process_frame
 		_check(
 			inside and warp._top_fx.get_index() > warp._report.get_index(),
-			"the gold sparkle is on the arrival report, in front of it (SPEC Section 21.4)"
+			"the gold sparkle is on the credits of the report, in front of it (SPEC Section 21.4)"
 		)
 	# The hold moves in 0.4 seconds, and the delivered freight fades in 0.6 seconds.
 	_finish_tweens()
@@ -795,7 +796,7 @@ func _check_shop(station: StationScreen) -> void:
 				GameText.format(o["helps"]) in card["text"],
 				"a kit card shows how it helps the freight (SPEC Section 20.2)"
 			)
-	# A price that is more than the credits shows in red: the view says so. The shock bay
+	# A price that is more than the credits shows in red: the view says so. The stasis bay
 	# check bought a kit: the fake view has no bought kit.
 	for o: Dictionary in station.run_data["shop"]["offers"]:
 		o["afford"] = false
@@ -834,7 +835,7 @@ func _check_shop(station: StationScreen) -> void:
 			bay_after.is_empty()
 			or "%d×%d" % [bay_after["columns"], bay_after["rows"]] in texts.get("bay", "")
 		),
-		"the shock bay service shows the size after the purchase (SPEC Section 20.2)"
+		"the stasis bay service shows the size after the purchase (SPEC Section 20.2)"
 	)
 	# The sell area is a small bar. A drag colors it.
 	_check(

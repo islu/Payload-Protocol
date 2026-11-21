@@ -2,9 +2,9 @@ class_name TopBar
 extends HBoxContainer
 ## The top bar of the station: four groups (SPEC Section 20.2). (1) The leg, and a
 ## dot for each jump. (2) The credits, and a bar of the credits against the payment.
-## (3) A bar of the hold mass, with a mark at the mass limit. (4) The environment.
-## It reads the run view only. The scene shows the values; it calculates none. The
-## station shows the rule of the environment in its tip.
+## (3) A bar of the hold mass, with a mark at the mass limit. The environment of the
+## leg is on the route bar (SPEC Section 28.1). It reads the run view only. The scene
+## shows the values; it calculates none.
 
 const LEG_TEXT := "Leg {leg}/{legs}"
 const CREDITS_TEXT := "Credits: {credits}"
@@ -19,14 +19,11 @@ var groups: Array[Control] = []
 var dots: JumpDots
 var pay_bar: Gauge
 var mass_bar: Gauge
-var env_badge: PanelContainer
 var credits_label: Label
 
 var _leg_label: Label
 var _payment_label: Label
 var _mass_label: Label
-var _env_icon: EnvIcon
-var _env_name: Label
 
 
 func _init() -> void:
@@ -44,12 +41,6 @@ func _init() -> void:
 	_mass_label = _text(mass, TextSize.BODY, Palette.TEXT)
 	mass_bar = Gauge.new()
 	_row(mass).add_child(mass_bar)
-	env_badge = _group()
-	env_badge.name = "Environment"
-	env_badge.mouse_filter = Control.MOUSE_FILTER_STOP
-	_env_icon = EnvIcon.new()
-	_row(env_badge).add_child(_env_icon)
-	_env_name = _text(env_badge, TextSize.BODY, Palette.WARN)
 
 
 ## Shows the values of the run view, but the credits: set_credits() counts them.
@@ -73,12 +64,6 @@ func set_view(run: Dictionary) -> void:
 	_mass_label.text = " · ".join(parts)
 	_mass_label.add_theme_color_override("font_color", color)
 	mass_bar.set_values(m["hold"], m["max"], [m["limit"]], color)
-	var env: Dictionary = run.get("environment", {})
-	env_badge.visible = not env.is_empty()
-	if not env.is_empty():
-		_env_icon.env = env["id"]
-		_env_icon.queue_redraw()
-		_env_name.text = tr(env["name"])
 
 
 func set_credits(value: int) -> void:
@@ -162,37 +147,3 @@ class Gauge:
 		for at: int in marks:
 			var x := r.size.x * clampf(float(at) / maxf(1.0, maximum), 0.0, 1.0)
 			draw_line(Vector2(x, r.position.y - 4), Vector2(x, r.end.y + 4), Palette.TEXT, 2.0)
-
-
-## A small icon for each environment (SPEC Section 28.2).
-class EnvIcon:
-	extends Control
-	var env := ""
-
-	func _init() -> void:
-		custom_minimum_size = Vector2(24, 24)
-
-	func _draw() -> void:
-		var c := size / 2.0
-		var col := Palette.WARN
-		match env:
-			Defs.ENV_LOW_GRAVITY:
-				draw_arc(c + Vector2(0, 3), 6.0, 0.0, TAU, 16, col, 2.0)
-				draw_line(c + Vector2(0, -3), c + Vector2(0, -10), col, 2.0)
-				draw_line(c + Vector2(-3, -7), c + Vector2(0, -10), col, 2.0)
-				draw_line(c + Vector2(3, -7), c + Vector2(0, -10), col, 2.0)
-			Defs.ENV_MAGNETIC_STORM:
-				draw_arc(c + Vector2(0, -1), 7.0, 0.0, PI, 16, col, 3.0)
-				draw_line(c + Vector2(-7, -1), c + Vector2(-7, -8), col, 3.0)
-				draw_line(c + Vector2(7, -1), c + Vector2(7, -8), col, 3.0)
-			Defs.ENV_RADIATION_BELT:
-				for i in 3:
-					var a := -PI / 2.0 + i * TAU / 3.0
-					draw_arc(c, 7.0, a - 0.5, a + 0.5, 8, col, 5.0)
-				draw_circle(c, 2.0, col)
-			Defs.ENV_HEAT_ZONE:
-				var pts := PackedVector2Array(
-					[c + Vector2(0, -10), c + Vector2(7, 6), c + Vector2(-7, 6)]
-				)
-				draw_colored_polygon(pts, col)
-				draw_circle(c + Vector2(0, 4), 3.0, Palette.BACKGROUND)

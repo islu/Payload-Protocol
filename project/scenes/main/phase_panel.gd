@@ -28,7 +28,7 @@ const LEG_PAYMENT_TEXT := "Payment {payment}"
 const LEG_NET_TEXT := "Net {net}"
 const MODS_TEXT := "Mods: {mods}"
 const NO_MODS_TEXT := "No mods"
-const SHIP_TEXT := "Clamps {clamps} · Shock bay {bay} · Mass limit {mass}"
+const SHIP_TEXT := "Clamps {clamps} · Stasis bay {bay} · Mass limit {mass}"
 const NO_BAY_TEXT := "none"
 const SEED_TEXT := "Seed {seed}"
 const COPY_TEXT := "Copy"
@@ -289,7 +289,7 @@ func _leg_row(parent: Control, l: Dictionary) -> Control:
 	return row
 
 
-## The ship: the mods, the clamps, the shock bay, the mass limit, and the seed with
+## The ship: the mods, the clamps, the stasis bay, the mass limit, and the seed with
 ## a Copy button (SPEC Section 19.2).
 func _ship(e: Dictionary) -> void:
 	var ship: Dictionary = e["ship"]

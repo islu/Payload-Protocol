@@ -169,7 +169,7 @@ func _mod_choice() -> void:
 	GameState.set_up(_set_route)
 	await _wait(0.6)
 	await _shot("12_station_route")
-	# The shock bay above the hold, with a cargo in it (SPEC Section 31.2).
+	# The stasis bay above the hold, with a cargo in it (SPEC Section 31.2).
 	GameState.set_up(_set_bay)
 	await _wait(0.6)
 	await _shot("13_station_bay")
@@ -196,10 +196,10 @@ func _mod_choice() -> void:
 	await _shot("15_tutorial_target")
 
 
-## Opens the event of the netrunner: a bust portrait.
+## Opens the event of the alien: a bust portrait.
 func _set_bust_event(r: Run) -> void:
 	for e in r.cat.events:
-		if e.id == "netrunner_hack":
+		if e.id == "first_contact":
 			r.event = e
 	r.phase = Defs.PHASE_EVENT
 

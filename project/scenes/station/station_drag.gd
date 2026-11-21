@@ -120,7 +120,7 @@ func rotate() -> void:
 	update()
 
 
-## Moves the drag to the mouse, and shows the preview over the hold or the shock bay
+## Moves the drag to the mouse, and shows the preview over the hold or the stasis bay
 ## (SPEC Sections 8.3 and 31.1). The UI check gives the global position of the mouse.
 func update(mouse := Vector2.INF) -> void:
 	if mouse == Vector2.INF:
@@ -150,7 +150,7 @@ func update(mouse := Vector2.INF) -> void:
 	target.queue_redraw()
 
 
-## Returns the area under the mouse: the shock bay, the hold, or null. The shock bay
+## Returns the area under the mouse: the stasis bay, the hold, or null. The stasis bay
 ## is first: it is small, and it is above the margin of the hold.
 func _target(mouse: Vector2) -> HoldView:
 	if _screen.bay_view.visible and _screen.bay_view.is_over(mouse):
@@ -201,7 +201,7 @@ func drop_at(mouse: Vector2) -> void:
 	# A drop anywhere else leaves the cargo in its last place (SPEC Section 8.3).
 
 
-## After a drop over the hold or the shock bay that is not valid, the player keeps the
+## After a drop over the hold or the stasis bay that is not valid, the player keeps the
 ## cargo: it follows the mouse, and it shakes (SPEC Section 8.3).
 func _keep(drag: Dictionary, mouse: Vector2) -> void:
 	state = drag
@@ -227,8 +227,11 @@ func end() -> void:
 	state = {}
 	_preview_key = []
 	_screen.show_sell({})
+	var mouse := _screen.get_global_mouse_position()
 	for view: HoldView in [_screen.hold_view, _screen.bay_view]:
 		view.dragging = -1
 		view.preview = {}
+		# After a drop, the frame follows the mouse at once (SPEC Section 4.2).
+		view.refresh_hover(mouse)
 	_screen.drag_layer.stop()
 	_screen.update_marks()

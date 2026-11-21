@@ -25,17 +25,20 @@ static func check(ui: Node, station: StationScreen) -> void:
 	)
 	var env: Dictionary = run["environment"]
 	ui._check(
-		bar.env_badge.visible != env.is_empty(),
-		"group 4 shows the environment of the leg, if it has one (SPEC Sections 20.2 and 28.1)"
+		bar.find_child("Environment", true, false) == null,
+		"the top bar shows no environment: the route bar has it (SPEC Section 20.2)"
 	)
 	if not env.is_empty():
-		bar.env_badge.mouse_entered.emit()
-		ui._check(
-			station._tip.visible and tr_text(env["text"]) in station._tip.text(),
-			"the mouse on the badge shows the rule of the environment (SPEC Section 28.1)"
-		)
-		bar.env_badge.mouse_exited.emit()
 		var tag := station.route_bar.find_child("Environment", true, false) as Control
+		ui._check(
+			(
+				tag != null
+				and tag.find_children("*", "Control", true, false).any(
+					func(n: Node) -> bool: return n is RouteCards.EnvIcon
+				)
+			),
+			"the route bar shows the icon of the environment (SPEC Section 28.1)"
+		)
 		if tag != null:
 			tag.mouse_entered.emit()
 			ui._check(

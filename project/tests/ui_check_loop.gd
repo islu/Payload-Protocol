@@ -115,6 +115,27 @@ static func choose(ui: Node, main: Control) -> void:
 		var station: StationScreen = main.screen()
 		station.refresh()
 		var bar: ModBar = station._mod_bar
+		var hint := station.controls_hint.get_global_rect()
+		ui._check(
+			hint.position.y >= bar.get_global_rect().end.y,
+			"the controls hint is not on the row of the mod bar (SPEC Section 20.2)"
+		)
+		ui._check(
+			hint.end.y > ui.get_viewport().get_visible_rect().size.y - 60.0,
+			"the controls hint is at the bottom of the screen: %d (SPEC Section 20.2)" % hint.end.y
+		)
+		var hold := station.hold_view
+		var bottom := hold.global_position.y + hold.grid_origin().y + hold.rows * hold.cell
+		ui._check(
+			(
+				bar.cards.is_empty()
+				or bar.get_global_rect().position.y - (bottom + HoldView.FRAME) < 36.0
+			),
+			(
+				"the mod bar is right below the bottom bulkhead: %d, %d (SPEC Section 20.2)"
+				% [bar.get_global_rect().position.y, bottom + HoldView.FRAME]
+			)
+		)
 		ui._check(
 			bar.cards.size() == run["mods"].size(),
 			"the mod bar has a card for each mod (SPEC Section 20.2)"
@@ -153,13 +174,11 @@ static func route_station(ui: Node, station: StationScreen) -> int:
 	var seen := 0
 	if not run["environment"].is_empty():
 		seen = 1
-		ui._check(
-			station._top_bar.env_badge.visible,
-			"the top bar shows the environment of the leg (SPEC Section 28.1)"
-		)
+
 		var tag := station.route_bar.find_child("Environment", true, false)
 		ui._check(tag != null, "the route bar shows the environment (SPEC Section 28.1)")
-		var label: Label = tag.find_child("*", true, false) if tag != null else null
+		var labels := tag.find_children("*", "Label", true, false) if tag != null else []
+		var label: Label = labels[0] if not labels.is_empty() else null
 		ui._check(
 			label != null and ui.tr(run["environment"].get("short", "?")) in label.text,
 			"the route bar shows the short rule of the environment (SPEC Section 28.1)"

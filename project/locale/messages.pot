@@ -72,15 +72,15 @@ msgid "You have the most clamps already."
 msgstr ""
 
 #: project/rules/run.gd
-msgid "The shock bay cannot grow more."
+msgid "The stasis bay cannot grow more."
 msgstr ""
 
 #: project/rules/run.gd
-msgid "A cargo in the shock bay cannot have a clamp."
+msgid "A cargo in the stasis bay cannot have a clamp."
 msgstr ""
 
 #: project/rules/run.gd
-msgid "Freight cannot go in the shock bay."
+msgid "Freight cannot go in the stasis bay."
 msgstr ""
 
 #: project/rules/run.gd
@@ -153,6 +153,14 @@ msgstr ""
 
 #: project/rules/run_view.gd
 msgid "The next jump has a fork step"
+msgstr ""
+
+#: project/rules/run_view.gd
+msgid "No power: no Battery is next to it."
+msgstr ""
+
+#: project/rules/run_view.gd
+msgid "No power: the Magnetic Storm."
 msgstr ""
 
 #: project/rules/run_view.gd
@@ -458,7 +466,7 @@ msgid "No mods"
 msgstr ""
 
 #: project/scenes/main/phase_panel.gd
-msgid "Clamps {clamps} · Shock bay {bay} · Mass limit {mass}"
+msgid "Clamps {clamps} · Stasis bay {bay} · Mass limit {mass}"
 msgstr ""
 
 #: project/scenes/main/phase_panel.gd
@@ -663,11 +671,11 @@ msgid "A VIP contract pays a penalty for each piece that does not arrive intact.
 msgstr ""
 
 #: project/scenes/station/hints.gd
-msgid "The Sensor shows the fork step only while it is in the hold or the shock bay."
+msgid "The Sensor shows the fork step only while it is in the hold or the stasis bay."
 msgstr ""
 
 #: project/scenes/station/hints.gd
-msgid "Cargo in the shock bay does not slide, takes no hits, and has no mass. Only kit and scrap go in it."
+msgid "Cargo in the stasis bay does not slide, takes no hits, and has no mass. Only kit and scrap go in it."
 msgstr ""
 
 #: project/scenes/station/hints.gd
@@ -728,7 +736,7 @@ msgid "Clamps {now}/{max} → {after}/{max}"
 msgstr ""
 
 #: project/scenes/station/shop_panel.gd
-msgid "Shock bay {now} → {after}"
+msgid "Stasis bay {now} → {after}"
 msgstr ""
 
 #: project/scenes/station/shop_panel.gd
@@ -736,7 +744,7 @@ msgid "{columns}×{rows}"
 msgstr ""
 
 #: project/scenes/station/shop_panel.gd
-msgid "Shock bay {now} (maximum)"
+msgid "Stasis bay {now} (maximum)"
 msgstr ""
 
 #: project/scenes/station/shop_panel.gd
@@ -825,6 +833,14 @@ msgstr ""
 
 #: project/scenes/station/station_screen.gd
 msgid "Load all"
+msgstr ""
+
+#: project/scenes/station/station_screen.gd
+msgid "Stasis Bay: kit and scrap"
+msgstr ""
+
+#: project/scenes/station/station_screen.gd
+msgid "Stasis Bay"
 msgstr ""
 
 #: project/scenes/station/top_bar.gd

@@ -17,17 +17,18 @@ The station screen has these areas:
 
 | Area | Position | Content |
 | --- | --- | --- |
-| Top bar | Top | Four groups: (1) the leg, and a dot for each jump of the leg; (2) the credits, and a bar of the credits against the payment of this leg, with the jumps before the payment; (3) a bar of the hold mass, with a mark at the mass limit and a mark at the maximum (Section 25); (4) a badge with the icon and the name of the environment of the leg, with its rule when the mouse is on it (Section 28). A gear button at the right opens the pause menu (Section 20.7). |
+| Top bar | Top | Four groups: (1) the leg, and a dot for each jump of the leg; (2) the credits, and a bar of the credits against the payment of this leg, with the jumps before the payment; (3) a bar of the hold mass, with a mark at the mass limit and a mark at the maximum (Section 25). The environment of the leg is on the route bar (Section 28.1). A gear button at the right opens the pause menu (Section 20.7). |
 | Pilot box | Bottom left | The portrait and the line of the pilot, in a wide box (Section 22). |
 | Route bar | Center, above the hold | The route of the next jump, from left to right: the depart point (the ship), the incident (Section 29), each shift step in order (Section 18), and the arrive point (the station). A line joins the points. Each step is a card with a large arrow, its number, and its direction. A fork step shows its two directions and a question mark. The environment of the leg is a band below the line (Section 28). |
 | Contract board | Left, top | The 4 contracts, with Accept and Cancel buttons (Section 15). |
 | Dock | Left, below the contract board, above the pilot box | The cargo on the dock (Section 8.1). |
 | Hold | Center | The grid and its cargo, the links, and the clamps, inside a bulkhead (Section 21.6). Each cell is 100 pixels, the size of the cargo images (Section 4.2). |
-| Shock bay | Left of the hold | The cells of the shock bay, after its purchase (Section 31.2). |
-| Mod bar | Below the hold | A card with the icon of each mod of the ship (Section 27). The mouse on a card shows the name and the rule of the mod, and marks the area of the mod on the hold. |
+| Stasis bay | Left of the hold | The cells of the stasis bay, after its purchase (Section 31.2). |
+| Mod bar | Right below the bottom bulkhead of the hold | A card with the icon of each mod of the ship (Section 27). The mouse on a card shows the name and the rule of the mod, and marks the area of the mod on the hold. |
 | Shop | Right | The kit offers, Reroll, the services, and the sell area (Section 17). |
 | Clamp panel | Right, below the services | The free clamps and their count (Section 13). The mouse on them shows how to use a clamp. |
 | Launch button | Bottom right | Starts the warp (Section 9). Its text is "Launch". The warp checklist is above it. |
+| Controls hint | Bottom center | One line of the mouse and keyboard controls. It is not on the row of the mod bar. |
 
 Contracts and the dock:
 
@@ -46,8 +47,8 @@ The hazard:
 The shop and the services:
 
 - Each kit offer shows its image, the icon of each trait, its weight, and its price on the Buy button. Its tooltip shows the rule of each trait (Section 20.10). A price that is more than the credits shows in red.
-- Each kit offer shows how it helps the accepted freight on the dock and in the hold: "Helps N of your freight". A Cooler counts Perishable freight. A Cushion counts Fragile freight. A Shield counts freight that is Fragile, Volatile, Fluid, or Electronic. A Battery counts the Shield kit on the dock and in the hold. A Sensor shows "The next jump has a fork step" when it does. Other kit and a count of 0 show nothing.
-- Each service shows the value now and the value after the purchase: the clamps (1/4 → 2/4), the shock bay (none → 2×2, or 2×2 → 2×3), and the mass limit (24 → 30).
+- Each kit offer shows how it helps the accepted freight on the dock and in the hold: "Helps N of your freight". A Cooler counts Perishable freight. A Cushion counts Fragile freight. A Shield counts freight that is Fragile, Volatile, Fluid, or Electronic. A Battery counts the Shield kit on the dock and in the hold. In a Magnetic Storm, a Shield and a Battery help nothing (Section 28.2). A Sensor shows "The next jump has a fork step" when it does. Other kit and a count of 0 show nothing.
+- Each service shows the value now and the value after the purchase: the clamps (1/4 → 2/4), the stasis bay (none → 2×2, or 2×2 → 2×3), and the mass limit (24 → 30).
 - The sell area is a small bar. During a drag of a kit, it is green and shows the sell price. During a drag of a scrap, it is red and shows the clear price.
 
 The warp:
@@ -160,7 +161,7 @@ The warp:
 
 ### 21.4 Station
 
-- A purchase plays a coin sound. A sale and a delivery play a coin sound too. Each coin sound shows a gold sparkle: at the credits on the station, and at the title of the arrival report.
+- A purchase plays a coin sound. A sale and a delivery play a coin sound too. Each coin sound shows a gold sparkle: at the credits on the station, and at the credits of the arrival report, where the coins land.
 - The credits count up or down in the top bar.
 - The link lines glow and move slowly.
 
@@ -175,7 +176,7 @@ The warp:
 
 - The hold has a metal **bulkhead** on each side: a frame with a rivet at each grid line and a bracket at each corner. All sides look the same. Only the marks of Sections 12.3 and 20.2 put stripes on a bulkhead.
 - Each cell of the floor is a deck plate with a screw at each corner. The grid lines stay. The plates have a low contrast, so that the cargo is easy to see.
-- The shock bay has the deck plates, its padded frame of Section 31.2, and no lights.
+- The stasis bay has the deck plates, its padded frame of Section 31.2, and no lights.
 - Each bulkhead has 2 lights. At the station, the lights are dark blue. In the warp:
   - When a shift step starts, the lights of its front wall are amber until the slide ends.
   - A hit on a wall (a slide into the wall or a wall jolt) flashes the lights of that wall white.
@@ -216,7 +217,7 @@ The warp:
 ### 23.3 Hints
 
 - When hints are on, the pilot gives hints in the first runs. Each hint is for a new thing that the tutorial does not teach (Section 23.4). It shows the first time that the player sees that thing.
-- The hints are: a mod choice, an event, an environment, an incident, a fork step, the Sensor, the shock bay, a long contract, and a VIP contract.
+- The hints are: a mod choice, an event, an environment, an incident, a fork step, the Sensor, the stasis bay, a long contract, and a VIP contract.
 - The hint of an event or a mod choice shows in its panel, above the text. It wraps to the width of the panel. It does not cover the station.
 - After the first win or the first 3 runs, the game turns hints off. The player can turn them on in the settings.
 

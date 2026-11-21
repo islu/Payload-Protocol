@@ -8,7 +8,7 @@ This file is part of the [game specification](../spec.md). The section numbers a
   - Credits: 40.
   - Clamps: 1.
   - The hold: 6 columns and 6 rows, empty.
-  - Shock bay: none (Section 31).
+  - Stasis bay: none (Section 31).
   - Kit: none.
 - A new run gets a random seed. The run end screen shows the seed (Section 19.2).
 - The first station of the run has contracts and the shop, as each station has.
@@ -76,7 +76,7 @@ The arrival has these steps, in this order:
 | Service | Rule | First price |
 | --- | --- | --- |
 | **Buy a clamp** | Adds 1 clamp. The maximum is 4 clamps. | 8 credits |
-| **Shock bay** | The first purchase installs a shock bay of 2×2 cells. The second purchase makes it 2×3: 2 columns and 3 rows (Section 31). | 20 credits. The second purchase costs 30 credits. |
+| **Stasis bay** | The first purchase installs a stasis bay of 2×2 cells. The second purchase makes it 2×3: 2 columns and 3 rows (Section 31). | 20 credits. The second purchase costs 30 credits. |
 | **Reinforce hull** | Adds 6 to the mass limit (Section 25). | 12 credits. Each one costs 8 credits more than the last one. |
 
 ### 17.3 Sell
@@ -115,9 +115,9 @@ The arrival has these steps, in this order:
 
 ### 18.1 Sensor
 
-- When a Sensor that is not scrap is in the hold or in the shock bay, the station shows the direction of the fork step that will happen.
+- When a Sensor that is not scrap is in the hold or in the stasis bay, the station shows the direction of the fork step that will happen.
 - When the player takes the Sensor out of the hold, the station shows the fork step as two directions again.
-- When an action takes the last Sensor out of the hold and the shock bay, and the fork step was known, the station shows a warning: "No Sensor: the fork step is hidden again."
+- When an action takes the last Sensor out of the hold and the stasis bay, and the fork step was known, the station shows a warning: "No Sensor: the fork step is hidden again."
 
 ## 19. Payments and the End of the Run
 
@@ -134,7 +134,7 @@ The arrival has these steps, in this order:
 - The **score** is the credits after the last payment.
 - The run end screen shows: win or loss, the score, the delivered freight, the scrap made, the explosions, and the best jump (the jump with the largest net).
 - It shows one row for each leg that started: its payment, paid or missed, and its net.
-- It shows the ship: the mods, the clamps, the size of the shock bay, the mass limit, and the seed with a Copy button.
+- It shows the ship: the mods, the clamps, the size of the stasis bay, the mass limit, and the seed with a Copy button.
 - The pilot speaks a line of a win or a loss.
 - The run end screen has two buttons: New Run and Title.
 

@@ -40,6 +40,13 @@ const SIDE_WIDTH := 486.0
 const SELL_HEIGHT := 48.0
 ## The cell of the cargo on the dock (SPEC Section 20.2).
 const DOCK_CELL := 48.0
+## The title and the tooltip of the stasis bay (SPEC Section 31.2).
+const BAY_TITLE_TEXT := "Stasis Bay: kit and scrap"
+const BAY_NAME_TEXT := "Stasis Bay"
+const BAY_RULE_TEXT := (
+	"Cargo in the stasis bay does not slide, takes no hits and no incidents, and has no mass."
+	+ " Only kit and scrap go in it."
+)
 ## The highest the dock grows: 3 rows of cells. More cargo scrolls (SPEC Section 20.2).
 const DOCK_MAX_HEIGHT := 3 * (DOCK_CELL + 4.0) + 2 * 10.0
 
@@ -49,9 +56,13 @@ const SELL_IDLE := "idle"
 var view_data: Dictionary = {}
 var run_data: Dictionary = {}
 var hold_view: HoldView
-## The shock bay above the hold (SPEC Section 31.2).
+## The stasis bay above the hold (SPEC Section 31.2).
 var bay_view: HoldView
 var dock_panel: PanelContainer
+## The title above the stasis bay (SPEC Section 31.2).
+var bay_title: Label
+## The one line of the controls at the bottom of the screen (SPEC Section 20.2).
+var controls_hint: Label
 var sell_area: PanelContainer
 ## The cargo or the clamp of the drag, at the mouse (SPEC Section 8.2).
 var drag_layer: DragLayer
@@ -88,6 +99,9 @@ var _clamp_row: HBoxContainer
 var _dock_flow: HFlowContainer
 ## The scroll of the dock, and of the contract board (SPEC Section 20.2).
 var _dock_scroll: ScrollContainer
+## The box of the stasis bay: a spacer, the title, and the bay (SPEC Section 31.2).
+var _bay_box: VBoxContainer
+var _bay_spacer: Control
 var _contracts_scroll: ScrollContainer
 var _contracts_box: VBoxContainer
 var _contract_cards: Array[ContractCard] = []
@@ -155,7 +169,6 @@ func _build() -> void:
 	_top_bar = TopBar.new()
 	top.add_child(_top_bar)
 	_credits_label = _top_bar.credits_label
-	_env_tip_on(_top_bar.env_badge)
 
 	var body := HBoxContainer.new()
 	body.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -215,29 +228,52 @@ func _build() -> void:
 	route_bar.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	route_bar.step_hovered.connect(_set_hover_step)
 	center.add_child(route_bar)
-	# The shock bay is at the left of the hold (SPEC Section 31.2).
+	# The stasis bay is at the left of the hold (SPEC Section 31.2).
 	var ship := HBoxContainer.new()
-	ship.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	# The mod bar is right below the hold: the ship does not fill the column (SPEC Section 20.2).
+	ship.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
 	ship.alignment = BoxContainer.ALIGNMENT_CENTER
-	# The coupling of the shock bay goes into the free margin of the hold.
+	# The coupling of the stasis bay goes into the free margin of the hold.
 	ship.add_theme_constant_override("separation", -int(HoldView.MARGIN * HoldView.CELL / 2.0))
 	center.add_child(ship)
+	# The stasis bay: a title that names what it takes, and the bay at the vertical
+	# center of the hold. The spacer above the title centers it (SPEC Section 31.2).
+	_bay_box = VBoxContainer.new()
+	_bay_box.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+	_bay_box.add_theme_constant_override("separation", 4)
+	_bay_box.visible = false
+	ship.add_child(_bay_box)
+	_bay_spacer = Control.new()
+	_bay_box.add_child(_bay_spacer)
+	bay_title = Ui.label(
+		_bay_box, BAY_TITLE_TEXT, TextSize.SMALL, Palette.TRAIT_COLORS[Defs.TRAIT_CUSHION]
+	)
+	bay_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	bay_title.mouse_filter = Control.MOUSE_FILTER_STOP
+	tip_on(
+		bay_title,
+		func() -> void: show_text_tip(tr(BAY_NAME_TEXT), PackedStringArray([tr(BAY_RULE_TEXT)])),
+		true
+	)
 	bay_view = HoldView.new()
 	bay_view.bay = true
 	bay_view.visible = false
-	# The hold and the shock bay are right below the route bar, so that the guide of
-	# the tutorial does not cover the hold (SPEC Section 23.4).
+	# The hold is right below the route bar, so that the guide of the tutorial does not
+	# cover the hold (SPEC Section 23.4).
 	bay_view.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
 	bay_view.cargo_pressed.connect(_on_hold_pressed)
 	bay_view.cargo_hovered.connect(_on_hold_hovered)
-	ship.add_child(bay_view)
+	bay_view.visibility_changed.connect(func() -> void: _bay_box.visible = bay_view.visible)
+	bay_view.resized.connect(_center_bay)
+	_bay_box.add_child(bay_view)
 	hold_view = HoldView.new()
 	hold_view.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
 	hold_view.cargo_pressed.connect(_on_hold_pressed)
 	hold_view.clamp_pressed.connect(func(id: int) -> void: act(GameState.unclamp_cargo(id)))
 	hold_view.cargo_hovered.connect(_on_hold_hovered)
+	hold_view.resized.connect(_center_bay)
 	ship.add_child(hold_view)
-	# Below the hold: the mod bar, and the hint of the controls (SPEC Section 20.2).
+	# Right below the hold: the mod bar (SPEC Section 20.2).
 	var bottom := HBoxContainer.new()
 	_bottom_row = bottom
 	bottom.alignment = BoxContainer.ALIGNMENT_CENTER
@@ -245,8 +281,12 @@ func _build() -> void:
 	center.add_child(bottom)
 	_mod_bar = ModBar.new()
 	bottom.add_child(_mod_bar)
-	var hint := Ui.label(bottom, HINT_TEXT, TextSize.SMALL, Palette.TEXT_DIM)
-	hint.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	# The hint of the controls is at the bottom of the screen, on its own row.
+	var gap := Control.new()
+	gap.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	center.add_child(gap)
+	controls_hint = Ui.label(center, HINT_TEXT, TextSize.SMALL, Palette.TEXT_DIM)
+	controls_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 
 	var right := VBoxContainer.new()
 	right.custom_minimum_size.x = SIDE_WIDTH
@@ -360,6 +400,7 @@ func refresh() -> void:
 	var tutorial: bool = not view_data.get("tutorial", {}).is_empty()
 	_pilot_panel.visible = not tutorial
 	_bottom_row.visible = not tutorial
+	controls_hint.visible = not tutorial
 	_check_sensor_lost()
 	_count_credits(run_data["credits"])
 	# The Warp button does not work over the maximum mass (SPEC Section 25).
@@ -522,6 +563,17 @@ static func direction_text(d: String, view: Dictionary) -> String:
 ## Returns the translated name of a direction.
 static func direction_name(d: String, view: Dictionary) -> String:
 	return TranslationServer.translate(view["names"]["directions"].get(d, d))
+
+
+## Puts the middle of the stasis bay at the vertical middle of the grid of the hold
+## (SPEC Section 31.2).
+func _center_bay() -> void:
+	if bay_view == null or hold_view == null:
+		return
+	var hold_mid := hold_view.grid_origin().y + hold_view.rows * hold_view.cell / 2.0
+	var bay_mid := bay_view.grid_origin().y + bay_view.rows * bay_view.cell / 2.0
+	var above := bay_title.get_combined_minimum_size().y + 4.0
+	_bay_spacer.custom_minimum_size.y = maxf(0.0, hold_mid - bay_mid - above - 4.0)
 
 
 ## The dock fits its cargo, up to DOCK_MAX_HEIGHT (SPEC Section 20.2).
@@ -704,7 +756,7 @@ func _undo() -> void:
 
 
 ## Returns the areas that a tutorial step opens on the station (SPEC Section 23.4). A
-## try step opens the hold, the dock, the shock bay, the clamps, and the Warp button.
+## try step opens the hold, the dock, the stasis bay, the clamps, and the Warp button.
 func tutorial_rects(step: Dictionary) -> Array[Rect2]:
 	var t: Dictionary = step.get("target", {})
 	var parts: Array[Control] = []

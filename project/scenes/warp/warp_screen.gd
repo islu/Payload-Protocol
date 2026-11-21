@@ -76,7 +76,7 @@ func _ready() -> void:
 	_hold.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_hold.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	_stage.add_child(_hold)
-	# The shock bay is at the left of the hold and moves with it (SPEC Section 31.2).
+	# The stasis bay is at the left of the hold and moves with it (SPEC Section 31.2).
 	_bay = HoldView.new()
 	_bay.bay = true
 	_bay.visible = false
@@ -228,7 +228,7 @@ func _show_route(run: Dictionary, warp_log: Dictionary) -> void:
 	_place_parts.call_deferred()
 
 
-## Puts the shock bay at the left of the grid of the hold, and the route bar above
+## Puts the stasis bay at the left of the grid of the hold, and the route bar above
 ## it, after the hold has its size (SPEC Sections 20.3 and 31.2).
 func _place_parts() -> void:
 	var grid := Rect2(_hold.grid_origin(), Vector2(_hold.columns, _hold.rows) * _hold.cell)
@@ -424,7 +424,7 @@ func _apply_after(step: Dictionary, run: Dictionary) -> void:
 			c["y"] = spot["y"]
 			c["kind"] = spot["kind"]
 	for id: int in _cargo.keys():
-		# The log of a step has the hold only: the shock bay does not change (SPEC Section 31.1).
+		# The log of a step has the hold only: the stasis bay does not change (SPEC Section 31.1).
 		if not kept.has(id) and not _cargo[id].get("in_bay", false):
 			_remove(id)
 	_show_hold(run)
@@ -582,9 +582,9 @@ func _finish(run: Dictionary) -> void:
 		var on_arrive := func() -> void:
 			if first[0]:
 				first[0] = false
-				# Each coin sound shows a gold sparkle (SPEC Section 21.4).
+				# Each coin sound shows a gold sparkle where the coins land (SPEC Section 21.4).
 				Sound.play(self, "coin")
-				_top_fx.coin(_report.head.get_global_rect().get_center())
+				_top_fx.coin(_report.credits_label.get_global_rect().get_center())
 		var n := 0
 		for id: int in _hold.checks:
 			var from := _hold.global_position + _hold.cargo_center(_cargo[id])
@@ -631,11 +631,11 @@ func _mark_pieces(ids: Array) -> void:
 ## The report has its place after it fits its content (ReportPanel.fitted).
 func _coin_on_report() -> void:
 	await _report.fitted
-	_top_fx.coin(_report.head.get_global_rect().get_center())
+	_top_fx.coin(_report.credits_label.get_global_rect().get_center())
 
 
 ## Puts the hold and the report as one group at the center of the screen: the hold
-## (with the shock bay) at the left, and the report at the right (SPEC Section 20.4).
+## (with the stasis bay) at the left, and the report at the right (SPEC Section 20.4).
 func _place_report() -> void:
 	if not _report.visible:
 		return
@@ -656,7 +656,7 @@ func _place_report() -> void:
 
 
 ## Returns the center of a cargo in the coordinates of the hold, also for a cargo in
-## the shock bay.
+## the stasis bay.
 func _center_of(c: Dictionary) -> Vector2:
 	if c.get("in_bay", false):
 		return _bay.position + _bay.cargo_center(c)

@@ -3,7 +3,7 @@ extends Control
 ## Draws the hold: the grid, the cargo, the links, the clamps, a zone, and the
 ## preview of a drop (SPEC Sections 8.3, 12.3, and 20.2). It reads the view only.
 ## The hold has a bulkhead with lights, and a deck plate in each cell (SPEC Section 21.6).
-## With bay true, it draws the shock bay: its own cells, a padded frame, and the
+## With bay true, it draws the stasis bay: its own cells, a padded frame, and the
 ## coupling to the hold below it (SPEC Section 31.2).
 
 ## A press on a cargo in the hold: the left button starts a drag, the right button rotates.
@@ -17,9 +17,9 @@ signal cargo_hovered(id: int)
 const CELL := 100.0
 ## The free space around the grid, in cells: the marks of the front wall are there.
 const MARGIN := 0.8
-## The space at the right of the shock bay, in pixels: the coupling to the hold.
+## The space at the right of the stasis bay, in pixels: the coupling to the hold.
 const BAY_COUPLING := 16.0
-## The space around the cells of the shock bay, in pixels: its padded frame.
+## The space around the cells of the stasis bay, in pixels: its padded frame.
 const BAY_PAD := 12.0
 ## The width of the bulkhead around the grid, in pixels (SPEC Section 21.6).
 const FRAME := 18.0
@@ -47,7 +47,7 @@ const MOD_COLORS := {
 
 ## The size of a cell in pixels.
 var cell := CELL
-## True for the shock bay (SPEC Section 31).
+## True for the stasis bay (SPEC Section 31).
 var bay := false
 
 var columns := 6
@@ -80,7 +80,7 @@ var hover_mod := ""
 ## The cells of the place of the incident of the next jump (SPEC Section 29.3).
 var incident_cells: Array = []
 ## The lights of the bulkhead: [{wall, at, steady, flash, flash_end, flash_start}]. at is
-## the place along the wall, from 0 to 1. The shock bay has none (SPEC Section 21.6).
+## the place along the wall, from 0 to 1. The stasis bay has none (SPEC Section 21.6).
 var lights: Array[Dictionary] = []
 ## Each request to light a light: {target, color, shown}, for the checks. shown is false
 ## when a light flashed less than FLASH_GAP before.
@@ -107,7 +107,7 @@ func set_view(run: Dictionary) -> void:
 	cargo = run["cargo"]
 	_find_new_clamps()
 	if bay:
-		# The shock bay has no front wall, no mod area, and no incident (SPEC Section 31.1).
+		# The stasis bay has no front wall, no mod area, and no incident (SPEC Section 31.1).
 		var size: Dictionary = run.get("shock_bay", {})
 		columns = size.get("columns", 0)
 		rows = size.get("rows", 0)
@@ -137,7 +137,7 @@ func set_view(run: Dictionary) -> void:
 	_link_layer.queue_redraw()
 
 
-## Reports whether a cargo view is in the area of this view: the hold or the shock bay.
+## Reports whether a cargo view is in the area of this view: the hold or the stasis bay.
 func _mine(c: Dictionary) -> bool:
 	return not c.is_empty() and (c.get("in_bay", false) if bay else c.get("in_hold", false))
 
@@ -155,6 +155,15 @@ func set_hover(id: int) -> void:
 		_hover = id
 		cargo_hovered.emit(id)
 		queue_redraw()
+
+
+## Sets the cargo under a global point as the cargo under the mouse, or none when the
+## point is not on the view. A drop calls it: the mouse did not move (SPEC Section 4.2).
+func refresh_hover(global_pos: Vector2) -> void:
+	var inside := (
+		is_visible_in_tree() and _has_point(get_global_transform().affine_inverse() * global_pos)
+	)
+	set_hover(cargo_at(cell_at(global_pos)) if inside else -1)
 
 
 ## Returns the cells of the frame of the cargo under the mouse (SPEC Section 4.2).
@@ -177,7 +186,7 @@ static func _cells_of(c: Dictionary) -> Array[Vector2i]:
 func grid_origin() -> Vector2:
 	var o := ((size - Vector2(columns, rows) * cell) / 2.0).floor()
 	if bay:
-		# The shock bay sits at the left: the coupling fills the space at its right.
+		# The stasis bay sits at the left: the coupling fills the space at its right.
 		o.x = BAY_PAD
 	return o
 
@@ -224,6 +233,13 @@ func _draw_check(top_left: Vector2) -> void:
 	)
 
 
+## The mouse is on the view only over the grid and its bulkhead. The free margin lets
+## the mouse through to the stasis bay that overlaps it (SPEC Sections 4.2 and 31.2).
+func _has_point(point: Vector2) -> bool:
+	var grid := Rect2(grid_origin(), Vector2(columns, rows) * cell)
+	return grid.grow(BAY_PAD if bay else FRAME).has_point(point)
+
+
 func is_over(global_pos: Vector2) -> bool:
 	return (
 		Rect2(global_position + grid_origin(), Vector2(columns, rows) * cell)
@@ -242,7 +258,8 @@ func cargo_at(at: Vector2i) -> int:
 
 func _gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
-		set_hover(cargo_at(cell_at(get_global_mouse_position())))
+		# The place of the event, not the mouse of the viewport: they can differ.
+		set_hover(cargo_at(cell_at(get_global_transform() * event.position)))
 	elif event is InputEventMouseButton and event.pressed:
 		var at := cell_at(get_global_mouse_position())
 		var id := cargo_at(at)
@@ -639,7 +656,7 @@ func _draw_lights() -> void:
 		draw_circle(p, 5.0, color)
 
 
-## Draws the frame of the shock bay: soft padding with seams, and the coupling to
+## Draws the frame of the stasis bay: soft padding with seams, and the coupling to
 ## the hold at its right (SPEC Section 31.2).
 func _draw_bay_frame(grid: Rect2, outer: Rect2) -> void:
 	var pad: Color = Palette.TRAIT_COLORS[Defs.TRAIT_CUSHION]

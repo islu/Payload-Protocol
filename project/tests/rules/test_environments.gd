@@ -177,3 +177,47 @@ func test_environment_has_a_short_rule() -> void:
 		"short" in "\n".join(Catalog.from_data(d).errors),
 		"the data check rejects an environment with no short rule (SPEC Section 28.1)"
 	)
+
+
+func test_magnetic_storm_view() -> void:
+	# A Battery next to a Shield: the link and the power of SPEC Section 12.2.
+	var battery := put("battery", 0, 5)
+	var shield := put("shield", 1, 5)
+	var lone := put("shield", 4, 5)
+	var v := RunView.view(run)
+	var power := func(l: Dictionary) -> bool: return l["kind"] == Defs.LINK_POWER
+	check(v["links"].any(power), "a Battery next to a Shield has a power link (SPEC Section 12.3)")
+	eq(
+		_cargo_view(v, lone.id).get("no_power_why", ""),
+		RunView.NO_BATTERY_TEXT,
+		"the tooltip of a Shield with no Battery says why (SPEC Section 12.3)"
+	)
+	run.environment = Defs.ENV_MAGNETIC_STORM
+	v = RunView.view(run)
+	check(
+		not v["links"].any(power),
+		"in a Magnetic Storm, no line connects a Battery and a Shield (SPEC Section 12.3)"
+	)
+	eq(
+		_cargo_view(v, shield.id).get("no_power_why", ""),
+		RunView.STORM_TEXT,
+		"the tooltip of a Shield in a Magnetic Storm says why (SPEC Section 12.3)"
+	)
+	on_dock("vase")
+	eq(
+		RunView.kit_helps(run, run.cat.cargo[shield.def.id]),
+		{},
+		"in a Magnetic Storm, a Shield helps nothing (SPEC Section 20.2)"
+	)
+	eq(
+		RunView.kit_helps(run, run.cat.cargo[battery.def.id]),
+		{},
+		"in a Magnetic Storm, a Battery helps nothing (SPEC Section 20.2)"
+	)
+
+
+func _cargo_view(v: Dictionary, id: int) -> Dictionary:
+	for c: Dictionary in v["cargo"]:
+		if c["id"] == id:
+			return c
+	return {}

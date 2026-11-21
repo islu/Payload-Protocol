@@ -81,8 +81,8 @@ Use these terms in the spec, the code, the data, and the text of the game. Do no
 | Term | Meaning |
 | --- | --- |
 | **hold** | The grid of the ship where cargo goes (Section 5). |
-| **cell** | One square of the hold or of the shock bay. |
-| **shock bay** | A small area of cells next to the hold. The warp does not move or hit the cargo in it (Section 31). |
+| **cell** | One square of the hold or of the stasis bay. |
+| **stasis bay** | A small area of cells next to the hold. The warp does not move or hit the cargo in it (Section 31). |
 | **cargo** | Each thing that can be in the hold: freight, kit, or scrap. |
 | **freight** | Cargo of a contract. It leaves the hold at the arrival (Section 6.2). |
 | **kit** | Cargo that the player buys. It stays in the hold until the player sells it (Section 6.3). |
@@ -95,7 +95,7 @@ Use these terms in the spec, the code, the data, and the text of the game. Do no
 | **leg** | A group of 3 jumps that ends with a payment. |
 | **hazard** | The list of shift steps of a jump (Section 18). |
 | **fork step** | A shift step with two possible directions. The warp shows which one happens (Section 18). |
-| **mass** | The load of a cargo: its weight value multiplied by its cells. Cargo in the shock bay has no mass (Section 25). |
+| **mass** | The load of a cargo: its weight value multiplied by its cells. Cargo in the stasis bay has no mass (Section 25). |
 | **mass limit** | The mass that the ship can carry with no fuel fee (Section 25). |
 | **fuel fee** | The credits that the player pays at the warp for each point of mass over the mass limit (Section 25). |
 | **route bar** | The row above the hold that shows the next jump as a route: depart, the incident, the shift steps, and arrive (Section 20.2). |
