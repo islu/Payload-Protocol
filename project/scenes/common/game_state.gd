@@ -7,7 +7,7 @@ extends Node
 
 signal state_changed
 
-const VERSION := "1.0.0"
+const VERSION := "1.1.0"
 const NOT_LOADED_TEXT := "The game data did not load."
 const NO_RUN_TEXT := "No run is in progress."
 const NO_TUTORIAL_TEXT := "No tutorial is in progress."

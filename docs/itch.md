@@ -14,7 +14,7 @@ This file has the text and the settings of the itch.io page. Copy each part into
 | Automatically start on page load | Off |
 | Fullscreen button | On |
 | SharedArrayBuffer support | Off. The web export has no thread support (`variant/thread_support=false`). |
-| Release status | Released. The version stays 1.0.0 until Game Off ends. |
+| Release status | Released. The version is in three places: `config/version` of `project/project.godot`, `GameState.VERSION`, and the fallback of the title in `main.gd`. Change them together. |
 | Pricing | No payments, or Donate |
 | Genre | Puzzle |
 | Tags | puzzle, strategy, roguelite, space, pixel-art, godot, sci-fi, singleplayer, short, inventory-management |
