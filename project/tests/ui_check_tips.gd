@@ -24,13 +24,11 @@ static func station(ui: Node, station: StationScreen) -> void:
 		)
 		station.hide_tip()
 	# The tooltip of a Shield with no power tells why (SPEC Section 12.3).
-	var shield := {"no_power": true, "no_power_why": RunView.STORM_TEXT}
-	for c: Dictionary in station.run_data["cargo"]:
-		shield.merge(c)
-		break
-	shield["no_power"] = true
-	shield["no_power_why"] = RunView.STORM_TEXT
-	if shield.has("shape"):
+	var all: Array = station.run_data["cargo"]
+	if not all.is_empty():
+		var shield: Dictionary = all[0].duplicate()
+		shield["no_power"] = true
+		shield["no_power_why"] = RunView.STORM_TEXT
 		station._tip.show_cargo(shield, station.view_data)
 		ui._check(
 			ui.tr(RunView.STORM_TEXT) in station._tip.text(),

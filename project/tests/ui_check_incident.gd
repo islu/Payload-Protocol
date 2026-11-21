@@ -47,10 +47,13 @@ static func warp(ui: Node, warp: WarpScreen, warp_log: Dictionary) -> void:
 	)
 	match inc["kind"]:
 		Defs.INCIDENT_METEOR:
-			# The fireball stops at the top cargo of the column, or at the floor.
+			# The fireball stops at the top cargo of the column, or at the floor: the hold
+			# before the warp tells which, apart from the code that plays it.
 			var want: int = warp._hold.rows
-			for h: Dictionary in inc["hits"]:
-				want = h["contact"][0]["y"]
+			for c: Dictionary in warp_log.get("before", []):
+				for cell: Dictionary in c["shape"]:
+					if c["x"] + cell["x"] == inc["x"]:
+						want = mini(want, c["y"] + cell["y"])
 			ui._check(
 				warp._fx.played.has("meteor") and warp.meteor_stop == want,
 				(

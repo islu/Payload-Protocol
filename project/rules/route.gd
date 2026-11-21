@@ -58,6 +58,22 @@ static func make_incident(run: Run) -> Dictionary:
 	return place_incident(run, kind)
 
 
+## Returns the cells of the place of an incident: a column for a meteor, a row for an
+## Ion Pulse, and one cell for a hull breach (SPEC Section 29.2).
+static func incident_cells(run: Run, inc: Dictionary) -> Array:
+	var cells := []
+	match inc.get("kind", ""):
+		Defs.INCIDENT_METEOR:
+			for y in run.rows:
+				cells.append({"x": inc["x"], "y": y})
+		Defs.INCIDENT_ION_PULSE:
+			for x in run.columns:
+				cells.append({"x": x, "y": inc["y"]})
+		_:
+			cells.append({"x": inc["x"], "y": inc["y"]})
+	return cells
+
+
 ## Returns an incident of a kind at a place that the seed selects. The place has a
 ## cargo in it when the hold has one (SPEC Sections 26.2 and 29.1).
 static func place_incident(run: Run, kind: String) -> Dictionary:

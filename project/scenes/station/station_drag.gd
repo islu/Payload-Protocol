@@ -174,8 +174,11 @@ func drop_at(mouse: Vector2) -> void:
 		if target == hold:
 			var clamped := hold.cargo_at(hold.cell_at(mouse))
 			if clamped >= 0:
-				# A metal click (SPEC Section 21.1).
-				_screen.act(GameState.clamp_cargo(clamped), "clamp")
+				# A metal click and a bounce (SPEC Section 21.1).
+				var err := GameState.clamp_cargo(clamped)
+				_screen.act(err, "clamp")
+				if err == "":
+					hold.bounce_clamp(clamped)
 		return
 	var id: int = drag["id"]
 	var c := _screen.cargo_view(id)

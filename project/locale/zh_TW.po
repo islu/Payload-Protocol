@@ -592,10 +592,6 @@ msgid "No Cooler next to it: it spoils at the arrival."
 msgstr "旁邊沒有冷藏機：抵達時會腐爛。"
 
 #: project/scenes/station/cargo_tip.gd
-msgid "No Battery next to it: no power."
-msgstr "旁邊沒有電池：沒有電力。"
-
-#: project/scenes/station/cargo_tip.gd
 #: project/scenes/station/contract_card.gd
 msgid "Mass {mass}"
 msgstr "載重 {mass}"
@@ -694,10 +690,6 @@ msgstr "VIP 合約的貨物，每件沒有完好送達都要付罰款。"
 #: project/scenes/station/hints.gd
 msgid "The Sensor shows the fork step only while it is in the hold or the stasis bay."
 msgstr "感測器只有放在貨艙或靜滯艙裡時，才會顯示二選一位移的方向。"
-
-#: project/scenes/station/hints.gd
-msgid "Cargo in the stasis bay does not slide, takes no hits, and has no mass. Only kit and scrap go in it."
-msgstr "靜滯艙裡的貨物不會滑動、不受撞擊，也不算載重。只有裝備和廢鐵能放進去。"
 
 #: project/scenes/station/hints.gd
 msgid "An event: each choice has a cost and an effect. Read both before you pick."

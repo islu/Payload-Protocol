@@ -61,13 +61,14 @@ var _replaying := false
 var _shake := 0.0
 ## The cells of the mark of the incident, while it plays (SPEC Section 29.3).
 var _incident_cells: Array = []
+## True while a call of _place_parts waits for the next frame.
+var _parts_queued := false
 
 
 func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	speed = float(Settings.get_value("warp_speed"))
 	_stars = Starfield.new()
-	_stars.speed = 1.0
 	add_child(_stars)
 	_stage = Control.new()
 	_stage.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -205,7 +206,7 @@ func _show_hold(run: Dictionary) -> void:
 	var incident := {"cells": _incident_cells}
 	_hold.set_view({"hold": run["hold"], "cargo": cargo, "links": [], "incident": incident})
 	_bay.set_view({"shock_bay": run["shock_bay"], "cargo": cargo, "links": []})
-	_place_parts.call_deferred()
+	_queue_place_parts()
 
 
 ## Builds the route bar of the jump from the log. A fork step shows "?" until the
@@ -225,13 +226,21 @@ func _show_route(run: Dictionary, warp_log: Dictionary) -> void:
 			)
 		)
 	route_bar.set_route(run.get("environment", {}), warp_log.get("incident", {}), steps, _view)
-	_place_parts.call_deferred()
+	_queue_place_parts()
+
+
+## Places the parts once in the next frame, also after many calls in one frame.
+func _queue_place_parts() -> void:
+	if not _parts_queued:
+		_parts_queued = true
+		_place_parts.call_deferred()
 
 
 ## Puts the stasis bay at the left of the grid of the hold, and the route bar above
 ## it, after the hold has its size (SPEC Sections 20.3 and 31.2).
 func _place_parts() -> void:
-	var grid := Rect2(_hold.grid_origin(), Vector2(_hold.columns, _hold.rows) * _hold.cell)
+	_parts_queued = false
+	var grid := _hold.grid_rect()
 	if _bay.visible:
 		_bay.size = _bay.custom_minimum_size
 		_bay.position = Vector2(
@@ -330,7 +339,7 @@ func _play_route(run: Dictionary, warp_log: Dictionary) -> void:
 	if inc.get("kind", "") in [Defs.INCIDENT_METEOR, Defs.INCIDENT_HULL_BREACH]:
 		_hold.light_all(HoldView.LIGHT_ALARM, 1.0 / speed)
 	# The mark of the place stays until the incident ends (SPEC Section 29.3).
-	_incident_cells = _incident_place(inc)
+	_incident_cells = inc.get("cells", [])
 	_show_hold(run)
 	incident_marks = _hold.incident_cells.size()
 	await _wait(0.6)
@@ -373,21 +382,6 @@ func _play_route(run: Dictionary, warp_log: Dictionary) -> void:
 	var fade := create_tween()
 	fade.tween_property(_banner, "modulate:a", 0.0, 0.3 / speed)
 	await _wait(0.35)
-
-
-## Returns the cells of the place of an incident: a column, a row, or a cell.
-func _incident_place(inc: Dictionary) -> Array:
-	var cells := []
-	match inc["kind"]:
-		Defs.INCIDENT_METEOR:
-			for y in _hold.rows:
-				cells.append({"x": inc["x"], "y": y})
-		Defs.INCIDENT_ION_PULSE:
-			for x in _hold.columns:
-				cells.append({"x": x, "y": inc["y"]})
-		_:
-			cells.append({"x": inc["x"], "y": inc["y"]})
-	return cells
 
 
 ## The fireball falls to the top cargo of the column. In an empty column, it falls to
@@ -578,20 +572,13 @@ func _finish(run: Dictionary) -> void:
 	# A coin flies from each delivered freight to the credits of the report. The first
 	# that arrives plays the coin sound. The replay plays no coin (SPEC Section 20.4).
 	if not _replaying:
-		var first := [true]
-		var on_arrive := func() -> void:
-			if first[0]:
-				first[0] = false
-				# Each coin sound shows a gold sparkle where the coins land (SPEC Section 21.4).
-				Sound.play(self, "coin")
-				_top_fx.coin(_report.credits_label.get_global_rect().get_center())
-		var n := 0
-		for id: int in _hold.checks:
-			var from := _hold.global_position + _hold.cargo_center(_cargo[id])
-			_top_fx.coin_fly(from, _report.credits_label, 0.3 + n * 0.08, on_arrive)
-			n += 1
-		if n == 0 and run["arrival"]["total"] != 0:
-			Sound.play(self, "coin")
+		var ids: Array = _hold.checks.keys()
+		# All coins fly for the same time with rising delays: the first lands first.
+		for i in ids.size():
+			var from := _hold.global_position + _hold.cargo_center(_cargo[ids[i]])
+			var arrive := _coin_landed if i == 0 else Callable()
+			_top_fx.coin_fly(from, _report.credits_label, 0.3 + i * 0.08, arrive)
+		if ids.is_empty() and run["arrival"]["total"] != 0:
 			_coin_on_report.call_deferred()
 	_report.show_report(run)
 	_report.visible = true
@@ -631,6 +618,12 @@ func _mark_pieces(ids: Array) -> void:
 ## The report has its place after it fits its content (ReportPanel.fitted).
 func _coin_on_report() -> void:
 	await _report.fitted
+	_coin_landed()
+
+
+## The coin sound, and a gold sparkle where the coins land (SPEC Section 21.4).
+func _coin_landed() -> void:
+	Sound.play(self, "coin")
 	_top_fx.coin(_report.credits_label.get_global_rect().get_center())
 
 

@@ -9,7 +9,6 @@ const TIP_PAY_TEXT := "Pays {pay} at the arrival"
 const TIP_SELL_TEXT := "Sells for {price}"
 const TIP_CLEAR_TEXT := "Clear for {price}"
 const NO_COOLER_TEXT := "No Cooler next to it: it spoils at the arrival."
-const NO_POWER_TEXT := "No Battery next to it: no power."
 const TIP_MASS_TEXT := "Mass {mass}"
 
 var _label: RichTextLabel
@@ -72,7 +71,7 @@ func show_cargo(c: Dictionary, view: Dictionary) -> void:
 		lines.append("[color=#%s]%s[/color]" % [Palette.WARN.to_html(false), tr(NO_COOLER_TEXT)])
 	if c.get("no_power", false):
 		# Why it has no power: no Battery, or the Magnetic Storm (SPEC Section 12.3).
-		var why: String = c.get("no_power_why", NO_POWER_TEXT)
+		var why: String = c["no_power_why"]
 		lines.append("[color=#%s]%s[/color]" % [Palette.WARN.to_html(false), tr(why)])
 	_label.text = "\n".join(lines)
 	visible = true

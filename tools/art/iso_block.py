@@ -7,7 +7,7 @@ can be changed (docs/assets.md).
 
 import colorsys
 
-from PIL import Image
+from PIL import Image, ImageColor
 
 
 class Block:
@@ -16,13 +16,12 @@ class Block:
     def __init__(self, img: Image.Image):
         self.px = img.load()
         self.w, self.h = img.size
-        cols = [x for x in range(self.w) if any(self.opaque(x, y) for y in range(self.h))]
-        self.x0, self.x1 = cols[0], cols[-1]
+        left, top, right, _ = img.getchannel("A").getbbox()
+        self.x0, self.x1 = left, right - 1
         # The left corner, the top corner, and the front corner of the top face.
         self.y_left = min(y for y in range(self.h) if self.opaque(self.x0, y))
-        self.y_top, self.x_top = min(
-            (y, x) for x in range(self.w) for y in range(self.h) if self.opaque(x, y)
-        )
+        self.y_top = top
+        self.x_top = min(x for x in range(self.w) if self.opaque(x, top))
         self.slope = (self.y_left - self.y_top) / max(1, self.x_top - self.x0)
         self.x_front = self.x0 + (self.x1 - self.x_top)
         self.y_front = self.y_left + self.slope * (self.x_front - self.x0)
@@ -104,7 +103,7 @@ def flatter(img: Image.Image, less: int) -> Image.Image:
 
 def tint(img: Image.Image, color: str, saturation: float = 0.75) -> Image.Image:
     """Gives each pixel the hue of color ("#rrggbb"). The light and the shadows stay."""
-    rgb = [int(color[i : i + 2], 16) / 255 for i in (1, 3, 5)]
+    rgb = [c / 255 for c in ImageColor.getrgb(color)]
     hue = colorsys.rgb_to_hsv(*rgb)[0]
     px = img.load()
     for y in range(img.height):

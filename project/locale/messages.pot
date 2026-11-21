@@ -571,10 +571,6 @@ msgid "No Cooler next to it: it spoils at the arrival."
 msgstr ""
 
 #: project/scenes/station/cargo_tip.gd
-msgid "No Battery next to it: no power."
-msgstr ""
-
-#: project/scenes/station/cargo_tip.gd
 #: project/scenes/station/contract_card.gd
 msgid "Mass {mass}"
 msgstr ""
@@ -672,10 +668,6 @@ msgstr ""
 
 #: project/scenes/station/hints.gd
 msgid "The Sensor shows the fork step only while it is in the hold or the stasis bay."
-msgstr ""
-
-#: project/scenes/station/hints.gd
-msgid "Cargo in the stasis bay does not slide, takes no hits, and has no mass. Only kit and scrap go in it."
 msgstr ""
 
 #: project/scenes/station/hints.gd

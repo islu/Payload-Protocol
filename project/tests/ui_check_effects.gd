@@ -29,42 +29,44 @@ static func station(ui: Node, station: StationScreen) -> void:
 	)
 	var run: Dictionary = GameState.view()["run"]
 	for k: Dictionary in run["contracts"]:
-		if not k["accepted"] and GameState.accept_contract(k["index"]) == "":
-			ui._check(
-				station._fx.played.has("fly"),
-				"the freight of an accepted contract flies to the dock (SPEC Section 21.1)"
-			)
-			# A pick up plays a soft sound.
-			Sound.requested.clear()
-			station._drag.begin_cargo(GameState.view()["run"]["dock"][0], Vector2.ZERO)
-			station._drag.end()
-			ui._check(
-				Sound.requested.has("pick_up"), "a pick up plays a soft sound (SPEC Section 21.1)"
-			)
-			GameState.undo()
-			break
+		var card: ContractCard = station._contract_cards[k["index"]]
+		if k["accepted"] or card.button == null:
+			continue
+		station._fx.played.erase("fly")
+		card.button.pressed.emit()
+		if not GameState.view()["run"]["contracts"][k["index"]]["accepted"]:
+			continue
+		ui._check(
+			station._fx.played.has("fly"),
+			"the freight of an accepted contract flies to the dock (SPEC Section 21.1)"
+		)
+		# A pick up plays a soft sound.
+		Sound.requested.clear()
+		station._drag.begin_cargo(GameState.view()["run"]["dock"][0], Vector2.ZERO)
+		station._drag.end()
+		ui._check(
+			Sound.requested.has("pick_up"), "a pick up plays a soft sound (SPEC Section 21.1)"
+		)
+		GameState.undo()
+		break
 	run = GameState.view()["run"]
 	if run["free_clamps"] <= 0:
 		return
 	for c: Dictionary in run["cargo"]:
-		if c["in_hold"] and not c["clamped"] and GameState.clamp_cargo(c["id"]) == "":
-			ui._check(
-				station.hold_view.clamp_bounces.has(c["id"]),
-				"a placed clamp bounces (SPEC Section 21.1)"
-			)
-			GameState.undo()
-			# A clamp that the player drops on a cargo plays a metal click.
-			var first: Dictionary = c["shape"][0]
-			var at := Vector2(c["x"] + first["x"], c["y"] + first["y"]) + Vector2(0.5, 0.5)
-			station._drag.begin_clamp()
-			Sound.requested.clear()
-			station._drag.drop_at(station.hold_view.cell_global(at))
-			ui._check(
-				Sound.requested.has("clamp"),
-				"a placed clamp plays a metal click (SPEC Section 21.1)"
-			)
-			GameState.undo()
-			break
+		if not c["in_hold"] or c["clamped"]:
+			continue
+		# A clamp that the player drops on a cargo bounces and plays a metal click.
+		var first: Dictionary = c["shape"][0]
+		var at := Vector2(c["x"] + first["x"], c["y"] + first["y"]) + Vector2(0.5, 0.5)
+		station._drag.begin_clamp()
+		Sound.requested.clear()
+		station._drag.drop_at(station.hold_view.cell_global(at))
+		ui._check(
+			station.hold_view.clamp_bounces.has(c["id"]) and Sound.requested.has("clamp"),
+			"a placed clamp bounces and plays a metal click (SPEC Section 21.1)"
+		)
+		GameState.undo()
+		break
 
 
 ## After a warp: the jump effect, a coin for each delivered freight, and smoke for

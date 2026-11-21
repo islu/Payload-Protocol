@@ -532,12 +532,17 @@ func _check_effect(event_id: String, f: Dictionary) -> void:
 		Defs.EFFECT_ADD_INCIDENT:
 			if not f["incident"] in Defs.INCIDENTS:
 				_fail("event %s: the incident %s is not valid" % [event_id, f["incident"]])
-		Defs.EFFECT_CLAMP, Defs.EFFECT_MOD, Defs.EFFECT_REMOVE_STEP:
+		Defs.EFFECT_CLAMP, Defs.EFFECT_MOD, Defs.EFFECT_REMOVE_STEP, Defs.EFFECT_CANCEL_INCIDENT:
 			pass
-		Defs.EFFECT_CANCEL_INCIDENT, Defs.EFFECT_CLEAR_SCRAP:
+		Defs.EFFECT_CLEAR_SCRAP:
 			pass
 		_:
 			_fail("event %s: the effect %s is not valid" % [event_id, f["type"]])
+
+
+## Returns the mass of a scrap of a definition: scrap is light (SPEC Section 25).
+func scrap_mass(def: CargoDef) -> int:
+	return weight_value(Defs.WEIGHT_LIGHT) * def.shape.size()
 
 
 ## Returns the contract template with an ID, or null.

@@ -226,16 +226,25 @@ static func _check_reply(ui: Node, main: Control, c: Dictionary) -> void:
 	if not shown:
 		return
 	var station: StationScreen = main.screen()
-	ui._check(station.held, "the station waits while the reply shows (SPEC Section 20.8)")
+	ui._check(
+		GameState.view()["run"]["phase"] == Defs.PHASE_EVENT,
+		"the effects of a choice wait while the reply shows (SPEC Section 20.8)"
+	)
 	ui._check(
 		not main.choice is ChoicePanel, "the mod choice waits for the reply (SPEC Section 20.8)"
 	)
-	var dock: int = GameState.view()["run"]["dock"].size() - station._dock_ids.size()
+	var before: Array = GameState.view()["run"]["dock"].duplicate()
 	panel.continue_button.pressed.emit()
 	await ui.get_tree().process_frame
-	ui._check(not station.held, "Continue closes the reply (SPEC Section 20.8)")
 	ui._check(
-		station.popped.size() >= dock,
+		GameState.view()["run"]["phase"] != Defs.PHASE_EVENT,
+		"Continue closes the reply, and the choice happens (SPEC Section 20.8)"
+	)
+	var added: Array = GameState.view()["run"]["dock"].filter(
+		func(id: int) -> bool: return not id in before
+	)
+	ui._check(
+		station.popped.size() >= added.size(),
 		"each new cargo on the dock pops in after the reply (SPEC Section 20.8)"
 	)
 	if GameState.view()["run"]["phase"] == Defs.PHASE_MOD:

@@ -34,7 +34,7 @@ const UNDO_TEXT := "Undo (Ctrl+Z)"
 const SENSOR_LOST_TEXT := "No Sensor: the fork step is hidden again."
 ## The characters of a pilot line that type out in each second (SPEC Section 22).
 const TYPE_SPEED := 40.0
-const ARROWS := {Defs.DIR_LEFT: "←", Defs.DIR_RIGHT: "→", Defs.DIR_UP: "↑", Defs.DIR_DOWN: "↓"}
+const ARROWS := RunView.ARROWS
 const LOAD_ALL_TEXT := "Load all"
 const SIDE_WIDTH := 486.0
 const SELL_HEIGHT := 48.0
@@ -69,9 +69,6 @@ var drag_layer: DragLayer
 
 ## The route bar above the hold (SPEC Section 20.2).
 var route_bar: RouteBar
-## True while the reply of an event shows: the station waits, so that the effects
-## play after the reply closes (SPEC Section 20.8).
-var held := false
 ## The parts that popped in, for the checks.
 var popped: Array[Control] = []
 ## The view part of each list when it was built, by the name of the list (_changed).
@@ -132,8 +129,6 @@ var _pop_new := false
 ## The cargo IDs on the dock and the contract count when the lists were built.
 var _dock_ids: Array = []
 var _contract_count := 0
-## The indexes of the accepted contracts of the last refresh, or null before the first.
-var _accepted: Variant = null
 ## The global center of the card of a contract that the player just accepted, or null:
 ## its freight flies from there to the dock (SPEC Section 21.1).
 var _fly_from: Variant = null
@@ -376,19 +371,17 @@ func add_button(parent: Control, text: String, action: Callable, enabled := true
 # --- Refresh from the view ---
 
 
-## Shows the effects of an event choice after its reply: a refresh that pops in the new
+## Does the action of an event choice after its reply: the refresh pops in the new
 ## cargo on the dock and the new contracts (SPEC Section 20.8).
-func play_event_effects() -> void:
-	held = false
+func play_event_effects(action: Callable) -> void:
 	popped.clear()
 	_pop_new = true
+	action.call()
 	refresh()
 	_pop_new = false
 
 
 func refresh() -> void:
-	if held:
-		return
 	view_data = GameState.view()
 	run_data = view_data["run"]
 	# The station shows behind an event and a mod choice (SPEC Sections 20.8 and 20.9).
@@ -416,10 +409,8 @@ func refresh() -> void:
 	var incident: Dictionary = run_data.get("incident", {})
 	if _changed("hazard", [run_data.get("environment", {}), incident, run_data["hazard"]]):
 		_refresh_hazard()
-	_find_accepted()
 	if _changed("dock", run_data["cargo"].filter(_on_dock)):
 		_refresh_dock()
-	_fly_from = null
 	if _changed("contracts", [run_data["contracts"], run_data["mass"]]):
 		_refresh_contracts()
 	if _changed("shop", [run_data["shop"], view_data["terms"]]):
@@ -517,7 +508,8 @@ func _refresh_hazard() -> void:
 		run_data.get("environment", {}), run_data.get("incident", {}), run_data["hazard"], view_data
 	)
 	if route_bar.env_band != null:
-		_env_tip_on(route_bar.env_band)
+		# The tip shows the name and the full rule of the environment (SPEC Section 28.1).
+		tip_on(route_bar.env_band, _show_env_tip, true)
 
 
 ## Returns how a hazard card looks: {arrow, names, sensor}. A fork step shows its
@@ -565,13 +557,21 @@ static func direction_name(d: String, view: Dictionary) -> String:
 	return TranslationServer.translate(view["names"]["directions"].get(d, d))
 
 
+## Accepts a contract from its card. Its new freight flies from the card to the dock
+## (SPEC Section 21.1).
+func accept_contract(index: int, card: Control) -> void:
+	_fly_from = card.get_global_rect().get_center()
+	act(GameState.accept_contract(index))
+	_fly_from = null
+
+
 ## Puts the middle of the stasis bay at the vertical middle of the grid of the hold
 ## (SPEC Section 31.2).
 func _center_bay() -> void:
 	if bay_view == null or hold_view == null:
 		return
-	var hold_mid := hold_view.grid_origin().y + hold_view.rows * hold_view.cell / 2.0
-	var bay_mid := bay_view.grid_origin().y + bay_view.rows * bay_view.cell / 2.0
+	var hold_mid := hold_view.grid_rect().get_center().y
+	var bay_mid := bay_view.grid_rect().get_center().y
 	var above := bay_title.get_combined_minimum_size().y + 4.0
 	_bay_spacer.custom_minimum_size.y = maxf(0.0, hold_mid - bay_mid - above - 4.0)
 
@@ -602,20 +602,6 @@ func _refresh_dock() -> void:
 		elif _fly_from != null and not c["id"] in _dock_ids:
 			_fly_in(chip, c)
 	_dock_ids = run_data["dock"].duplicate()
-
-
-## Finds a contract that is accepted now and was not in the last refresh. Its card is
-## still the old one: the dock refresh comes before the contract refresh.
-func _find_accepted() -> void:
-	var accepted := {}
-	for k: Dictionary in run_data["contracts"]:
-		if k["accepted"]:
-			accepted[k["index"]] = true
-	if _accepted != null:
-		for i: int in accepted:
-			if not _accepted.has(i) and i < _contract_cards.size():
-				_fly_from = _contract_cards[i].get_global_rect().get_center()
-	_accepted = accepted
 
 
 ## The new freight of an accepted contract flies from its card to its place on the
@@ -859,13 +845,6 @@ func _on_hold_hovered(id: int) -> void:
 func show_tip(c: Dictionary) -> void:
 	if not _drag.is_active():
 		_tip.show_cargo(c, view_data)
-
-
-## Shows the environment of the leg in the tip while the mouse is on a control: its
-## name and its rule, from the view at that time (SPEC Section 28.1).
-func _env_tip_on(control: Control) -> void:
-	control.mouse_filter = Control.MOUSE_FILTER_STOP
-	tip_on(control, _show_env_tip, true)
 
 
 ## Shows a tooltip while the mouse is on a control, and while the keyboard focus is on

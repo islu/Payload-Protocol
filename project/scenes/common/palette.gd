@@ -21,12 +21,14 @@ const CLAMP := Color("ffb347")
 ## The color of a black market contract (SPEC Section 30.4).
 const BLACK_MARKET := Color("b77dff")
 const ZONE := Color(0.37, 0.83, 1.0, 0.18)
+## The color of Fluid: its trait, and the light of a leak (SPEC Section 21.6).
+const FLUID := Color("3c8cff")
 
 ## One color for each trait (SPEC Section 4.2).
 const TRAIT_COLORS := {
 	Defs.TRAIT_FRAGILE: Color("7fdcff"),
 	Defs.TRAIT_VOLATILE: Color("ff5a3c"),
-	Defs.TRAIT_FLUID: Color("3c8cff"),
+	Defs.TRAIT_FLUID: FLUID,
 	Defs.TRAIT_ELECTRONIC: Color("ffd23c"),
 	Defs.TRAIT_PERISHABLE: Color("7ce05a"),
 	Defs.TRAIT_THRUSTER: Color("b07cff"),

@@ -5,10 +5,6 @@ extends Overlay
 ## its text, and a button for each choice. The player must select a choice: Esc does
 ## not close it. After the choice, the speaker replies, and Continue closes the panel.
 
-## Emits true before the action of a choice, so that the station waits for the reply,
-## and false when the action fails (SPEC Section 20.8).
-signal hold(on: bool)
-
 const COST_TEXT := "Cost {cost}"
 const CONTINUE_TEXT := "Continue"
 ## The portraits of the speakers (task art). Each head has the same size.
@@ -50,20 +46,18 @@ var tip: CargoTip
 ## The reply of the speaker and its Continue button, after a choice (SPEC Section 20.8).
 var reply_label: Label
 var continue_button: Button
-## The event of the panel. The view has no event after the choice.
-var _event: Dictionary = {}
+## The index of the selected choice. Continue does its action (SPEC Section 20.8).
+var picked := -1
 ## The reply after the choice, or "" before the choice.
 var _reply := ""
 
 
 func _build() -> void:
 	choices.clear()
-	if _event.is_empty():
-		var run: Dictionary = GameState.view()["run"]
-		if run.get("phase", "") != Defs.PHASE_EVENT:
-			return
-		_event = run["event"]
-	var e := _event
+	var run: Dictionary = GameState.view()["run"]
+	if run.get("phase", "") != Defs.PHASE_EVENT:
+		return
+	var e: Dictionary = run["event"]
 	# The speaker stands outside a frame: the overlay panel shows no frame here.
 	panel.add_theme_stylebox_override("panel", StyleBoxEmpty.new())
 	var row := HBoxContainer.new()
@@ -177,18 +171,12 @@ func _add_reply(col: VBoxContainer) -> void:
 
 
 ## Reports whether the reply shows: main keeps the panel open until it closes.
-func replying() -> bool:
-	return _reply != ""
-
-
+## Shows the reply of a choice. The action of the choice waits for Continue, so that
+## its effects play after the reply (SPEC Section 20.8). A choice that the player cannot
+## select is disabled (SPEC Section 26.2).
 func _pick(index: int, reply: String) -> void:
+	picked = index
 	_reply = reply
-	hold.emit(true)
-	if GameState.choose_event(index) != "":
-		_reply = ""
-		hold.emit(false)
-		Sound.play(self, "deny")
-		return
 	Hints.done(Hints.EVENT)
 	_rebuild()
 

@@ -20,8 +20,8 @@ const WAVE_TIME := 0.6
 const CRACK_TIME := 0.5
 ## The strength of the flash of the warp start: an explosion has 1 (SPEC Section 20.3).
 const JUMP_FLASH := 0.35
-const METEOR_COLOR := Color("ffb347")
-const WAVE_COLOR := Color("5fd3ff")  # Palette.ACCENT
+const METEOR_COLOR := Palette.CLAMP
+const WAVE_COLOR := Palette.ACCENT
 
 var hold: HoldView
 var speed := 1.0
@@ -186,7 +186,7 @@ func _target_at(fx: Dictionary) -> Vector2:
 
 ## A gold sparkle at a point of the screen (SPEC Section 21.4).
 func coin(global_at: Vector2) -> void:
-	_sheet("coin", get_global_transform().affine_inverse() * global_at)
+	_sheet("coin", _local(global_at))
 
 
 func _sheet(sheet_name: String, at: Vector2, angle := 0.0) -> void:
@@ -210,7 +210,8 @@ func _process(delta: float) -> void:
 		if fx["t"] >= fx["time"] and fx.has("arrive"):
 			var arrive: Callable = fx["arrive"]
 			fx.erase("arrive")
-			arrive.call()
+			if arrive.is_valid():
+				arrive.call()
 	_fx = _fx.filter(func(fx: Dictionary) -> bool: return fx["t"] < fx["time"])
 	_flash = maxf(0.0, _flash - delta * speed * 4.0)
 	# One more redraw after the last effect clears the layer.

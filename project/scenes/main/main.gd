@@ -101,9 +101,6 @@ func _update_choice(run: Dictionary) -> void:
 		key = phase + ",".join(run["mod_offer"].map(func(m: Dictionary) -> String: return m["id"]))
 	if key == _choice_key:
 		return
-	# The reply of an event stays until the player closes it (SPEC Section 20.8).
-	if choice is EventPanel and choice.replying():
-		return
 	_choice_key = key
 	if choice != null:
 		choice.queue_free()
@@ -112,7 +109,6 @@ func _update_choice(run: Dictionary) -> void:
 		return
 	if phase == Defs.PHASE_EVENT:
 		var panel := EventPanel.new()
-		panel.hold.connect(_hold_station)
 		panel.closed.connect(_reply_closed.bind(panel))
 		choice = panel
 	else:
@@ -120,21 +116,19 @@ func _update_choice(run: Dictionary) -> void:
 	open_overlay(choice)
 
 
-## The station waits while the reply of an event shows (SPEC Section 20.8).
-func _hold_station(on: bool) -> void:
-	if _screen is StationScreen:
-		_screen.held = on
-
-
-## After the reply, the effects play on the station. Then the next panel opens: the
-## mod choice of a mod effect (SPEC Section 20.8).
+## After the reply, the choice happens, and its effects play on the station. Then the
+## next panel opens: the mod choice of a mod effect (SPEC Section 20.8).
 func _reply_closed(panel: EventPanel) -> void:
-	if choice != panel:
+	if choice != panel or panel.picked < 0:
 		return
 	choice = null
 	_choice_key = ""
+	var index := panel.picked
+	var choose := func() -> void: GameState.choose_event(index)
 	if _screen is StationScreen:
-		_screen.play_event_effects()
+		_screen.play_event_effects(choose)
+	else:
+		choose.call()
 	_update()
 
 

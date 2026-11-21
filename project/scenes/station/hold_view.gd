@@ -27,11 +27,11 @@ const FRAME := 18.0
 const BRACKET := 28.0
 ## The colors of the lights of the bulkhead (SPEC Section 21.6).
 const LIGHT_IDLE := Color("29538f")
-const LIGHT_STEP := Color("ffba46")  # Palette.TITLE_AMBER
+const LIGHT_STEP := Palette.TITLE_AMBER
 const LIGHT_HIT := Color(1, 1, 1)
-const LIGHT_ALARM := Color("ff4d6a")  # Palette.BAD
-const LIGHT_LEAK := Color("3c8cff")  # The color of Fluid
-const LIGHT_SHORT := Color("5fd3ff")  # Palette.ACCENT
+const LIGHT_ALARM := Palette.BAD
+const LIGHT_LEAK := Palette.FLUID
+const LIGHT_SHORT := Palette.ACCENT
 ## The targets of the light log: all lights, or the light nearest to a point. A wall
 ## target is the direction of the wall.
 const LIGHT_ALL := "all"
@@ -91,21 +91,26 @@ var clamp_bounces: Dictionary = {}
 var trail_drawn := false
 
 var _hover := -1
-## The clamped cargo of the last view, by ID, or null before the first view.
-var _clamped: Variant = null
+## True while the hold animates: the last frame of an animation draws once more.
+var _animating := false
+## The layer of the bulkhead and the deck plates, behind the hold.
+var _back_layer: BackLayer
 ## The links pulse: only this layer redraws each frame, not the whole hold.
 var _link_layer: LinkLayer
 
 
 func _init() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
+	# The bulkhead and the deck plates do not move: their own layer behind the hold
+	# draws them again only when the view changes (SPEC Section 21.6).
+	_back_layer = BackLayer.new(self)
+	add_child(_back_layer)
 	_link_layer = LinkLayer.new(self)
 	add_child(_link_layer)
 
 
 func set_view(run: Dictionary) -> void:
 	cargo = run["cargo"]
-	_find_new_clamps()
 	if bay:
 		# The stasis bay has no front wall, no mod area, and no incident (SPEC Section 31.1).
 		var size: Dictionary = run.get("shock_bay", {})
@@ -134,6 +139,7 @@ func set_view(run: Dictionary) -> void:
 		if lights.is_empty():
 			_make_lights()
 	queue_redraw()
+	_back_layer.queue_redraw()
 	_link_layer.queue_redraw()
 
 
@@ -191,6 +197,11 @@ func grid_origin() -> Vector2:
 	return o
 
 
+## Returns the grid in local coordinates: its cells, with no bulkhead.
+func grid_rect() -> Rect2:
+	return Rect2(grid_origin(), Vector2(columns, rows) * cell)
+
+
 ## Returns the global position of a point of the grid in cells: (0.5, 0.5) is the
 ## center of the cell (0, 0).
 func cell_global(at: Vector2) -> Vector2:
@@ -236,7 +247,7 @@ func _draw_check(top_left: Vector2) -> void:
 ## The mouse is on the view only over the grid and its bulkhead. The free margin lets
 ## the mouse through to the stasis bay that overlaps it (SPEC Sections 4.2 and 31.2).
 func _has_point(point: Vector2) -> bool:
-	var grid := Rect2(grid_origin(), Vector2(columns, rows) * cell)
+	var grid := grid_rect()
 	return grid.grow(BAY_PAD if bay else FRAME).has_point(point)
 
 
@@ -280,6 +291,7 @@ func _notification(what: int) -> void:
 	# The grid stays centered when the view changes size.
 	if what == NOTIFICATION_RESIZED:
 		queue_redraw()
+		_back_layer.queue_redraw()
 	if what == NOTIFICATION_MOUSE_EXIT:
 		set_hover(-1)
 
@@ -302,10 +314,6 @@ func _first_cell_offset(c: Dictionary) -> Vector2:
 
 func _draw() -> void:
 	var o := grid_origin()
-	_draw_frame(o)
-	for y in rows:
-		for x in columns:
-			_draw_plate(Rect2(o + Vector2(x, y) * cell, Vector2(cell, cell)))
 	for a: Dictionary in mod_areas:
 		for c: Dictionary in a["cells"]:
 			var r := Rect2(o + Vector2(c["x"], c["y"]) * cell, Vector2(cell, cell)).grow(-3)
@@ -350,14 +358,14 @@ func _draw() -> void:
 	for wall in front_walls:
 		_draw_front_wall(o, wall)
 	if not bay:
-		_draw_brackets(Rect2(o, Vector2(columns, rows) * cell).grow(FRAME))
+		_draw_brackets(grid_rect().grow(FRAME))
 	if not preview.is_empty():
 		_draw_preview(o)
 
 
 ## Draws the links between the cargo on a canvas, with a pulse (SPEC Section 12.3).
 func _draw_links(canvas: CanvasItem, o: Vector2) -> void:
-	var t := Time.get_ticks_msec() / 1000.0
+	var t := _now()
 	for l: Dictionary in links:
 		var a := _cargo(l["from"])
 		var b := _cargo(l["to"])
@@ -435,39 +443,31 @@ func _center(c: Dictionary) -> Vector2:
 
 ## Draws the bulkhead of the hold: metal plates with a rivet at each grid line
 ## (SPEC Sections 4.2 and 21.6).
-func _draw_frame(o: Vector2) -> void:
-	var grid := Rect2(o, Vector2(columns, rows) * cell)
+func _draw_frame(canvas: CanvasItem, o: Vector2) -> void:
+	var grid := grid_rect()
 	var outer := grid.grow(FRAME)
 	if bay:
-		_draw_bay_frame(grid, grid.grow(BAY_PAD - 2.0))
+		_draw_bay_frame(canvas, grid, grid.grow(BAY_PAD - 2.0))
 		return
-	draw_rect(outer, Palette.PANEL_LINE.darkened(0.35))
-	draw_rect(outer, Palette.PANEL_LINE, false, 2.0)
-	draw_rect(grid.grow(2), Palette.BACKGROUND)
+	canvas.draw_rect(outer, Palette.PANEL_LINE.darkened(0.35))
+	canvas.draw_rect(outer, Palette.PANEL_LINE, false, 2.0)
+	canvas.draw_rect(grid.grow(2), Palette.BACKGROUND)
 	var rivet := Palette.PANEL_LINE.lightened(0.25)
 	var mid := FRAME / 2.0
 	for x in columns + 1:
 		var px := o.x + x * cell
-		draw_circle(Vector2(px, grid.position.y - mid), 2.5, rivet)
-		draw_circle(Vector2(px, grid.end.y + mid), 2.5, rivet)
+		canvas.draw_circle(Vector2(px, grid.position.y - mid), 2.5, rivet)
+		canvas.draw_circle(Vector2(px, grid.end.y + mid), 2.5, rivet)
 	for y in rows + 1:
 		var py := o.y + y * cell
-		draw_circle(Vector2(grid.position.x - mid, py), 2.5, rivet)
-		draw_circle(Vector2(grid.end.x + mid, py), 2.5, rivet)
+		canvas.draw_circle(Vector2(grid.position.x - mid, py), 2.5, rivet)
+		canvas.draw_circle(Vector2(grid.end.x + mid, py), 2.5, rivet)
 
 
-## Starts a bounce for each cargo that has a clamp now and had none in the last view
-## (SPEC Section 21.1). The first view starts none.
-func _find_new_clamps() -> void:
-	var clamped := {}
-	for c: Dictionary in cargo:
-		if _mine(c) and c.get("clamped", false):
-			clamped[c["id"]] = true
-	if _clamped != null:
-		for id: int in clamped:
-			if not _clamped.has(id):
-				clamp_bounces[id] = _now()
-	_clamped = clamped
+## Starts the bounce of a new clamp on a cargo (SPEC Section 21.1).
+func bounce_clamp(id: int) -> void:
+	clamp_bounces[id] = _now()
+	queue_redraw()
 
 
 ## A new clamp grows a little and comes back, with a bright frame.
@@ -497,15 +497,15 @@ func _draw_trail(c: Dictionary, at: Vector2, off: Vector2) -> void:
 
 ## Draws a deck plate: a cell with a soft bevel and a screw at each corner. The
 ## contrast is low, so that the cargo is easy to see (SPEC Section 21.6).
-func _draw_plate(r: Rect2) -> void:
-	draw_rect(r, Palette.GRID)
+func _draw_plate(canvas: CanvasItem, r: Rect2) -> void:
+	canvas.draw_rect(r, Palette.GRID)
 	var inner := r.grow(-4)
 	var light := Palette.GRID.lightened(0.07)
 	var dark := Palette.GRID.darkened(0.25)
-	draw_line(inner.position, Vector2(inner.end.x, inner.position.y), light, 2.0)
-	draw_line(inner.position, Vector2(inner.position.x, inner.end.y), light, 2.0)
-	draw_line(Vector2(inner.position.x, inner.end.y), inner.end, dark, 2.0)
-	draw_line(Vector2(inner.end.x, inner.position.y), inner.end, dark, 2.0)
+	canvas.draw_line(inner.position, Vector2(inner.end.x, inner.position.y), light, 2.0)
+	canvas.draw_line(inner.position, Vector2(inner.position.x, inner.end.y), light, 2.0)
+	canvas.draw_line(Vector2(inner.position.x, inner.end.y), inner.end, dark, 2.0)
+	canvas.draw_line(Vector2(inner.end.x, inner.position.y), inner.end, dark, 2.0)
 	var screw := Palette.GRID.lightened(0.14)
 	var k := 10.0
 	for p in [
@@ -514,8 +514,8 @@ func _draw_plate(r: Rect2) -> void:
 		Vector2(inner.position.x + k, inner.end.y - k),
 		inner.end - Vector2(k, k),
 	]:
-		draw_circle(p, 2.5, screw)
-	draw_rect(r, Palette.GRID_LINE, false, 1.0)
+		canvas.draw_circle(p, 2.5, screw)
+	canvas.draw_rect(r, Palette.GRID_LINE, false, 1.0)
 
 
 ## Draws an L-shaped bracket at each corner of the bulkhead (SPEC Section 21.6).
@@ -573,7 +573,7 @@ func light_color(l: Dictionary) -> Color:
 
 ## Returns the place of a light in local coordinates: on the middle of the bulkhead.
 func light_position(l: Dictionary) -> Vector2:
-	var grid := Rect2(grid_origin(), Vector2(columns, rows) * cell)
+	var grid := grid_rect()
 	var mid := FRAME / 2.0
 	match l["wall"]:
 		Defs.DIR_UP:
@@ -658,20 +658,22 @@ func _draw_lights() -> void:
 
 ## Draws the frame of the stasis bay: soft padding with seams, and the coupling to
 ## the hold at its right (SPEC Section 31.2).
-func _draw_bay_frame(grid: Rect2, outer: Rect2) -> void:
+func _draw_bay_frame(canvas: CanvasItem, grid: Rect2, outer: Rect2) -> void:
 	var pad: Color = Palette.TRAIT_COLORS[Defs.TRAIT_CUSHION]
 	var bottom := outer.end.y
 	for side in [-1.0, 1.0]:
 		var y: float = grid.get_center().y + side * cell * 0.25
-		draw_line(Vector2(outer.end.x, y), Vector2(size.x, y), Palette.PANEL_LINE, 6.0)
-	draw_rect(outer, Color(pad, 0.35).darkened(0.4))
-	draw_rect(outer, pad, false, 2.0)
+		canvas.draw_line(Vector2(outer.end.x, y), Vector2(size.x, y), Palette.PANEL_LINE, 6.0)
+	canvas.draw_rect(outer, Color(pad, 0.35).darkened(0.4))
+	canvas.draw_rect(outer, pad, false, 2.0)
 	var seam := Color(pad, 0.6)
 	for x in columns + 1:
 		var px := grid.position.x + x * cell
-		draw_line(Vector2(px, outer.position.y + 3), Vector2(px, grid.position.y - 3), seam, 1.5)
-		draw_line(Vector2(px, grid.end.y + 3), Vector2(px, bottom - 3), seam, 1.5)
-	draw_rect(grid.grow(2), Palette.BACKGROUND)
+		canvas.draw_line(
+			Vector2(px, outer.position.y + 3), Vector2(px, grid.position.y - 3), seam, 1.5
+		)
+		canvas.draw_line(Vector2(px, grid.end.y + 3), Vector2(px, bottom - 3), seam, 1.5)
+	canvas.draw_rect(grid.grow(2), Palette.BACKGROUND)
 
 
 ## Draws the front wall: a band of yellow and black stripes on the frame, and
@@ -764,10 +766,12 @@ func _draw_warning(top_left: Vector2) -> void:
 
 
 func _process(_delta: float) -> void:
-	if not offsets.is_empty() or _flashing() or not clamp_bounces.is_empty():
+	var animating := not offsets.is_empty() or _flashing() or not clamp_bounces.is_empty()
+	# One more redraw after the last change: a light goes back to dark blue.
+	if animating or _animating:
 		queue_redraw()
-		_link_layer.queue_redraw()
-	elif not links.is_empty():
+	_animating = animating
+	if not offsets.is_empty() or not links.is_empty():
 		_link_layer.queue_redraw()
 
 
@@ -779,6 +783,28 @@ func cargo_center(c: Dictionary) -> Vector2:
 
 ## The layer of the links on top of the hold. It redraws alone each frame while a
 ## link pulses.
+## The layer of the bulkhead and the deck plates behind the hold. It draws again only
+## when the view or its size changes, not in each frame of a warp.
+class BackLayer:
+	extends Control
+	var hold: HoldView
+
+	func _init(view: HoldView) -> void:
+		hold = view
+		show_behind_parent = true
+		mouse_filter = Control.MOUSE_FILTER_IGNORE
+		set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+
+	func _draw() -> void:
+		var o := hold.grid_origin()
+		hold._draw_frame(self, o)
+		for y in hold.rows:
+			for x in hold.columns:
+				hold._draw_plate(
+					self, Rect2(o + Vector2(x, y) * hold.cell, Vector2.ONE * hold.cell)
+				)
+
+
 class LinkLayer:
 	extends Control
 	var hold: HoldView

@@ -132,7 +132,7 @@ static func kit_helps(run: Run, d: CargoDef) -> Dictionary:
 		wants = [Defs.TRAIT_PERISHABLE]
 	elif d.traits.has(Defs.TRAIT_CUSHION):
 		wants = [Defs.TRAIT_FRAGILE]
-	elif (d.traits.has(Defs.TRAIT_SHIELD) or d.traits.has(Defs.TRAIT_BATTERY)) and _storm(run):
+	elif (d.traits.has(Defs.TRAIT_SHIELD) or d.traits.has(Defs.TRAIT_BATTERY)) and Shift.storm(run):
 		# In a Magnetic Storm, a Shield and a Battery help nothing (SPEC Section 20.2).
 		return {}
 	elif d.traits.has(Defs.TRAIT_SHIELD):
@@ -398,7 +398,7 @@ static func _cargo(run: Run, c: Cargo, hold: Array[Cargo], powered: Dictionary) 
 		"no_power": c.in_hold and c.has(Defs.TRAIT_SHIELD) and not powered.has(c.id),
 	}
 	if cv["no_power"]:
-		cv["no_power_why"] = STORM_TEXT if _storm(run) else NO_BATTERY_TEXT
+		cv["no_power_why"] = STORM_TEXT if Shift.storm(run) else NO_BATTERY_TEXT
 	for i in run.contracts.size():
 		if c.contract != 0 and run.contracts[i].id == c.contract:
 			cv["contract"] = i
@@ -414,15 +414,9 @@ static func links(run: Run) -> Array:
 		for b in hold:
 			if Arrival.cools(run, a, b):
 				out.append({"kind": Defs.LINK_COLD, "from": a.id, "to": b.id})
-			elif not _storm(run) and Shift.powers(run, a, b):
+			elif Shift.powers(run, a, b):
 				out.append({"kind": Defs.LINK_POWER, "from": a.id, "to": b.id})
 	return out
-
-
-## Reports whether the leg has a Magnetic Storm: no Shield has power, and a Battery
-## and a Shield have no link (SPEC Sections 12.3 and 28.2).
-static func _storm(run: Run) -> bool:
-	return run.environment == Defs.ENV_MAGNETIC_STORM
 
 
 ## Returns the preview of a drop of a cargo at a place in the hold, or in the stasis bay
@@ -653,7 +647,7 @@ static func _effect(run: Run, merged: Dictionary) -> Dictionary:
 	var count: int = merged["count"]
 	if f["type"] == Defs.EFFECT_SCRAP:
 		var def: CargoDef = run.cat.cargo[f["cargo"]]
-		var mass := run.cat.weight_value(Defs.WEIGHT_LIGHT) * def.shape.size() * count
+		var mass := run.cat.scrap_mass(def) * count
 		var key: String = EFFECT_TEXT["scrap_many"] if count > 1 else EFFECT_TEXT[f["type"]]
 		return text(key, {"name": def.name, "count": count, "mass": mass})
 	var one := _one_effect(run, f)
@@ -706,14 +700,5 @@ static func incident(run: Run) -> Dictionary:
 	var i := run.incident
 	if i.is_empty():
 		return {}
-	var cells := []
-	match i["kind"]:
-		Defs.INCIDENT_METEOR:
-			for y in run.rows:
-				cells.append({"x": i["x"], "y": y})
-		Defs.INCIDENT_ION_PULSE:
-			for x in run.columns:
-				cells.append({"x": x, "y": i["y"]})
-		_:
-			cells.append({"x": i["x"], "y": i["y"]})
+	var cells := Route.incident_cells(run, i)
 	return {"kind": i["kind"], "x": i.get("x", -1), "y": i.get("y", -1), "cells": cells}

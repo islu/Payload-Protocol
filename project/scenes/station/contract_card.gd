@@ -157,12 +157,11 @@ func _first_line(box: Control, k: Dictionary, details: PackedStringArray) -> Str
 		)
 	elif not k["accepted"]:
 		button = screen.add_button(
-			head, tr(ACCEPT_TEXT), func() -> void: screen.act(GameState.accept_contract(index))
+			head, tr(ACCEPT_TEXT), func() -> void: screen.accept_contract(index, self)
 		)
 	# The focus on the button shows the details of the card (SPEC Section 20.10).
 	if button != null:
-		button.focus_entered.connect(func() -> void: _show_details())
-		button.focus_exited.connect(screen.hide_tip)
+		screen.tip_on(button, _show_details)
 	first_line = " ".join(line)
 	return first_line
 

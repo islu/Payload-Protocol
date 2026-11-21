@@ -203,6 +203,8 @@ func warp() -> String:
 	# The incident comes before the first shift step (SPEC Section 29).
 	if not incident.is_empty():
 		var inc := Shift.incident(self, incident)
+		# The cells of its place, for the mark of the warp (SPEC Section 29.3).
+		inc["cells"] = Route.incident_cells(self, incident)
 		if inc["debris"] != 0:
 			for cv: Dictionary in RunView.hold_views(self):
 				if cv["id"] == inc["debris"]:
