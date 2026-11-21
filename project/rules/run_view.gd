@@ -8,6 +8,8 @@ class_name RunView
 const HELPS_TEXT := "Helps {count} of your freight"
 const FORK_HELP_TEXT := "The next jump has a fork step"
 ## The texts of the effects of an event choice (SPEC Sections 20.8 and 26.2).
+## The arrow of each direction, for the text of an add_step effect.
+const ARROWS := {Defs.DIR_LEFT: "←", Defs.DIR_RIGHT: "→", Defs.DIR_UP: "↑", Defs.DIR_DOWN: "↓"}
 const EFFECT_TEXT := {
 	"gain": "+{amount} credits",
 	"loss": "{amount} credits",
@@ -19,6 +21,14 @@ const EFFECT_TEXT := {
 	Defs.EFFECT_CONTRACT: "New contract: {name}",
 	Defs.EFFECT_MOD: "Select a ship mod",
 	Defs.EFFECT_PAYMENT: "Payment of this leg -{amount}",
+	"payment_up": "Payment of this leg +{amount}",
+	Defs.EFFECT_ADD_STEP: "Next jump: +1 step {arrow} {direction}",
+	Defs.EFFECT_REMOVE_STEP: "Next jump: -1 step",
+	Defs.EFFECT_CANCEL_INCIDENT: "Next jump: no incident",
+	Defs.EFFECT_CLEAR_SCRAP: "Clear all scrap",
+	Defs.INCIDENT_METEOR: "Next jump: a meteor",
+	Defs.INCIDENT_ION_PULSE: "Next jump: an Ion Pulse",
+	Defs.INCIDENT_HULL_BREACH: "Next jump: a Hull Breach",
 }
 
 
@@ -649,7 +659,16 @@ static func _one_effect(run: Run, f: Dictionary) -> Dictionary:
 			var name := run.cat.contract(f["contract"]).client_name
 			return text(EFFECT_TEXT[f["type"]], {"name": name})
 		Defs.EFFECT_PAYMENT:
+			# A payment effect less than 0 makes the payment larger (SPEC Section 26.2).
+			if f["amount"] < 0:
+				return text(EFFECT_TEXT["payment_up"], {"amount": -f["amount"]})
 			return text(EFFECT_TEXT[f["type"]], {"amount": f["amount"]})
+		Defs.EFFECT_ADD_STEP:
+			var d: String = f["direction"]
+			var name := run.cat.term_name("directions", d)
+			return text(EFFECT_TEXT[f["type"]], {"arrow": ARROWS.get(d, ""), "direction": name})
+		Defs.EFFECT_ADD_INCIDENT:
+			return text(EFFECT_TEXT[f["incident"]], {})
 	return text(EFFECT_TEXT.get(f["type"], ""), {})
 
 

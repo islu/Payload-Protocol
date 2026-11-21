@@ -115,7 +115,9 @@ The first content has 43 freight in contracts, 6 kit, and the Hull Debris (SPEC 
 - A contract of the tutorial has `"legs": []` too, and its id starts with `tutorial_` (SPEC Section 23.4). `data/tutorial.json` names it.
 - A contract that only an event gives has `"legs": []`. Give it more pay than an offered contract of the same size: the player did not plan for it.
 - Use the effects of SPEC Section 26.2 only. A new kind of effect needs a code change.
-- Each event names its speaker: one of the characters with a portrait (SPEC Section 20.8). Use a speaker of `speakers/`. A new speaker needs a portrait of the upper body or the full body: add it to `tools/art/speaker_art.json` with the height of its head, and run `task art`.
+- An `add_step` effect names its `direction`. An `add_incident` effect names its `incident` (`meteor`, `ion_pulse`, or `hull_breach`). The seed selects the place.
+- Give a route effect a real cost or a real gain: a step less is worth a cost, and a step more or an incident is worth a gain.
+- Each event names its speaker: one of the characters with a portrait (SPEC Section 20.8). Use a speaker of `speakers/`. A new speaker needs a portrait: the full body, the upper body, or a bust (the head and the shoulders). Add it to `tools/art/speaker_art.json` with the height of its head, and run `task art`. A bust stands at the bottom of the dialogue box (SPEC Section 20.8).
 
 ## Pilot Lines
 

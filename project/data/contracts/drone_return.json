@@ -1,0 +1,7 @@
+{
+	"id": "drone_return",
+	"legs": [],
+	"client_name": "Drone Owner",
+	"freight": ["courier_drone", "courier_drone"],
+	"pay": 8
+}

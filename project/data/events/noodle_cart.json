@@ -1,0 +1,27 @@
+{
+	"id": "noodle_cart",
+	"name": "Noodle Cart",
+	"text": "A noodle vendor needs a fast delivery to the next station.",
+	"speaker": "noodle_vendor",
+	"choices": [
+		{
+			"text": "Deliver for her.",
+			"effects": [
+				{
+					"type": "contract",
+					"contract": "noodle_run"
+				}
+			],
+			"reply": {
+				"text": "Hot when they get there!"
+			}
+		},
+		{
+			"text": "Not today.",
+			"effects": [],
+			"reply": {
+				"text": "Your stomach will miss me."
+			}
+		}
+	]
+}

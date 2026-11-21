@@ -153,7 +153,7 @@ The arrival has these steps, in this order:
 - Each choice has a **reply**: the line of the speaker after the player selects it (Section 20.8).
 - One choice of each event has no cost.
 - The player must select one choice. The player cannot select a choice when its cost is more than the credits.
-- The player cannot select a choice with a cost when one of its effects cannot happen: a `clamp` effect at the maximum of clamps, or a `mod` effect with no mod left.
+- The player cannot select a choice with a cost when one of its effects cannot happen: a `clamp` effect at the maximum of clamps, a `mod` effect with no mod left, a `remove_step` effect when the next jump has 1 step, a `cancel_incident` effect when the next jump has no incident, or a `clear_scrap` effect with no scrap.
 - The effects happen in the order of the list:
 
 | Effect | Result |
@@ -164,7 +164,12 @@ The arrival has these steps, in this order:
 | `scrap` | Puts a scrap of a cargo definition on the dock. It has the shape of that definition. |
 | `contract` | Adds the contract of a template to the contract board. The player can accept it or not (Section 15). |
 | `mod` | Starts a mod choice (Section 27.1). |
-| `payment` | Makes the payment of this leg smaller by a number of credits. |
+| `payment` | Makes the payment of this leg smaller by a number of credits. The number can be less than 0: then the payment is larger. |
+| `add_step` | Adds a shift step in a direction at the end of the next jump. When the next jump has a fork step, the new step goes before it: the fork step stays last (Section 18). |
+| `remove_step` | Removes the last shift step of the next jump. The next jump keeps 1 step at least. When the last step is a fork step, the next jump has no fork step. |
+| `add_incident` | Sets the incident of the next jump to a kind of incident. The seed selects its place (Section 29.1). It replaces the incident that the jump has. |
+| `cancel_incident` | The next jump has no incident. |
+| `clear_scrap` | Removes each scrap in the hold and on the dock, at no cost. |
 
 - A contract that only events give has no leg. The station does not offer it at other times.
 

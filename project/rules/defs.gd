@@ -67,6 +67,11 @@ const EFFECT_SCRAP := "scrap"
 const EFFECT_CONTRACT := "contract"
 const EFFECT_MOD := "mod"
 const EFFECT_PAYMENT := "payment"
+const EFFECT_ADD_STEP := "add_step"
+const EFFECT_REMOVE_STEP := "remove_step"
+const EFFECT_ADD_INCIDENT := "add_incident"
+const EFFECT_CANCEL_INCIDENT := "cancel_incident"
+const EFFECT_CLEAR_SCRAP := "clear_scrap"
 const EFFECTS: PackedStringArray = [
 	EFFECT_CREDITS,
 	EFFECT_KIT,
@@ -75,6 +80,11 @@ const EFFECTS: PackedStringArray = [
 	EFFECT_CONTRACT,
 	EFFECT_MOD,
 	EFFECT_PAYMENT,
+	EFFECT_ADD_STEP,
+	EFFECT_REMOVE_STEP,
+	EFFECT_ADD_INCIDENT,
+	EFFECT_CANCEL_INCIDENT,
+	EFFECT_CLEAR_SCRAP,
 ]
 
 # Route environments (SPEC Section 28.2)

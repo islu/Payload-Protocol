@@ -1,0 +1,36 @@
+{
+	"id": "ion_storm",
+	"name": "Ion Storm",
+	"text": "A scientist warns of an ion storm on your route.",
+	"speaker": "scientist",
+	"choices": [
+		{
+			"text": "Take a detour.",
+			"effects": [
+				{
+					"type": "add_step",
+					"direction": "right"
+				}
+			],
+			"reply": {
+				"text": "Wise. The long way is the safe way."
+			}
+		},
+		{
+			"text": "Push through.",
+			"effects": [
+				{
+					"type": "credits",
+					"amount": 10
+				},
+				{
+					"type": "add_incident",
+					"incident": "ion_pulse"
+				}
+			],
+			"reply": {
+				"text": "Record everything for me."
+			}
+		}
+	]
+}

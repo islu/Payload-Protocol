@@ -1,0 +1,31 @@
+{
+	"id": "shield_trial",
+	"name": "Shield Trial",
+	"text": "A trader offers a Shield on credit.",
+	"speaker": "merchant",
+	"choices": [
+		{
+			"text": "Take the Shield.",
+			"effects": [
+				{
+					"type": "kit",
+					"cargo": "shield_generator"
+				},
+				{
+					"type": "payment",
+					"amount": -10
+				}
+			],
+			"reply": {
+				"text": "Pay me back with your loan."
+			}
+		},
+		{
+			"text": "No, thanks.",
+			"effects": [],
+			"reply": {
+				"text": "Your loss, friend."
+			}
+		}
+	]
+}

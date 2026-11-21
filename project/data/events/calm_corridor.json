@@ -1,0 +1,27 @@
+{
+	"id": "calm_corridor",
+	"name": "Calm Corridor",
+	"text": "A navigator sells the chart of a calm corridor.",
+	"speaker": "navigator",
+	"choices": [
+		{
+			"text": "Buy the chart.",
+			"cost": 10,
+			"effects": [
+				{
+					"type": "remove_step"
+				}
+			],
+			"reply": {
+				"text": "Smooth flying. You are welcome."
+			}
+		},
+		{
+			"text": "Fly as planned.",
+			"effects": [],
+			"reply": {
+				"text": "Bumpy ride, then."
+			}
+		}
+	]
+}

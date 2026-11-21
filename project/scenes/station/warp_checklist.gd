@@ -39,6 +39,10 @@ func _init() -> void:
 		var l := Label.new()
 		l.add_theme_font_size_override("font_size", TextSize.SMALL)
 		l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		# A long row wraps: the column keeps its width (SPEC Section 20.2).
+		l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		l.custom_minimum_size.x = 160
 		row.add_child(l)
 		rows.append(l)
 		warnings.append(false)

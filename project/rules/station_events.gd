@@ -39,6 +39,12 @@ static func choice_error(run: Run, index: int) -> String:
 			return Run.CLAMPS_MAXED_TEXT
 		if f["type"] == Defs.EFFECT_MOD and mod_pool(run).is_empty():
 			return Run.NO_MOD_LEFT_TEXT
+		if f["type"] == Defs.EFFECT_REMOVE_STEP and run.hazard.size() <= 1:
+			return Run.LAST_STEP_TEXT
+		if f["type"] == Defs.EFFECT_CANCEL_INCIDENT and run.incident.is_empty():
+			return Run.NO_INCIDENT_TEXT
+		if f["type"] == Defs.EFFECT_CLEAR_SCRAP and scrap_ids(run).is_empty():
+			return Run.NO_SCRAP_TEXT
 	return ""
 
 
@@ -59,9 +65,34 @@ static func do_effect(run: Run, f: Dictionary) -> bool:
 			run.add_contract(cat.contract(f["contract"]))
 		Defs.EFFECT_PAYMENT:
 			run.payment_cut += f["amount"]
+		Defs.EFFECT_ADD_STEP:
+			# A fork step stays last (SPEC Sections 18 and 26.2).
+			var at := run.hazard.size() - (0 if run.fork_options.is_empty() else 1)
+			run.hazard.insert(at, f["direction"])
+		Defs.EFFECT_REMOVE_STEP:
+			if run.hazard.size() > 1:
+				run.hazard.remove_at(run.hazard.size() - 1)
+				run.fork_options = PackedStringArray()
+		Defs.EFFECT_ADD_INCIDENT:
+			run.incident = Route.place_incident(run, f["incident"])
+		Defs.EFFECT_CANCEL_INCIDENT:
+			run.incident = {}
+		Defs.EFFECT_CLEAR_SCRAP:
+			for id in scrap_ids(run):
+				run.remove_cargo(id)
 		Defs.EFFECT_MOD:
 			return true
 	return false
+
+
+## Returns the IDs of the scrap in the hold and on the dock (SPEC Section 26.2).
+static func scrap_ids(run: Run) -> Array:
+	var out := []
+	for c: Cargo in run.cargo.values():
+		if c.kind == Defs.KIND_SCRAP and not c.in_bay:
+			out.append(c.id)
+	out.sort()
+	return out
 
 
 ## Returns the IDs of the mods that the ship does not have.

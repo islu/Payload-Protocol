@@ -16,6 +16,9 @@ const PORTRAIT_PATH := "res://art/speakers/%s.png"
 ## The height of the speaker that shows, from the top of the head. The shortest
 ## portrait (the mechanic) is 416 pixels high. All heads are at the same height.
 const FIGURE_HEIGHT := 410
+## The height of each head in a portrait: HEAD_SIZE of tools/art/import_art.py. A bust
+## portrait shorter than FIGURE_HEIGHT stands at the bottom of the box (SPEC Section 20.8).
+const HEAD_SIZE := 120
 ## The part of the speaker at the bottom that fades out.
 const FADE := 0.15
 ## The width of the place of the speaker. A wider portrait goes past it at the left.

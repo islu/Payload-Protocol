@@ -89,6 +89,18 @@ msgid "The ship has each mod already."
 msgstr "船上已經裝了全部的改裝模組。"
 
 #: project/rules/run.gd
+msgid "The next jump has 1 shift step only."
+msgstr "下次跳躍只剩 1 段位移。"
+
+#: project/rules/run.gd
+msgid "The next jump has no incident."
+msgstr "下次跳躍沒有事故。"
+
+#: project/rules/run.gd
+msgid "You have no scrap."
+msgstr "你沒有廢鐵。"
+
+#: project/rules/run.gd
 msgid "You can sell only kit."
 msgstr "只能賣出裝備。"
 
@@ -184,6 +196,38 @@ msgstr "選一個改裝模組"
 #: project/rules/run_view.gd
 msgid "Payment of this leg -{amount}"
 msgstr "本期還款 -{amount}"
+
+#: project/rules/run_view.gd
+msgid "Payment of this leg +{amount}"
+msgstr "本期還款 +{amount}"
+
+#: project/rules/run_view.gd
+msgid "Next jump: +1 step {arrow} {direction}"
+msgstr "下次跳躍：多一段位移 {arrow} {direction}"
+
+#: project/rules/run_view.gd
+msgid "Next jump: -1 step"
+msgstr "下次跳躍：少一段位移"
+
+#: project/rules/run_view.gd
+msgid "Next jump: no incident"
+msgstr "下次跳躍：沒有事故"
+
+#: project/rules/run_view.gd
+msgid "Clear all scrap"
+msgstr "清掉所有廢鐵"
+
+#: project/rules/run_view.gd
+msgid "Next jump: a meteor"
+msgstr "下次跳躍：隕石"
+
+#: project/rules/run_view.gd
+msgid "Next jump: an Ion Pulse"
+msgstr "下次跳躍：離子脈衝"
+
+#: project/rules/run_view.gd
+msgid "Next jump: a Hull Breach"
+msgstr "下次跳躍：船殼破裂"
 
 #: project/scenes/common/game_state.gd
 msgid "The game data did not load."
@@ -1193,6 +1237,10 @@ msgstr "地球遺產博物館"
 msgid "Militia Supply"
 msgstr "民兵補給處"
 
+#: project/data/contracts/black_box_run.json
+msgid "Salvage Guild"
+msgstr "回收公會"
+
 #: project/data/contracts/blood_bank.json
 #: project/data/contracts/field_hospital.json
 #: project/data/contracts/vaccine_run.json
@@ -1222,6 +1270,10 @@ msgstr "霜線實驗室"
 #: project/data/contracts/diner.json
 msgid "Neon Diner"
 msgstr "霓虹餐館"
+
+#: project/data/contracts/drone_return.json
+msgid "Drone Owner"
+msgstr "無人機主人"
 
 #: project/data/contracts/drone_swarm.json
 #: project/data/contracts/drones.json
@@ -1281,6 +1333,7 @@ msgid "Deep Core Mining"
 msgstr "深核礦業"
 
 #: project/data/contracts/night_market.json
+#: project/data/contracts/noodle_run.json
 msgid "Night Market"
 msgstr "夜市"
 
@@ -1384,6 +1437,79 @@ msgstr "電子貨物 2 就短路"
 msgid "An Electronic cargo shorts at a hit with a force of 2 or more."
 msgstr "電子貨物受到撞擊力 2 以上的撞擊時會短路。"
 
+#: project/data/events/black_box.json
+msgid "Careful. Others want it too."
+msgstr "小心點，還有別人在找它。"
+
+#: project/data/events/black_box.json
+msgid "Carry the parts."
+msgstr "幫忙載零件。"
+
+#: project/data/events/black_box.json
+msgid "More for us."
+msgstr "那我們自己留著。"
+
+#: project/data/events/black_box.json
+#: project/data/events/drifting_container.json
+msgid "Leave it."
+msgstr "不管它。"
+
+#: project/data/events/black_box.json
+msgid "Black Box Bounty"
+msgstr "黑盒子懸賞"
+
+#: project/data/events/black_box.json
+msgid "A salvage crew found a black box. They need a ship to carry the parts."
+msgstr "回收隊找到一個黑盒子，需要一艘船幫忙載零件。"
+
+#: project/data/events/blade_pirates.json
+msgid "Wise. We will remember you."
+msgstr "識相。我們會記得你的。"
+
+#: project/data/events/blade_pirates.json
+msgid "Pay the toll."
+msgstr "付過路費。"
+
+#: project/data/events/blade_pirates.json
+msgid "Run, then. We will chase you."
+msgstr "那就逃吧，我們會追上去。"
+
+#: project/data/events/blade_pirates.json
+msgid "Fight them off."
+msgstr "把他們打退。"
+
+#: project/data/events/blade_pirates.json
+msgid "Blade Pirates"
+msgstr "刀幫海盜"
+
+#: project/data/events/blade_pirates.json
+msgid "A gang with blades boards your ship. They want a toll."
+msgstr "一群帶刀的幫派登上你的船，要收過路費。"
+
+#: project/data/events/calm_corridor.json
+msgid "Smooth flying. You are welcome."
+msgstr "一路平穩，不客氣。"
+
+#: project/data/events/calm_corridor.json
+msgid "Buy the chart."
+msgstr "買下航圖。"
+
+#: project/data/events/calm_corridor.json
+msgid "Bumpy ride, then."
+msgstr "那就準備顛簸吧。"
+
+#: project/data/events/calm_corridor.json
+msgid "Fly as planned."
+msgstr "照原計畫飛。"
+
+#: project/data/events/calm_corridor.json
+msgid "Calm Corridor"
+msgstr "平穩航道"
+
+#: project/data/events/calm_corridor.json
+msgid "A navigator sells the chart of a calm corridor."
+msgstr "一位領航員在賣平穩航道的航圖。"
+
 #: project/data/events/company_audit.json
 msgid "The company thanks you for your early payment."
 msgstr "公司感謝你提早付款。"
@@ -1408,6 +1534,55 @@ msgstr "公司稽核"
 msgid "The company checks your books. An early payment makes it happy."
 msgstr "公司來查帳了。提前還一點款，它會很開心。"
 
+#: project/data/events/customs_check.json
+msgid "Cleared. Move along."
+msgstr "通關了，往前走。"
+
+#: project/data/events/customs_check.json
+msgid "Pay the fast-track fee."
+msgstr "付快速通關費。"
+
+#: project/data/events/customs_check.json
+msgid "This will take a while."
+msgstr "這會花上一點時間。"
+
+#: project/data/events/customs_check.json
+msgid "Accept the search."
+msgstr "接受檢查。"
+
+#: project/data/events/customs_check.json
+msgid "Customs Check"
+msgstr "海關檢查"
+
+#: project/data/events/customs_check.json
+msgid "Customs wants to search your hold."
+msgstr "海關要檢查你的貨艙。"
+
+#: project/data/events/damaged_container.json
+msgid "We owe you one."
+msgstr "我們欠你一次。"
+
+#: project/data/events/damaged_container.json
+msgid "Tow them in."
+msgstr "把他們拖回來。"
+
+#: project/data/events/damaged_container.json
+msgid "We understand."
+msgstr "我們懂。"
+
+#: project/data/events/damaged_container.json
+#: project/data/events/distress_call.json
+msgid "Fly on."
+msgstr "繼續飛。"
+
+#: project/data/events/damaged_container.json
+msgid "Damaged Container"
+msgstr "破損貨櫃"
+
+#: project/data/events/damaged_container.json
+msgid "A crew drifts in a broken container. They offer a Cooler for a tow."
+msgstr "一組船員困在破損的貨櫃裡漂流，願意用一台冷藏機換你拖他們一程。"
+
 #: project/data/events/distress_call.json
 msgid "Thank you, pilot. Take this part. It still works."
 msgstr "謝謝你，駕駛員。這個零件拿去，還能用。"
@@ -1427,10 +1602,6 @@ msgstr "幫他們把物資送到下一站。"
 #: project/data/events/distress_call.json
 msgid "We understand. Somebody else will come. Maybe."
 msgstr "我們懂。會有別人來的。大概吧。"
-
-#: project/data/events/distress_call.json
-msgid "Fly on."
-msgstr "繼續飛。"
 
 #: project/data/events/distress_call.json
 msgid "Distress Call"
@@ -1453,16 +1624,278 @@ msgid "Good call. Nobody knows what is in a lost box."
 msgstr "明智。誰知道漂流箱裡裝了什麼。"
 
 #: project/data/events/drifting_container.json
-msgid "Leave it."
-msgstr "不管它。"
-
-#: project/data/events/drifting_container.json
 msgid "Drifting Container"
 msgstr "漂流貨櫃"
 
 #: project/data/events/drifting_container.json
 msgid "A lost container drifts past. Some of it is still good."
 msgstr "一個失落的貨櫃漂了過來，裡面有些東西還能用。"
+
+#: project/data/events/engine_tuning.json
+msgid "Purring like new."
+msgstr "引擎跟新的一樣順。"
+
+#: project/data/events/engine_tuning.json
+msgid "Tune the engines."
+msgstr "調校引擎。"
+
+#: project/data/events/engine_tuning.json
+msgid "Come back anytime."
+msgstr "隨時再來。"
+
+#: project/data/events/engine_tuning.json
+msgid "Not now."
+msgstr "現在不用。"
+
+#: project/data/events/engine_tuning.json
+msgid "Engine Tuning"
+msgstr "引擎調校"
+
+#: project/data/events/engine_tuning.json
+msgid "The mechanic can tune your engines for a shorter jump."
+msgstr "技師可以調校你的引擎，讓跳躍短一點。"
+
+#: project/data/events/escort_offer.json
+msgid "Stay close behind me."
+msgstr "緊跟在我後面。"
+
+#: project/data/events/escort_offer.json
+msgid "Hire the escort."
+msgstr "僱用護航。"
+
+#: project/data/events/escort_offer.json
+msgid "Good luck out there."
+msgstr "祝你好運。"
+
+#: project/data/events/escort_offer.json
+msgid "Fly alone."
+msgstr "自己飛。"
+
+#: project/data/events/escort_offer.json
+msgid "Escort Offer"
+msgstr "護航提議"
+
+#: project/data/events/escort_offer.json
+msgid "A patrol ship offers an escort through the next jump."
+msgstr "一艘巡邏艇提議在下次跳躍護送你。"
+
+#: project/data/events/first_contact.json
+msgid "Zzzt. Thank you, small ship."
+msgstr "滋滋。謝謝你，小船。"
+
+#: project/data/events/first_contact.json
+msgid "Trade your scrap."
+msgstr "拿廢鐵跟它交換。"
+
+#: project/data/events/first_contact.json
+msgid "Zzzt. Another time."
+msgstr "滋滋。下次吧。"
+
+#: project/data/events/first_contact.json
+msgid "Keep the hatch closed."
+msgstr "把艙門關好。"
+
+#: project/data/events/first_contact.json
+msgid "First Contact"
+msgstr "第一次接觸"
+
+#: project/data/events/first_contact.json
+msgid "A strange being glows at your airlock. It seems to want your junk, but its glow disturbs your systems."
+msgstr "一個奇怪的生物在你的氣閘外發光，好像想要你的廢鐵，但它的光會干擾船上的系統。"
+
+#: project/data/events/gravity_well.json
+msgid "Fascinating. Hold steady."
+msgstr "太有意思了。穩住。"
+
+#: project/data/events/gravity_well.json
+msgid "Fly through it."
+msgstr "直接飛過去。"
+
+#: project/data/events/gravity_well.json
+msgid "A lost chance for science."
+msgstr "科學錯過了一次機會。"
+
+#: project/data/events/gravity_well.json
+msgid "Steer around it."
+msgstr "繞過去。"
+
+#: project/data/events/gravity_well.json
+msgid "Gravity Well"
+msgstr "重力井"
+
+#: project/data/events/gravity_well.json
+msgid "A scientist wants readings from a gravity well on your route."
+msgstr "一位科學家想取得你航線上重力井的資料。"
+
+#: project/data/events/helping_hand.json
+msgid "Like old times."
+msgstr "就像以前一樣。"
+
+#: project/data/events/helping_hand.json
+msgid "Let them help."
+msgstr "讓他幫忙。"
+
+#: project/data/events/helping_hand.json
+msgid "Next time, then."
+msgstr "那下次吧。"
+
+#: project/data/events/helping_hand.json
+#: project/data/events/shield_trial.json
+msgid "No, thanks."
+msgstr "不用了，謝謝。"
+
+#: project/data/events/helping_hand.json
+msgid "Helping Hand"
+msgstr "老朋友幫忙"
+
+#: project/data/events/helping_hand.json
+msgid "An old friend at the dock offers to clean out your hold. The favor goes on your loan."
+msgstr "碼頭的老朋友願意幫你清貨艙，人情就記在你的貸款上。"
+
+#: project/data/events/ion_storm.json
+msgid "Wise. The long way is the safe way."
+msgstr "明智。遠路才是安全的路。"
+
+#: project/data/events/ion_storm.json
+msgid "Take a detour."
+msgstr "繞道。"
+
+#: project/data/events/ion_storm.json
+msgid "Record everything for me."
+msgstr "幫我把一切都記錄下來。"
+
+#: project/data/events/ion_storm.json
+msgid "Push through."
+msgstr "硬闖過去。"
+
+#: project/data/events/ion_storm.json
+msgid "Ion Storm"
+msgstr "離子風暴"
+
+#: project/data/events/ion_storm.json
+msgid "A scientist warns of an ion storm on your route."
+msgstr "一位科學家警告你航線上有離子風暴。"
+
+#: project/data/events/lost_drone.json
+msgid "Thank you. They will be happy."
+msgstr "謝謝你，它們會很高興。"
+
+#: project/data/events/lost_drone.json
+msgid "Carry them."
+msgstr "帶它們走。"
+
+#: project/data/events/lost_drone.json
+msgid "Understood. Logging refusal."
+msgstr "了解。記錄拒絕。"
+
+#: project/data/events/lost_drone.json
+msgid "No room."
+msgstr "沒有空間。"
+
+#: project/data/events/lost_drone.json
+msgid "Lost Drone"
+msgstr "迷途無人機"
+
+#: project/data/events/lost_drone.json
+msgid "A service robot asks you to carry two lost courier drones home."
+msgstr "一台服務機器人請你把兩架迷路的快遞無人機送回家。"
+
+#: project/data/events/meteor_warning.json
+msgid "Safe lane. Stay in it."
+msgstr "安全航道，別偏離。"
+
+#: project/data/events/meteor_warning.json
+msgid "Take the safe lane."
+msgstr "走安全航道。"
+
+#: project/data/events/meteor_warning.json
+msgid "Your hull, your risk."
+msgstr "你的船殼，你的風險。"
+
+#: project/data/events/meteor_warning.json
+msgid "Take the fast lane."
+msgstr "走快線。"
+
+#: project/data/events/meteor_warning.json
+msgid "Meteor Warning"
+msgstr "隕石警報"
+
+#: project/data/events/meteor_warning.json
+msgid "Traffic control reports meteors on the fast lane."
+msgstr "航管回報快線上有隕石。"
+
+#: project/data/events/navigator_shortcut.json
+msgid "Hold on to something."
+msgstr "抓穩了。"
+
+#: project/data/events/navigator_shortcut.json
+msgid "Take the shortcut."
+msgstr "走捷徑。"
+
+#: project/data/events/navigator_shortcut.json
+msgid "Your call, captain."
+msgstr "你決定，船長。"
+
+#: project/data/events/navigator_shortcut.json
+msgid "Keep the long route."
+msgstr "照原本的長路線。"
+
+#: project/data/events/navigator_shortcut.json
+msgid "Shortcut"
+msgstr "捷徑"
+
+#: project/data/events/navigator_shortcut.json
+msgid "A navigator knows a shortcut through a debris field."
+msgstr "一位領航員知道一條穿過碎片帶的捷徑。"
+
+#: project/data/events/netrunner_hack.json
+msgid "Done. You were never here."
+msgstr "搞定。你從來沒來過這裡。"
+
+#: project/data/events/netrunner_hack.json
+msgid "Pay her."
+msgstr "付錢給她。"
+
+#: project/data/events/netrunner_hack.json
+msgid "You will regret that."
+msgstr "你會後悔的。"
+
+#: project/data/events/netrunner_hack.json
+msgid "Ignore her."
+msgstr "不理她。"
+
+#: project/data/events/netrunner_hack.json
+#: project/data/speakers/netrunner.json
+msgid "Netrunner"
+msgstr "駭客"
+
+#: project/data/events/netrunner_hack.json
+msgid "A netrunner offers to hack traffic control for you."
+msgstr "一位駭客提議幫你入侵航管系統。"
+
+#: project/data/events/noodle_cart.json
+msgid "Hot when they get there!"
+msgstr "送到的時候還是熱的！"
+
+#: project/data/events/noodle_cart.json
+msgid "Deliver for her."
+msgstr "幫她送貨。"
+
+#: project/data/events/noodle_cart.json
+msgid "Your stomach will miss me."
+msgstr "你的肚子會想念我的。"
+
+#: project/data/events/noodle_cart.json
+msgid "Not today."
+msgstr "今天不用。"
+
+#: project/data/events/noodle_cart.json
+msgid "Noodle Cart"
+msgstr "深夜麵攤"
+
+#: project/data/events/noodle_cart.json
+msgid "A noodle vendor needs a fast delivery to the next station."
+msgstr "麵攤老闆需要把貨快速送到下一站。"
 
 #: project/data/events/pirate_demand.json
 msgid "Smart pilot. The route is open. For now."
@@ -1487,6 +1920,50 @@ msgstr "海盜勒索"
 #: project/data/events/pirate_demand.json
 msgid "Pirates block the route. They want credits, or they shoot."
 msgstr "海盜擋住航線。不給信用點，他們就開火。"
+
+#: project/data/events/salvage_ship.json
+msgid "Your junk is our treasure."
+msgstr "你的垃圾是我們的寶物。"
+
+#: project/data/events/salvage_ship.json
+msgid "Pay them to take it."
+msgstr "付錢請他們收走。"
+
+#: project/data/events/salvage_ship.json
+msgid "Suit yourself."
+msgstr "隨你。"
+
+#: project/data/events/salvage_ship.json
+msgid "Keep it."
+msgstr "自己留著。"
+
+#: project/data/events/salvage_ship.json
+msgid "Salvage Ship"
+msgstr "回收船"
+
+#: project/data/events/salvage_ship.json
+msgid "A salvage ship offers to take your scrap away."
+msgstr "一艘回收船提議幫你收走廢鐵。"
+
+#: project/data/events/shield_trial.json
+msgid "Pay me back with your loan."
+msgstr "連同你的貸款一起還我就好。"
+
+#: project/data/events/shield_trial.json
+msgid "Take the Shield."
+msgstr "收下護盾。"
+
+#: project/data/events/shield_trial.json
+msgid "Your loss, friend."
+msgstr "你的損失，朋友。"
+
+#: project/data/events/shield_trial.json
+msgid "Shield Trial"
+msgstr "試用護盾"
+
+#: project/data/events/shield_trial.json
+msgid "A trader offers a Shield on credit."
+msgstr "一位商人提議先賒帳給你一台護盾。"
 
 #: project/data/events/ship_mechanic.json
 msgid "Done. That clamp holds anything."
@@ -1792,9 +2269,21 @@ msgstr "減震底板"
 msgid "Cargo with a cell in the bottom row takes each hit with a force {less} less."
 msgstr "有格子在最底列的貨物，每次承受的撞擊力 -{less}。"
 
+#: project/data/speakers/alien.json
+msgid "Visitor"
+msgstr "訪客"
+
 #: project/data/speakers/auditor.json
 msgid "Company Auditor"
 msgstr "公司稽核員"
+
+#: project/data/speakers/blade_pirate.json
+msgid "Blade Pirate"
+msgstr "刀幫海盜"
+
+#: project/data/speakers/customs.json
+msgid "Customs Officer"
+msgstr "海關官員"
 
 #: project/data/speakers/dock_worker.json
 msgid "Dock Worker"
@@ -1804,9 +2293,41 @@ msgstr "碼頭工作人員"
 msgid "Mechanic"
 msgstr "技師"
 
+#: project/data/speakers/merchant.json
+msgid "Merchant"
+msgstr "商人"
+
+#: project/data/speakers/navigator.json
+msgid "Navigator"
+msgstr "領航員"
+
+#: project/data/speakers/noodle_vendor.json
+msgid "Noodle Vendor"
+msgstr "麵攤老闆"
+
+#: project/data/speakers/patrol_officer.json
+msgid "Patrol Officer"
+msgstr "巡邏官"
+
 #: project/data/speakers/pirate.json
 msgid "Pirate"
 msgstr "海盜"
+
+#: project/data/speakers/robot.json
+msgid "Service Robot"
+msgstr "服務機器人"
+
+#: project/data/speakers/salvage_crew.json
+msgid "Salvage Crew"
+msgstr "回收隊員"
+
+#: project/data/speakers/salvager.json
+msgid "Salvager"
+msgstr "回收商"
+
+#: project/data/speakers/scientist.json
+msgid "Scientist"
+msgstr "科學家"
 
 #: project/data/speakers/smuggler.json
 msgid "Smuggler"

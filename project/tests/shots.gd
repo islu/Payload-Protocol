@@ -150,6 +150,15 @@ func _mod_choice() -> void:
 		await _wait(0.3)
 		await _shot("09b_event_reply")
 		panel.close()
+		await _wait(0.4)
+		# A bust portrait stands at the bottom edge of the box (SPEC Section 20.8).
+		GameState.set_up(_set_bust_event)
+		await _wait(0.6)
+		await _shot("09c_event_bust")
+		var bust: EventPanel = _main.choice
+		bust.choices[-1].pressed.emit()
+		await _wait(0.3)
+		bust.close()
 	GameState.set_up(StationEvents.offer_mods)
 	await _wait(0.6)
 	await _shot("10_mod_choice")
@@ -185,6 +194,14 @@ func _mod_choice() -> void:
 	GameState.tutorial_next()
 	await _wait(0.6)
 	await _shot("15_tutorial_target")
+
+
+## Opens the event of the netrunner: a bust portrait.
+func _set_bust_event(r: Run) -> void:
+	for e in r.cat.events:
+		if e.id == "netrunner_hack":
+			r.event = e
+	r.phase = Defs.PHASE_EVENT
 
 
 func _set_route(r: Run) -> void:

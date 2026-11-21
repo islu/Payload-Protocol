@@ -6,11 +6,11 @@
 	"choices": [
 		{
 			"text": "Pay early.",
-			"cost": 10,
+			"cost": 15,
 			"effects": [
 				{
 					"type": "payment",
-					"amount": 15
+					"amount": 18
 				}
 			],
 			"reply": {

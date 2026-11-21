@@ -1,0 +1,30 @@
+{
+	"id": "first_contact",
+	"name": "First Contact",
+	"text": "A strange being glows at your airlock. It seems to want your junk, but its glow disturbs your systems.",
+	"speaker": "alien",
+	"choices": [
+		{
+			"text": "Trade your scrap.",
+			"effects": [
+				{
+					"type": "clear_scrap"
+				},
+				{
+					"type": "add_incident",
+					"incident": "ion_pulse"
+				}
+			],
+			"reply": {
+				"text": "Zzzt. Thank you, small ship."
+			}
+		},
+		{
+			"text": "Keep the hatch closed.",
+			"effects": [],
+			"reply": {
+				"text": "Zzzt. Another time."
+			}
+		}
+	]
+}

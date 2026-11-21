@@ -106,6 +106,7 @@ The warp:
 - When a station with an event opens, the event shows at the center, above the dark station (Section 26).
 - The speaker stands at the left of the dialogue box, outside a frame. Each event names its speaker. The speakers are a small set of characters, for example a pirate and a mechanic (content.md).
 - All speakers have the same proportions: their heads have the same size and are at the same height. Each speaker fades out at the bottom edge of the dialogue box.
+- A bust portrait (the head and the shoulders only) is shorter. It has the same head size, and it stands at the bottom edge of the dialogue box: its head is lower.
 - The dialogue box shows the name of the speaker, the name of the event, its text, and a button for each choice. Each button shows the text of the choice, its cost, and its effects.
 - A choice that the player cannot select is disabled (Section 26.2).
 - Identical effects of a choice show as one text with a count, for example "Scrap on the dock: Steel Ingot ×2". A scrap effect also shows its mass.

@@ -1,0 +1,36 @@
+{
+	"id": "meteor_warning",
+	"name": "Meteor Warning",
+	"text": "Traffic control reports meteors on the fast lane.",
+	"speaker": "patrol_officer",
+	"choices": [
+		{
+			"text": "Take the safe lane.",
+			"cost": 6,
+			"effects": [
+				{
+					"type": "cancel_incident"
+				}
+			],
+			"reply": {
+				"text": "Safe lane. Stay in it."
+			}
+		},
+		{
+			"text": "Take the fast lane.",
+			"effects": [
+				{
+					"type": "credits",
+					"amount": 10
+				},
+				{
+					"type": "add_incident",
+					"incident": "meteor"
+				}
+			],
+			"reply": {
+				"text": "Your hull, your risk."
+			}
+		}
+	]
+}

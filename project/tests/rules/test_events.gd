@@ -344,3 +344,150 @@ func test_speaker_needs_a_name() -> void:
 		not Catalog.from_data(d).errors.is_empty(),
 		"a speaker with no name is an error of the data (SPEC Section 20.8)"
 	)
+
+
+## Opens an event with one choice for each effect, and a free choice. Each paid
+## choice costs 1 (SPEC Section 26.2).
+func _route_event(effects: Array) -> void:
+	var choices := []
+	for f: Dictionary in effects:
+		choices.append({"text": "Pay", "cost": 1, "effects": [f], "reply": {"text": "ok"}})
+	choices.append({"text": "Leave", "effects": [], "reply": {"text": "ok"}})
+	run.event = EventDef.from_dict(
+		{"id": "e_test", "name": "T", "text": "T", "speaker": "s_one", "choices": choices}
+	)
+	run.phase = Defs.PHASE_EVENT
+	run.credits = 50
+
+
+func test_add_step() -> void:
+	run.hazard = PackedStringArray([Defs.DIR_UP, Defs.DIR_RIGHT])
+	run.fork_options = PackedStringArray()
+	_route_event([{"type": Defs.EFFECT_ADD_STEP, "direction": Defs.DIR_DOWN}])
+	eq(run.choose_event(0), "", "select the choice")
+	eq(
+		Array(run.hazard),
+		[Defs.DIR_UP, Defs.DIR_RIGHT, Defs.DIR_DOWN],
+		"add_step adds a step of its direction at the end of the next jump (SPEC Section 26.2)"
+	)
+
+
+func test_add_step_before_the_fork() -> void:
+	# The last step is a fork step: up or down, and the seed selected down.
+	run.hazard = PackedStringArray([Defs.DIR_RIGHT, Defs.DIR_DOWN])
+	run.fork_options = PackedStringArray([Defs.DIR_UP, Defs.DIR_DOWN])
+	_route_event([{"type": Defs.EFFECT_ADD_STEP, "direction": Defs.DIR_LEFT}])
+	eq(run.choose_event(0), "", "select the choice")
+	eq(
+		Array(run.hazard),
+		[Defs.DIR_RIGHT, Defs.DIR_LEFT, Defs.DIR_DOWN],
+		"the new step goes before the fork step: the fork step stays last (SPEC Section 26.2)"
+	)
+	eq(run.fork_options.size(), 2, "the next jump keeps its fork step (SPEC Section 26.2)")
+
+
+func test_remove_step() -> void:
+	run.hazard = PackedStringArray([Defs.DIR_UP, Defs.DIR_RIGHT])
+	run.fork_options = PackedStringArray([Defs.DIR_RIGHT, Defs.DIR_DOWN])
+	_route_event([{"type": Defs.EFFECT_REMOVE_STEP}])
+	eq(run.choose_event(0), "", "select the choice")
+	eq(Array(run.hazard), [Defs.DIR_UP], "remove_step removes the last step (SPEC Section 26.2)")
+	eq(
+		run.fork_options.size(),
+		0,
+		"when the last step is a fork step, the next jump has no fork step (SPEC Section 26.2)"
+	)
+	_route_event([{"type": Defs.EFFECT_REMOVE_STEP}])
+	eq(
+		run.choose_event(0),
+		Run.LAST_STEP_TEXT,
+		"a paid remove_step cannot be selected when the next jump has 1 step (SPEC Section 26.2)"
+	)
+	eq(run.choose_event(1), "", "the free choice can be selected")
+	eq(run.hazard.size(), 1, "the next jump keeps 1 step at least (SPEC Section 26.2)")
+
+
+func test_add_incident() -> void:
+	put("box", 2, 3)
+	run.incident = {"kind": Defs.INCIDENT_METEOR, "x": 0}
+	_route_event([{"type": Defs.EFFECT_ADD_INCIDENT, "incident": Defs.INCIDENT_HULL_BREACH}])
+	eq(run.choose_event(0), "", "select the choice")
+	eq(
+		run.incident.get("kind", ""),
+		Defs.INCIDENT_HULL_BREACH,
+		"add_incident sets the kind of the incident, and replaces the old one (SPEC Section 26.2)"
+	)
+	check(
+		run.incident.get("x", -1) >= 0 and run.incident.get("y", -1) >= 0,
+		"the seed selects the place of the new incident (SPEC Section 26.2)"
+	)
+
+
+func test_cancel_incident() -> void:
+	run.incident = {"kind": Defs.INCIDENT_METEOR, "x": 2}
+	_route_event([{"type": Defs.EFFECT_CANCEL_INCIDENT}])
+	eq(run.choose_event(0), "", "select the choice")
+	eq(
+		run.incident,
+		{},
+		"cancel_incident removes the incident of the next jump (SPEC Section 26.2)"
+	)
+	_route_event([{"type": Defs.EFFECT_CANCEL_INCIDENT}])
+	eq(
+		run.choose_event(0),
+		Run.NO_INCIDENT_TEXT,
+		"a paid cancel_incident cannot be selected with no incident (SPEC Section 26.2)"
+	)
+
+
+func test_clear_scrap() -> void:
+	var a := put("box", 0, 5)
+	a.kind = Defs.KIND_SCRAP
+	var b := on_dock("bar")
+	b.kind = Defs.KIND_SCRAP
+	var keep := put("vase", 3, 5)
+	_route_event([{"type": Defs.EFFECT_CLEAR_SCRAP}])
+	eq(run.choose_event(0), "", "select the choice")
+	check(
+		not run.cargo.has(a.id) and not run.cargo.has(b.id) and run.cargo.has(keep.id),
+		"clear_scrap removes each scrap in the hold and on the dock, and only scrap (SPEC Section 26.2)"
+	)
+	eq(run.credits, 49, "clear_scrap costs nothing more than the choice (SPEC Section 26.2)")
+	_route_event([{"type": Defs.EFFECT_CLEAR_SCRAP}])
+	eq(
+		run.choose_event(0),
+		Run.NO_SCRAP_TEXT,
+		"a paid clear_scrap cannot be selected with no scrap (SPEC Section 26.2)"
+	)
+
+
+func test_route_effects_view() -> void:
+	run.hazard = PackedStringArray([Defs.DIR_UP, Defs.DIR_RIGHT])
+	run.incident = {"kind": Defs.INCIDENT_METEOR, "x": 2}
+	var all := [
+		{"type": Defs.EFFECT_ADD_STEP, "direction": Defs.DIR_DOWN},
+		{"type": Defs.EFFECT_REMOVE_STEP},
+		{"type": Defs.EFFECT_ADD_INCIDENT, "incident": Defs.INCIDENT_ION_PULSE},
+		{"type": Defs.EFFECT_CANCEL_INCIDENT},
+		{"type": Defs.EFFECT_CLEAR_SCRAP},
+	]
+	_route_event(all)
+	var e: Dictionary = RunView.view(run)["event"]
+	for i in all.size():
+		var t: Dictionary = e["choices"][i]["effects"][0]
+		check(
+			t.get("key", "") != "", "the effect %s has a text (SPEC Section 20.8)" % all[i]["type"]
+		)
+
+
+func test_route_effect_checks() -> void:
+	var d := Fixture.data()
+	d["events"]["e_two"]["choices"][0]["effects"] = [
+		{"type": "add_step", "direction": "sideways"},
+		{"type": "add_incident", "incident": "comet"},
+	]
+	var errors := "\n".join(Catalog.from_data(d).errors)
+	check(
+		"sideways" in errors and "comet" in errors,
+		"the data check rejects an unknown direction and an unknown incident (SPEC Section 26.2)"
+	)

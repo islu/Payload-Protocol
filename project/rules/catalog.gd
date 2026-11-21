@@ -526,7 +526,15 @@ func _check_effect(event_id: String, f: Dictionary) -> void:
 		Defs.EFFECT_CREDITS, Defs.EFFECT_PAYMENT:
 			if f["amount"] == 0:
 				_fail("event %s: the %s effect needs an amount" % [event_id, f["type"]])
-		Defs.EFFECT_CLAMP, Defs.EFFECT_MOD:
+		Defs.EFFECT_ADD_STEP:
+			if not f["direction"] in Defs.DIRECTIONS:
+				_fail("event %s: the direction %s is not valid" % [event_id, f["direction"]])
+		Defs.EFFECT_ADD_INCIDENT:
+			if not f["incident"] in Defs.INCIDENTS:
+				_fail("event %s: the incident %s is not valid" % [event_id, f["incident"]])
+		Defs.EFFECT_CLAMP, Defs.EFFECT_MOD, Defs.EFFECT_REMOVE_STEP:
+			pass
+		Defs.EFFECT_CANCEL_INCIDENT, Defs.EFFECT_CLEAR_SCRAP:
 			pass
 		_:
 			_fail("event %s: the effect %s is not valid" % [event_id, f["type"]])

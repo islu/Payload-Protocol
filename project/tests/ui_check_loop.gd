@@ -241,11 +241,19 @@ static func _check_event(ui: Node, panel: EventPanel, event: Dictionary) -> void
 	)
 	# The heads have the same size (task art), and the top of each portrait is the top
 	# of the head: the same height shows for each speaker (SPEC Section 20.8).
+	# A bust portrait is shorter: it stands at the bottom edge of the box.
 	if portrait != null and portrait.texture != null:
-		ui._check(
-			portrait.texture.get_height() == EventPanel.FIGURE_HEIGHT,
-			"the head of the speaker is at the same height for each speaker (SPEC Section 20.8)"
-		)
+		var height := portrait.texture.get_height()
+		if height == EventPanel.FIGURE_HEIGHT:
+			ui._check(
+				is_zero_approx(portrait.position.y),
+				"the head of the speaker is at the same height for each speaker (SPEC Section 20.8)"
+			)
+		else:
+			ui._check(
+				is_equal_approx(portrait.position.y + height, EventPanel.FIGURE_HEIGHT),
+				"a bust portrait stands at the bottom edge of the box (SPEC Section 20.8)"
+			)
 	var want: Array = event["choices"]
 	ui._check(
 		panel.choices.size() == want.size(),
@@ -268,6 +276,6 @@ static func _check_event(ui: Node, panel: EventPanel, event: Dictionary) -> void
 		ui._check(ResourceLoader.exists(path), "the speaker %s has a portrait (content.md)" % id)
 		if ResourceLoader.exists(path):
 			ui._check(
-				load(path).get_height() >= EventPanel.FIGURE_HEIGHT,
-				"the portrait of %s reaches the bottom of the dialogue box (SPEC Section 20.8)" % id
+				load(path).get_height() >= EventPanel.HEAD_SIZE,
+				"the portrait of %s shows the head at least (SPEC Section 20.8)" % id
 			)

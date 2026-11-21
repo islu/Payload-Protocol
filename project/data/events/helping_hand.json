@@ -1,0 +1,30 @@
+{
+	"id": "helping_hand",
+	"name": "Helping Hand",
+	"text": "An old friend at the dock offers to clean out your hold. The favor goes on your loan.",
+	"speaker": "dock_worker",
+	"choices": [
+		{
+			"text": "Let them help.",
+			"effects": [
+				{
+					"type": "clear_scrap"
+				},
+				{
+					"type": "payment",
+					"amount": -5
+				}
+			],
+			"reply": {
+				"text": "Like old times."
+			}
+		},
+		{
+			"text": "No, thanks.",
+			"effects": [],
+			"reply": {
+				"text": "Next time, then."
+			}
+		}
+	]
+}

@@ -6,7 +6,7 @@
 	"choices": [
 		{
 			"text": "Pay them.",
-			"cost": 15,
+			"cost": 8,
 			"effects": [],
 			"reply": {
 				"text": "Smart pilot. The route is open. For now."
@@ -20,8 +20,8 @@
 					"cargo": "steel_ingot"
 				},
 				{
-					"type": "scrap",
-					"cargo": "steel_ingot"
+					"type": "add_incident",
+					"incident": "meteor"
 				}
 			],
 			"reply": {

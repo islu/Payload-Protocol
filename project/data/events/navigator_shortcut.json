@@ -1,0 +1,31 @@
+{
+	"id": "navigator_shortcut",
+	"name": "Shortcut",
+	"text": "A navigator knows a shortcut through a debris field.",
+	"speaker": "navigator",
+	"choices": [
+		{
+			"text": "Take the shortcut.",
+			"effects": [
+				{
+					"type": "credits",
+					"amount": 15
+				},
+				{
+					"type": "add_step",
+					"direction": "down"
+				}
+			],
+			"reply": {
+				"text": "Hold on to something."
+			}
+		},
+		{
+			"text": "Keep the long route.",
+			"effects": [],
+			"reply": {
+				"text": "Your call, captain."
+			}
+		}
+	]
+}

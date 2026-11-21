@@ -6,6 +6,8 @@ func test_the_real_data_loads() -> void:
 	var cat := DataFiles.catalog()
 	eq(cat.errors, PackedStringArray(), "the data check finds no errors (content.md)")
 	eq(cat.cargo.size(), 50, "the first content has 43 freight, 6 kit, and the debris (content.md)")
+	eq(cat.events.size(), 24, "the content has 24 events (SPEC Section 26)")
+	eq(cat.speakers.size(), 18, "the events have 18 speakers (SPEC Section 20.8)")
 	eq(
 		cat.cargo[cat.debris].name,
 		"Hull Debris",

@@ -1,0 +1,27 @@
+{
+	"id": "escort_offer",
+	"name": "Escort Offer",
+	"text": "A patrol ship offers an escort through the next jump.",
+	"speaker": "patrol_officer",
+	"choices": [
+		{
+			"text": "Hire the escort.",
+			"cost": 12,
+			"effects": [
+				{
+					"type": "cancel_incident"
+				}
+			],
+			"reply": {
+				"text": "Stay close behind me."
+			}
+		},
+		{
+			"text": "Fly alone.",
+			"effects": [],
+			"reply": {
+				"text": "Good luck out there."
+			}
+		}
+	]
+}

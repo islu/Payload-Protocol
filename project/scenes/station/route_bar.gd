@@ -54,6 +54,8 @@ func _init() -> void:
 func set_route(env: Dictionary, incident: Dictionary, steps: Array, view: Dictionary) -> void:
 	Ui.clear(_row)
 	if env_band != null:
+		# Remove it now: a new band with the same name must keep its name.
+		env_band.get_parent().remove_child(env_band)
 		env_band.queue_free()
 		env_band = null
 	points.clear()

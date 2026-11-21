@@ -55,6 +55,12 @@ static func make_incident(run: Run) -> Dictionary:
 	if percent <= 0 or run.rng.randi_range(1, 100) > percent:
 		return {}
 	var kind: String = Defs.INCIDENTS[run.rng.randi_range(0, Defs.INCIDENTS.size() - 1)]
+	return place_incident(run, kind)
+
+
+## Returns an incident of a kind at a place that the seed selects. The place has a
+## cargo in it when the hold has one (SPEC Sections 26.2 and 29.1).
+static func place_incident(run: Run, kind: String) -> Dictionary:
 	var cells: Array = run.occupancy().keys()
 	cells.sort()
 	if cells.is_empty():

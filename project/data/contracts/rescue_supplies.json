@@ -3,9 +3,9 @@
 	"legs": [],
 	"client_name": "Stranded Freighter",
 	"freight": ["medkit", "medkit", "ration_crate", "ration_crate"],
-	"pay": 9,
+	"pay": 6,
 	"bonus": {
 		"type": "all_intact",
-		"pay": 10
+		"pay": 6
 	}
 }

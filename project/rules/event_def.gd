@@ -9,7 +9,8 @@ var text: String
 ## The ID of the speaker: the character who speaks in the event (SPEC Section 20.8).
 var speaker: String
 ## Each choice: {text: String, cost: int, reply: String, effects: Array of {type, amount,
-## cargo, contract}}. The reply is the line of the speaker after the choice (SPEC Section 26.2).
+## cargo, contract, direction, incident}}. The reply is the line of the speaker after
+## the choice (SPEC Section 26.2).
 var choices: Array[Dictionary] = []
 
 
@@ -30,6 +31,8 @@ static func from_dict(d: Dictionary) -> EventDef:
 						"amount": int(f.get("amount", 0)),
 						"cargo": str(f.get("cargo", "")),
 						"contract": str(f.get("contract", "")),
+						"direction": str(f.get("direction", "")),
+						"incident": str(f.get("incident", "")),
 					}
 				)
 			)

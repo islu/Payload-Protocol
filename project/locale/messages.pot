@@ -88,6 +88,18 @@ msgid "The ship has each mod already."
 msgstr ""
 
 #: project/rules/run.gd
+msgid "The next jump has 1 shift step only."
+msgstr ""
+
+#: project/rules/run.gd
+msgid "The next jump has no incident."
+msgstr ""
+
+#: project/rules/run.gd
+msgid "You have no scrap."
+msgstr ""
+
+#: project/rules/run.gd
 msgid "You can sell only kit."
 msgstr ""
 
@@ -182,6 +194,38 @@ msgstr ""
 
 #: project/rules/run_view.gd
 msgid "Payment of this leg -{amount}"
+msgstr ""
+
+#: project/rules/run_view.gd
+msgid "Payment of this leg +{amount}"
+msgstr ""
+
+#: project/rules/run_view.gd
+msgid "Next jump: +1 step {arrow} {direction}"
+msgstr ""
+
+#: project/rules/run_view.gd
+msgid "Next jump: -1 step"
+msgstr ""
+
+#: project/rules/run_view.gd
+msgid "Next jump: no incident"
+msgstr ""
+
+#: project/rules/run_view.gd
+msgid "Clear all scrap"
+msgstr ""
+
+#: project/rules/run_view.gd
+msgid "Next jump: a meteor"
+msgstr ""
+
+#: project/rules/run_view.gd
+msgid "Next jump: an Ion Pulse"
+msgstr ""
+
+#: project/rules/run_view.gd
+msgid "Next jump: a Hull Breach"
 msgstr ""
 
 #: project/scenes/common/game_state.gd
@@ -1168,6 +1212,10 @@ msgstr ""
 msgid "Militia Supply"
 msgstr ""
 
+#: project/data/contracts/black_box_run.json
+msgid "Salvage Guild"
+msgstr ""
+
 #: project/data/contracts/blood_bank.json
 #: project/data/contracts/field_hospital.json
 #: project/data/contracts/vaccine_run.json
@@ -1196,6 +1244,10 @@ msgstr ""
 
 #: project/data/contracts/diner.json
 msgid "Neon Diner"
+msgstr ""
+
+#: project/data/contracts/drone_return.json
+msgid "Drone Owner"
 msgstr ""
 
 #: project/data/contracts/drone_swarm.json
@@ -1256,6 +1308,7 @@ msgid "Deep Core Mining"
 msgstr ""
 
 #: project/data/contracts/night_market.json
+#: project/data/contracts/noodle_run.json
 msgid "Night Market"
 msgstr ""
 
@@ -1359,6 +1412,79 @@ msgstr ""
 msgid "An Electronic cargo shorts at a hit with a force of 2 or more."
 msgstr ""
 
+#: project/data/events/black_box.json
+msgid "Careful. Others want it too."
+msgstr ""
+
+#: project/data/events/black_box.json
+msgid "Carry the parts."
+msgstr ""
+
+#: project/data/events/black_box.json
+msgid "More for us."
+msgstr ""
+
+#: project/data/events/black_box.json
+#: project/data/events/drifting_container.json
+msgid "Leave it."
+msgstr ""
+
+#: project/data/events/black_box.json
+msgid "Black Box Bounty"
+msgstr ""
+
+#: project/data/events/black_box.json
+msgid "A salvage crew found a black box. They need a ship to carry the parts."
+msgstr ""
+
+#: project/data/events/blade_pirates.json
+msgid "Wise. We will remember you."
+msgstr ""
+
+#: project/data/events/blade_pirates.json
+msgid "Pay the toll."
+msgstr ""
+
+#: project/data/events/blade_pirates.json
+msgid "Run, then. We will chase you."
+msgstr ""
+
+#: project/data/events/blade_pirates.json
+msgid "Fight them off."
+msgstr ""
+
+#: project/data/events/blade_pirates.json
+msgid "Blade Pirates"
+msgstr ""
+
+#: project/data/events/blade_pirates.json
+msgid "A gang with blades boards your ship. They want a toll."
+msgstr ""
+
+#: project/data/events/calm_corridor.json
+msgid "Smooth flying. You are welcome."
+msgstr ""
+
+#: project/data/events/calm_corridor.json
+msgid "Buy the chart."
+msgstr ""
+
+#: project/data/events/calm_corridor.json
+msgid "Bumpy ride, then."
+msgstr ""
+
+#: project/data/events/calm_corridor.json
+msgid "Fly as planned."
+msgstr ""
+
+#: project/data/events/calm_corridor.json
+msgid "Calm Corridor"
+msgstr ""
+
+#: project/data/events/calm_corridor.json
+msgid "A navigator sells the chart of a calm corridor."
+msgstr ""
+
 #: project/data/events/company_audit.json
 msgid "The company thanks you for your early payment."
 msgstr ""
@@ -1383,6 +1509,55 @@ msgstr ""
 msgid "The company checks your books. An early payment makes it happy."
 msgstr ""
 
+#: project/data/events/customs_check.json
+msgid "Cleared. Move along."
+msgstr ""
+
+#: project/data/events/customs_check.json
+msgid "Pay the fast-track fee."
+msgstr ""
+
+#: project/data/events/customs_check.json
+msgid "This will take a while."
+msgstr ""
+
+#: project/data/events/customs_check.json
+msgid "Accept the search."
+msgstr ""
+
+#: project/data/events/customs_check.json
+msgid "Customs Check"
+msgstr ""
+
+#: project/data/events/customs_check.json
+msgid "Customs wants to search your hold."
+msgstr ""
+
+#: project/data/events/damaged_container.json
+msgid "We owe you one."
+msgstr ""
+
+#: project/data/events/damaged_container.json
+msgid "Tow them in."
+msgstr ""
+
+#: project/data/events/damaged_container.json
+msgid "We understand."
+msgstr ""
+
+#: project/data/events/damaged_container.json
+#: project/data/events/distress_call.json
+msgid "Fly on."
+msgstr ""
+
+#: project/data/events/damaged_container.json
+msgid "Damaged Container"
+msgstr ""
+
+#: project/data/events/damaged_container.json
+msgid "A crew drifts in a broken container. They offer a Cooler for a tow."
+msgstr ""
+
 #: project/data/events/distress_call.json
 msgid "Thank you, pilot. Take this part. It still works."
 msgstr ""
@@ -1401,10 +1576,6 @@ msgstr ""
 
 #: project/data/events/distress_call.json
 msgid "We understand. Somebody else will come. Maybe."
-msgstr ""
-
-#: project/data/events/distress_call.json
-msgid "Fly on."
 msgstr ""
 
 #: project/data/events/distress_call.json
@@ -1428,15 +1599,277 @@ msgid "Good call. Nobody knows what is in a lost box."
 msgstr ""
 
 #: project/data/events/drifting_container.json
-msgid "Leave it."
-msgstr ""
-
-#: project/data/events/drifting_container.json
 msgid "Drifting Container"
 msgstr ""
 
 #: project/data/events/drifting_container.json
 msgid "A lost container drifts past. Some of it is still good."
+msgstr ""
+
+#: project/data/events/engine_tuning.json
+msgid "Purring like new."
+msgstr ""
+
+#: project/data/events/engine_tuning.json
+msgid "Tune the engines."
+msgstr ""
+
+#: project/data/events/engine_tuning.json
+msgid "Come back anytime."
+msgstr ""
+
+#: project/data/events/engine_tuning.json
+msgid "Not now."
+msgstr ""
+
+#: project/data/events/engine_tuning.json
+msgid "Engine Tuning"
+msgstr ""
+
+#: project/data/events/engine_tuning.json
+msgid "The mechanic can tune your engines for a shorter jump."
+msgstr ""
+
+#: project/data/events/escort_offer.json
+msgid "Stay close behind me."
+msgstr ""
+
+#: project/data/events/escort_offer.json
+msgid "Hire the escort."
+msgstr ""
+
+#: project/data/events/escort_offer.json
+msgid "Good luck out there."
+msgstr ""
+
+#: project/data/events/escort_offer.json
+msgid "Fly alone."
+msgstr ""
+
+#: project/data/events/escort_offer.json
+msgid "Escort Offer"
+msgstr ""
+
+#: project/data/events/escort_offer.json
+msgid "A patrol ship offers an escort through the next jump."
+msgstr ""
+
+#: project/data/events/first_contact.json
+msgid "Zzzt. Thank you, small ship."
+msgstr ""
+
+#: project/data/events/first_contact.json
+msgid "Trade your scrap."
+msgstr ""
+
+#: project/data/events/first_contact.json
+msgid "Zzzt. Another time."
+msgstr ""
+
+#: project/data/events/first_contact.json
+msgid "Keep the hatch closed."
+msgstr ""
+
+#: project/data/events/first_contact.json
+msgid "First Contact"
+msgstr ""
+
+#: project/data/events/first_contact.json
+msgid "A strange being glows at your airlock. It seems to want your junk, but its glow disturbs your systems."
+msgstr ""
+
+#: project/data/events/gravity_well.json
+msgid "Fascinating. Hold steady."
+msgstr ""
+
+#: project/data/events/gravity_well.json
+msgid "Fly through it."
+msgstr ""
+
+#: project/data/events/gravity_well.json
+msgid "A lost chance for science."
+msgstr ""
+
+#: project/data/events/gravity_well.json
+msgid "Steer around it."
+msgstr ""
+
+#: project/data/events/gravity_well.json
+msgid "Gravity Well"
+msgstr ""
+
+#: project/data/events/gravity_well.json
+msgid "A scientist wants readings from a gravity well on your route."
+msgstr ""
+
+#: project/data/events/helping_hand.json
+msgid "Like old times."
+msgstr ""
+
+#: project/data/events/helping_hand.json
+msgid "Let them help."
+msgstr ""
+
+#: project/data/events/helping_hand.json
+msgid "Next time, then."
+msgstr ""
+
+#: project/data/events/helping_hand.json
+#: project/data/events/shield_trial.json
+msgid "No, thanks."
+msgstr ""
+
+#: project/data/events/helping_hand.json
+msgid "Helping Hand"
+msgstr ""
+
+#: project/data/events/helping_hand.json
+msgid "An old friend at the dock offers to clean out your hold. The favor goes on your loan."
+msgstr ""
+
+#: project/data/events/ion_storm.json
+msgid "Wise. The long way is the safe way."
+msgstr ""
+
+#: project/data/events/ion_storm.json
+msgid "Take a detour."
+msgstr ""
+
+#: project/data/events/ion_storm.json
+msgid "Record everything for me."
+msgstr ""
+
+#: project/data/events/ion_storm.json
+msgid "Push through."
+msgstr ""
+
+#: project/data/events/ion_storm.json
+msgid "Ion Storm"
+msgstr ""
+
+#: project/data/events/ion_storm.json
+msgid "A scientist warns of an ion storm on your route."
+msgstr ""
+
+#: project/data/events/lost_drone.json
+msgid "Thank you. They will be happy."
+msgstr ""
+
+#: project/data/events/lost_drone.json
+msgid "Carry them."
+msgstr ""
+
+#: project/data/events/lost_drone.json
+msgid "Understood. Logging refusal."
+msgstr ""
+
+#: project/data/events/lost_drone.json
+msgid "No room."
+msgstr ""
+
+#: project/data/events/lost_drone.json
+msgid "Lost Drone"
+msgstr ""
+
+#: project/data/events/lost_drone.json
+msgid "A service robot asks you to carry two lost courier drones home."
+msgstr ""
+
+#: project/data/events/meteor_warning.json
+msgid "Safe lane. Stay in it."
+msgstr ""
+
+#: project/data/events/meteor_warning.json
+msgid "Take the safe lane."
+msgstr ""
+
+#: project/data/events/meteor_warning.json
+msgid "Your hull, your risk."
+msgstr ""
+
+#: project/data/events/meteor_warning.json
+msgid "Take the fast lane."
+msgstr ""
+
+#: project/data/events/meteor_warning.json
+msgid "Meteor Warning"
+msgstr ""
+
+#: project/data/events/meteor_warning.json
+msgid "Traffic control reports meteors on the fast lane."
+msgstr ""
+
+#: project/data/events/navigator_shortcut.json
+msgid "Hold on to something."
+msgstr ""
+
+#: project/data/events/navigator_shortcut.json
+msgid "Take the shortcut."
+msgstr ""
+
+#: project/data/events/navigator_shortcut.json
+msgid "Your call, captain."
+msgstr ""
+
+#: project/data/events/navigator_shortcut.json
+msgid "Keep the long route."
+msgstr ""
+
+#: project/data/events/navigator_shortcut.json
+msgid "Shortcut"
+msgstr ""
+
+#: project/data/events/navigator_shortcut.json
+msgid "A navigator knows a shortcut through a debris field."
+msgstr ""
+
+#: project/data/events/netrunner_hack.json
+msgid "Done. You were never here."
+msgstr ""
+
+#: project/data/events/netrunner_hack.json
+msgid "Pay her."
+msgstr ""
+
+#: project/data/events/netrunner_hack.json
+msgid "You will regret that."
+msgstr ""
+
+#: project/data/events/netrunner_hack.json
+msgid "Ignore her."
+msgstr ""
+
+#: project/data/events/netrunner_hack.json
+#: project/data/speakers/netrunner.json
+msgid "Netrunner"
+msgstr ""
+
+#: project/data/events/netrunner_hack.json
+msgid "A netrunner offers to hack traffic control for you."
+msgstr ""
+
+#: project/data/events/noodle_cart.json
+msgid "Hot when they get there!"
+msgstr ""
+
+#: project/data/events/noodle_cart.json
+msgid "Deliver for her."
+msgstr ""
+
+#: project/data/events/noodle_cart.json
+msgid "Your stomach will miss me."
+msgstr ""
+
+#: project/data/events/noodle_cart.json
+msgid "Not today."
+msgstr ""
+
+#: project/data/events/noodle_cart.json
+msgid "Noodle Cart"
+msgstr ""
+
+#: project/data/events/noodle_cart.json
+msgid "A noodle vendor needs a fast delivery to the next station."
 msgstr ""
 
 #: project/data/events/pirate_demand.json
@@ -1461,6 +1894,50 @@ msgstr ""
 
 #: project/data/events/pirate_demand.json
 msgid "Pirates block the route. They want credits, or they shoot."
+msgstr ""
+
+#: project/data/events/salvage_ship.json
+msgid "Your junk is our treasure."
+msgstr ""
+
+#: project/data/events/salvage_ship.json
+msgid "Pay them to take it."
+msgstr ""
+
+#: project/data/events/salvage_ship.json
+msgid "Suit yourself."
+msgstr ""
+
+#: project/data/events/salvage_ship.json
+msgid "Keep it."
+msgstr ""
+
+#: project/data/events/salvage_ship.json
+msgid "Salvage Ship"
+msgstr ""
+
+#: project/data/events/salvage_ship.json
+msgid "A salvage ship offers to take your scrap away."
+msgstr ""
+
+#: project/data/events/shield_trial.json
+msgid "Pay me back with your loan."
+msgstr ""
+
+#: project/data/events/shield_trial.json
+msgid "Take the Shield."
+msgstr ""
+
+#: project/data/events/shield_trial.json
+msgid "Your loss, friend."
+msgstr ""
+
+#: project/data/events/shield_trial.json
+msgid "Shield Trial"
+msgstr ""
+
+#: project/data/events/shield_trial.json
+msgid "A trader offers a Shield on credit."
 msgstr ""
 
 #: project/data/events/ship_mechanic.json
@@ -1767,8 +2244,20 @@ msgstr ""
 msgid "Cargo with a cell in the bottom row takes each hit with a force {less} less."
 msgstr ""
 
+#: project/data/speakers/alien.json
+msgid "Visitor"
+msgstr ""
+
 #: project/data/speakers/auditor.json
 msgid "Company Auditor"
+msgstr ""
+
+#: project/data/speakers/blade_pirate.json
+msgid "Blade Pirate"
+msgstr ""
+
+#: project/data/speakers/customs.json
+msgid "Customs Officer"
 msgstr ""
 
 #: project/data/speakers/dock_worker.json
@@ -1779,8 +2268,40 @@ msgstr ""
 msgid "Mechanic"
 msgstr ""
 
+#: project/data/speakers/merchant.json
+msgid "Merchant"
+msgstr ""
+
+#: project/data/speakers/navigator.json
+msgid "Navigator"
+msgstr ""
+
+#: project/data/speakers/noodle_vendor.json
+msgid "Noodle Vendor"
+msgstr ""
+
+#: project/data/speakers/patrol_officer.json
+msgid "Patrol Officer"
+msgstr ""
+
 #: project/data/speakers/pirate.json
 msgid "Pirate"
+msgstr ""
+
+#: project/data/speakers/robot.json
+msgid "Service Robot"
+msgstr ""
+
+#: project/data/speakers/salvage_crew.json
+msgid "Salvage Crew"
+msgstr ""
+
+#: project/data/speakers/salvager.json
+msgid "Salvager"
+msgstr ""
+
+#: project/data/speakers/scientist.json
+msgid "Scientist"
 msgstr ""
 
 #: project/data/speakers/smuggler.json

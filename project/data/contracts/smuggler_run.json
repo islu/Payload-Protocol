@@ -3,10 +3,10 @@
 	"legs": [],
 	"client_name": "Black Market",
 	"freight": ["liquor_bottle", "cigarette_pack", "cigarette_pack", "plasma_cell"],
-	"pay": 14,
+	"pay": 8,
 	"bonus": {
 		"type": "all_intact",
-		"pay": 12
+		"pay": 8
 	},
 	"tags": ["black_market"]
 }

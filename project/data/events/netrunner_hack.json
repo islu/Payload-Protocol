@@ -1,0 +1,32 @@
+{
+	"id": "netrunner_hack",
+	"name": "Netrunner",
+	"text": "A netrunner offers to hack traffic control for you.",
+	"speaker": "netrunner",
+	"choices": [
+		{
+			"text": "Pay her.",
+			"cost": 8,
+			"effects": [
+				{
+					"type": "cancel_incident"
+				}
+			],
+			"reply": {
+				"text": "Done. You were never here."
+			}
+		},
+		{
+			"text": "Ignore her.",
+			"effects": [
+				{
+					"type": "add_incident",
+					"incident": "ion_pulse"
+				}
+			],
+			"reply": {
+				"text": "You will regret that."
+			}
+		}
+	]
+}

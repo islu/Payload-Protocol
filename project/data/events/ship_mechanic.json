@@ -6,7 +6,7 @@
 	"choices": [
 		{
 			"text": "Fit a clamp.",
-			"cost": 10,
+			"cost": 6,
 			"effects": [
 				{
 					"type": "clamp"

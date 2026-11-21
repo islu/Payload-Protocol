@@ -31,7 +31,7 @@ This file keeps each problem that is found and not fixed yet. Each item is in on
 - **[Balance · Data] Environments, incidents, and special contracts** (found 2026-11-14, by /game-design). The first values of SPEC Sections 28 to 30: Low Gravity 2 cells, the meteor force 3, the incident chance 50% in leg 2 and 100% in leg 3, the VIP penalty, and the long contract pay. Check in a playtest: is leg 3 too hard with an incident at each jump, and does Low Gravity make leg 2 too easy? Playtest seed 77 (2026-11-18): the incidents of leg 3 did no damage to any persona. Low Gravity did not matter, because no cargo slid.
 
 - **[Balance · Data] Events and mods** (found 2026-11-14, by /game-design). The first values of SPEC Sections 26 and 27: the costs 8, 10, 15, and 20, the drifting container +12, and the audit payment -15. Check in a playtest: are Padded Walls and Array Power always the best mod, and do 1 or 2 events in each leg make the run too slow? Playtest seed 22 (2026-11-14) found choices that are always best: Company Audit (pay 10 to cut the payment by 15), Pirate Demand (refuse for 8 of scrap cleanup, not a bribe of 15), and Ship Mechanic (a clamp for 10, but the shop sells one for 8). The event contracts pay much more than others: Smuggler Run 68 for 4 mass, Rescue Supplies 46 for 6 mass. Playtest seed 77 (2026-11-18) confirmed Company Audit (+5 each time), Pirate Demand, and Ship Mechanic. The Smuggler's Offer contract paid 17 for each point of mass.
-  To do                 Fix: give each event two real choices. For example: the Ship Mechanic clamp costs less than the shop clamp, the audit saves less than its cost on some legs, and the bribe costs less than the cleanup of the scrap.
+  To do                 Fix: give each event two real choices. For example: the Ship Mechanic clamp costs less than the shop clamp, the audit saves less than its cost on some legs, and the bribe costs less than the cleanup of the scrap. Decided 2026-11-20 by /game-design: the event change of SPEC Section 26.2 (14 new events and 5 new effects) changes these values. Check in the next playtest: does a new effect make a choice that is always best, and do 20 events make the repeats rare?
 
 - **[Balance · Data] The length of a run** (found 2026-11-11, by Claude). 3 legs × 3 jumps is the first value. The target is 20 to 30 minutes.
   Waiting on a trigger  Waits for: the station events of phase 2 (SPEC Section 24).
@@ -65,6 +65,9 @@ This file keeps each problem that is found and not fixed yet. Each item is in on
   To do                 Fix: lower the Black Market pay to about 1.5 times the pay of safe freight. Run `task test -- data`.
 
 ## To Do
+
+- **[Balance · Data] Tune the 24 events** (found 2026-11-21, by the user). The 18 new events of SPEC Section 26.2 have first values only. The user will tune all events later.
+  To do                 Fix: play each event in a playtest, and give each one two real choices.
 
 - **[UX · Scenes] Sounds and music that are not found yet** (found 2026-11-20, by the user). The user listened to the Kenney CC0 candidates and kept none of these: a sound for an accepted contract, an engine sound at the warp start, the whoosh of a meteor, and a win and a loss jingle. The tense music loop of the warp (SPEC Section 4.3) is not found either. Each sound must be 2 seconds or less.
   To do                 Fix: find candidates in other CC0 sources (OpenGameArt, freesound CC0), and play them to the user before they go in the game.

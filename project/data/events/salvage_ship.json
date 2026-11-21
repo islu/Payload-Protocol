@@ -1,0 +1,27 @@
+{
+	"id": "salvage_ship",
+	"name": "Salvage Ship",
+	"text": "A salvage ship offers to take your scrap away.",
+	"speaker": "salvager",
+	"choices": [
+		{
+			"text": "Pay them to take it.",
+			"cost": 5,
+			"effects": [
+				{
+					"type": "clear_scrap"
+				}
+			],
+			"reply": {
+				"text": "Your junk is our treasure."
+			}
+		},
+		{
+			"text": "Keep it.",
+			"effects": [],
+			"reply": {
+				"text": "Suit yourself."
+			}
+		}
+	]
+}

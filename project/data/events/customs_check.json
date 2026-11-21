@@ -1,0 +1,28 @@
+{
+	"id": "customs_check",
+	"name": "Customs Check",
+	"text": "Customs wants to search your hold.",
+	"speaker": "customs",
+	"choices": [
+		{
+			"text": "Pay the fast-track fee.",
+			"cost": 8,
+			"effects": [],
+			"reply": {
+				"text": "Cleared. Move along."
+			}
+		},
+		{
+			"text": "Accept the search.",
+			"effects": [
+				{
+					"type": "add_step",
+					"direction": "left"
+				}
+			],
+			"reply": {
+				"text": "This will take a while."
+			}
+		}
+	]
+}
