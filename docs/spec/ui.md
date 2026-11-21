@@ -111,7 +111,9 @@ The warp:
 - The dialogue box shows the name of the speaker, the name of the event, its text, and a button for each choice. Each button shows the text of the choice, its cost, and its effects.
 - A choice that the player cannot select is disabled (Section 26.2).
 - Identical effects of a choice show as one text with a count, for example "Scrap on the dock: Steel Ingot ×2". A scrap effect also shows its mass.
-- When the player selects a choice, the speaker replies with one line (Section 26.2). The choice buttons go away, and the reply shows with a Continue button. Enter, Space, and a click do the same as Continue.
+- When the player selects a choice, the speaker replies with one line (Section 26.2). The dialogue box fades out, and the reply shows in a speech bubble. The dialogue box has the event and the choices; the bubble has only the words of the speaker.
+- The bubble is at the right of the head of the speaker, and its tail points to the speaker. A bust portrait has a lower head, so its bubble is lower too. The bubble shows the name of the speaker, the reply, and a Continue button. It pops out from its tail in 0.15 s. The full reply shows at once.
+- Enter, Space, and a click do the same as Continue.
 - When the reply closes, each effect plays at its place on the station. The credits count to the new value. Each new cargo on the dock and each new contract pops in, and a sound plays. Then the mod choice shows, if the choice has a `mod` effect.
 - The player cannot use the station until the player selects a choice. Esc and the gear button do nothing.
 

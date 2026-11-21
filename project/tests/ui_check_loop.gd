@@ -225,6 +225,7 @@ static func _check_reply(ui: Node, main: Control, c: Dictionary) -> void:
 	)
 	if not shown:
 		return
+	await _check_bubble(ui, panel)
 	var station: StationScreen = main.screen()
 	ui._check(
 		GameState.view()["run"]["phase"] == Defs.PHASE_EVENT,
@@ -307,3 +308,40 @@ static func _check_event(ui: Node, panel: EventPanel, event: Dictionary) -> void
 				load(path).get_height() >= EventPanel.HEAD_SIZE,
 				"the portrait of %s shows the head at least (SPEC Section 20.8)" % id
 			)
+
+
+## Checks the speech bubble of the reply: the dialogue box fades out, and the bubble is
+## at the right of the head, with its tail to the speaker (SPEC Section 20.8).
+static func _check_bubble(ui: Node, panel: EventPanel) -> void:
+	var bubble: Control = panel.bubble
+	ui._check(
+		bubble != null and bubble.is_ancestor_of(panel.reply_label),
+		"the reply shows in a speech bubble, not in the dialogue box (SPEC Section 20.8)"
+	)
+	if bubble == null:
+		return
+	var end := Time.get_ticks_msec() + 2000
+	while panel.dialogue.modulate.a > 0.01 and Time.get_ticks_msec() < end:
+		await ui.get_tree().process_frame
+	ui._check(
+		panel.dialogue.modulate.a <= 0.01 and not panel.dialogue.is_ancestor_of(panel.reply_label),
+		"after a choice, the dialogue box fades out (SPEC Section 20.8)"
+	)
+	var head := panel.speaker_portrait.get_global_rect()
+	head.size.y = EventPanel.HEAD_SIZE
+	var tail := panel.bubble_tail.get_global_rect()
+	var box := bubble.get_global_rect()
+	ui._check(
+		(
+			tail.position.x > head.position.x
+			and tail.position.x < box.position.x
+			and tail.get_center().y >= head.position.y
+			and tail.get_center().y <= head.end.y
+			and box.position.y < tail.get_center().y
+			and box.end.y > tail.get_center().y
+		),
+		(
+			"the bubble is at the right of the head, and its tail points to the speaker:"
+			+ " head %s, tail %s, bubble %s (SPEC Section 20.8)" % [head, tail, box]
+		)
+	)

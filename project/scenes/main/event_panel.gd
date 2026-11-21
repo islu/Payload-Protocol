@@ -3,7 +3,8 @@ extends Overlay
 ## The event on top of the station (SPEC Section 20.8): the speaker stands at the left
 ## of the dialogue box, and the box has the name of the speaker, the name of the event,
 ## its text, and a button for each choice. The player must select a choice: Esc does
-## not close it. After the choice, the speaker replies, and Continue closes the panel.
+## not close it. After the choice, the box fades out, the speaker replies in a speech
+## bubble, and Continue closes the panel.
 
 const COST_TEXT := "Cost {cost}"
 const CONTINUE_TEXT := "Continue"
@@ -21,6 +22,14 @@ const FADE := 0.15
 const SPEAKER_WIDTH := 360.0
 const BOX_WIDTH := 680.0
 const TITLE_SIZE := 36
+const BUBBLE_WIDTH := 460.0
+## The tail of the bubble: its length, and its height at the bubble.
+const TAIL := Vector2(32, 26)
+## The tip of the tail: the gap at the right of the head, and the depth below the top of
+## the head (the mouth).
+const TAIL_TIP := Vector2(10, 78)
+## The time of the fade of the box and of the pop of the bubble (SPEC Section 20.8).
+const POP_TIME := 0.15
 const FADE_SHADER := """
 shader_type canvas_item;
 uniform float fade = 0.15;
@@ -46,10 +55,16 @@ var tip: CargoTip
 ## The reply of the speaker and its Continue button, after a choice (SPEC Section 20.8).
 var reply_label: Label
 var continue_button: Button
+## The speech bubble of the reply and its tail, or null before the choice.
+var bubble: PanelContainer
+var bubble_tail: Control
 ## The index of the selected choice. Continue does its action (SPEC Section 20.8).
 var picked := -1
 ## The reply after the choice, or "" before the choice.
 var _reply := ""
+## The place of the speaker: the bubble is in it, at the right of the head.
+var _area: Control
+var _speaker_name := ""
 
 
 func _build() -> void:
@@ -63,8 +78,13 @@ func _build() -> void:
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 16)
 	box.add_child(row)
-	row.add_child(_speaker(e["speaker"]))
+	_speaker_name = e["speaker"]["name"]
+	_area = _speaker(e["speaker"])
+	row.add_child(_area)
 	row.add_child(_dialogue(e))
+	if _reply != "":
+		dialogue.modulate.a = 0.0
+		_add_bubble(false)
 	if tip == null:
 		tip = CargoTip.new()
 		add_child(tip)
@@ -128,9 +148,6 @@ func _dialogue(e: Dictionary) -> Control:
 	var gap := Control.new()
 	gap.custom_minimum_size.y = 4
 	col.add_child(gap)
-	if _reply != "":
-		_add_reply(col)
-		return frame
 	for c: Dictionary in e["choices"]:
 		var lines := PackedStringArray([tr(c["text"])])
 		var notes := PackedStringArray()
@@ -146,7 +163,7 @@ func _dialogue(e: Dictionary) -> Control:
 		b.custom_minimum_size = Vector2(BOX_WIDTH, 72)
 		b.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		b.add_theme_font_size_override("font_size", TextSize.BUTTON)
-		b.disabled = not c["can"]
+		b.disabled = not c["can"] or _reply != ""
 		var why := tr(c["why"])
 		if why != "":
 			b.mouse_entered.connect(func() -> void: tip.show_text(why, PackedStringArray()))
@@ -154,23 +171,67 @@ func _dialogue(e: Dictionary) -> Control:
 		var reply: String = c["reply"]
 		b.pressed.connect(func() -> void: _pick(index, reply))
 		col.add_child(b)
-		choices.append(b)
+		if _reply == "":
+			choices.append(b)
 	return frame
 
 
-## The reply of the speaker in place of the choices, and the Continue button.
-func _add_reply(col: VBoxContainer) -> void:
-	reply_label = Ui.label(col, "“%s”" % tr(_reply), TextSize.HEADING, Palette.ACCENT)
+## The speech bubble at the right of the head: the name of the speaker, the reply, and
+## the Continue button. Its tail points to the speaker. With pop, it pops out from the
+## tail (SPEC Section 20.8).
+func _add_bubble(pop: bool) -> void:
+	var portrait := speaker_portrait.get_rect()
+	var tip := Vector2(
+		portrait.get_center().x + HEAD_SIZE / 2.0 + TAIL_TIP.x, portrait.position.y + TAIL_TIP.y
+	)
+	bubble = PanelContainer.new()
+	bubble.add_theme_stylebox_override("panel", Ui.panel_style(Palette.ACCENT, 3, 14, 22))
+	var col := VBoxContainer.new()
+	col.add_theme_constant_override("separation", 10)
+	bubble.add_child(col)
+	Ui.label(col, _speaker_name, TextSize.BODY, Palette.ACCENT)
+	reply_label = Ui.label(col, "“%s”" % tr(_reply), TextSize.HEADING, Palette.TEXT)
 	reply_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	reply_label.custom_minimum_size.x = BUBBLE_WIDTH
 	continue_button = Button.new()
 	continue_button.text = tr(CONTINUE_TEXT)
-	continue_button.custom_minimum_size = Vector2(BOX_WIDTH, 56)
+	continue_button.size_flags_horizontal = Control.SIZE_SHRINK_END
+	continue_button.custom_minimum_size = Vector2(180, 52)
 	continue_button.add_theme_font_size_override("font_size", TextSize.BUTTON)
 	continue_button.pressed.connect(close)
 	col.add_child(continue_button)
+	_area.add_child(bubble)
+	bubble.reset_size()
+	bubble.position = Vector2(tip.x + TAIL.x - 3.0, tip.y - 48.0)
+	bubble_tail = Control.new()
+	bubble_tail.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	bubble_tail.position = Vector2(tip.x, tip.y - TAIL.y / 2.0)
+	bubble_tail.size = Vector2(TAIL.x, TAIL.y)
+	bubble_tail.draw.connect(_draw_tail)
+	_area.add_child(bubble_tail)
+	if not pop:
+		return
+	dialogue.create_tween().tween_property(dialogue, "modulate:a", 0.0, POP_TIME)
+	for part: Control in [bubble, bubble_tail]:
+		part.pivot_offset = tip - part.position
+		part.scale = Vector2(0.6, 0.6)
+		part.modulate.a = 0.0
+		var tw := part.create_tween().set_parallel()
+		tw.tween_property(part, "scale", Vector2.ONE, POP_TIME).set_trans(Tween.TRANS_BACK)
+		tw.tween_property(part, "modulate:a", 1.0, POP_TIME)
 
 
-## Reports whether the reply shows: main keeps the panel open until it closes.
+## The tail: a triangle from the tip at the left to the edge of the bubble, in the color
+## of the bubble, with the border on its two long sides.
+func _draw_tail() -> void:
+	var s := bubble_tail.size
+	var tip := Vector2(0, s.y / 2.0)
+	var top := Vector2(s.x, 0)
+	var bottom := Vector2(s.x, s.y)
+	bubble_tail.draw_colored_polygon(PackedVector2Array([tip, top, bottom]), Palette.PANEL)
+	bubble_tail.draw_polyline(PackedVector2Array([top, tip, bottom]), Palette.ACCENT, 3.0)
+
+
 ## Shows the reply of a choice. The action of the choice waits for Continue, so that
 ## its effects play after the reply (SPEC Section 20.8). A choice that the player cannot
 ## select is disabled (SPEC Section 26.2).
@@ -178,7 +239,11 @@ func _pick(index: int, reply: String) -> void:
 	picked = index
 	_reply = reply
 	Hints.done(Hints.EVENT)
-	_rebuild()
+	for b in choices:
+		b.disabled = true
+	choices.clear()
+	_add_bubble(true)
+	continue_button.grab_focus.call_deferred()
 
 
 ## The player must select a choice: Esc does nothing.
