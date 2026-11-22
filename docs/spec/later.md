@@ -17,3 +17,4 @@ This file is part of the [game specification](../spec.md). The section numbers a
 - **Walking robots:** a robot has an arrow. Before each warp, it moves 1 cell in the direction of the arrow, and stops at a cargo or a wall.
 - **Repair:** a Medical Bot kit changes one scrap next to it into damaged freight at the arrival (see Damaged freight).
 - **Recoil:** a launcher fires when it takes a hit, and breaks the first cargo in the direction of its barrel.
+- **Alien egg event:** an alien jelly creature puts an Alien Egg in the cargo of the player by force. The rule of the egg is not decided: for example, it grows after each jump, it breaks and splashes acid, or it hatches. Art candidates: the FreePixel images `alien-blob-amorphous-creature-acid-004` (the speaker) and `xenomorph-egg-organic-pulsing-alien-membrane-slimy` (the egg; use the name Alien Egg).
