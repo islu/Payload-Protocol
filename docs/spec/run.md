@@ -81,12 +81,13 @@ The arrival has these steps, in this order:
 
 ### 17.3 Sell
 
-- Drag a kit to the sell area of the shop to sell it. The sell price is half of the shop price, rounded down.
+- Drag a kit to the sell area of the shop to sell it. The sell price is half of the shop price, rounded down. With the Trade License mod, it is half of the lower price (Section 27.2).
 - The player cannot sell freight or scrap.
 
 ### 17.4 Clear Scrap
 
 - Drag a scrap to the sell area to clear it. It costs 2 credits for each cell of the scrap.
+- With the Salvage Arm mod, a clear costs nothing and pays 1 credit for each cell of the scrap. This includes the clear of scrap on the dock at the warp (Section 26.3). It does not include the `clear_scrap` effect of an event (Section 26.2).
 - A cleared scrap is removed.
 
 ### 17.5 Prices
@@ -144,6 +145,7 @@ The arrival has these steps, in this order:
 
 - The second station of each leg has an event. The third station of each leg has an event with a chance of one half.
 - The seed selects the event of a station from the event templates in `project/data/events/`. A run does not show the same event two times.
+- The seed selects only from the templates whose choices can all happen when the station opens: no choice with a cost has an effect that cannot happen (Section 26.2). The credits do not count, because they change at the station. When no template is left, the station has no event.
 - The event shows when the station opens, before the player can act (Section 20.8).
 
 ### 26.2 Event Contents
@@ -199,8 +201,12 @@ A **mod** is a permanent part of the ship. It uses no cell of the hold. The play
 | **Gravity Damper** | The weight value of heavy cargo is 2 for the force of its hits and its wall jolt. Its mass does not change. |
 | **Array Power** | A Battery powers each Shield within 2 cells, not only the Shields next to it (Section 12.2). |
 | **Insurance** | At the arrival, each piece of an accepted contract that is scrap, spoiled, or lost pays half of its pay, rounded down. A breached piece does not pay. |
+| **Blast Doors** | The blast area of an explosion has no diagonal cells (Section 11.2). |
+| **Sealed Wiring** | A leak does not short an Electronic cargo (Section 11.3). An Ion Pulse and the Radiation Belt still short it (Sections 28.2 and 29.2). |
+| **Salvage Arm** | A clear of scrap costs nothing, and pays 1 credit for each cell of the scrap (Section 17.4). |
+| **Trade License** | Each kit offer of the shop costs 2 credits less, and 1 credit at least. Reroll and the services do not change (Sections 17.1 to 17.3). |
 
-- **Within 2 cells**: a cell of one cargo is at a distance of 2 or less from a cell of the other cargo. A diagonal step counts as 1, as in the blast area (Section 11.2).
+- **Within 2 cells**: a cell of one cargo is at a distance of 2 or less from a cell of the other cargo. A diagonal step counts as 1. The Blast Doors mod does not change this distance.
 - The hold shows the area of a mod with an area: the bottom row for Shock Floor.
 
 ## 30. Special Contracts

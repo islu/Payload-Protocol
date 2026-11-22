@@ -152,3 +152,161 @@ func test_mod_values_come_from_data() -> void:
 		{"less": 2},
 		"the text of a mod has its values (SPEC Section 27.2)"
 	)
+
+
+func test_blast_doors() -> void:
+	run.mods.append(Defs.MOD_BLAST_DOORS)
+	var bomb := put("bomb", 2, 1)
+	var side := put("box", 1, 1)
+	var corner := put("glass", 3, 0)
+	Shift.incident(run, {"kind": Defs.INCIDENT_METEOR, "x": 2})
+	check(gone(bomb), "the bomb explodes")
+	eq(
+		side.kind,
+		Defs.KIND_SCRAP,
+		"with Blast Doors, the cargo at the side of an explosion still breaks (SPEC Section 27.2)"
+	)
+	eq(
+		corner.kind,
+		Defs.KIND_FREIGHT,
+		"with Blast Doors, the blast area has no diagonal cells (SPEC Sections 11.2 and 27.2)"
+	)
+
+
+func test_blast_area_with_and_without_blast_doors() -> void:
+	var bomb := put("bomb", 2, 2)
+	eq(
+		Shift.blast_area(run, bomb).size(),
+		8,
+		"the blast area has diagonal cells (SPEC Section 11.2)"
+	)
+	run.mods.append(Defs.MOD_BLAST_DOORS)
+	eq(
+		Shift.blast_area(run, bomb).size(),
+		4,
+		"with Blast Doors, the blast area has 4 cells around 1 cell (SPEC Section 27.2)"
+	)
+
+
+func test_sealed_wiring() -> void:
+	run.mods.append(Defs.MOD_SEALED_WIRING)
+	# The tank slides 1 cell down to (2,5): force 2. The chip at (3,5) is next to it.
+	var tank := put("tank", 2, 4)
+	var chip := put("chip", 3, 5)
+	shift([Defs.DIR_DOWN])
+	eq(tank.kind, Defs.KIND_SCRAP, "the tank still leaks (SPEC Section 11.3)")
+	eq(
+		chip.kind,
+		Defs.KIND_FREIGHT,
+		"with Sealed Wiring, a leak does not short an Electronic cargo (SPEC Section 27.2)"
+	)
+
+
+func test_sealed_wiring_ion_pulse() -> void:
+	run.mods.append(Defs.MOD_SEALED_WIRING)
+	var chip := put("chip", 3, 2)
+	Shift.incident(run, {"kind": Defs.INCIDENT_ION_PULSE, "y": 2})
+	eq(
+		chip.kind,
+		Defs.KIND_SCRAP,
+		"with Sealed Wiring, an Ion Pulse still shorts an Electronic cargo (SPEC Section 27.2)"
+	)
+
+
+## A scrap of the bar (2 cells) in the hold.
+func _scrap_bar() -> Cargo:
+	var c := put("bar", 0, 5)
+	c.kind = Defs.KIND_SCRAP
+	return c
+
+
+func test_salvage_arm_clear() -> void:
+	run.mods.append(Defs.MOD_SALVAGE_ARM)
+	var c := _scrap_bar()
+	run.credits = 0
+	eq(run.clear_price(c), -2, "the clear of 2 cells pays 2 (SPEC Section 27.2)")
+	eq(run.clear_scrap(c.id), "", "with Salvage Arm, a clear needs no credits (SPEC Section 17.4)")
+	eq(run.credits, 2, "with Salvage Arm, a clear pays 1 credit for each cell (SPEC Section 17.4)")
+
+
+func test_salvage_arm_clear_in_debt() -> void:
+	run.mods.append(Defs.MOD_SALVAGE_ARM)
+	var c := _scrap_bar()
+	run.credits = -5
+	eq(
+		run.clear_scrap(c.id),
+		"",
+		"with Salvage Arm, a clear costs nothing, also in debt (SPEC Section 17.4)"
+	)
+	eq(run.credits, -3, "the clear pays 2")
+
+
+func test_salvage_arm_dock_at_the_warp() -> void:
+	run.mods.append(Defs.MOD_SALVAGE_ARM)
+	var c := run.new_cargo(run.cat.cargo["bar"])
+	c.kind = Defs.KIND_SCRAP
+	run.contracts.clear()
+	var before := run.credits
+	warp_with([Defs.DIR_LEFT])
+	var ledger: Dictionary = run.last_arrival["ledger"]
+	eq(
+		ledger["scrap_cleared"],
+		0,
+		"with Salvage Arm, the dock clear costs nothing (SPEC Section 17.4)"
+	)
+	eq(
+		ledger["salvage"],
+		2,
+		"with Salvage Arm, the clear of scrap on the dock at the warp pays (SPEC Section 17.4)"
+	)
+	eq(run.credits, before + 2, "the credits get the pay of the clear (SPEC Section 17.4)")
+
+
+func test_trade_license() -> void:
+	run.mods.append(Defs.MOD_TRADE_LICENSE)
+	run.shop = [{"def": run.cat.cargo["foam"], "bought": false}]
+	run.credits = 20
+	eq(
+		RunView.view(run)["shop"]["offers"][0]["price"],
+		4,
+		"the shop shows 6 - 2 (SPEC Section 27.2)"
+	)
+	eq(run.buy_kit(0), "", "buy the foam")
+	eq(run.credits, 16, "with Trade License, a kit costs 2 credits less (SPEC Section 27.2)")
+	var foam: Cargo = run.cargo[run.dock[0]]
+	eq(
+		run.sell_price(foam.def),
+		2,
+		"with Trade License, the sell price is half of the lower price (SPEC Section 17.3)"
+	)
+
+
+func test_trade_license_least_price() -> void:
+	run.mods.append(Defs.MOD_TRADE_LICENSE)
+	run.cat.cargo["foam"].price = 2
+	run.shop = [{"def": run.cat.cargo["foam"], "bought": false}]
+	run.credits = 20
+	run.buy_kit(0)
+	eq(run.credits, 19, "with Trade License, a kit costs 1 credit at least (SPEC Section 27.2)")
+
+
+func test_trade_license_reroll() -> void:
+	var price := run.reroll_price()
+	run.mods.append(Defs.MOD_TRADE_LICENSE)
+	eq(run.reroll_price(), price, "Trade License does not change Reroll (SPEC Section 27.2)")
+
+
+func test_new_mod_values_come_from_data() -> void:
+	run.cat.mods[Defs.MOD_SALVAGE_ARM]["values"]["pay"] = 3
+	run.cat.mods[Defs.MOD_TRADE_LICENSE]["values"]["less"] = 4
+	run.mods.append_array([Defs.MOD_SALVAGE_ARM, Defs.MOD_TRADE_LICENSE])
+	eq(
+		run.clear_price(_scrap_bar()),
+		-6,
+		"the pay of Salvage Arm comes from its data (SPEC Section 27.2)"
+	)
+	eq(
+		run.kit_price(run.cat.cargo["foam"]),
+		2,
+		"the less of Trade License comes from its data (SPEC Section 27.2)"
+	)

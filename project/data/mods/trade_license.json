@@ -1,0 +1,8 @@
+{
+	"id": "trade_license",
+	"name": "Trade License",
+	"text": "Each kit of the shop costs {less} cr less.",
+	"values": {
+		"less": 2
+	}
+}

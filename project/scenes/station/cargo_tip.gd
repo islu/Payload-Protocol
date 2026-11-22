@@ -8,6 +8,7 @@ const TIP_WEIGHT_TEXT := "{kind} · {weight} (weight {value})"
 const TIP_PAY_TEXT := "Pays {pay} at the arrival"
 const TIP_SELL_TEXT := "Sells for {price}"
 const TIP_CLEAR_TEXT := "Clear for {price}"
+const TIP_SALVAGE_TEXT := "Salvage for +{pay}"
 const NO_COOLER_TEXT := "No Cooler next to it: it spoils at the arrival."
 const TIP_MASS_TEXT := "Mass {mass}"
 
@@ -67,6 +68,8 @@ func show_cargo(c: Dictionary, view: Dictionary) -> void:
 		lines.append(tr(TIP_SELL_TEXT).format({"price": c["sell_price"]}))
 	if c.get("clear_price", 0) > 0:
 		lines.append(tr(TIP_CLEAR_TEXT).format({"price": c["clear_price"]}))
+	elif c.get("clear_price", 0) < 0:
+		lines.append(tr(TIP_SALVAGE_TEXT).format({"pay": -c["clear_price"]}))
 	if c.get("no_cooler", false):
 		lines.append("[color=#%s]%s[/color]" % [Palette.WARN.to_html(false), tr(NO_COOLER_TEXT)])
 	if c.get("no_power", false):

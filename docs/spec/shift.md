@@ -96,6 +96,7 @@ This file is part of the [game specification](../spec.md). The section numbers a
 
 - A Volatile cargo that takes a hit with a force of 3 or more explodes.
 - The **blast area** is each cell at a distance of 1 from a cell of the Volatile cargo, diagonal cells too.
+- With the Blast Doors mod, the blast area has no diagonal cells: only the cells above, below, at the left, and at the right of a cell of the Volatile cargo (Section 27.2).
 - The explosion has these results:
   - The Volatile cargo is removed. Its cells become empty. It does not become scrap.
   - Each freight and each kit with a cell in the blast area becomes scrap. Heavy cargo is not affected.

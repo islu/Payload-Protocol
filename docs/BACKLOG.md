@@ -63,6 +63,10 @@ This file keeps each problem that is found and not fixed yet. Each item is in on
 - **[UX · Scenes] Pixel density of the cargo and the effects** (found 2026-11-13, by /game-design). The cargo images show at half their size, with fine pixels. The effects show at 3 times their size, with large pixels. Check with `task shots` and players that the two look good together.
 - **[Balance · Data] The 24 new freight** (found 2026-11-13, by /game-design). The themes medical, contraband, weapons, robots, and Earth relics added 24 freight and 21 contracts. Check in the next playtest: is the Black Market pay (about 1.5 times) worth the risk, and is the Mech Suit (heavy, Thruster, a square) a wall that is always best? Playtest seed 77 (2026-11-18): the Black Market pay is 3.5 to 4.5 times the pay of safe freight (13.7 to 17 for each point of mass, against 3 to 4). Risky contracts paid 3.2 to 17 for each point of mass, and safe contracts 1.5 to 3.5.
   To do                 Fix: lower the Black Market pay to about 1.5 times the pay of safe freight. Run `task test -- data`.
+- **[Balance · Data] The 4 new mods and the event filter** (found 2026-11-22, by /game-design). SPEC Section 27.2 adds Blast Doors, Sealed Wiring, Salvage Arm, and Trade License: 10 mods in all. SPEC Section 26.1 selects only events whose choices can all happen, so leg 1 has fewer events (for example no Escort Offer). Check in a playtest: does the player always select Trade License, is Sealed Wiring useless in a run with no Fluid or Electronic freight, and do the events of leg 1 repeat too much?
+- **[Spec · Scenes] Messages in the warp** (found 2026-11-22, by /game-design). The warp has no events (decided 2026-11-22). A later idea: a short line of the pilot or the radio during the warp, with no effect on the result.
+  Waiting on a trigger  Waits for: a request for more story in the warp.
+                        Fix then: add the lines to `project/data/lines/` and show them in the warp banner.
 
 ## To Do
 

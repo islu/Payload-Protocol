@@ -202,8 +202,10 @@ func test_mod_after_payment() -> void:
 
 
 func test_offers_only_new_mods() -> void:
-	for id in ["shock_floor", "cryo_line", "padded_walls", "gravity_damper"]:
-		run.mods.append(id)
+	# The player has each mod but two.
+	for id in Defs.MODS:
+		if not id in [Defs.MOD_ARRAY_POWER, Defs.MOD_INSURANCE]:
+			run.mods.append(id)
 	StationEvents.offer_mods(run)
 	var offer := Array(run.mod_offer)
 	offer.sort()
@@ -490,4 +492,85 @@ func test_route_effect_checks() -> void:
 	check(
 		"sideways" in errors and "comet" in errors,
 		"the data check rejects an unknown direction and an unknown incident (SPEC Section 26.2)"
+	)
+
+
+## Goes back to the station, and forgets the events that the run showed.
+func _reset_event() -> void:
+	run.event = null
+	run.phase = Defs.PHASE_STATION
+	run.events_seen.clear()
+
+
+## Makes the catalog have only one event: its first choice has a cost and the effect.
+func _only_event(effect: String) -> void:
+	var e := (
+		EventDef
+		. from_dict(
+			{
+				"id": "e_only",
+				"name": "Only",
+				"text": "The only event",
+				"speaker": "s_one",
+				"choices":
+				[
+					{
+						"text": "Pay",
+						"cost": 8,
+						"effects": [{"type": effect}],
+						"reply": {"text": "Reply pay"},
+					},
+					{"text": "Ignore", "effects": [], "reply": {"text": "Reply ignore"}},
+				],
+			}
+		)
+	)
+	run.cat.events.clear()
+	run.cat.events.append(e)
+
+
+func test_event_needs_an_incident_to_cancel() -> void:
+	_only_event(Defs.EFFECT_CANCEL_INCIDENT)
+	_open(2)
+	eq(
+		run.phase,
+		Defs.PHASE_STATION,
+		"in leg 1, an event that cancels an incident does not show: no incident (SPEC Section 26.1)"
+	)
+	check(run.event == null, "the station has no event (SPEC Section 26.1)")
+	_reset_event()
+	run.leg = 3
+	_open(2)
+	eq(
+		run.phase,
+		Defs.PHASE_EVENT,
+		"in leg 3, each jump has an incident: the event shows (SPEC Section 26.1)"
+	)
+
+
+func test_event_needs_scrap_to_clear() -> void:
+	_only_event(Defs.EFFECT_CLEAR_SCRAP)
+	_open(2)
+	eq(
+		run.phase,
+		Defs.PHASE_STATION,
+		"with no scrap, a paid clear cannot happen: no event (SPEC Section 26.1)"
+	)
+	_reset_event()
+	var c := put("box", 0, 5)
+	c.kind = Defs.KIND_SCRAP
+	_open(2)
+	eq(run.phase, Defs.PHASE_EVENT, "with scrap, the event shows (SPEC Section 26.1)")
+
+
+func test_event_filter_ignores_the_credits() -> void:
+	_only_event(Defs.EFFECT_CLEAR_SCRAP)
+	var c := put("box", 0, 5)
+	c.kind = Defs.KIND_SCRAP
+	run.credits = 0
+	_open(2)
+	eq(
+		run.phase,
+		Defs.PHASE_EVENT,
+		"the filter does not count the credits: they change at the station (SPEC Section 26.1)"
 	)

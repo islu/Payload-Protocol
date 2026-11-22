@@ -13,7 +13,7 @@ This file has the design rules of the game content. The data files in `project/d
 | Pilot lines, by event | `lines/` |
 | Station events and their choices | `events/` |
 | The speakers of the events: the name of each character (SPEC Section 20.8) | `speakers/` |
-| The name, the rule text, and the `values` of each mod (`less`, `range`, `percent`). The rule is in the code. The text shows the values with `{less}`, `{range}`, and `{percent}` (SPEC Section 27.2). | `mods/` |
+| The name, the rule text, and the `values` of each mod (`less`, `range`, `percent`, `pay`). The rule is in the code. The text shows the values with `{less}`, `{range}`, `{percent}`, and `{pay}` (SPEC Section 27.2). | `mods/` |
 | The name and the rule text of each route environment. The rule is in the code (SPEC Section 28.2). | `environments/` |
 
 - Use one file for each definition. The `id` is snake_case and is the same as the file name.

@@ -5,7 +5,7 @@ class_name Arrival
 ## pieces: [{id, def_id, name, state, shape, weight_value}], groups: [{def_id, name,
 ## state, count, ids, shape, weight_value}],
 ## pay, bonus, has_bonus, bonus_met, breach, insurance}], ledger: {deliveries, bonuses,
-## insurance, breaches, sold, scrap_cleared, fuel_fee, net}, credits_before,
+## insurance, breaches, sold, scrap_cleared, salvage, fuel_fee, net}, credits_before,
 ## credits_after} (SPEC Section 20.4).
 
 
@@ -250,6 +250,7 @@ static func _ledger(run: Run, report: Dictionary) -> void:
 		ledger["penalties"] += res["penalty"]
 	ledger["sold"] = report["sold"]
 	ledger["scrap_cleared"] = run.last_warp.get("scrap_cleared", 0)
+	ledger["salvage"] = run.last_warp.get("salvage", 0)
 	ledger["fuel_fee"] = run.last_warp.get("fuel_fee", 0)
 	report["credits_before"] = run.last_warp.get("credits", run.credits)
 	report["credits_after"] = run.credits

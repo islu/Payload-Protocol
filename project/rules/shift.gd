@@ -431,8 +431,10 @@ static func _apply(
 			_scrap(run, c)
 		Defs.REACT_LEAK:
 			_scrap(run, c)
+			# With Sealed Wiring, a leak shorts no Electronic cargo (SPEC Section 27.2).
+			var shorts := not run.has_mod(Defs.MOD_SEALED_WIRING)
 			for o in run.hold_cargo():
-				if o.has(Defs.TRAIT_ELECTRONIC) and Cargo.next_to(c, o):
+				if shorts and o.has(Defs.TRAIT_ELECTRONIC) and Cargo.next_to(c, o):
 					next.append([Defs.REACT_SHORT, o.id, index])
 		Defs.REACT_CLEAR:
 			run.remove_cargo(id)
@@ -483,13 +485,17 @@ static func _scrap(run: Run, c: Cargo) -> void:
 
 ## Returns the blast area of a cargo as a set of cells: each cell in the hold at
 ## a distance of 1 from a cell of the cargo, diagonal cells too, and not a cell
-## of the cargo (SPEC Section 11.2).
+## of the cargo (SPEC Section 11.2). With Blast Doors, it has no diagonal cells
+## (SPEC Section 27.2).
 static func blast_area(run: Run, c: Cargo) -> Dictionary:
 	var own := c.cells()
+	var doors := run.has_mod(Defs.MOD_BLAST_DOORS)
 	var area := {}
 	for cell in own:
 		for dy in range(-1, 2):
 			for dx in range(-1, 2):
+				if doors and dx != 0 and dy != 0:
+					continue
 				var n := cell + Vector2i(dx, dy)
 				if not n in own and run.inside(n):
 					area[n] = true

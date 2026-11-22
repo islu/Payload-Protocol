@@ -621,6 +621,8 @@ func _render_warp(run: Run, traits: Dictionary) -> void:
 		_say("  sold %s from the dock for %d" % [s["name"], s["price"]])
 	if w.get("scrap_cleared", 0) > 0:
 		_say("  scrap cleared from the dock -%d" % w["scrap_cleared"])
+	if w.get("salvage", 0) > 0:
+		_say("  scrap salvaged from the dock +%d" % w["salvage"])
 	var i := 0
 	var steps: Array = w["steps"]
 	if w.has("incident"):

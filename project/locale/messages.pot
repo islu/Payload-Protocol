@@ -567,6 +567,10 @@ msgid "Clear for {price}"
 msgstr ""
 
 #: project/scenes/station/cargo_tip.gd
+msgid "Salvage for +{pay}"
+msgstr ""
+
+#: project/scenes/station/cargo_tip.gd
 msgid "No Cooler next to it: it spoils at the arrival."
 msgstr ""
 
@@ -776,6 +780,10 @@ msgid "Clear the scrap: -{price} cr"
 msgstr ""
 
 #: project/scenes/station/station_screen.gd
+msgid "Salvage the scrap: +{pay} cr"
+msgstr ""
+
+#: project/scenes/station/station_screen.gd
 msgid "Freight cannot be sold"
 msgstr ""
 
@@ -962,6 +970,10 @@ msgstr ""
 
 #: project/scenes/warp/report_panel.gd
 msgid "Scrap cleared from the dock"
+msgstr ""
+
+#: project/scenes/warp/report_panel.gd
+msgid "Scrap salvaged from the dock"
 msgstr ""
 
 #: project/scenes/warp/report_panel.gd
@@ -2216,6 +2228,14 @@ msgstr ""
 msgid "A Battery powers each Shield within {range} cells."
 msgstr ""
 
+#: project/data/mods/blast_doors.json
+msgid "Blast Doors"
+msgstr ""
+
+#: project/data/mods/blast_doors.json
+msgid "An explosion breaks no cargo at its diagonals."
+msgstr ""
+
 #: project/data/mods/cryo_line.json
 msgid "Cryo Line"
 msgstr ""
@@ -2244,12 +2264,36 @@ msgstr ""
 msgid "Each wall jolt has a force {less} less."
 msgstr ""
 
+#: project/data/mods/salvage_arm.json
+msgid "Salvage Arm"
+msgstr ""
+
+#: project/data/mods/salvage_arm.json
+msgid "A clear of scrap pays {pay} cr for each cell."
+msgstr ""
+
+#: project/data/mods/sealed_wiring.json
+msgid "Sealed Wiring"
+msgstr ""
+
+#: project/data/mods/sealed_wiring.json
+msgid "A leak does not short Electronic cargo."
+msgstr ""
+
 #: project/data/mods/shock_floor.json
 msgid "Shock Floor"
 msgstr ""
 
 #: project/data/mods/shock_floor.json
 msgid "Cargo with a cell in the bottom row takes each hit with a force {less} less."
+msgstr ""
+
+#: project/data/mods/trade_license.json
+msgid "Trade License"
+msgstr ""
+
+#: project/data/mods/trade_license.json
+msgid "Each kit of the shop costs {less} cr less."
 msgstr ""
 
 #: project/data/speakers/alien.json

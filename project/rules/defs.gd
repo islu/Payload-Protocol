@@ -109,6 +109,10 @@ const MOD_PADDED_WALLS := "padded_walls"
 const MOD_GRAVITY_DAMPER := "gravity_damper"
 const MOD_ARRAY_POWER := "array_power"
 const MOD_INSURANCE := "insurance"
+const MOD_BLAST_DOORS := "blast_doors"
+const MOD_SEALED_WIRING := "sealed_wiring"
+const MOD_SALVAGE_ARM := "salvage_arm"
+const MOD_TRADE_LICENSE := "trade_license"
 const MODS: PackedStringArray = [
 	MOD_SHOCK_FLOOR,
 	MOD_CRYO_LINE,
@@ -116,6 +120,10 @@ const MODS: PackedStringArray = [
 	MOD_GRAVITY_DAMPER,
 	MOD_ARRAY_POWER,
 	MOD_INSURANCE,
+	MOD_BLAST_DOORS,
+	MOD_SEALED_WIRING,
+	MOD_SALVAGE_ARM,
+	MOD_TRADE_LICENSE,
 ]
 
 # Reactions (SPEC Section 11)

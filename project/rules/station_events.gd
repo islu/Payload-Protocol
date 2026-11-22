@@ -3,7 +3,8 @@ class_name StationEvents
 ## 27). The actions are on Run: choose_event() and choose_mod().
 
 
-## Selects the event of a new station, if it has one (SPEC Section 26.1).
+## Selects the event of a new station, if it has one. It selects only from the events
+## whose choices can all happen now (SPEC Section 26.1).
 static func start_event(run: Run) -> void:
 	run.event = null
 	var cat := run.cat
@@ -14,13 +15,23 @@ static func start_event(run: Run) -> void:
 		return
 	var pool: Array = []
 	for e in cat.events:
-		if not e.id in run.events_seen:
+		if not e.id in run.events_seen and can_happen(run, e):
 			pool.append(e)
 	if pool.is_empty():
 		return
 	run.event = pool[run.rng.randi_range(0, pool.size() - 1)]
 	run.events_seen.append(run.event.id)
 	run.phase = Defs.PHASE_EVENT
+
+
+## Reports whether each choice of an event can happen now: no choice with a cost has
+## an effect that cannot happen. The credits do not count: they change at the station
+## (SPEC Section 26.1).
+static func can_happen(run: Run, e: EventDef) -> bool:
+	for choice: Dictionary in e.choices:
+		if choice["cost"] > 0 and effects_error(run, choice) != "":
+			return false
+	return true
 
 
 ## Returns why the player cannot select a choice of the open event, or "". A choice
@@ -34,6 +45,11 @@ static func choice_error(run: Run, index: int) -> String:
 		return Run.IN_DEBT_TEXT
 	if choice["cost"] > run.credits:
 		return Run.NOT_ENOUGH_TEXT
+	return effects_error(run, choice)
+
+
+## Returns why an effect of a choice cannot happen now, or "" (SPEC Section 26.2).
+static func effects_error(run: Run, choice: Dictionary) -> String:
 	for f: Dictionary in choice["effects"]:
 		if f["type"] == Defs.EFFECT_CLAMP and run.clamps >= run.cat.price("clamp_max"):
 			return Run.CLAMPS_MAXED_TEXT

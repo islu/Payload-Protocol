@@ -186,6 +186,7 @@ func warp() -> String:
 		"sold": [],
 		"sold_credits": 0,
 		"scrap_cleared": 0,
+		"salvage": 0,
 		"fuel_fee": 0,
 		"before": [],
 		"steps": [],
@@ -325,7 +326,7 @@ func has_mod(id: String) -> bool:
 
 ## Returns the pay of a freight: the pay of its contract, or 0 (SPEC Section 21.5).
 func pay_of(c: Cargo) -> int:
-	var k := contract_by_id(c.contract)
+	var k := _contract_by_id(c.contract)
 	return k.template.pay if k != null else 0
 
 
@@ -602,7 +603,7 @@ func _contract_error(index: int) -> String:
 	return ""
 
 
-func contract_by_id(id: int) -> Contract:
+func _contract_by_id(id: int) -> Contract:
 	for k in contracts:
 		if k.id == id:
 			return k
@@ -740,7 +741,7 @@ func buy_kit(index: int) -> String:
 	var o: Dictionary = shop[index]
 	if o["bought"]:
 		return OFFER_BOUGHT_TEXT
-	var err := _pay(o["def"].price)
+	var err := _pay(kit_price(o["def"]))
 	if err != "":
 		return err
 	o["bought"] = true
@@ -801,9 +802,17 @@ func buy_shock_bay() -> String:
 	return ""
 
 
+## Returns the shop price of a kit. With Trade License, it is less, and 1 at least
+## (SPEC Section 27.2).
+func kit_price(def: CargoDef) -> int:
+	if not has_mod(Defs.MOD_TRADE_LICENSE):
+		return def.price
+	return maxi(1, def.price - cat.mod_value(Defs.MOD_TRADE_LICENSE, "less"))
+
+
 ## Returns the sell price of a kit: half of the shop price, rounded down (SPEC Section 17.3).
 func sell_price(def: CargoDef) -> int:
-	return def.price / cat.price("sell_divisor")
+	return kit_price(def) / cat.price("sell_divisor")
 
 
 ## Sells a kit from the hold or the dock (SPEC Section 17.3).
@@ -819,8 +828,11 @@ func sell_kit(id: int) -> String:
 	return ""
 
 
-## Returns the price to clear a scrap (SPEC Section 17.4).
+## Returns the price to clear a scrap (SPEC Section 17.4). With Salvage Arm, it is less
+## than 0: the clear pays the player for each cell (SPEC Section 27.2).
 func clear_price(c: Cargo) -> int:
+	if has_mod(Defs.MOD_SALVAGE_ARM):
+		return -cat.mod_value(Defs.MOD_SALVAGE_ARM, "pay") * c.def.shape.size()
 	return cat.price("scrap_cell") * c.def.shape.size()
 
 
@@ -832,9 +844,14 @@ func clear_scrap(id: int) -> String:
 	var c: Cargo = cargo[id]
 	if c.kind != Defs.KIND_SCRAP:
 		return NOT_SCRAP_TEXT
-	err = _pay(clear_price(c))
-	if err != "":
-		return err
+	var price := clear_price(c)
+	# A clear that pays needs no credits, also in debt (SPEC Section 17.4).
+	if price <= 0:
+		credits -= price
+	else:
+		err = _pay(price)
+		if err != "":
+			return err
 	remove_cargo(id)
 	return ""
 
@@ -848,7 +865,7 @@ func _leave_dock(warp_log: Dictionary) -> void:
 	for id in dock.duplicate():
 		var c: Cargo = cargo[id]
 		if c.kind == Defs.KIND_FREIGHT:
-			var k := contract_by_id(c.contract)
+			var k := _contract_by_id(c.contract)
 			if k != null:
 				k.breached.append(id)
 		elif c.kind == Defs.KIND_KIT:
@@ -857,9 +874,14 @@ func _leave_dock(warp_log: Dictionary) -> void:
 			warp_log["sold"].append({"name": c.def.name, "price": p})
 			warp_log["sold_credits"] += p
 		elif c.kind == Defs.KIND_SCRAP:
-			# Scrap on the dock is cleared at its clear price (SPEC Section 26.3).
-			credits -= clear_price(c)
-			warp_log["scrap_cleared"] += clear_price(c)
+			# Scrap on the dock is cleared at its clear price (SPEC Section 26.3). With
+			# Salvage Arm, the clear pays (SPEC Section 17.4).
+			var price := clear_price(c)
+			credits -= price
+			if price > 0:
+				warp_log["scrap_cleared"] += price
+			else:
+				warp_log["salvage"] -= price
 		remove_cargo(id)
 
 

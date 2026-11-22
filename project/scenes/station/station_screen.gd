@@ -16,6 +16,8 @@ const CLAMPS_TEXT := "Clamps"
 const SELL_IDLE_TEXT := "Sell kit or clear scrap: drop it here"
 const SELL_KIT_TEXT := "Sell {name}: +{price} cr"
 const CLEAR_SCRAP_TEXT := "Clear the scrap: -{price} cr"
+## With Salvage Arm, a clear pays (SPEC Section 27.2).
+const SALVAGE_SCRAP_TEXT := "Salvage the scrap: +{pay} cr"
 const NO_SELL_TEXT := "Freight cannot be sold"
 const WARP_TEXT := "LAUNCH"
 # gdlint:ignore = max-line-length
@@ -659,8 +661,13 @@ func show_sell(c: Dictionary) -> void:
 					{"name": tr(c["name"]), "price": c.get("sell_price", 0)}
 				)
 			Defs.ACT_CLEAR_SCRAP:
-				color = Palette.BAD
-				_sell_label.text = tr(CLEAR_SCRAP_TEXT).format({"price": c.get("clear_price", 0)})
+				var price: int = c.get("clear_price", 0)
+				color = Palette.BAD if price > 0 else Palette.GOOD
+				_sell_label.text = (
+					tr(CLEAR_SCRAP_TEXT).format({"price": price})
+					if price > 0
+					else tr(SALVAGE_SCRAP_TEXT).format({"pay": -price})
+				)
 			_:
 				_sell_label.text = tr(NO_SELL_TEXT)
 		if _sell_mode != "":

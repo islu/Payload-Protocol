@@ -320,6 +320,8 @@ static func mods() -> Dictionary:
 		Defs.MOD_CRYO_LINE: {"range": 2},
 		Defs.MOD_ARRAY_POWER: {"range": 2},
 		Defs.MOD_INSURANCE: {"percent": 50},
+		Defs.MOD_SALVAGE_ARM: {"pay": 1},
+		Defs.MOD_TRADE_LICENSE: {"less": 2},
 	}
 	var out := {}
 	for id in Defs.MODS:

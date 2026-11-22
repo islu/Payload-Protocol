@@ -10,6 +10,10 @@ const ICONS: PackedStringArray = [
 	Defs.MOD_GRAVITY_DAMPER,
 	Defs.MOD_ARRAY_POWER,
 	Defs.MOD_INSURANCE,
+	Defs.MOD_BLAST_DOORS,
+	Defs.MOD_SEALED_WIRING,
+	Defs.MOD_SALVAGE_ARM,
+	Defs.MOD_TRADE_LICENSE,
 ]
 
 var mod := ""
@@ -93,3 +97,55 @@ func _draw() -> void:
 				color,
 				w
 			)
+		Defs.MOD_BLAST_DOORS:
+			# A plus of four doors: the blast goes only up, down, left, and right.
+			draw_circle(c, 3.5 * k, color)
+			for d: Vector2 in [Vector2.UP, Vector2.DOWN, Vector2.LEFT, Vector2.RIGHT]:
+				draw_line(c + d * 6.0 * k, c + d * 13.0 * k, color, w)
+			for d: Vector2 in [Vector2(1, 1), Vector2(1, -1), Vector2(-1, 1), Vector2(-1, -1)]:
+				var p := c + d * 9.0 * k
+				draw_line(p - d.orthogonal() * 3.0 * k, p + d.orthogonal() * 3.0 * k, color, w)
+		Defs.MOD_SEALED_WIRING:
+			# A drop above a wire with a seal.
+			var drop := PackedVector2Array(
+				[c + Vector2(0, -13) * k, c + Vector2(5, -4) * k, c + Vector2(-5, -4) * k]
+			)
+			draw_colored_polygon(drop, color)
+			draw_circle(c + Vector2(0, -4) * k, 5.0 * k, color)
+			draw_line(c + Vector2(-13, 9) * k, c + Vector2(13, 9) * k, color, w)
+			draw_rect(Rect2(c + Vector2(-5, 5) * k, Vector2(10, 8) * k), color, false, w)
+		Defs.MOD_SALVAGE_ARM:
+			# A claw of a crane.
+			draw_line(c + Vector2(-12, -12) * k, c + Vector2(0, -12) * k, color, w)
+			draw_line(c + Vector2(0, -12) * k, c + Vector2(0, 0) * k, color, w)
+			draw_polyline(
+				PackedVector2Array(
+					[c + Vector2(-8, 10) * k, c + Vector2(-6, 2) * k, c + Vector2(0, 0) * k]
+				),
+				color,
+				w
+			)
+			draw_polyline(
+				PackedVector2Array(
+					[c + Vector2(8, 10) * k, c + Vector2(6, 2) * k, c + Vector2(0, 0) * k]
+				),
+				color,
+				w
+			)
+		Defs.MOD_TRADE_LICENSE:
+			# A price tag.
+			var tag := PackedVector2Array(
+				[
+					c + Vector2(-12, -4) * k,
+					c + Vector2(-4, -12) * k,
+					c + Vector2(12, -12) * k,
+					c + Vector2(12, 12) * k,
+					c + Vector2(-4, 12) * k,
+					c + Vector2(-12, 4) * k,
+					c + Vector2(-12, -4) * k,
+				]
+			)
+			draw_polyline(tag, color, w)
+			draw_circle(c + Vector2(-5, 0) * k, 2.5 * k, color)
+			draw_line(c + Vector2(2, -5) * k, c + Vector2(8, -5) * k, color, w)
+			draw_line(c + Vector2(2, 5) * k, c + Vector2(8, 5) * k, color, w)

@@ -12,6 +12,8 @@ const MOD_VALUES := {
 	Defs.MOD_CRYO_LINE: ["range"],
 	Defs.MOD_ARRAY_POWER: ["range"],
 	Defs.MOD_INSURANCE: ["percent"],
+	Defs.MOD_SALVAGE_ARM: ["pay"],
+	Defs.MOD_TRADE_LICENSE: ["less"],
 }
 
 var errors: PackedStringArray = []

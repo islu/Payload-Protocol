@@ -588,6 +588,10 @@ msgid "Clear for {price}"
 msgstr "清除費 {price} 點"
 
 #: project/scenes/station/cargo_tip.gd
+msgid "Salvage for +{pay}"
+msgstr "回收可得 {pay} 點"
+
+#: project/scenes/station/cargo_tip.gd
 msgid "No Cooler next to it: it spoils at the arrival."
 msgstr "旁邊沒有冷藏機：抵達時會腐爛。"
 
@@ -797,6 +801,10 @@ msgid "Clear the scrap: -{price} cr"
 msgstr "清除廢料：-{price} 點"
 
 #: project/scenes/station/station_screen.gd
+msgid "Salvage the scrap: +{pay} cr"
+msgstr "回收廢鐵：+{pay} 點"
+
+#: project/scenes/station/station_screen.gd
 msgid "Freight cannot be sold"
 msgstr "貨物不能賣"
 
@@ -988,6 +996,10 @@ msgstr "碼頭裝備賣出"
 #: project/scenes/warp/report_panel.gd
 msgid "Scrap cleared from the dock"
 msgstr "清除碼頭廢鐵"
+
+#: project/scenes/warp/report_panel.gd
+msgid "Scrap salvaged from the dock"
+msgstr "回收碼頭廢鐵"
 
 #: project/scenes/warp/report_panel.gd
 msgid "Fuel fee"
@@ -2241,6 +2253,14 @@ msgstr "陣列供電"
 msgid "A Battery powers each Shield within {range} cells."
 msgstr "電池可以供電給 {range} 格內的每個護盾。"
 
+#: project/data/mods/blast_doors.json
+msgid "Blast Doors"
+msgstr "防爆隔板"
+
+#: project/data/mods/blast_doors.json
+msgid "An explosion breaks no cargo at its diagonals."
+msgstr "爆炸不會炸壞斜角的貨物。"
+
 #: project/data/mods/cryo_line.json
 msgid "Cryo Line"
 msgstr "冷凍管線"
@@ -2269,6 +2289,22 @@ msgstr "軟墊牆"
 msgid "Each wall jolt has a force {less} less."
 msgstr "每次撞牆震動的撞擊力 -{less}。"
 
+#: project/data/mods/salvage_arm.json
+msgid "Salvage Arm"
+msgstr "回收臂"
+
+#: project/data/mods/salvage_arm.json
+msgid "A clear of scrap pays {pay} cr for each cell."
+msgstr "清除廢鐵時，每格付你 {pay} 點。"
+
+#: project/data/mods/sealed_wiring.json
+msgid "Sealed Wiring"
+msgstr "密封線路"
+
+#: project/data/mods/sealed_wiring.json
+msgid "A leak does not short Electronic cargo."
+msgstr "洩漏不會讓電子貨物短路。"
+
 #: project/data/mods/shock_floor.json
 msgid "Shock Floor"
 msgstr "減震底板"
@@ -2276,6 +2312,14 @@ msgstr "減震底板"
 #: project/data/mods/shock_floor.json
 msgid "Cargo with a cell in the bottom row takes each hit with a force {less} less."
 msgstr "有格子在最底列的貨物，每次承受的撞擊力 -{less}。"
+
+#: project/data/mods/trade_license.json
+msgid "Trade License"
+msgstr "貿易許可證"
+
+#: project/data/mods/trade_license.json
+msgid "Each kit of the shop costs {less} cr less."
+msgstr "商店的每件裝備便宜 {less} 點。"
 
 #: project/data/speakers/alien.json
 msgid "Visitor"

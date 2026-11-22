@@ -1,0 +1,8 @@
+{
+	"id": "salvage_arm",
+	"name": "Salvage Arm",
+	"text": "A clear of scrap pays {pay} cr for each cell.",
+	"values": {
+		"pay": 1
+	}
+}

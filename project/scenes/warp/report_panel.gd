@@ -30,6 +30,7 @@ const LEDGER_TEXT := {
 	"penalties": "Penalties",
 	"sold": "Kit sold from the dock",
 	"scrap_cleared": "Scrap cleared from the dock",
+	"salvage": "Scrap salvaged from the dock",
 	"fuel_fee": "Fuel fee",
 	"net": "Net",
 }
@@ -132,6 +133,9 @@ func show_report(run: Dictionary) -> void:
 	var ledger: Dictionary = a.get("ledger", {})
 	for key: String in LEDGER_TEXT:
 		var amount: int = ledger.get(key, 0)
+		# Only Salvage Arm gives salvage: the line shows only when it has credits.
+		if key == "salvage" and amount == 0:
+			continue
 		var cost := key in LEDGER_COSTS
 		var value := -amount if cost else amount
 		var color := Palette.TEXT if key == "net" else Palette.TEXT_DIM
